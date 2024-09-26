@@ -1,9 +1,7 @@
-using StreamDB;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using System.Threading;
-using System.Linq;
 using System.Collections.Concurrent;
 
 namespace StreamDB
@@ -31,7 +29,7 @@ namespace StreamDB
                 if (!eventStore.TryAdd(streamId, uncommitedEntities))  // It seems like stream has been already added
                 {
                     commited = eventStore[streamId];
-                    throw new OptimisticConcurrencyException(0, commited.Count(), streamId);
+                    throw new OptimisticConcurrencyException(0, commited.MaxRevision.GetValueOrDefault(), streamId);
                 }
                 return Task.CompletedTask;
             }
