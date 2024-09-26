@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace StreamDB
 {
@@ -12,7 +13,7 @@ namespace StreamDB
 
     internal sealed class EventRecordBatch: EventBatch<EventRecord>
     {
-        public EventRecordBatch(EventRecord[]? items = null) : base(items)
+        public EventRecordBatch(IEnumerable<EventRecord>? items = null) : base(items)
         {
         }
     }

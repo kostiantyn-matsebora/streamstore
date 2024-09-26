@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamDB.Operations;
@@ -27,11 +27,11 @@ namespace StreamDB
             this.serializer = serializer;
         }
 
-        public async Task AppendAsync(string streamId, IUncommitedEvent[] uncommited, int expectedRevision, CancellationToken cancellationToken = default)
+        public async Task AppendAsync(string streamId, IEnumerable<UncommitedEvent> uncommited, int expectedRevision, CancellationToken cancellationToken = default)
         {
            await new AppendToStreamOperation(store, serializer)
                 .AddStreamId(streamId)
-                .AddUncommitedEntities(uncommited)
+                .AddUncommitedEvents(uncommited)
                 .AddExpectedRevision(expectedRevision)
                 .ExecuteAsync(cancellationToken);
         }
@@ -43,7 +43,7 @@ namespace StreamDB
                     .ExecuteAsync(cancellationToken);
         }
 
-        public async Task<IStreamEntity> GetAsync(string streamId, CancellationToken cancellationToken = default)
+        public async Task<StreamEntity> GetAsync(string streamId, CancellationToken cancellationToken = default)
         {
             return 
                 await new GetStreamOperation(store, serializer)

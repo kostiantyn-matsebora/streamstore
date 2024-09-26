@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using System.Linq;
 using StreamDB.Operations;
+using System.Collections.Generic;
 
 
 namespace StreamDB
@@ -12,7 +13,7 @@ namespace StreamDB
         readonly IEventStore store;
         readonly IEventSerializer serializer;
         Id streamId;
-        IUncommitedEvent[]? uncommited;
+        UncommitedEvent[]? uncommited;
         int expectedRevision;
 
         public AppendToStreamOperation(IEventStore store, IEventSerializer serializer)
@@ -31,9 +32,9 @@ namespace StreamDB
             return this;
         }
 
-        public AppendToStreamOperation AddUncommitedEntities(IUncommitedEvent[] uncommited)
+        public AppendToStreamOperation AddUncommitedEvents(IEnumerable<UncommitedEvent> uncommited)
         {
-            this.uncommited = uncommited;
+            this.uncommited = uncommited.ToArray();
             return this;
         }
 
@@ -57,7 +58,7 @@ namespace StreamDB
             var revision = streamRecord?.Revision ?? 0;
             var persistent = streamRecord?.Events;
             
-            var transient = ToTransient(uncommited, revision);
+            var transient = ToEventEntity(uncommited, revision);
 
             AppentToStreamInvariants.CheckAll(streamId, transient, persistent);
             var eventRecordBatch = ToEventRecordBatch(transient, revision);
@@ -66,37 +67,14 @@ namespace StreamDB
 
         }
 
-
-
-        class TransientEventEntity: IEventEntity
-        {
-            private readonly IUncommitedEvent entity;
-            private readonly int revision;
-
-            public TransientEventEntity(IUncommitedEvent entity, int revision)
-            {
-                this.entity = entity;
-                this.revision = revision;
-            }
-
-            public object Event => entity.Event;
-
-            public int Revision => revision;
-
-            public Id Id => entity.Id;
-
-            public DateTime Timestamp => entity.Timestamp;
-        }
-
-
-        TransientEventEntity[] ToTransient(IUncommitedEvent[] items, int revision)
+        EventEntity[] ToEventEntity(UncommitedEvent[] items, int revision)
         {
             return items.
-                Select(e => new TransientEventEntity(e, revision++))
+                Select(e => new EventEntity(e.Id, revision++, e.Timestamp, e.Event))
                 .ToArray();
         }
 
-        EventRecordBatch ToEventRecordBatch(IEventEntity[] items, int revision)
+        EventRecordBatch ToEventRecordBatch(EventEntity[] items, int revision)
         {
             return new EventRecordBatch(
                 items

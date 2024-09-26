@@ -1,23 +1,14 @@
 ﻿using System;
 namespace StreamDB
 {
-    public class UncommitedEvent : IUncommitedEvent
+    public class UncommitedEvent : UncommitedEventMetadata
     {
-        public Id Id { get; internal set; }
+        public object Event { get;  }
 
-        public DateTime Timestamp { get; internal set; }
-
-
-        public object Event { get; internal set; }
-
-        public UncommitedEvent(Id id, DateTime timestamp, object @event)
+        public UncommitedEvent(Id id, DateTime timestamp, object @event) : base(id, timestamp)
         {
-            if (id == Id.None) throw new ArgumentOutOfRangeException("Id cannot be empty.", nameof(id));
-            if (timestamp == default) throw new ArgumentOutOfRangeException(nameof(timestamp));
-            if (@event == null) throw new ArgumentNullException(nameof(@event));
-
-            Id = id;
-            Timestamp = timestamp;
+            if (@event == null)
+                throw new ArgumentNullException(nameof(@event));
             Event = @event;
         }
     }

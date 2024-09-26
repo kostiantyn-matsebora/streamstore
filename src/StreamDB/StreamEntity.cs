@@ -4,24 +4,24 @@ using System.Collections.Generic;
 namespace StreamDB
 {
 
-    internal sealed class StreamEntity: IStreamEntity
+    public sealed class StreamEntity
     {
-        readonly EventBatch<IEventEntity> stream;
+        readonly EventBatch<EventEntity> batch;
 
         public string Id { get; }
 
-        public IEventEntity[] EventEntities => stream.Events;
+        public EventEntity[] EventEntities => batch.Events;
 
-        public int Revision => stream.MaxRevision;
+        public int Revision => batch.MaxRevision;
 
-        public StreamEntity(Id id, IEnumerable<IEventEntity> events)
+        public StreamEntity(Id id, IEnumerable<EventEntity> events)
         {
             Id = id;
 
             if (events == null) 
                 throw new System.ArgumentNullException(nameof(events));
 
-            stream = new EventBatch<IEventEntity>(events);
+            batch = new EventBatch<EventEntity>(events);
         }
     }
 }

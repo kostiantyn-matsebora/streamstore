@@ -1,14 +1,14 @@
 ﻿using System;
 namespace StreamDB
 {
-    internal sealed class EventEntity: UncommitedEvent, IEventEntity
+    public sealed class EventEntity: EventMetadata
     {
-        public int Revision { get; internal set; }
+        public object Event { get; internal set; }
 
-        public EventEntity(Id id, int revision, DateTime timestamp, object @event): base(id, timestamp, @event)
+        public EventEntity(Id id, int revision, DateTime timestamp, object @event): base(id, revision, timestamp)
         {
-            if (revision < 1) throw new ArgumentOutOfRangeException("Revision cannot be less than 1", nameof(revision));
-            Revision = revision;
+            if (@event == null) throw new ArgumentNullException(nameof(@event));
+            Event = @event;
         }
     }
 }
