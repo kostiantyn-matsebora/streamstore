@@ -89,5 +89,11 @@ namespace StreamDB
                     .ToArray());
         }
 
+        class EventRecordBatch : EventBatch<EventRecord>
+        {
+            public EventRecordBatch(IEnumerable<EventRecord>? items = null) : base(items)
+            {
+            }
+        }
     }
 }

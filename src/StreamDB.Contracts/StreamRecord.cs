@@ -8,7 +8,7 @@ namespace StreamDB
 
         public Id Id { get; }
 
-        public int? Revision => batch.MaxRevision;
+        public int Revision => batch.MaxRevision;
 
         public EventRecord[] Events => batch.Events;
 
