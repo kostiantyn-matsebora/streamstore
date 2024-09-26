@@ -13,7 +13,10 @@ namespace StreamDB
 
         public StreamItem(Id id, int revision, DateTime timestamp, object @event)
         {
-            if (revision < 1) throw new ArgumentOutOfRangeException(nameof(revision));
+            if (id == Id.None) throw new ArgumentOutOfRangeException("Id cannot be empty.", nameof(id));
+            if (revision < 1) throw new ArgumentOutOfRangeException("Revision cannot be less 1", nameof(revision));
+            if (timestamp == default) throw new ArgumentOutOfRangeException(nameof(timestamp));
+            if (@event == null) throw new ArgumentNullException(nameof(@event));
 
             Id = id;
             Timestamp = timestamp;

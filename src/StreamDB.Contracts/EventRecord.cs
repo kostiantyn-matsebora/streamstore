@@ -1,5 +1,4 @@
 ﻿using System;
-using StreamDB;
 
 namespace StreamDB
 {
@@ -10,11 +9,12 @@ namespace StreamDB
         public int Revision { get; set; }
         public string? Data { get; set; }
     }
+
+    internal sealed class EventRecordBatch: EventBatch<EventRecord>
+    {
+        public EventRecordBatch(EventRecord[]? items = null) : base(items)
+        {
+        }
+    }
 }
 
-public interface IEventMetadata
-{
-    Id Id { get; }
-    DateTime Timestamp { get; }
-    int Revision { get; }
-}

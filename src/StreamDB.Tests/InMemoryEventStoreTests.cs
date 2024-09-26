@@ -32,16 +32,11 @@ public class InMemoryEventStoreTests
 
 
     [Fact]
-    public async Task SaveEventsAsync_ShouldThrowConcurrencyException()
+    public async Task InsertAsync_ShouldThrowConcurrencyException()
     {
         // Arrange
         var streamId = Guid.NewGuid().ToString();
-        var events = new List<EventRecord>
-        {
-            new EventRecord { Id = "EventId1", Data = "Event1", Timestamp = DateTime.Now, Revision = 1 },
-            new EventRecord { Id = "EventId2", Data = "Event2", Timestamp = DateTime.Now, Revision = 2 },
-            new EventRecord { Id = "EventId3",  Data = "Event3", Timestamp = DateTime.Now, Revision = 3 }
-        };
+
         await eventStore.InsertAsync(streamId, GenerateEventEntities(3,1), CancellationToken.None);
        
 
@@ -68,6 +63,74 @@ public class InMemoryEventStoreTests
 
         Assert.Null(exception);
     }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldDeleteStream()
+    {
+        // Arrange
+        var streamId = Guid.NewGuid().ToString();
+        await eventStore.InsertAsync(streamId, GenerateEventEntities(3, 1), CancellationToken.None);
+        
+
+        // Act
+        var streamBeforeDeletion = await eventStore.FindAsync(streamId, CancellationToken.None);
+        await eventStore.DeleteAsync(streamId, CancellationToken.None);
+        var stream = await eventStore.FindAsync(streamId, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(streamBeforeDeletion);
+        Assert.Null(stream);
+    }
+
+    [Fact]
+    public async Task InsertAsync_EnsureACIDComplaint()
+    {
+        // Arrange
+        var streamId = Guid.NewGuid().ToString();
+
+        // Act & Assert
+        await Assert.ThrowsAsync<OptimisticConcurrencyException>(async () =>
+        {
+            await Parallel.ForEachAsync(Enumerable.Range(1, 100), async (i, _) =>
+            {
+                await eventStore.InsertAsync(streamId, GenerateEventEntities(100, 1), CancellationToken.None);
+            });
+        });
+
+        var stream = await eventStore.FindAsync(streamId, CancellationToken.None);
+        var nonExistingStream = await eventStore.FindAsync(Guid.NewGuid().ToString(), CancellationToken.None);
+
+        Assert.NotNull(stream);
+        Assert.Null(nonExistingStream);
+        Assert.Equal(100, stream.Events.Length);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_EnsureIdempotent()
+    {
+        // Arrange
+        var streamId = Guid.NewGuid().ToString();
+        await eventStore.InsertAsync(streamId, GenerateEventEntities(3, 1), CancellationToken.None);
+
+
+        // Act
+        var streamBeforeDeletion = await eventStore.FindAsync(streamId, CancellationToken.None);
+
+        await Parallel.ForEachAsync(Enumerable.Range(1, 100), async (i, _) =>
+        {
+            await eventStore.DeleteAsync(streamId, CancellationToken.None);
+        });
+
+        var exception = await Record.ExceptionAsync(async () => await eventStore.DeleteAsync(streamId, CancellationToken.None));
+
+        var stream = await eventStore.FindAsync(streamId, CancellationToken.None);
+
+        // Assert
+        Assert.Null(exception);
+        Assert.NotNull(streamBeforeDeletion);
+        Assert.Null(stream);
+    }
+
 
     static IEnumerable<EventRecord> GenerateEventEntities(int count, int initialRevision)
     {

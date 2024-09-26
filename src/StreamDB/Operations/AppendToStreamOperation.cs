@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using StreamDB.Operations;
 
+
 namespace StreamDB
 {
     internal class AppendToStreamOperation
@@ -57,9 +58,26 @@ namespace StreamDB
             var persistent = streamRecord?.Events;
 
             AppentToStreamInvariants.ApplyAll(streamId, transient, persistent);
+            var eventRecordBatch = ToEventRecordBatch(transient, revision);
 
-            await store.InsertAsync(streamId, transient.ToEventRecordArray(revision, serializer.Serialize), cancellationToken);
+            await store.InsertAsync(streamId, eventRecordBatch, cancellationToken);
 
         }
+
+        EventRecordBatch ToEventRecordBatch(IStreamItem[] items, int revision)
+        {
+            return new EventRecordBatch(
+                items
+                   .Select(e => 
+                        new EventRecord
+                            {
+                                Id = e.Id,
+                                Timestamp = e.Timestamp,
+                                Revision = revision++,
+                                Data = serializer.Serialize(e.Event)
+                            })
+                    .ToArray());
+        }
+
     }
 }

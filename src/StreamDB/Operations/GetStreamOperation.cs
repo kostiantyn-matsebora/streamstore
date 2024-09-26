@@ -1,6 +1,7 @@
 ﻿
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,15 +35,27 @@ namespace StreamDB.Operations
             if (streamId == Id.None)
                 throw new ArgumentException("streamId is required.", nameof(streamId));
 
-            var streamEntity = 
+            var streamRecord = 
                 await store.FindAsync(streamId, cancellationToken);
 
-            if (streamEntity == null)
+            if (streamRecord == null)
                 throw new StreamNotFoundException(streamId);
 
-            return new Stream(streamEntity.Id,
-                streamEntity.Events.ToStreamItemArray(serializer.Deserialize));
+            return ConvertToStream(streamRecord);
         }
 
+        public Stream ConvertToStream(StreamRecord record)
+        {
+
+            return new Stream(record.Id,
+             record.Events
+                    .Select(r =>
+                       new StreamItem(
+                            r.Id,
+                            r.Revision,
+                            r.Timestamp,
+                            serializer.Deserialize(r.Data)))
+                    .ToArray());
+        }
     }
 }
