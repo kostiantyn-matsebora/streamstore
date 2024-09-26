@@ -30,18 +30,18 @@ namespace StreamDB.Sql
             command.ExecuteNonQuery();
         }
 
-        public async Task<StreamEntity> FindAsync(string streamId, CancellationToken cancellationToken)
+        public async Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken)
         {
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync(cancellationToken);
             var command = new SqlCommand(string.Format("SELECT * FROM {0} WHERE StreamId = @StreamId ORDER BY Revision", tableName), connection);
             command.Parameters.Add(new SqlParameter("@StreamId", SqlDbType.NVarChar) { Value = streamId });
-            SqlDataReader sqlDataReader = command.ExecuteReader();
+            SqlDataReader sqlDataReader = await command.ExecuteReaderAsync();
 
-            var events = new List<EventEntity>();
-            while (sqlDataReader.Read())
+            var events = new List<EventRecord>();
+            while (await sqlDataReader.ReadAsync())
             {
-                events.Add(new EventEntity
+                events.Add(new EventRecord
                 {
                     Id = sqlDataReader["Id"].ToString(),
                     Data = sqlDataReader["Data"].ToString(),
@@ -53,10 +53,10 @@ namespace StreamDB.Sql
             if (events.Count == 0)
                 return null;
 
-            return new StreamEntity(streamId, events.ToArray());
+            return new StreamRecord(streamId, events.ToArray());
         }
 
-        public async Task InsertAsync(string streamId, IEnumerable<EventEntity> events, CancellationToken cancellationToken)
+        public async Task InsertAsync(string streamId, IEnumerable<EventRecord> events, CancellationToken cancellationToken)
         {
             using var connection = new SqlConnection(connectionString);
             connection.Open();

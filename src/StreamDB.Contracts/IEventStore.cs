@@ -6,8 +6,8 @@ namespace StreamDB
 {
     public interface IEventStore
     {
-        Task<StreamEntity> FindAsync(string streamId, CancellationToken cancellationToken);
-        Task InsertAsync(string streamId, IEnumerable<EventEntity> events, CancellationToken cancellationToken);
+        Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken);
+        Task InsertAsync(string streamId, IEnumerable<EventRecord> uncommited, CancellationToken cancellationToken);
         Task DeleteAsync(string streamId, CancellationToken cancellationToken);
     }
 }

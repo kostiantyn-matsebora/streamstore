@@ -3,55 +3,57 @@ using System.Threading.Tasks;
 
 using System.Threading;
 using System.Collections.Concurrent;
+using StreamDB.Operations;
 
 namespace StreamDB
 {
 
     public class InMemoryEventStore : IEventStore
     {
-        readonly ConcurrentDictionary<string, StreamEventEntities> eventStore = new ConcurrentDictionary<string, StreamEventEntities>();
+        readonly ConcurrentDictionary<string, EventRecordBatch> store = new ConcurrentDictionary<string, EventRecordBatch>();
 
-        public Task<StreamEntity> FindAsync(string streamId, CancellationToken cancellationToken)
+        public Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken)
         {
-            if (!eventStore.TryGetValue(streamId, out var eventEntities))
-                return null;
+            if (!store.TryGetValue(streamId, out var stream))
+                return Task.FromResult<StreamRecord?>(null);
 
-            return Task.FromResult(new StreamEntity(streamId, eventEntities));
-
+            return Task.FromResult<StreamRecord?>(new StreamRecord(streamId, stream));
         }
 
-        public Task InsertAsync(string streamId, IEnumerable<EventEntity> uncommited, CancellationToken cancellationToken)
+        public Task InsertAsync(string streamId, IEnumerable<EventRecord> uncommited, CancellationToken cancellationToken)
         {
-            var uncommitedEntities = new StreamEventEntities(uncommited);
+            var uncommitedBatch = new EventRecordBatch(uncommited);
 
-            if (!eventStore.TryGetValue(streamId, out var commited))
+            if (!store.TryGetValue(streamId, out var commitedBatch))
             {
-                if (!eventStore.TryAdd(streamId, uncommitedEntities))  // It seems like stream has been already added
+                if (!store.TryAdd(streamId, uncommitedBatch))  // It seems like stream has been already added
                 {
-                    commited = eventStore[streamId];
-                    throw new OptimisticConcurrencyException(0, commited.MaxRevision.GetValueOrDefault(), streamId);
+                    commitedBatch = store[streamId];
+                    throw new OptimisticConcurrencyException(0, commitedBatch.MaxRevision, streamId);
                 }
                 return Task.CompletedTask;
             }
 
-            StreamEventsValidator<EventEntity,EventEntity>.Validate(uncommitedEntities, commited, streamId);
-
-            commited.AddRange(uncommited);
+            lock (commitedBatch) // Prevent race condition
+            {
+                AppentToStreamInvariants.ApplyAll(streamId, uncommitedBatch, commitedBatch);
+                commitedBatch.AddRange(uncommited);
+            }
 
             return Task.CompletedTask;
         }
 
         public Task DeleteAsync(string streamId, CancellationToken cancellationToken)
         {
-            if (eventStore.ContainsKey(streamId))
-                eventStore.TryRemove(streamId, out var commited);
+            if (store.ContainsKey(streamId))
+                store.TryRemove(streamId, out var commited);
 
             return Task.CompletedTask;
         }
 
-        class StreamEventEntities : StreamEvents<EventEntity>
+        class EventRecordBatch : EventBatch<EventRecord>
         {
-            public StreamEventEntities(IEnumerable<EventEntity> events) : base(events)
+            public EventRecordBatch(IEnumerable<EventRecord> records) : base(records)
             {
             }
         }

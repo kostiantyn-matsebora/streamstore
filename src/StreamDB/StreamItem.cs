@@ -1,7 +1,7 @@
 ﻿using System;
 namespace StreamDB
 {
-    public sealed class EventEnvelope: IHasRevision
+    public sealed class StreamItem: IStreamItem
     {
         public Id Id { get; internal set; }
 
@@ -11,15 +11,14 @@ namespace StreamDB
 
         public object Event { get; internal set; }
 
-        public EventEnvelope(Id id, int revision, DateTime timestamp, object @event)
+        public StreamItem(Id id, int revision, DateTime timestamp, object @event)
         {
-            if (@event == null) throw new ArgumentNullException(nameof(@event));
             if (revision < 1) throw new ArgumentOutOfRangeException(nameof(revision));
 
             Id = id;
             Timestamp = timestamp;
             Revision = revision;
-            Event = @event;
+            Event = @event ?? throw new ArgumentNullException(nameof(@event));
         }
     }
 }

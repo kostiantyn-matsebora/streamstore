@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
+
 using System.Threading;
 using System.Threading.Tasks;
-using StreamDB.Contracts;
+using StreamDB.Operations;
 
 
 namespace StreamDB
@@ -14,6 +14,8 @@ namespace StreamDB
 
         public StreamDB(IEventStore store) : this(store, new EventSerializer())
         {
+            this.store = store;
+            this.serializer = new EventSerializer();
         }
 
         public StreamDB(IEventStore store, IEventSerializer serializer)
@@ -25,35 +27,28 @@ namespace StreamDB
             this.serializer = serializer;
         }
 
-        public async Task SaveAsync(string streamId, EventEnvelope[] uncommited, int expectedRevision, CancellationToken ct = default)
+        public async Task AppendAsync(string streamId, IStreamItem[] uncommited, int expectedRevision, CancellationToken cancellationToken = default)
         {
-            if (streamId == null) throw new ArgumentNullException(nameof(streamId));
-
-            var streamEntity = await store.FindAsync(streamId, ct);
-            var revision = streamEntity?.Revision ?? 0;
-
-            var uncommitedEvents = new StreamEvents<EventEntity>(uncommited.Select(e => e.ToEventEntity(revision++, serializer.Serialize)).ToArray());
-          
-            await store.InsertAsync(streamId, uncommitedEvents, ct);
+           await new AppendToStreamOperation(store, serializer)
+                .AddStreamId(streamId)
+                .AddTransientEvents(uncommited)
+                .AddExpectedRevision(expectedRevision)
+                .ExecuteAsync(cancellationToken);
         }
 
-        public async Task DeleteAsync(string streamId, CancellationToken ct = default)
+        public async Task DeleteAsync(string streamId, CancellationToken cancellationToken = default)
         {
-            if (streamId == null) throw new ArgumentNullException(nameof(streamId));
-            
-            await store.DeleteAsync(streamId, ct);
+           await new DeleteOperation(store)
+                    .AddStreamId(streamId)
+                    .ExecuteAsync(cancellationToken);
         }
 
-        public async Task<Stream> GetAsync(string streamId, CancellationToken ct = default)
+        public async Task<IStream> GetAsync(string streamId, CancellationToken cancellationToken = default)
         {
-            var streamEntity = await store.FindAsync(streamId, ct);
-            if (streamEntity == null) 
-                throw new StreamNotFoundException(streamId);
-
-            return new Stream(
-                streamEntity.Id, 
-                new StreamEvents<EventEnvelope>(streamEntity.Events.Select(e => e.ToEvent(serializer.Deserialize)))
-                .ToArray());
+            return 
+                await new GetStreamOperation(store, serializer)
+                 .AddStreamId(streamId)
+                 .ExecuteAsync(cancellationToken);
         }
     }
 }

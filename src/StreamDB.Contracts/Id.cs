@@ -7,9 +7,12 @@ namespace StreamDB
     {
         public readonly string Value;
 
-        Id(string value)
+        public static Id None => new Id(string.Empty);
+
+        Id(string? value = null)
         {
-            Value = value;
+
+            Value = value ?? string.Empty;
         }
 
         public bool Equals(Id other)

@@ -1,20 +1,27 @@
 ﻿
 using System.Collections.Generic;
 
-namespace StreamDB.Contracts
+namespace StreamDB
 {
-    public sealed class Stream
+
+    internal sealed class Stream: IStream
     {
-        readonly StreamEvents<EventEnvelope> events;
+        readonly EventBatch<IStreamItem> stream;
 
-        public Id Id { get; }
-        public EventEnvelope[] Events => events.Events;
+        public string Id { get; }
 
+        public IStreamItem[] Events => stream.Events;
 
-        public Stream(Id id, IEnumerable<EventEnvelope> events)
+        public int Revision => stream.MaxRevision;
+
+        public Stream(Id id, IEnumerable<IStreamItem> events)
         {
             Id = id;
-            events = new StreamEvents<EventEnvelope>(events);
+
+            if (events == null) 
+                throw new System.ArgumentNullException(nameof(events));
+
+            stream = new EventBatch<IStreamItem>(events);
         }
     }
 }
