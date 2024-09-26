@@ -4,7 +4,7 @@
 namespace StreamDB
 {
 
-    public class UncommitedEventMetadata: IUncommitedEventMetadata
+    public class UncommitedEventMetadata
     {
         public Id Id { get;  }
 
@@ -21,6 +21,7 @@ namespace StreamDB
             Timestamp = timestamp;
         }
     }
+
     public class EventMetadata: UncommitedEventMetadata, IEventMetadata
     {
         public int Revision { get; }
