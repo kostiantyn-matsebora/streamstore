@@ -30,7 +30,7 @@ namespace StreamDB.Operations
             return this;
         }
 
-        public async Task<Stream> ExecuteAsync(CancellationToken cancellationToken = default)
+        public async Task<StreamEntity> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             if (streamId == Id.None)
                 throw new ArgumentException("streamId is required.", nameof(streamId));
@@ -44,13 +44,13 @@ namespace StreamDB.Operations
             return ConvertToStream(streamRecord);
         }
 
-        public Stream ConvertToStream(StreamRecord record)
+        public StreamEntity ConvertToStream(StreamRecord record)
         {
 
-            return new Stream(record.Id,
+            return new StreamEntity(record.Id,
              record.Events
                     .Select(r =>
-                       new StreamItem(
+                       new EventEntity(
                             r.Id,
                             r.Revision,
                             r.Timestamp,

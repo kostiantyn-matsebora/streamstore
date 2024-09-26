@@ -1,10 +1,5 @@
-﻿using System;
-using StreamDB;
-
-public interface IEventMetadata
+﻿public interface IEventMetadata: IUncommitedEventMetadata
 {
-    Id Id { get; }
-    DateTime Timestamp { get; }
     int Revision { get; }
 }
 

@@ -12,7 +12,7 @@ namespace StreamDB
         readonly IEventStore store;
         readonly IEventSerializer serializer;
         Id streamId;
-        IStreamItem[]? transient;
+        IUncommitedEvent[]? uncommited;
         int expectedRevision;
 
         public AppendToStreamOperation(IEventStore store, IEventSerializer serializer)
@@ -31,9 +31,9 @@ namespace StreamDB
             return this;
         }
 
-        public AppendToStreamOperation AddTransientEvents(IStreamItem[] transient)
+        public AppendToStreamOperation AddUncommitedEntities(IUncommitedEvent[] uncommited)
         {
-            this.transient = transient;
+            this.uncommited = uncommited;
             return this;
         }
 
@@ -48,7 +48,7 @@ namespace StreamDB
             if (streamId == Id.None)
                 throw new ArgumentException("streamId is required.", nameof(streamId));
 
-            if (transient == null || !transient.Any())
+            if (uncommited == null || !uncommited.Any())
                 throw new InvalidOperationException("There is nothing to append.");
 
             var streamRecord = 
@@ -56,15 +56,47 @@ namespace StreamDB
 
             var revision = streamRecord?.Revision ?? 0;
             var persistent = streamRecord?.Events;
+            
+            var transient = ToTransient(uncommited, revision);
 
-            AppentToStreamInvariants.ApplyAll(streamId, transient, persistent);
+            AppentToStreamInvariants.CheckAll(streamId, transient, persistent);
             var eventRecordBatch = ToEventRecordBatch(transient, revision);
 
             await store.InsertAsync(streamId, eventRecordBatch, cancellationToken);
 
         }
 
-        EventRecordBatch ToEventRecordBatch(IStreamItem[] items, int revision)
+
+
+        class TransientEventEntity: IEventEntity
+        {
+            private readonly IUncommitedEvent entity;
+            private readonly int revision;
+
+            public TransientEventEntity(IUncommitedEvent entity, int revision)
+            {
+                this.entity = entity;
+                this.revision = revision;
+            }
+
+            public object Event => entity.Event;
+
+            public int Revision => revision;
+
+            public Id Id => entity.Id;
+
+            public DateTime Timestamp => entity.Timestamp;
+        }
+
+
+        TransientEventEntity[] ToTransient(IUncommitedEvent[] items, int revision)
+        {
+            return items.
+                Select(e => new TransientEventEntity(e, revision++))
+                .ToArray();
+        }
+
+        EventRecordBatch ToEventRecordBatch(IEventEntity[] items, int revision)
         {
             return new EventRecordBatch(
                 items

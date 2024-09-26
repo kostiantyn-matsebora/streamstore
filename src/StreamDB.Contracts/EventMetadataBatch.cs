@@ -39,6 +39,9 @@ namespace StreamDB
 
         public void AddRange(IEnumerable<T> items)
         {
+            if (items is null)
+                throw new ArgumentNullException(nameof(items));
+
             AddRangeInternal(items);
         }
 
@@ -54,6 +57,7 @@ namespace StreamDB
             }
         }
     }
+
     internal class EventMetadataBatch : EventBatch<IEventMetadata>
     {
         public EventMetadataBatch(IEnumerable<IEventMetadata>? items = null) : base(items)

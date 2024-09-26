@@ -1,12 +1,12 @@
 ﻿namespace StreamDB
 {
-    public interface IStream
+    public interface IStreamEntity
     {
         string Id { get; }
 
         int Revision { get; }
 
-        IStreamItem[] Events { get; }
+        IEventEntity[] EventEntities { get; }
 
     }
 }

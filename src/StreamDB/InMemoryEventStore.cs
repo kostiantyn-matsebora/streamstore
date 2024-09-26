@@ -36,7 +36,7 @@ namespace StreamDB
 
             lock (commitedBatch) // Prevent race condition
             {
-                AppentToStreamInvariants.ApplyAll(streamId, uncommitedBatch, commitedBatch);
+                AppentToStreamInvariants.CheckAll(streamId, uncommitedBatch, commitedBatch);
                 commitedBatch.AddRange(uncommited);
             }
 

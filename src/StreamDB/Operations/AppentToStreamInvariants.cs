@@ -6,7 +6,7 @@ namespace StreamDB.Operations
 {
     internal static class AppentToStreamInvariants
     {
-        public static void ApplyAll(string streamId, IEnumerable<IEventMetadata> transient, IEnumerable<IEventMetadata>? persistent = null)
+        public static void CheckAll(string streamId, IEnumerable<IEventMetadata> transient, IEnumerable<IEventMetadata>? persistent = null)
         {
             var transientBatch = new EventMetadataBatch(transient);
 
