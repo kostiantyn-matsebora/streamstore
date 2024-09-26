@@ -1,21 +1,20 @@
-﻿using System;
-
+﻿
+using System.Collections.Generic;
 
 namespace StreamDB.Contracts
 {
-    public sealed class Stream {
+    public sealed class Stream
+    {
+        readonly StreamEvents<EventEnvelope> events;
+
         public Id Id { get; }
-        public int Revision { get; }
-        public EventEnvelope[] Events { get; }
+        public EventEnvelope[] Events => events.Events;
 
 
-        public Stream(Id id, int revision, EventEnvelope[] events)
+        public Stream(Id id, IEnumerable<EventEnvelope> events)
         {
-            if (revision <= 0)
-                throw new ArgumentException("Invalid revision, must be greater than 0", nameof(revision));
-            Revision = revision;
-            if (events == null || events.Length == 0)
-                throw new ArgumentException("Events must contain at least one event", nameof(events));
+            Id = id;
+            events = new StreamEvents<EventEnvelope>(events);
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 using System;
-using System.Linq;
+
 
 namespace StreamDB.Sql
 {
@@ -30,7 +30,7 @@ namespace StreamDB.Sql
             command.ExecuteNonQuery();
         }
 
-        public async Task<StreamData> FindAsync(string streamId, CancellationToken cancellationToken)
+        public async Task<StreamEntity> FindAsync(string streamId, CancellationToken cancellationToken)
         {
             using var connection = new SqlConnection(connectionString);
             await connection.OpenAsync(cancellationToken);
@@ -38,10 +38,10 @@ namespace StreamDB.Sql
             command.Parameters.Add(new SqlParameter("@StreamId", SqlDbType.NVarChar) { Value = streamId });
             SqlDataReader sqlDataReader = command.ExecuteReader();
 
-            var events = new List<EventData>();
+            var events = new List<EventEntity>();
             while (sqlDataReader.Read())
             {
-                events.Add(new EventData
+                events.Add(new EventEntity
                 {
                     Id = sqlDataReader["Id"].ToString(),
                     Data = sqlDataReader["Data"].ToString(),
@@ -53,10 +53,10 @@ namespace StreamDB.Sql
             if (events.Count == 0)
                 return null;
 
-            return new StreamData(streamId, events.Last().Revision, events.ToArray());
+            return new StreamEntity(streamId, events.ToArray());
         }
 
-        public async Task InsertAsync(string streamId, EventData[] events, CancellationToken cancellationToken)
+        public async Task InsertAsync(string streamId, IEnumerable<EventEntity> events, CancellationToken cancellationToken)
         {
             using var connection = new SqlConnection(connectionString);
             connection.Open();

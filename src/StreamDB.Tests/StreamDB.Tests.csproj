@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StreamDB.Contracts\StreamDB.Contracts.csproj" />
     <ProjectReference Include="..\StreamDB\StreamDB.csproj" />
   </ItemGroup>
 

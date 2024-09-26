@@ -14,7 +14,7 @@ namespace StreamDB
 
         public bool Equals(Id other)
         {
-            throw new NotImplementedException();
+            return Value == other.Value;
         }
 
         public static bool operator ==(Id left, Id right)

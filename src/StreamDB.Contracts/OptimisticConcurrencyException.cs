@@ -4,7 +4,7 @@
 namespace StreamDB
 {
     [Serializable]
-    public sealed class OptimisticConcurrencyException : StreamDBException
+    public sealed class OptimisticConcurrencyException : StreamDbException
     {
         public int ExpectedRevision { get; set; }
         public int ActualRevision { get; set;  }

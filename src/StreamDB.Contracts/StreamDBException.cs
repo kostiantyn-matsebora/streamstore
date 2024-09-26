@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace StreamDB
 {
-    public abstract class StreamDBException: Exception
+    public abstract class StreamDbException: Exception
     {
-        protected StreamDBException(string message) : base(message)
+        protected StreamDbException(string message) : base(message)
         {
         }
     }

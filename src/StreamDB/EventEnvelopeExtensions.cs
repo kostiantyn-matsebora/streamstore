@@ -1,16 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace StreamDB
 {
-    public static class EventEnvelopeExtensions
+    internal static class EventEnvelopeExtensions
     {
-        public static EventData ToEventData(this EventEnvelope e, int revision) {
-            return new EventData
+        public static EventEntity ToEventEntity(this EventEnvelope e, int revision, Func<object, string> serializer) {
+            return new EventEntity
             {
-
                 Id = e.Id,
                 Timestamp = e.Timestamp,
-                Data = JsonConvert.SerializeObject(e.Event)
+                Revision = revision,
+                Data = serializer(e.Event)
             }; 
         }
     }

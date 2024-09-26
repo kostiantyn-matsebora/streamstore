@@ -3,7 +3,7 @@
 namespace StreamDB
 {
     [Serializable]
-    public class StreamNotFoundException : StreamDBException
+    public class StreamNotFoundException : StreamDbException
     {
         public string StreamId { get; set; }
 

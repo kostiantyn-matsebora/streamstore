@@ -3,12 +3,12 @@
 namespace StreamDB
 {
     [Serializable]
-    public sealed class DuplicateEventException : StreamDBException
+    public sealed class DuplicateEventException : StreamDbException
     {
-        public string[] EventIds { get; set; }
+        public Id[] EventIds { get; set; }
         public Id StreamId { get; set; }
 
-        public DuplicateEventException(string[] eventIds, Id streamId)
+        public DuplicateEventException(Id[] eventIds, Id streamId)
                     : base("Found duplicated events for stream.")
         {
             EventIds = eventIds;
