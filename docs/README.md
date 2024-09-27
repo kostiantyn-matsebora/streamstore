@@ -1,6 +1,6 @@
-# <p align="center">StreamDB</p>
+# <p align="center">StreamStore</p>
 
-Lightweight library provides logical layer for storing and querying events in a stream.
+Lightweight library provides logical layer for storing and querying events as a stream.
 
 Heavily inspired by Greg Young's Event Store and [`Streamstone`](https://github.com/yevhen/Streamstone) solutions.
 
