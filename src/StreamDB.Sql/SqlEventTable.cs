@@ -9,12 +9,12 @@ using System;
 
 namespace StreamDB.Sql
 {
-    public class SqlEventStore : IEventStore
+    public class SqlEventTable : IEventTable
     {
         private readonly string connectionString;
         private readonly string tableName;
 
-        public SqlEventStore(string connectionString, string tableName = "Events")
+        public SqlEventTable(string connectionString, string tableName = "Events")
         {
             this.connectionString = connectionString;
             this.tableName = tableName;
@@ -54,6 +54,31 @@ namespace StreamDB.Sql
                 return null;
 
             return new StreamRecord(streamId, events.ToArray());
+        }
+
+        public async Task<StreamMetadataRecord?> FindMetadataAsync(string streamId, CancellationToken cancellationToken)
+        {
+            using var connection = new SqlConnection(connectionString);
+            await connection.OpenAsync(cancellationToken);
+            var command = new SqlCommand(string.Format("SELECT Id, Timestamp, Revision FROM {0} WHERE StreamId = @StreamId ORDER BY Revision", tableName), connection);
+            command.Parameters.Add(new SqlParameter("@StreamId", SqlDbType.NVarChar) { Value = streamId });
+            SqlDataReader sqlDataReader = await command.ExecuteReaderAsync();
+
+            var events = new List<EventMetadataRecord>();
+            while (await sqlDataReader.ReadAsync())
+            {
+                events.Add(new EventMetadataRecord
+                {
+                    Id = sqlDataReader["Id"].ToString(),
+                    Timestamp = (DateTime)sqlDataReader["Timestamp"],
+                    Revision = (int)sqlDataReader["Revision"]
+                });
+            }
+
+            if (events.Count == 0)
+                return null;
+
+            return  new StreamMetadataRecord(streamId, events.ToArray());
         }
 
         public async Task InsertAsync(string streamId, IEnumerable<EventRecord> events, CancellationToken cancellationToken)

@@ -2,7 +2,6 @@
 using System;
 using System.Threading.Tasks;
 using System.Linq;
-using StreamDB.Operations;
 using System.Collections.Generic;
 
 
@@ -10,13 +9,13 @@ namespace StreamDB
 {
     internal class AppendToStreamOperation
     {
-        readonly IEventStore store;
+        readonly IEventTable store;
         readonly IEventSerializer serializer;
         Id streamId;
         UncommitedEvent[]? uncommited;
         int expectedRevision;
 
-        public AppendToStreamOperation(IEventStore store, IEventSerializer serializer)
+        public AppendToStreamOperation(IEventTable store, IEventSerializer serializer)
         {
             if(store == null)
                 throw new ArgumentNullException(nameof(store));
@@ -53,28 +52,33 @@ namespace StreamDB
                 throw new InvalidOperationException("There is nothing to append.");
 
             var streamRecord = 
-                await store.FindAsync(streamId, cancellationToken);
+                await store.FindMetadataAsync(streamId, cancellationToken);
 
             var revision = streamRecord?.Revision ?? 0;
             var persistent = streamRecord?.Events;
             
-            var transient = ToEventEntity(uncommited, revision);
+            var transient = ToEntity(uncommited, revision);
 
-            AppentToStreamInvariants.CheckAll(streamId, transient, persistent);
-            var eventRecordBatch = ToEventRecordBatch(transient, revision);
+            new Validator()
+                .Uncommited(transient)
+                .Persistent(persistent)
+                .StreamId(streamId)
+                .Validate();
+
+            var eventRecordBatch = ToRecordBatch(transient, revision);
 
             await store.InsertAsync(streamId, eventRecordBatch, cancellationToken);
 
         }
 
-        EventEntity[] ToEventEntity(UncommitedEvent[] items, int revision)
+        EventEntity[] ToEntity(UncommitedEvent[] items, int revision)
         {
-            return items.
-                Select(e => new EventEntity(e.Id, revision++, e.Timestamp, e.Event))
+            return items
+                .Select(e => new EventEntity(e.Id, revision++, e.Timestamp, e.Event))
                 .ToArray();
         }
 
-        EventRecordBatch ToEventRecordBatch(EventEntity[] items, int revision)
+        EventRecordBatch ToRecordBatch(EventEntity[] items, int revision)
         {
             return new EventRecordBatch(
                 items

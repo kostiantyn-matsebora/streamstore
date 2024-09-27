@@ -6,10 +6,10 @@ namespace StreamDB.Operations
 {
     internal class DeleteOperation
     {
-        IEventStore store;
+        IEventTable store;
         Id streamId;
 
-        public DeleteOperation(IEventStore store)
+        public DeleteOperation(IEventTable store)
         {
             if (store == null)
                 throw new ArgumentNullException(nameof(store));

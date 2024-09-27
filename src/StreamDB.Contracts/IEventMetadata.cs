@@ -8,5 +8,3 @@ internal interface IEventMetadata
 
     int Revision { get; }
 }
-
-

@@ -1,12 +1,12 @@
 ﻿namespace StreamDB.Tests;
 
-public class InMemoryEventStoreTests
+public class InMemoryEventTableTests
 {
-    private readonly InMemoryEventStore eventStore;
+    private readonly InMemoryEventTable eventStore;
 
-    public InMemoryEventStoreTests()
+    public InMemoryEventTableTests()
     {
-        eventStore = new InMemoryEventStore();
+        eventStore = new InMemoryEventTable();
     }
 
     [Fact]
@@ -103,6 +103,32 @@ public class InMemoryEventStoreTests
         Assert.NotNull(stream);
         Assert.Null(nonExistingStream);
         Assert.Equal(100, stream.Events.Length);
+    }
+
+
+    [Fact]
+    public async Task FindMetadataAsync_ShouldGetStreamMetadata()
+    {
+        // Arrange
+        var streamId = Guid.NewGuid().ToString();
+        var events = new EventRecord[]
+        {
+            new EventRecord { Id = "EventId2",  Data = "Event2", Timestamp = DateTime.Now, Revision = 2 },
+            new EventRecord { Id = "EventId1",  Data = "Event1", Timestamp = DateTime.Now , Revision = 1 }
+        };
+
+        // Act
+        await eventStore.InsertAsync(streamId, events, CancellationToken.None);
+        var stream = await eventStore.FindMetadataAsync(streamId, CancellationToken.None);
+
+
+
+        // Assert
+        // Check also if the events were returned in proper order
+        Assert.NotNull(stream);
+        Assert.Equal("EventId1", stream.Events[0].Id);
+        Assert.Equal("EventId2", stream.Events[1].Id);
+
     }
 
     [Fact]

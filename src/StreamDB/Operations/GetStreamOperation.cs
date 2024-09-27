@@ -9,11 +9,11 @@ namespace StreamDB.Operations
 {
     internal class GetStreamOperation
     {
-        readonly IEventStore store;
+        readonly IEventTable store;
         readonly IEventSerializer serializer;
         Id streamId;
 
-        public GetStreamOperation(IEventStore store, IEventSerializer serializer)
+        public GetStreamOperation(IEventTable store, IEventSerializer serializer)
         {
             if (store == null)
                 throw new ArgumentNullException(nameof(store));

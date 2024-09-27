@@ -3,12 +3,11 @@ using System.Threading.Tasks;
 
 using System.Threading;
 using System.Collections.Concurrent;
-using StreamDB.Operations;
 
 namespace StreamDB
 {
 
-    public class InMemoryEventStore : IEventStore
+    public class InMemoryEventTable : IEventTable
     {
         readonly ConcurrentDictionary<string, EventRecordBatch> store = new ConcurrentDictionary<string, EventRecordBatch>();
 
@@ -22,22 +21,27 @@ namespace StreamDB
 
         public Task InsertAsync(string streamId, IEnumerable<EventRecord> uncommited, CancellationToken cancellationToken)
         {
-            var uncommitedBatch = new EventRecordBatch(uncommited);
+            var transient = new EventRecordBatch(uncommited);
 
-            if (!store.TryGetValue(streamId, out var commitedBatch))
+            if (!store.TryGetValue(streamId, out var persistent))
             {
-                if (!store.TryAdd(streamId, uncommitedBatch))  // It seems like stream has been already added
+                if (!store.TryAdd(streamId, transient))  // It seems like stream has been already added
                 {
-                    commitedBatch = store[streamId];
-                    throw new OptimisticConcurrencyException(0, commitedBatch.MaxRevision, streamId);
+                    persistent = store[streamId];
+                    throw new OptimisticConcurrencyException(0, persistent.MaxRevision, streamId);
                 }
                 return Task.CompletedTask;
             }
 
-            lock (commitedBatch) // Prevent race condition
+            lock (persistent) // Prevent race condition
             {
-                AppentToStreamInvariants.CheckAll(streamId, uncommitedBatch, commitedBatch);
-                commitedBatch.AddRange(uncommited);
+                new Validator()
+                    .Uncommited(transient)
+                    .Persistent(persistent)
+                    .StreamId(streamId)
+                    .Validate();
+           
+                persistent.AddRange(uncommited);
             }
 
             return Task.CompletedTask;
@@ -49,6 +53,14 @@ namespace StreamDB
                 store.TryRemove(streamId, out var commited);
 
             return Task.CompletedTask;
+        }
+
+        public Task<StreamMetadataRecord?> FindMetadataAsync(string streamId, CancellationToken cancellationToken)
+        {
+            if (!store.TryGetValue(streamId, out var stream))
+                return Task.FromResult<StreamMetadataRecord?>(null);
+
+            return Task.FromResult<StreamMetadataRecord?> (new StreamMetadataRecord(streamId, stream.Events));
         }
 
         class EventRecordBatch : EventBatch<EventRecord>

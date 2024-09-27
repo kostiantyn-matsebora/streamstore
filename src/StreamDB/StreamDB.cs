@@ -9,16 +9,16 @@ namespace StreamDB
 {
     public sealed class StreamDB: IStreamDB
     {
-        readonly IEventStore store;
+        readonly IEventTable store;
         readonly IEventSerializer serializer;
 
-        public StreamDB(IEventStore store) : this(store, new EventSerializer())
+        public StreamDB(IEventTable store) : this(store, new EventSerializer())
         {
             this.store = store;
             this.serializer = new EventSerializer();
         }
 
-        public StreamDB(IEventStore store, IEventSerializer serializer)
+        public StreamDB(IEventTable store, IEventSerializer serializer)
         {
             if (store == null) throw new ArgumentNullException(nameof(store));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
