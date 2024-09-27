@@ -1,4 +1,6 @@
-﻿namespace StreamStore.Tests;
+﻿using AutoFixture;
+
+namespace StreamStore.Tests;
 
 public class InMemoryEventTableTests
 {

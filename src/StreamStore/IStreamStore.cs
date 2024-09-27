@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace StreamStore
 {
-    public interface IStreamDB
+    public interface IStreamStore
     {
         Task AppendAsync(string streamId, IEnumerable<UncommitedEvent> uncommited, int expectedRevision, CancellationToken ct = default);
         Task DeleteAsync(string streamId, CancellationToken ct = default);

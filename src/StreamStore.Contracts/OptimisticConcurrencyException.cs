@@ -3,7 +3,7 @@
 namespace StreamStore
 {
     [Serializable]
-    public sealed class OptimisticConcurrencyException : StreamDbException
+    public sealed class OptimisticConcurrencyException : StreamStoreException
     {
         public int ExpectedRevision { get; set; }
         public int ActualRevision { get; set; }

@@ -3,7 +3,7 @@
 namespace StreamStore
 {
     [Serializable]
-    public sealed class DuplicateEventException : StreamDbException
+    public sealed class DuplicateEventException : StreamStoreException
     {
         public Id[] EventIds { get; set; }
         public Id StreamId { get; set; }

@@ -7,18 +7,18 @@ using StreamStore.Operations;
 
 namespace StreamStore
 {
-    public sealed class StreamDB : IStreamDB
+    public sealed class StreamStore : IStreamStore
     {
         readonly IEventTable store;
         readonly IEventSerializer serializer;
 
-        public StreamDB(IEventTable store) : this(store, new EventSerializer())
+        public StreamStore(IEventTable store) : this(store, new EventSerializer())
         {
             this.store = store;
             serializer = new EventSerializer();
         }
 
-        public StreamDB(IEventTable store, IEventSerializer serializer)
+        public StreamStore(IEventTable store, IEventSerializer serializer)
         {
             if (store == null) throw new ArgumentNullException(nameof(store));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
