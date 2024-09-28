@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StreamDB.Contracts\StreamStore.Contracts.csproj" />
     <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
   </ItemGroup>
 

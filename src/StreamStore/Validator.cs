@@ -7,9 +7,9 @@ namespace StreamStore
 {
     internal class Validator
     {
-        EventMetadataBatch transient;
-        EventMetadataBatch persistent;
-        string streamId;
+        EventMetadataBatch? transient;
+        EventMetadataBatch? persistent;
+        string? streamId;
 
         public Validator Uncommited(IEnumerable<IEventMetadata> uncommited)
         {
@@ -57,21 +57,21 @@ namespace StreamStore
                  .ToArray();
 
             if (duplicates.Any())
-                throw new DuplicateEventException(duplicates, streamId);
+                throw new DuplicateEventException(duplicates, streamId!);
         }
 
         public void ThrowIfConccurrencyConflict()
         {
             ValidateInput();
 
-            var expectedRevision = transient.MinRevision - 1;
-            var actualRevision = persistent.MaxRevision;
+            var expectedRevision = transient!.MinRevision - 1;
+            var actualRevision = persistent!.MaxRevision;
 
             if (expectedRevision != actualRevision)
                 throw new OptimisticConcurrencyException(
                     expectedRevision,
                     actualRevision,
-                    streamId);
+                    streamId!);
         }
 
         void ValidateInput()

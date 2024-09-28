@@ -54,7 +54,7 @@ namespace StreamStore.Operations
                             r.Id,
                             r.Revision,
                             r.Timestamp,
-                            serializer.Deserialize(r.Data)))
+                            serializer.Deserialize(r.Data!)))
                     .ToArray());
         }
     }
