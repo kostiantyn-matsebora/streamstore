@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace StreamStore.Operations
 {
-    internal class GetStreamOperation
+    internal class GetOperation
     {
         readonly IEventTable store;
         readonly IEventSerializer serializer;
         Id streamId;
 
-        public GetStreamOperation(IEventTable store, IEventSerializer serializer)
+        public GetOperation(IEventTable store, IEventSerializer serializer)
         {
             if (store == null)
                 throw new ArgumentNullException(nameof(store));
@@ -23,7 +23,7 @@ namespace StreamStore.Operations
             this.serializer = serializer;
         }
 
-        public GetStreamOperation AddStreamId(Id streamId)
+        public GetOperation AddStreamId(Id streamId)
         {
             this.streamId = streamId;
 

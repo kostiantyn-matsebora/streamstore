@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace StreamStore.Operations
 {
-    internal class AppendToStreamOperation
+    internal class AppendOperation
     {
         readonly IEventTable store;
         readonly IEventSerializer serializer;
@@ -14,7 +14,7 @@ namespace StreamStore.Operations
         UncommitedEvent[]? uncommited;
         int expectedRevision;
 
-        public AppendToStreamOperation(IEventTable store, IEventSerializer serializer)
+        public AppendOperation(IEventTable store, IEventSerializer serializer)
         {
             if (store == null)
                 throw new ArgumentNullException(nameof(store));
@@ -24,19 +24,19 @@ namespace StreamStore.Operations
             this.serializer = serializer;
         }
 
-        public AppendToStreamOperation AddStreamId(Id streamId)
+        public AppendOperation AddStreamId(Id streamId)
         {
             this.streamId = streamId;
             return this;
         }
 
-        public AppendToStreamOperation AddUncommitedEvents(IEnumerable<UncommitedEvent> uncommited)
+        public AppendOperation AddUncommitedEvents(IEnumerable<UncommitedEvent> uncommited)
         {
             this.uncommited = uncommited.ToArray();
             return this;
         }
 
-        public AppendToStreamOperation AddExpectedRevision(int expectedRevision)
+        public AppendOperation AddExpectedRevision(int expectedRevision)
         {
             this.expectedRevision = expectedRevision;
             return this;

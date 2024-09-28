@@ -29,7 +29,7 @@ namespace StreamStore
 
         public async Task AppendAsync(string streamId, IEnumerable<UncommitedEvent> uncommited, int expectedRevision, CancellationToken cancellationToken = default)
         {
-            await new AppendToStreamOperation(store, serializer)
+            await new AppendOperation(store, serializer)
                  .AddStreamId(streamId)
                  .AddUncommitedEvents(uncommited)
                  .AddExpectedRevision(expectedRevision)
@@ -46,7 +46,7 @@ namespace StreamStore
         public async Task<StreamEntity> GetAsync(string streamId, CancellationToken cancellationToken = default)
         {
             return
-                await new GetStreamOperation(store, serializer)
+                await new GetOperation(store, serializer)
                  .AddStreamId(streamId)
                  .ExecuteAsync(cancellationToken);
         }
