@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.API;
 
-namespace StreamStore.Operations
+namespace StreamStore
 {
-    class AppendOperation: IStream
+    class Stream: IStream
     {
 
         readonly List<Id> eventIds = new List<Id>();
@@ -19,7 +19,7 @@ namespace StreamStore.Operations
         readonly IEventDatabase database;
         readonly IEventSerializer serializer;
 
-        public AppendOperation(IEventDatabase database, IEventSerializer serializer)
+        public Stream(IEventDatabase database, IEventSerializer serializer)
         {
             if (database == null) throw new ArgumentNullException(nameof(database));
             this.database = database;
@@ -71,6 +71,7 @@ namespace StreamStore.Operations
         {
             await uow!.SaveChangesAsync(cancellationToken);
         }
+
         public void Dispose()
         {
             uow?.Dispose();

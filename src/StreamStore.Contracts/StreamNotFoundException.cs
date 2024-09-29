@@ -7,7 +7,7 @@ namespace StreamStore
     {
         public string StreamId { get; set; }
 
-        public StreamNotFoundException(string id) : base(string.Format("Stream {0} is not found."))
+        public StreamNotFoundException(string id) : base($"Stream {id} is not found.")
         {
             StreamId = id;
         }

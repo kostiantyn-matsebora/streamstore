@@ -26,6 +26,4 @@ namespace StreamStore
             StreamId = streamId;
         }
     }
-
-
 }

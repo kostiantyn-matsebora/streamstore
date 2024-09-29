@@ -19,24 +19,6 @@ namespace StreamStore.InMemory
             return Task.FromResult<StreamRecord?>(stream);
         }
 
-        //public Task InsertAsync(string streamId, IEnumerable<EventRecord> uncommited, CancellationToken cancellationToken)
-        //{
-
-        //    var transient = new StreamRecord(streamId, uncommited);
-        //    if (!store.TryGetValue(streamId, out var persistent))
-        //    {
-        //        if (!store.TryAdd(streamId, transient))  // It seems like stream has been already added
-        //        {
-        //            persistent = store[streamId];
-        //            throw new OptimisticConcurrencyException(0, persistent.Revision, streamId);
-        //        }
-        //        return Task.CompletedTask;
-        //    }
-
-        //    return Task.CompletedTask;
-        //}
-
-
         public Task DeleteAsync(string streamId, CancellationToken cancellationToken)
         {
             if (store.ContainsKey(streamId))

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoFixture;
 
 namespace StreamStore.Tests
 {
@@ -30,19 +26,5 @@ namespace StreamStore.Tests
         public DateTime Timestamp { get; set; }
 
         public long Value { get; set; }
-    }
-
-    internal class TestData
-    {
-        public static EventRecord[] GenerateEventEntities(int count, int initialRevision)
-        {
-            return Enumerable.Range(1, count).Select(i => new EventRecord
-            {
-                Id = Guid.NewGuid().ToString(),
-                Data = Guid.NewGuid().ToString(),
-                Timestamp = DateTime.Now,
-                Revision = initialRevision + i - 1
-            }).ToArray();
-        }
     }
 }

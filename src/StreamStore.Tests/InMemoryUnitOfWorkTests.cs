@@ -1,5 +1,6 @@
 ﻿
 
+using AutoFixture;
 using StreamStore.InMemory;
 
 namespace StreamStore.Tests
@@ -42,14 +43,15 @@ namespace StreamStore.Tests
         [Fact]
         public async Task InsertAsync_ShouldThrowConcurrencyException()
         {
-            var Id = default(Id);
+
             // Arrange
-            var streamId = Guid.NewGuid().ToString();
+            var fixture = new Fixture();
+            var streamId = fixture.Create<string>();
 
             await
                 database
                     .CreateUnitOfWork(streamId)
-                    .AddRange(TestData.GenerateEventEntities(3, 1))
+                    .AddRange(fixture.CreateEvents(3, 1))
                     .SaveChangesAsync(CancellationToken.None);
 
 
@@ -59,7 +61,7 @@ namespace StreamStore.Tests
                 await
                 database
                     .CreateUnitOfWork(streamId, 3)
-                    .AddRange(TestData.GenerateEventEntities(3, 1))
+                    .AddRange(fixture.CreateEvents(3, 1))
                     .SaveChangesAsync(CancellationToken.None);
             });
 
@@ -68,7 +70,7 @@ namespace StreamStore.Tests
                 await
                     database
                         .CreateUnitOfWork(streamId, 3)
-                        .AddRange(TestData.GenerateEventEntities(4, 2))
+                        .AddRange(fixture.CreateEvents(4, 2))
                         .SaveChangesAsync(CancellationToken.None);
             });
 
@@ -77,7 +79,7 @@ namespace StreamStore.Tests
                 await
                     database
                         .CreateUnitOfWork(streamId, 3)
-                        .AddRange(TestData.GenerateEventEntities(4, 3))
+                        .AddRange(fixture.CreateEvents(4, 3))
                         .SaveChangesAsync(CancellationToken.None);
             });
 
@@ -86,7 +88,7 @@ namespace StreamStore.Tests
                 await
                    database
                        .CreateUnitOfWork(streamId, 3)
-                       .AddRange(TestData.GenerateEventEntities(1, 4))
+                       .AddRange(fixture.CreateEvents(1, 4))
                        .SaveChangesAsync(CancellationToken.None);
             });
 
@@ -97,7 +99,8 @@ namespace StreamStore.Tests
         public async Task InsertAsync_EnsureACIDComplaint()
         {
             // Arrange
-            var streamId = Guid.NewGuid().ToString();
+            var fixture = new Fixture();
+            var streamId = fixture.Create<string>();
 
             // Act & Assert
             await Assert.ThrowsAsync<OptimisticConcurrencyException>(async () =>
@@ -107,7 +110,7 @@ namespace StreamStore.Tests
                     await
                        database
                            .CreateUnitOfWork(streamId)
-                           .AddRange(TestData.GenerateEventEntities(100, 1))
+                           .AddRange(fixture.CreateEvents(100, 1))
                            .SaveChangesAsync(CancellationToken.None);
                 });
             });

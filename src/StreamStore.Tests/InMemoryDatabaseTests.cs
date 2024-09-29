@@ -2,6 +2,8 @@
 
 using StreamStore.InMemory;
 using StreamStore;
+using AutoFixture;
+using System.Linq;
 
 namespace StreamStore.Tests;
 
@@ -18,13 +20,13 @@ public class InMemoryDatabaseTests
     public async Task DeleteAsync_ShouldDeleteStream()
     {
         // Arrange
-        var streamId = Guid.NewGuid().ToString();
+        var fixture = new Fixture();
+        var streamId = fixture.Create<string>();
         await
             database
                 .CreateUnitOfWork(streamId)
-                .AddRange(GenerateEventEntities(3, 1))
+                .AddRange(fixture.CreateEvents(3, 1))
                 .SaveChangesAsync(CancellationToken.None);
-
 
         // Act
         var streamBeforeDeletion = await database.FindAsync(streamId, CancellationToken.None);
@@ -42,12 +44,10 @@ public class InMemoryDatabaseTests
     public async Task FindMetadataAsync_ShouldGetStreamMetadata()
     {
         // Arrange
-        var streamId = Guid.NewGuid().ToString();
-        var events = new EventRecord[]
-        {
-            new EventRecord { Id = "EventId2",  Data = "Event2", Timestamp = DateTime.Now, Revision = 2 },
-            new EventRecord { Id = "EventId1",  Data = "Event1", Timestamp = DateTime.Now , Revision = 1 }
-        };
+        var fixture = new Fixture();
+        var streamId = new Fixture().Create<string>();
+        var events = fixture.CreateEvents(3, 2);
+       
 
         // Act
         await
@@ -57,29 +57,35 @@ public class InMemoryDatabaseTests
                 .SaveChangesAsync(CancellationToken.None);
 
         var stream = await database.FindMetadataAsync(streamId, CancellationToken.None);
+       
 
         // Assert
         Assert.NotNull(stream);
-        Assert.Equal("EventId1", stream.Events[1].Id);
-        Assert.Equal("EventId2", stream.Events[0].Id);
+        var streamEvents = stream!.Events;
 
+        Assert.Equal(2, streamEvents[0].Revision);
+        Assert.Equal(3, streamEvents[1].Revision);
+        Assert.Equal(4, streamEvents[2].Revision);
+        Assert.Equal(events[0].Id, streamEvents[0].Id);
+        Assert.Equal(events[1].Id, streamEvents[1].Id);
+        Assert.Equal(events[2].Id, streamEvents[2].Id);
     }
 
     [Fact]
     public async Task DeleteAsync_EnsureIdempotent()
     {
         // Arrange
-        var streamId = Guid.NewGuid().ToString();
+        var fixture = new Fixture();
+        var streamId = fixture.Create<string>();
         await
             database
                 .CreateUnitOfWork(streamId)
-                .AddRange(GenerateEventEntities(3, 1))
+                .AddRange(fixture.CreateEvents(3, 1))
                 .SaveChangesAsync(CancellationToken.None);
 
-
-        // Act
         var streamBeforeDeletion = await database.FindAsync(streamId, CancellationToken.None);
 
+        // Act
         await Parallel.ForEachAsync(Enumerable.Range(1, 100), async (i, _) =>
         {
             await database.DeleteAsync(streamId, CancellationToken.None);
@@ -90,20 +96,9 @@ public class InMemoryDatabaseTests
         var stream = await database.FindAsync(streamId, CancellationToken.None);
 
         // Assert
-        Assert.Null(exception);
         Assert.NotNull(streamBeforeDeletion);
+        Assert.Null(exception);
         Assert.Null(stream);
     }
 
-
-    static EventRecord[] GenerateEventEntities(int count, int initialRevision)
-    {
-        return Enumerable.Range(1, count).Select(i => new EventRecord
-        {
-            Id = Guid.NewGuid().ToString(),
-            Data = Guid.NewGuid().ToString(),
-            Timestamp = DateTime.Now,
-            Revision = initialRevision + i - 1
-        }).ToArray();
-    }
 }

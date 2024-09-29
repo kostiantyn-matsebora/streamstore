@@ -9,7 +9,7 @@ namespace StreamStore
         public Id StreamId { get; set; }
 
         public DuplicateEventException(Id eventId, Id streamId)
-                    : base("Found duplicated events for stream.")
+                    : base("Found duplicated event for stream.")
         {
             EventId = eventId;
             StreamId = streamId;
