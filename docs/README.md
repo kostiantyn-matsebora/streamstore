@@ -25,7 +25,7 @@ The general idea is to highlight the general characteristics and features of eve
 
 Also add implementations of particular storage backends, such as:
 
-- [x] [`In-memory`](../src/StreamStore/InMemory/InMemoryDatabase.cs)
-- [ ] [`Entity Framework`](https://www.microsoft.com/en-us/sql-server/sql-server-2022)
+- [x] [`In-memory`](../src/StreamStore/InMemory/InMemoryDatabase.cs) - for testing purposes.
+- [ ] [`Entity Framework`](https://www.microsoft.com/en-us/sql-server/sql-server-2022) - for SQL Server.
 - [ ] [`Dapper`](https://github.com/DapperLib/Dapper) - for SQL Server, PostgreSQL, MySQL, SQLite etc.
 - [ ] [`Cassandra DB`](https://cassandra.apache.org/_/index.html) -  for distributed storage
