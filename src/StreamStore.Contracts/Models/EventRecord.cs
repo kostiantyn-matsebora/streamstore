@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace StreamStore
+﻿namespace StreamStore
 {
     public sealed class EventRecord : EventMetadataRecord
     {

@@ -1,14 +1,14 @@
 ﻿using System.Threading.Tasks;
 using System.Threading;
-using System.Collections.Generic;
 
 namespace StreamStore
 {
-    public interface IEventTable
+    public interface IEventDatabase
     {
         Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken);
         Task<StreamMetadataRecord?> FindMetadataAsync(string streamId, CancellationToken cancellationToken);
-        Task InsertAsync(string streamId, IEnumerable<EventRecord> uncommited, CancellationToken cancellationToken);
         Task DeleteAsync(string streamId, CancellationToken cancellationToken);
+
+        IEventUnitOfWork CreateUnitOfWork(string streamId, int expectedStreamVersion);
     }
 }

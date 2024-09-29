@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 
 
-namespace StreamStore
+namespace StreamStore.Serialization
 {
     internal class TypeRegistry
     {

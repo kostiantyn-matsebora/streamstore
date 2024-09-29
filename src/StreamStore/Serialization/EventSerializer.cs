@@ -2,7 +2,7 @@
 
 using System;
 
-namespace StreamStore
+namespace StreamStore.Serialization
 {
     internal class EventSerializer : IEventSerializer
     {

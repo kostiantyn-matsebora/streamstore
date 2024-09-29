@@ -1,8 +1,7 @@
 ﻿using System;
-
 namespace StreamStore
 {
-    public class EventMetadataRecord : IEventMetadata
+    public class EventMetadataRecord
     {
         public Id Id { get; set; }
 

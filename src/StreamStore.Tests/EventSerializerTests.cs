@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using AutoFixture;
+using StreamStore.Serialization;
 
 namespace StreamStore.Tests
 {

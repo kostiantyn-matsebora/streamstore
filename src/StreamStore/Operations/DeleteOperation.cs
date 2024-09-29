@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamStore;
+
 
 namespace StreamStore.Operations
 {
     internal class DeleteOperation
     {
-        IEventTable store;
+        IEventDatabase database;
         Id streamId;
 
-        public DeleteOperation(IEventTable store)
+        public DeleteOperation(IEventDatabase database)
         {
-            if (store == null)
-                throw new ArgumentNullException(nameof(store));
-            this.store = store;
+            if (database == null)
+                throw new ArgumentNullException(nameof(database));
+            this.database = database;
         }
-        public DeleteOperation AddStreamId(Id streamId)
+        public DeleteOperation SetStreamId(Id streamId)
         {
             this.streamId = streamId;
             return this;
@@ -27,7 +27,7 @@ namespace StreamStore.Operations
             if (streamId == Id.None)
                 throw new ArgumentException("streamId is required.", nameof(streamId));
 
-            await store.DeleteAsync(streamId, cancellationToken);
+            await database.DeleteAsync(streamId, cancellationToken);
         }
     }
 }

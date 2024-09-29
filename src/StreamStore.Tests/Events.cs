@@ -31,4 +31,18 @@ namespace StreamStore.Tests
 
         public long Value { get; set; }
     }
+
+    internal class TestData
+    {
+        public static EventRecord[] GenerateEventEntities(int count, int initialRevision)
+        {
+            return Enumerable.Range(1, count).Select(i => new EventRecord
+            {
+                Id = Guid.NewGuid().ToString(),
+                Data = Guid.NewGuid().ToString(),
+                Timestamp = DateTime.Now,
+                Revision = initialRevision + i - 1
+            }).ToArray();
+        }
+    }
 }

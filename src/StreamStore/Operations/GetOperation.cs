@@ -9,21 +9,21 @@ namespace StreamStore.Operations
 {
     internal class GetOperation
     {
-        readonly IEventTable store;
+        readonly IEventDatabase store;
         readonly IEventSerializer serializer;
         Id streamId;
 
-        public GetOperation(IEventTable store, IEventSerializer serializer)
+        public GetOperation(IEventDatabase database, IEventSerializer serializer)
         {
-            if (store == null)
-                throw new ArgumentNullException(nameof(store));
-            this.store = store;
+            if (database == null)
+                throw new ArgumentNullException(nameof(database));
+            this.store = database;
             if (serializer == null)
                 throw new ArgumentNullException(nameof(serializer));
             this.serializer = serializer;
         }
 
-        public GetOperation AddStreamId(Id streamId)
+        public GetOperation SetStreamId(Id streamId)
         {
             this.streamId = streamId;
 

@@ -5,14 +5,16 @@ namespace StreamStore
 {
     public readonly struct Id : IEquatable<Id>
     {
-        public readonly string Value;
+
+        public string Value => value ?? string.Empty;
+
+        readonly string value;
 
         public static Id None => new Id(string.Empty);
 
-        Id(string? value = null)
+        public Id(string? value = null)
         {
-
-            Value = value ?? string.Empty;
+            this.value = value ?? string.Empty;
         }
 
         public bool Equals(Id other)
