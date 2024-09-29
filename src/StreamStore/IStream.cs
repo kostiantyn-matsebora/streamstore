@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace StreamStore.API
+namespace StreamStore
 {
     public interface IStream : IDisposable
     {

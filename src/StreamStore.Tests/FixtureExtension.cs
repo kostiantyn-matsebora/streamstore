@@ -4,7 +4,6 @@ namespace StreamStore.Tests
 {
     internal static class FixtureExtension
     {
-
         public static EventRecord[] CreateEvents(this Fixture fixture, int count, int initialRevision)
         {
             var revision = initialRevision;

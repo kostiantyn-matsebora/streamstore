@@ -5,42 +5,42 @@ using System.Threading;
 using System;
 using System.Linq;
 
+
+
 namespace StreamStore.InMemory
 {
     class InMemoryEventUnitOfWork : IEventUnitOfWork
     {
-        readonly StreamRecord stream;
-        readonly int expectedStreamVersion;
-        readonly InMemoryDatabase table;
-        readonly List<EventRecord> events = new List<EventRecord>();
+        
+        int expectedStreamVersion;
+        InMemoryDatabase database;
+        string streamId;
+        List<EventRecord>? events;
 
-        public InMemoryEventUnitOfWork(string streamId, int expectedStreamVersion, InMemoryDatabase table, StreamRecord? existing)
+        public InMemoryEventUnitOfWork(string streamId, int expectedStreamVersion, InMemoryDatabase database, StreamRecord? existing)
         {
-            if (table == null)
-                throw new ArgumentNullException(nameof(table));
+            if (database == null)
+                throw new ArgumentNullException(nameof(database));
 
+            if (string.IsNullOrEmpty(streamId))
+                throw new ArgumentNullException(nameof(streamId));
+
+            this.streamId = streamId;
             this.expectedStreamVersion = expectedStreamVersion;
-            this.table = table;
+            this.database = database;
 
-            if (existing != null)
-            {
-                stream = existing;
-                events = new List<EventRecord>(existing.Events);
-            }
-            else
-            {
-                stream = new StreamRecord(streamId);
-                events = new List<EventRecord>();
-            }
+            events = existing?.Events.Any() == true
+                ? new List<EventRecord>(existing.Events)
+                : new List<EventRecord>();
         }
 
         public Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            var record = new StreamRecord(stream.Id, events);
-            table.store.AddOrUpdate(stream.Id, record, (key, oldValue) =>
+            var record = new StreamRecord(streamId, events!);
+            database.store.AddOrUpdate(streamId, record, (key, oldValue) =>
             {
                 if (oldValue.Revision != expectedStreamVersion)
-                    throw new OptimisticConcurrencyException(expectedStreamVersion, oldValue.Revision, stream.Id);
+                    throw new OptimisticConcurrencyException(expectedStreamVersion, oldValue.Revision, streamId);
                 ThrowIfThereIsDuplicates();
                 return record;
             });
@@ -53,7 +53,7 @@ namespace StreamStore.InMemory
             ThrowIfDuplicateEventId(eventId);
             ThrowIfRevisionAlreadyExists(revision);
 
-            events.Add(
+            events!.Add(
                 new EventRecord
                 {
                     Id = eventId,
@@ -68,14 +68,14 @@ namespace StreamStore.InMemory
 
         void ThrowIfRevisionAlreadyExists(int revision)
         {
-            if (events.Exists(e => e.Revision == revision))
-                throw new OptimisticConcurrencyException(revision, stream.Id);
+            if (events!.Exists(e => e.Revision == revision))
+                throw new OptimisticConcurrencyException(revision, streamId);
         }
 
         void ThrowIfDuplicateEventId(Id eventId)
         {
-            if (events.Exists(e => e.Id == eventId))
-                throw new DuplicateEventException(eventId, stream.Id);
+            if (events!.Exists(e => e.Id == eventId))
+                throw new DuplicateEventException(eventId, streamId);
         }
 
         void ThrowIfThereIsDuplicates()
@@ -87,7 +87,7 @@ namespace StreamStore.InMemory
              .FirstOrDefault();
 
             if (duplicateRevision != default)
-                throw new OptimisticConcurrencyException(duplicateRevision, stream.Id);
+                throw new OptimisticConcurrencyException(duplicateRevision, streamId);
 
             var duplicateId = 
                 events.GroupBy(e => e.Id)
@@ -96,7 +96,7 @@ namespace StreamStore.InMemory
                 .FirstOrDefault();
 
             if (duplicateId != Id.None)
-                throw new DuplicateEventException(duplicateId, stream.Id);
+                throw new DuplicateEventException(duplicateId, streamId);
         }
 
 
@@ -107,6 +107,10 @@ namespace StreamStore.InMemory
 
         public void Dispose()
         {
+            expectedStreamVersion = 0;
+            database = null!;
+            streamId = null!;
+            events = null!;
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿// generate tests for this file
-
-using System;
+﻿using System;
 
 namespace StreamStore.Serialization
 {

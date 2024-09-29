@@ -1,7 +1,7 @@
 ﻿using System;
 namespace StreamStore
 {
-    public sealed class EventEntity { 
+    public sealed class EventEntity {
         public Id Id { get; }
         public DateTime Timestamp { get; }
         public int Revision { get; }

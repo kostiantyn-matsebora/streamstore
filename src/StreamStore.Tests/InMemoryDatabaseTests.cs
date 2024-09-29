@@ -1,9 +1,7 @@
 ﻿
 
 using StreamStore.InMemory;
-using StreamStore;
 using AutoFixture;
-using System.Linq;
 
 namespace StreamStore.Tests;
 

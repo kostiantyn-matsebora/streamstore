@@ -2,8 +2,6 @@
 using AutoFixture;
 using Moq;
 
-
-
 namespace StreamStore.Tests
 {
     public class StreamStoreTests
@@ -52,21 +50,21 @@ namespace StreamStore.Tests
             var expectedRevision = 1;
 
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() => streamStore.OpenStreamAsync(null, expectedRevision));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => streamStore.OpenStreamAsync(null!, expectedRevision));
         }
 
         [Fact]
         public async Task DeleteAsync_ShouldThrowArgumentNullExceptionIfStreamIdIsNull()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() => streamStore.DeleteAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => streamStore.DeleteAsync(null!));
         }
 
         [Fact]
         public async Task GetAsync_ShouldThrowArgumentNullExceptionIfStreamIdIsNull()
         {
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(() => streamStore.GetAsync(null));
+            await Assert.ThrowsAsync<ArgumentNullException>(() => streamStore.GetAsync(null!));
         }
 
         [Fact]

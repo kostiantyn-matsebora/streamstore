@@ -17,7 +17,7 @@ namespace StreamStore.Tests
         public void Serialize_ShouldThrowArgumentNullException_WhenEventIsNull()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => eventSerializer.Serialize(null));
+            Assert.Throws<ArgumentNullException>(() => eventSerializer.Serialize(null!));
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace StreamStore.Tests
         public void Deserialize_ShouldThrowArgumentNullException_WhenDataIsNull()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => eventSerializer.Deserialize(null));
+            Assert.Throws<ArgumentNullException>(() => eventSerializer.Deserialize(null!));
         }
 
         [Fact]

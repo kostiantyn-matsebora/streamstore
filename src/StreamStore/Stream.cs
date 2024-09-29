@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamStore.API;
 
 namespace StreamStore
 {
     class Stream: IStream
     {
 
-        readonly List<Id> eventIds = new List<Id>();
-
-        int revision = 0;
-        string streamId = string.Empty;
+        List<Id>? eventIds;
+        int revision;
+        string? streamId;
 
         IEventUnitOfWork? uow;
         readonly IEventDatabase database;
@@ -36,7 +34,7 @@ namespace StreamStore
                 throw new ArgumentOutOfRangeException(nameof(expectedRevision), "Expected revision must be greater or equal 0");
 
             this.streamId = streamId;
-            eventIds.Clear();
+            eventIds = new List<Id>();
             revision = 0;
             uow = null;
 
@@ -47,7 +45,7 @@ namespace StreamStore
                 if (expectedRevision != stream.Revision)
                    throw new OptimisticConcurrencyException(expectedRevision, stream.Revision, streamId);
 
-                eventIds.AddRange(stream.Events.Select(e => e.Id));
+                eventIds!.AddRange(stream.Events.Select(e => e.Id));
                 revision = stream.Revision;
             }
 
@@ -56,11 +54,13 @@ namespace StreamStore
 
         public IStream Add(Id eventId, DateTime timestamp, object @event, CancellationToken cancellationToken = default)
         {
+            if (string.IsNullOrEmpty(streamId))
+                throw new InvalidOperationException("Stream is not open.");
 
-            if (eventIds.Contains(eventId))
-                throw new DuplicateEventException(eventId, streamId);
+            if (eventIds!.Contains(eventId))
+                throw new DuplicateEventException(eventId, streamId!);
 
-            eventIds.Add(eventId);
+            eventIds!.Add(eventId);
             revision++;
 
             uow!.Add(eventId, revision, timestamp, serializer.Serialize(@event));
