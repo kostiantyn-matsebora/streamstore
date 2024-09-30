@@ -40,7 +40,7 @@ namespace StreamStore.InMemory
             database.store.AddOrUpdate(streamId, record, (key, oldValue) =>
             {
                 if (oldValue.Revision != expectedStreamVersion)
-                    throw new OptimisticConcurrencyException(expectedStreamVersion, oldValue.Revision, streamId);
+                    throw new OptimisticConcurrencyException(expectedStreamVersion, oldValue.Revision, key);
                 ThrowIfThereIsDuplicates();
                 return record;
             });
@@ -99,17 +99,21 @@ namespace StreamStore.InMemory
                 throw new DuplicateEventException(duplicateId, streamId);
         }
 
-        public Task BeginTransactionAsync(CancellationToken cancellationToken = default)
-        {
-            return Task.CompletedTask;
-        }
-
         public void Dispose()
         {
-            expectedStreamVersion = 0;
-            database = null!;
-            streamId = null!;
-            events = null!;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                expectedStreamVersion = 0;
+                database = null!;
+                streamId = null!;
+                events = null!;
+            }
         }
     }
 }

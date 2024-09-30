@@ -9,7 +9,6 @@ namespace StreamStore
     public sealed class StreamStore : IStreamStore
     {
         readonly IStreamDatabase database;
-        readonly IEventSerializer serializer;
         readonly EventConverter converter;
 
         public StreamStore(IStreamDatabase database) : this(database, new EventSerializer())
@@ -22,13 +21,12 @@ namespace StreamStore
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             this.database = database;
-            this.serializer = serializer;
-            this.converter = new EventConverter(serializer);
+            converter = new EventConverter(serializer);
         }
 
-        public Task<IStream> OpenStreamAsync(Id streamId, CancellationToken ct = default)
+        public Task<IStream> OpenStreamAsync(Id streamId, CancellationToken cancellationToken = default)
         {            
-            return OpenStreamAsync(streamId, 0, ct);
+            return OpenStreamAsync(streamId, 0, cancellationToken);
         }
 
         public async Task<IStream> OpenStreamAsync(Id streamId, int expectedRevision, CancellationToken cancellationToken = default)
@@ -41,7 +39,7 @@ namespace StreamStore
         public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken = default)
         {
             if (streamId == Id.None)
-                throw new ArgumentNullException("streamId is required.", nameof(streamId));
+                throw new ArgumentNullException(nameof(streamId), "streamId is required.");
 
             await database.DeleteAsync(streamId, cancellationToken);
         }
@@ -49,7 +47,7 @@ namespace StreamStore
         public async Task<StreamEntity> GetAsync(Id streamId, CancellationToken cancellationToken = default)
         {
             if (streamId == Id.None)
-                throw new ArgumentNullException("streamId is required.", nameof(streamId));
+                throw new ArgumentNullException(nameof(streamId), "streamId is required.");
 
             var streamRecord =
                 await database.FindAsync(streamId, cancellationToken);

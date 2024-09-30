@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.2.1] - 2024-10-01
+
+### Fixed
+
+- Fixed code smells and warnings reported by SonarCloud.
+
 ## [0.2.0] - 2024-09-30
 
 ### Fixed

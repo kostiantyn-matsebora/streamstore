@@ -37,10 +37,10 @@ namespace StreamStore.InMemory
 
         public IStreamUnitOfWork BeginAppend(string streamId, int expectedStreamVersion = 0)
         {
-            if (store.TryGetValue(streamId, out var existing))
+            if (store.TryGetValue(streamId, out var existing) && expectedStreamVersion != existing.Revision)
             {
-                if (expectedStreamVersion != existing.Revision) // It seems like stream has been already added, fail fast
-                    throw new OptimisticConcurrencyException(expectedStreamVersion, existing.Revision, streamId);
+                // It seems like stream has been already added, fail fast
+                throw new OptimisticConcurrencyException(expectedStreamVersion, existing.Revision, streamId);
             }
 
             return new InMemoryStreamUnitOfWork(streamId, expectedStreamVersion, this, existing);

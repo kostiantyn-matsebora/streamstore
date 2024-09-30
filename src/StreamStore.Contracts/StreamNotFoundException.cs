@@ -2,7 +2,6 @@
 
 namespace StreamStore
 {
-    [Serializable]
     public class StreamNotFoundException : StreamStoreException
     {
         public string StreamId { get; set; }

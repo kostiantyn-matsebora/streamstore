@@ -17,7 +17,7 @@ namespace StreamStore
         internal StreamEntity(Id id, IEnumerable<EventEntity> events)
         {
             if (id == Id.None)
-                throw new ArgumentOutOfRangeException("Id cannot be empty.", nameof(id));
+                throw new ArgumentOutOfRangeException(nameof(id), "Id cannot be empty.");
 
             StreamId = id;
             
