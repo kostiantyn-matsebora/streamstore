@@ -39,7 +39,8 @@ jobs:
           src/StreamStore.Tests/TestResults/*.trx
     - name: Package
       run: dotnet pack src -c Release --no-build --output output
-      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
+      if: success()
     - name: Publish
+      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
       working-directory: output
       run: dotnet nuget push *.nupkg --source "https://api.nuget.org/v3/index.json" --api-key "${{ secrets.NUGET_APIKEY }}" --skip-duplicate
