@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <IsPackable>True</IsPackable>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <SignAssembly>False</SignAssembly>
@@ -11,7 +12,7 @@
     <Authors>kostiantyn-matsebora</Authors>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>StreamStore</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.2</Version>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>event sourcing; streams; stream store</PackageTags>
@@ -31,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\docs\README.md">
+    <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

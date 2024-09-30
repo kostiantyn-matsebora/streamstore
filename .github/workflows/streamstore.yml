@@ -5,7 +5,7 @@ name: StreamStore
 
 on:
   push:
-    branches: [ "*" ]
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-
+    name: Build, Test, Package, and Publish
     runs-on: ubuntu-latest
 
     steps:
@@ -28,12 +28,19 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore src
     - name: Build
-      run: dotnet build src --no-restore
+      run: dotnet build src -c Release --no-restore
     - name: Test
-      run: dotnet test src --no-build --verbosity detailed --logger:trx
+      run: dotnet test src -c Release --no-build --verbosity detailed --logger:trx --results-directory output/test-results
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/linux@v2
       if:  always()
       with:
         files: |
-          src/StreamStore.Tests/TestResults/*.trx
+          output/test-results/*.trx
+    - name: Package
+      run: dotnet pack src -c Release --no-build --output output/artifacts
+      if: success()
+    - name: Publish
+      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
+      working-directory: output/artifacts
+      run: dotnet nuget push *.nupkg --source "https://api.nuget.org/v3/index.json" --api-key "${{ secrets.NUGET_APIKEY }}" --skip-duplicate

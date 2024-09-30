@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
+## [0.1.2] - 2024-09-30
 
+### Added
+
+- Github action workflow to build, test and publish the package to nuget.org.
+- Additional short README.md for nuget.org.
+
+### Changed
+
+- Documentation, added instructions how to install the package.
+  
 ## [0.1.0] - 2024-09-30
 
 - Initial implementation
