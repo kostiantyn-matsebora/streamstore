@@ -26,6 +26,10 @@ namespace StreamStore
         {
             return Value == other;
         }
+        public override bool Equals(object obj)
+        {
+            return !ReferenceEquals(null, obj) && obj is Id && Equals((Id)obj);
+        }
 
         public static bool operator ==(Id left, Id right)
         {
@@ -42,11 +46,6 @@ namespace StreamStore
         public static bool operator !=(Id left, string right)
         {
             return !left.Equals(right);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return !ReferenceEquals(null, obj) && obj is Id && Equals((Id)obj);
         }
 
         public override int GetHashCode()

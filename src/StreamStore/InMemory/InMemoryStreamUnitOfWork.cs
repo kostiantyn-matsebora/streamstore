@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace StreamStore.InMemory
 {
-    class InMemoryStreamUnitOfWork : IStreamUnitOfWork
+    sealed class InMemoryStreamUnitOfWork : IStreamUnitOfWork
     {
         
         int expectedStreamVersion;
