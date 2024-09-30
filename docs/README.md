@@ -33,6 +33,21 @@ Also add implementations of particular storage backends, such as:
 - [ ] [`Dapper`](https://github.com/DapperLib/Dapper) - for SQL Server, PostgreSQL, MySQL, SQLite etc.
 - [ ] [`Cassandra DB`](https://cassandra.apache.org/_/index.html) -  for distributed storage.
 
+## Installation
+
+To install the package, you can use the following command from the command line:
+
+```dotnetcli
+  dotnet add package StreamStore
+```
+
+or from Nuget Package Manager Console:
+
+```powershell
+  Install-Package StreamStore.Contracts
+```
+
+
 ## Usage
 
 ```csharp
@@ -87,11 +102,23 @@ Also add implementations of particular storage backends, such as:
 - _Idempotency of get and delete operations fully depends on particular database implementation._
 
 - _You don't need to retrieve stream entity to append events to the stream_.
- 
+
   Appending stream and getting stream entity are separate operations.
 
-
 ## Customization
+
+To implement your own database you do not need StreamStore package, all necessary interfaces are located in StreamStore.Contracts package from command line:
+
+```dotnetcli
+  dotnet add package StreamStore.Contracts
+```
+
+or from Nuget Package Manager Console:
+
+```powershell
+  Install-Package StreamStore.Contracts
+```
+
 
 ### Create your own database implementation
 
@@ -122,15 +149,16 @@ To create your own database implementation, you need to implement the following 
 
 ### Considerations
 
+- To implement your own database you do not need StreamStore package, all necessary interfaces are located in [StreamStore.Contracts](https://www.nuget.org/packages/StreamStore.Contracts/) package.
 - _You can register your own database implementation in the DI container using any kind of lifetime (i.e. Singleton, Transient, Scoped, etc.)_  
-  
+
   However, if you register it as a singleton, you should be aware that it should be thread-safe and preferably stateless.
 
 - _Solution already provides optimistic concurrency and event duplication control mechanisms, as a **pre-check** during stream opening_.  
-  
+
   However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation. For instance, you can use a transaction mechanism suppored by `ACID compliant DBMS`.  
   For educational purposes, [InMemoryStreamUnitOfWork.cs] already contains such mechanisms.  
-  
+
 - _Get and Delete operations must be implemented as idempotent by their nature._
 
 ### Example

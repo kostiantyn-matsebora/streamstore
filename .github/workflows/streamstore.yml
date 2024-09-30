@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   build:
-
+    name: Build, Test, Package, and Publish
     runs-on: ubuntu-latest
 
     steps:
@@ -39,7 +39,7 @@ jobs:
           src/StreamStore.Tests/TestResults/*.trx
     - name: Package
       run: dotnet pack src -c Release --no-build --output output
-      if: success()
+      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
     - name: Publish
       working-directory: output
-      run: dotnet nuget push *.nupkg --source "https://api.nuget.org/v3/index.json" --api-key ${{ secrets.NUGET_APIKEY }}
+      run: dotnet nuget push *.nupkg --source "https://api.nuget.org/v3/index.json" --api-key "${{ secrets.NUGET_APIKEY }}" --skip-duplicate
