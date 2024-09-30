@@ -75,11 +75,11 @@ Also add implementations of particular storage backends, such as:
 
 ### Good to know
 
-- _[Id] is a value object, i.e. it is immutable class has **implicit conversion from and to string**_.  
+- _[`Id`][Id]  is a value object (immutable class) has **implicit conversion from and to string**_.  
   Thus you don't need to create [Id] object explicitly and use `ToString()` to convert to string back.  
   Also implements `IEquatable`  for [itself][Id] and for `String`.
 
-- _[StreamEntity] returned by store is a read-only consistent object_, i.e.:
+- _[`StreamEntity`][StreamEntity] returned by store is a read-only consistent object_, i.e.:
   - Contains only **unique events ordered by revision**.
   - Contains only **events that were committed**.
 - _Stream revision is always revision of event with maximum revision value_.
