@@ -24,9 +24,9 @@ namespace StreamStore
             converter = new EventConverter(serializer);
         }
 
-        public Task<IStream> OpenStreamAsync(Id streamId, CancellationToken ct = default)
+        public Task<IStream> OpenStreamAsync(Id streamId, CancellationToken cancellationToken = default)
         {            
-            return OpenStreamAsync(streamId, 0, ct);
+            return OpenStreamAsync(streamId, 0, cancellationToken);
         }
 
         public async Task<IStream> OpenStreamAsync(Id streamId, int expectedRevision, CancellationToken cancellationToken = default)
