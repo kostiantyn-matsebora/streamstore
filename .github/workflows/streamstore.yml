@@ -40,4 +40,9 @@ jobs:
     - name: Package
       run: dotnet pack src -c Release --no-build
       if: success()
-
+    - name: Publish
+      uses: maxchistt/action-publish-nuget@v1
+      if: success()
+      with:
+        NUGET_APIKEY: ${{ secrets.NUGET_APIKEY }}
+        working-directory: src

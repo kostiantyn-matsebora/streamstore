@@ -1,4 +1,4 @@
-# <p align="center">StreamStore</p>
+# StreamStore
 
 A lightweight library provides a logical layer for storing and querying events as a stream.
 
