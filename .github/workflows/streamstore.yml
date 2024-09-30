@@ -30,7 +30,7 @@ jobs:
     - name: Build
       run: dotnet build src -c Release --no-restore
     - name: Test
-      run: dotnet test src --no-build --verbosity detailed --logger:trx
+      run: dotnet test src -c Release --no-build --verbosity detailed --logger:trx
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/linux@v2
       if:  always()
