@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <IsPackable>True</IsPackable>
     <Nullable>enable</Nullable>
     <SignAssembly>False</SignAssembly>
     <Title>StreamStore.Contracts</Title>
@@ -9,7 +10,7 @@
     <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
     <Authors>kostiantyn-matsebora</Authors>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>StreamStore.Contracts</PackageId>
     <Version>0.1.0</Version>
     <RootNamespace>StreamStore</RootNamespace>

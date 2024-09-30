@@ -5,7 +5,7 @@ name: StreamStore
 
 on:
   push:
-    branches: [ "*" ]
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
@@ -37,3 +37,7 @@ jobs:
       with:
         files: |
           src/StreamStore.Tests/TestResults/*.trx
+    - name: Package
+      run: dotnet pack src -c Release --no-build
+      if: success()
+
