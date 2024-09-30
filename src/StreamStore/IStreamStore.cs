@@ -6,9 +6,9 @@ namespace StreamStore
 {
     public interface IStreamStore
     {
-        Task<IStream> OpenStreamAsync(string streamId, CancellationToken ct = default);
-        Task<IStream> OpenStreamAsync(string streamId, int expectedRevision, CancellationToken ct = default);
-        Task DeleteAsync(string streamId, CancellationToken ct = default);
-        Task<StreamEntity> GetAsync(string streamId, CancellationToken ct = default);
+        Task<IStream> OpenStreamAsync(Id streamId, CancellationToken ct = default);
+        Task<IStream> OpenStreamAsync(Id streamId, int expectedRevision, CancellationToken ct = default);
+        Task DeleteAsync(Id streamId, CancellationToken ct = default);
+        Task<StreamEntity> GetAsync(Id streamId, CancellationToken ct = default);
     }
 }

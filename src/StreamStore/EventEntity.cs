@@ -4,7 +4,7 @@
 namespace StreamStore
 {
     public sealed class EventEntity {
-        public string EventId { get; }
+        public Id EventId { get; }
         public DateTime Timestamp { get; }
         public int Revision { get; }
         public object Event { get; internal set; }

@@ -5,14 +5,29 @@
     <Nullable>enable</Nullable>
     <SignAssembly>False</SignAssembly>
     <Title>StreamStore.Contracts</Title>
-    <Description>Abstractions creating specific database port/adapter used by StreamStore.</Description>
+    <Description>Abstractions creating specific database implementation used by StreamStore.</Description>
     <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
     <Authors>kostiantyn-matsebora</Authors>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>StreamStore.Contracts</PackageId>
-    <Version>0.1.0-dev</Version>
+    <Version>0.1.0</Version>
     <RootNamespace>StreamStore</RootNamespace>
+    <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>event sourcing; streams; stream store</PackageTags>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

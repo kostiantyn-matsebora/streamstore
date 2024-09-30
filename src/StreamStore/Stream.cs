@@ -26,7 +26,7 @@ namespace StreamStore
         }
 
 
-        public async Task OpenAsync(string streamId, int expectedRevision, CancellationToken cancellationToken = default)
+        public async Task OpenAsync(Id streamId, int expectedRevision, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(streamId))
                 throw new ArgumentNullException(nameof(streamId));

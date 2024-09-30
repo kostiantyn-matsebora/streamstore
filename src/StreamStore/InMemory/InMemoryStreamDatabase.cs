@@ -13,10 +13,10 @@ namespace StreamStore.InMemory
 
         public Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken)
         {
-            if (!store.TryGetValue(streamId, out var stream))
+            if (!store.TryGetValue(streamId, out var record))
                 return Task.FromResult<StreamRecord?>(null);
 
-            return Task.FromResult<StreamRecord?>(stream);
+            return Task.FromResult<StreamRecord?>(record);
         }
 
         public Task DeleteAsync(string streamId, CancellationToken cancellationToken)
@@ -29,10 +29,10 @@ namespace StreamStore.InMemory
 
         public Task<StreamMetadataRecord?> FindMetadataAsync(string streamId, CancellationToken cancellationToken)
         {
-            if (!store.TryGetValue(streamId, out var stream))
+            if (!store.TryGetValue(streamId, out var record))
                 return Task.FromResult<StreamMetadataRecord?>(null);
 
-            return Task.FromResult<StreamMetadataRecord?>(new StreamMetadataRecord(streamId, stream.Events));
+            return Task.FromResult<StreamMetadataRecord?>(new StreamMetadataRecord(streamId, record.Events));
         }
 
         public IStreamUnitOfWork BeginAppend(string streamId, int expectedStreamVersion = 0)

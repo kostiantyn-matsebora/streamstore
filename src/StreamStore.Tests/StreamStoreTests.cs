@@ -112,9 +112,9 @@ namespace StreamStore.Tests
             // Arrange
             streamStore = new StreamStore(new InMemoryStreamDatabase());
             
-            var eventIds = new List<string>();
+            var eventIds = new List<Id>();
             var fixture = new Fixture() { OmitAutoProperties = false };
-            var streamId = fixture.Create<string>();
+            var streamId = fixture.Create<Id>();
 
             var events = fixture.CreateMany<Event>(3).ToArray();
             eventIds.AddRange(events.Select(e=> e.Id));

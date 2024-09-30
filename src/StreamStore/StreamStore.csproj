@@ -12,6 +12,10 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>StreamStore</PackageId>
     <Version>0.1.0-dev</Version>
+    <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>event sourcing; streams; stream store</PackageTags>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +28,17 @@
 
   <ItemGroup>
     <Folder Include="Domain\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -26,19 +26,19 @@ namespace StreamStore
             this.serializer = serializer;
         }
 
-        public Task<IStream> OpenStreamAsync(string streamId, CancellationToken ct = default)
-        {
+        public Task<IStream> OpenStreamAsync(Id streamId, CancellationToken ct = default)
+        {            
             return OpenStreamAsync(streamId, 0, ct);
         }
 
-        public async Task<IStream> OpenStreamAsync(string streamId, int expectedRevision, CancellationToken cancellationToken = default)
+        public async Task<IStream> OpenStreamAsync(Id streamId, int expectedRevision, CancellationToken cancellationToken = default)
         {
             var stream = new Stream(database, serializer);
             await stream.OpenAsync(streamId, expectedRevision, cancellationToken);
             return stream;
         }
 
-        public async Task DeleteAsync(string streamId, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken = default)
         {
             if (streamId == Id.None)
                 throw new ArgumentNullException("streamId is required.", nameof(streamId));
@@ -46,7 +46,7 @@ namespace StreamStore
             await database.DeleteAsync(streamId, cancellationToken);
         }
 
-        public async Task<StreamEntity> GetAsync(string streamId, CancellationToken cancellationToken = default)
+        public async Task<StreamEntity> GetAsync(Id streamId, CancellationToken cancellationToken = default)
         {
             if (streamId == Id.None)
                 throw new ArgumentNullException("streamId is required.", nameof(streamId));

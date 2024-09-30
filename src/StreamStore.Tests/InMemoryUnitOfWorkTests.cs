@@ -39,7 +39,7 @@ namespace StreamStore.Tests
 
 
         [Fact]
-        public async Task InsertAsync_ShouldThrowConcurrencyException()
+        public async Task SaveChangesAsync_ShouldThrowConcurrencyException()
         {
             // Arrange
             var fixture = new Fixture();
@@ -92,14 +92,15 @@ namespace StreamStore.Tests
         }
 
         [Fact]
-        public async Task InsertAsync_EnsureACIDComplaint()
+        public async Task SaveChangesAsync_EnsureACIDComplaint()
         {
             // Arrange
             var fixture = new Fixture();
-            var streamId = fixture.Create<string>();
-            var nonExistingStreamId = fixture.Create<string>();
+            var streamId = fixture.Create<Id>();
+            var nonExistingStreamId = fixture.Create<Id>();
 
             // Act & Assert
+
             var act = async () =>
             {
                 await Parallel.ForEachAsync(Enumerable.Range(1, 100), async (i, _) =>
@@ -117,9 +118,10 @@ namespace StreamStore.Tests
             var stream = await database.FindAsync(streamId, CancellationToken.None);
             var nonExistingStream = await database.FindAsync(nonExistingStreamId, CancellationToken.None);
 
-            Assert.NotNull(stream);
-            Assert.Null(nonExistingStream);
-            Assert.Equal(100, stream.Events.Length);
+            stream.Should().NotBeNull();
+            nonExistingStream.Should().BeNull();
+            
+            stream!.Events.Should().HaveCount(100);
         }
 
     }

@@ -8,8 +8,7 @@ namespace StreamStore
 
     public sealed class StreamEntity
     {
-       
-        public string StreamId { get; }
+        public Id StreamId { get; }
 
         public EventEntity[] EventEntities;
 

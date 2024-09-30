@@ -3,7 +3,7 @@
 
 namespace StreamStore
 {
-    public readonly struct Id : IEquatable<Id>
+    public readonly struct Id : IEquatable<Id>, IEquatable<string>
     {
 
         public string Value => value ?? string.Empty;
@@ -22,6 +22,11 @@ namespace StreamStore
             return Value == other.Value;
         }
 
+        public bool Equals(string other)
+        {
+            return Value == other;
+        }
+
         public static bool operator ==(Id left, Id right)
         {
             return left.Equals(right);
@@ -30,6 +35,15 @@ namespace StreamStore
         {
             return !left.Equals(right);
         }
+        public static bool operator ==(Id left, string right)
+        {
+            return left.Equals(right);
+        }
+        public static bool operator !=(Id left, string right)
+        {
+            return !left.Equals(right);
+        }
+
         public override bool Equals(object obj)
         {
             return !ReferenceEquals(null, obj) && obj is Id && Equals((Id)obj);
@@ -41,6 +55,7 @@ namespace StreamStore
         }
 
         public override string ToString() => Value;
+
 
         public static implicit operator string(Id id) => id.Value;
         public static implicit operator Id(string id) => new Id(id);
