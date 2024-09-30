@@ -128,7 +128,7 @@ To create your own database implementation, you need to implement the following 
 
 - _Solution already provides optimistic concurrency and event duplication control mechanisms, as a **pre-check** during stream opening_.  
   
-  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation. For instance, you can use a transaction mechanism for  `ACID complaint DBMS`.  
+  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation. For instance, you can use a transaction mechanism suppored by `ACID compliant DBMS`.  
   For educational purposes, [InMemoryStreamUnitOfWork.cs] already contains such mechanisms.  
   
 - _Get and Delete operations must be implemented as idempotent by their nature._
