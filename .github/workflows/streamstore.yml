@@ -41,8 +41,10 @@ jobs:
       run: dotnet pack src -c Release --no-build
       if: success()
     - name: Publish
-      uses: maxchistt/action-publish-nuget@v1
+      uses: edumserrano/nuget-push@v1.2.2
       if: success()
       with:
-        NUGET_APIKEY: ${{ secrets.NUGET_APIKEY }}
+        api-key: ${{ secrets.NUGET_API_KEY }}
+        # Indicates whether this actions should fail if the NuGet package being pushed already exists. Defaults to false.
+        #fail-if-exists: # optional, default is false
         working-directory: src
