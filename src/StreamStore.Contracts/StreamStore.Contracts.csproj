@@ -12,7 +12,7 @@
     <Authors>kostiantyn-matsebora</Authors>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>StreamStore.Contracts</PackageId>
-    <Version>0.1.2</Version>
+    <Version>0.2.0</Version>
     <RootNamespace>StreamStore</RootNamespace>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>

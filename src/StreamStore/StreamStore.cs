@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamStore.Domain;
 using StreamStore.Serialization;
 
 
@@ -11,7 +10,7 @@ namespace StreamStore
     {
         readonly IStreamDatabase database;
         readonly IEventSerializer serializer;
-        readonly Converter converter = new Converter(new EventSerializer());
+        readonly EventConverter converter;
 
         public StreamStore(IStreamDatabase database) : this(database, new EventSerializer())
         {
@@ -24,6 +23,7 @@ namespace StreamStore
 
             this.database = database;
             this.serializer = serializer;
+            this.converter = new EventConverter(serializer);
         }
 
         public Task<IStream> OpenStreamAsync(Id streamId, CancellationToken ct = default)
@@ -33,7 +33,7 @@ namespace StreamStore
 
         public async Task<IStream> OpenStreamAsync(Id streamId, int expectedRevision, CancellationToken cancellationToken = default)
         {
-            var stream = new Stream(database, serializer);
+            var stream = new Stream(database, converter);
             await stream.OpenAsync(streamId, expectedRevision, cancellationToken);
             return stream;
         }
@@ -57,7 +57,7 @@ namespace StreamStore
             if (streamRecord == null)
                 throw new StreamNotFoundException(streamId);
 
-            return converter.ToEntity(streamRecord);
+            return converter.ConvertToEntity(streamRecord);
         }
 
 

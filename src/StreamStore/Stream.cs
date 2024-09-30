@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace StreamStore
 {
     class Stream: IStream
@@ -14,15 +15,17 @@ namespace StreamStore
         string? streamId;
 
         IStreamUnitOfWork? uow;
+        readonly EventConverter converter;
         readonly IStreamDatabase database;
-        readonly IEventSerializer serializer;
 
-        public Stream(IStreamDatabase database, IEventSerializer serializer)
+
+        public Stream(IStreamDatabase database, EventConverter converter)
         {
             if (database == null) throw new ArgumentNullException(nameof(database));
             this.database = database;
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
-            this.serializer = serializer;
+            
+            if (converter == null) throw new ArgumentNullException(nameof(converter));
+            this.converter = converter;
         }
 
 
@@ -69,7 +72,7 @@ namespace StreamStore
             eventIds!.Add(eventId);
             revision++;
 
-            uow!.Add(eventId, revision, timestamp, serializer.Serialize(@event));
+            uow!.Add(eventId, revision, timestamp, converter.ConvertToString(@event));
             return this;
         }
 
