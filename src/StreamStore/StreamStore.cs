@@ -9,21 +9,26 @@ namespace StreamStore
 {
     public sealed class StreamStore : IStreamStore
     {
-        readonly IEventDatabase database;
+        readonly IStreamDatabase database;
         readonly IEventSerializer serializer;
         readonly Converter converter = new Converter(new EventSerializer());
 
-        public StreamStore(IEventDatabase database) : this(database, new EventSerializer())
+        public StreamStore(IStreamDatabase database) : this(database, new EventSerializer())
         {
         }
 
-        public StreamStore(IEventDatabase database, IEventSerializer serializer)
+        public StreamStore(IStreamDatabase database, IEventSerializer serializer)
         {
             if (database == null) throw new ArgumentNullException(nameof(database));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             this.database = database;
             this.serializer = serializer;
+        }
+
+        public Task<IStream> OpenStreamAsync(string streamId, CancellationToken ct = default)
+        {
+            return OpenStreamAsync(streamId, 0, ct);
         }
 
         public async Task<IStream> OpenStreamAsync(string streamId, int expectedRevision, CancellationToken cancellationToken = default)
@@ -54,5 +59,7 @@ namespace StreamStore
 
             return converter.ToEntity(streamRecord);
         }
+
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using AutoFixture;
 using StreamStore.Serialization;
+using FluentAssertions;
 
 namespace StreamStore.Tests
 {
@@ -16,8 +17,11 @@ namespace StreamStore.Tests
         [Fact]
         public void Serialize_ShouldThrowArgumentNullException_WhenEventIsNull()
         {
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => eventSerializer.Serialize(null!));
+            // Act
+            Action act = () => eventSerializer.Serialize(null!);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -32,16 +36,20 @@ namespace StreamStore.Tests
             var deserialized = eventSerializer.Deserialize(serialized);
 
             // Assert
-            Assert.NotNull(serialized);
-            Assert.NotNull(deserialized);
-            Assert.Equal(@event.GetType(), deserialized.GetType());
+            serialized.Should().NotBeNullOrEmpty();
+            deserialized.Should().NotBeNull();
+            deserialized.Should().BeOfType<RootEvent>();
+            deserialized.Should().BeEquivalentTo(@event);
         }
 
         [Fact]
         public void Deserialize_ShouldThrowArgumentNullException_WhenDataIsNull()
         {
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => eventSerializer.Deserialize(null!));
+            // Act
+            Action act = () => eventSerializer.Deserialize(null!);
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
@@ -50,9 +58,11 @@ namespace StreamStore.Tests
             // Arrange
             var invalidData = "invalid json string";
 
-            // Act & Assert
-            Assert.Throws<JsonReaderException>(() => eventSerializer.Deserialize(invalidData));
-       }
+            // Act
+            Action act = () => eventSerializer.Deserialize(invalidData!);
 
+            // & Assert
+            act.Should().Throw<JsonReaderException>();
+       }
     }
 }

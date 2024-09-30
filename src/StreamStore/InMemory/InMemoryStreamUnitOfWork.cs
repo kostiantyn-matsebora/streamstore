@@ -9,15 +9,15 @@ using System.Linq;
 
 namespace StreamStore.InMemory
 {
-    class InMemoryEventUnitOfWork : IEventUnitOfWork
+    class InMemoryStreamUnitOfWork : IStreamUnitOfWork
     {
         
         int expectedStreamVersion;
-        InMemoryDatabase database;
+        InMemoryStreamDatabase database;
         string streamId;
         List<EventRecord>? events;
 
-        public InMemoryEventUnitOfWork(string streamId, int expectedStreamVersion, InMemoryDatabase database, StreamRecord? existing)
+        public InMemoryStreamUnitOfWork(string streamId, int expectedStreamVersion, InMemoryStreamDatabase database, StreamRecord? existing)
         {
             if (database == null)
                 throw new ArgumentNullException(nameof(database));
@@ -48,7 +48,7 @@ namespace StreamStore.InMemory
             return Task.CompletedTask;
         }
 
-        public IEventUnitOfWork Add(Id eventId, int revision, DateTime timestamp, string data)
+        public IStreamUnitOfWork Add(Id eventId, int revision, DateTime timestamp, string data)
         {
             ThrowIfDuplicateEventId(eventId);
             ThrowIfRevisionAlreadyExists(revision);
@@ -98,7 +98,6 @@ namespace StreamStore.InMemory
             if (duplicateId != Id.None)
                 throw new DuplicateEventException(duplicateId, streamId);
         }
-
 
         public Task BeginTransactionAsync(CancellationToken cancellationToken = default)
         {

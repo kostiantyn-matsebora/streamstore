@@ -40,6 +40,8 @@ namespace StreamStore
             return Value != null ? Value.GetHashCode() : 0;
         }
 
+        public override string ToString() => Value;
+
         public static implicit operator string(Id id) => id.Value;
         public static implicit operator Id(string id) => new Id(id);
     }

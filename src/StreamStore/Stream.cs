@@ -13,11 +13,11 @@ namespace StreamStore
         int revision;
         string? streamId;
 
-        IEventUnitOfWork? uow;
-        readonly IEventDatabase database;
+        IStreamUnitOfWork? uow;
+        readonly IStreamDatabase database;
         readonly IEventSerializer serializer;
 
-        public Stream(IEventDatabase database, IEventSerializer serializer)
+        public Stream(IStreamDatabase database, IEventSerializer serializer)
         {
             if (database == null) throw new ArgumentNullException(nameof(database));
             this.database = database;
@@ -30,7 +30,7 @@ namespace StreamStore
         {
             if (string.IsNullOrEmpty(streamId))
                 throw new ArgumentNullException(nameof(streamId));
-            if (expectedRevision <= 0)
+            if (expectedRevision < 0)
                 throw new ArgumentOutOfRangeException(nameof(expectedRevision), "Expected revision must be greater or equal 0");
 
             this.streamId = streamId;
@@ -49,13 +49,19 @@ namespace StreamStore
                 revision = stream.Revision;
             }
 
-           uow = database.CreateUnitOfWork(streamId, expectedRevision);
+           uow = database.BeginAppend(streamId, expectedRevision);
+
+           if (uow == null)
+                throw new InvalidOperationException("Failed to open stream, either stream does not exist or revision is incorrect.");
         }
 
         public IStream Add(Id eventId, DateTime timestamp, object @event, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(streamId))
                 throw new InvalidOperationException("Stream is not open.");
+
+            if (eventId == Id.None)
+                throw new ArgumentNullException(nameof(eventId));
 
             if (eventIds!.Contains(eventId))
                 throw new DuplicateEventException(eventId, streamId!);

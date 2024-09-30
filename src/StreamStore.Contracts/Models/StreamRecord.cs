@@ -12,9 +12,9 @@ namespace StreamStore
 
         public T[] Events { get; }
 
-        public StreamRecord(Id id, IEnumerable<T> records)
+        public StreamRecord(string id, IEnumerable<T> records)
         {
-            if (id == Id.None)
+            if (string.IsNullOrEmpty(id))
                 throw new ArgumentOutOfRangeException("Id cannot be empty.", nameof(id));
             Id = id;
 

@@ -1,8 +1,10 @@
 ﻿using System;
+
+
 namespace StreamStore
 {
     public sealed class EventEntity {
-        public Id Id { get; }
+        public string EventId { get; }
         public DateTime Timestamp { get; }
         public int Revision { get; }
         public object Event { get; internal set; }
@@ -17,7 +19,7 @@ namespace StreamStore
                 throw new ArgumentOutOfRangeException("Revision cannot be less than 1", nameof(revision));
             if (@event == null) 
                 throw new ArgumentNullException(nameof(@event));
-            Id = id;
+            EventId = id;
             Timestamp = timestamp;
             Revision = revision;
             Event = @event;

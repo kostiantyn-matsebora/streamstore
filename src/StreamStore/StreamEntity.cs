@@ -15,7 +15,7 @@ namespace StreamStore
 
         public int Revision { get; }
 
-        public StreamEntity(Id id, IEnumerable<EventEntity> events)
+        internal StreamEntity(Id id, IEnumerable<EventEntity> events)
         {
             if (id == Id.None)
                 throw new ArgumentOutOfRangeException("Id cannot be empty.", nameof(id));

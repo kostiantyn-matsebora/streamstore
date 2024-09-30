@@ -7,7 +7,7 @@ using System.Collections.Concurrent;
 namespace StreamStore.InMemory
 {
 
-    public class InMemoryDatabase : IEventDatabase
+    public class InMemoryStreamDatabase : IStreamDatabase
     {
         internal ConcurrentDictionary<string, StreamRecord> store = new ConcurrentDictionary<string, StreamRecord>();
 
@@ -35,7 +35,7 @@ namespace StreamStore.InMemory
             return Task.FromResult<StreamMetadataRecord?>(new StreamMetadataRecord(streamId, stream.Events));
         }
 
-        public IEventUnitOfWork CreateUnitOfWork(string streamId, int expectedStreamVersion = 0)
+        public IStreamUnitOfWork BeginAppend(string streamId, int expectedStreamVersion = 0)
         {
             if (store.TryGetValue(streamId, out var existing))
             {
@@ -43,7 +43,7 @@ namespace StreamStore.InMemory
                     throw new OptimisticConcurrencyException(expectedStreamVersion, existing.Revision, streamId);
             }
 
-            return new InMemoryEventUnitOfWork(streamId, expectedStreamVersion, this, existing);
+            return new InMemoryStreamUnitOfWork(streamId, expectedStreamVersion, this, existing);
         }
     }
 }
