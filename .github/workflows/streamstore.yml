@@ -38,7 +38,7 @@ jobs:
         files: |
           src/StreamStore.Tests/TestResults/*.trx
     - name: Package
-      run: dotnet pack src -c Release --no-build
+      run: dotnet pack src -c Release --no-build --output Output
       if: success()
     - name: Publish
       uses: edumserrano/nuget-push@v1.2.2
@@ -47,4 +47,4 @@ jobs:
         api-key: ${{ secrets.NUGET_API_KEY }}
         # Indicates whether this actions should fail if the NuGet package being pushed already exists. Defaults to false.
         #fail-if-exists: # optional, default is false
-        working-directory: src
+        working-directory: Output
