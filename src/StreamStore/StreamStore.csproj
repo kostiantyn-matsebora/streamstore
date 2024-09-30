@@ -16,7 +16,7 @@
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>event sourcing; streams; stream store</PackageTags>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,7 +36,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\LICENSE.txt">
+    <None Include="..\..\LICENSE">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
