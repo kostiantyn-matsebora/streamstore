@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.2.2] - 2024-10-01
+
+### Fixed
+
+- Fixed code smells and warnings reported by SonarCloud.
+- Convert EventEntities field to readonly property.
+- Add different kind of badges to README.md
+
 ## [0.2.1] - 2024-10-01
 
 ### Fixed

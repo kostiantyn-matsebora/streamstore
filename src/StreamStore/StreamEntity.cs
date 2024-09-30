@@ -10,7 +10,7 @@ namespace StreamStore
     {
         public Id StreamId { get; }
 
-        public EventEntity[] EventEntities;
+        public EventEntity[] EventEntities { get; }
 
         public int Revision { get; }
 
