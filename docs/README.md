@@ -121,8 +121,11 @@ To create your own database implementation, you need to implement the following 
   However, if your register it as a singleton, you should be aware that it should be thread-safe and preferably stateless.
 
 - _Solution already provides optimistic concurrency and event duplication control mechanisms, as a **pre-check** during stream opening_.  
-  However, if you need guaranteed consistency, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation.  
-  [`In-memory`][InMemoryStreamUnitOfWork.cs] implementation already contains such mechanisms as an example.
+  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation.  
+  For instance, you can use transaction mechanism for implementing stream  database in `ACID complaint DBMS`.  
+  In educational purposes, [InMemoryStreamUnitOfWork.cs] already contains such mechanisms.  
+  
+  
 
 ### Example
 
