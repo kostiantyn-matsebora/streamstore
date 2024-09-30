@@ -177,7 +177,7 @@ to contribute, feel free to [open an issue][issues] or
 
 ## License
 
-[`MIT License`](../LICENSE.txt)
+[`MIT License`](../LICENSE)
 
 [InMemoryStreamDatabase.cs]: ../src/StreamStore/InMemory/InMemoryStreamDatabase.cs
 [InMemoryStreamUnitOfWork.cs]: ../src/StreamStore/InMemory/InMemoryStreamUnitOfWork.cs
