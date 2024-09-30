@@ -41,6 +41,6 @@ jobs:
       run: dotnet pack src -c Release --no-build --output output/artifacts
       if: success()
     - name: Publish
-      if: success() && github.event_name == 'push' && github.ref == 'refs/heads/master'
+      if: success() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master'
       working-directory: output/artifacts
       run: dotnet nuget push *.nupkg --source "https://api.nuget.org/v3/index.json" --api-key "${{ secrets.NUGET_APIKEY }}" --skip-duplicate
