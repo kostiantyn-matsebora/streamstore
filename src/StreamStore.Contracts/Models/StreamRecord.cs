@@ -15,7 +15,7 @@ namespace StreamStore
         public StreamRecord(string id, IEnumerable<T> records)
         {
             if (string.IsNullOrEmpty(id))
-                throw new ArgumentOutOfRangeException("Id cannot be empty.", nameof(id));
+                throw new ArgumentOutOfRangeException(nameof(id), "Id cannot be empty.");
             Id = id;
 
             if (records == null)

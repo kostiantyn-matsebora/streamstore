@@ -12,11 +12,11 @@ namespace StreamStore
         public EventEntity(Id id, int revision, DateTime timestamp, object @event)
         {
             if (id == Id.None)
-                throw new ArgumentOutOfRangeException("Id cannot be empty.", nameof(id));
+                throw new ArgumentOutOfRangeException(nameof(id), "Id cannot be empty.");
             if (timestamp == default)
                 throw new ArgumentOutOfRangeException(nameof(timestamp));
             if (revision < 1)
-                throw new ArgumentOutOfRangeException("Revision cannot be less than 1", nameof(revision));
+                throw new ArgumentOutOfRangeException(nameof(revision), "Revision cannot be less than 1");
             if (@event == null) 
                 throw new ArgumentNullException(nameof(@event));
             EventId = id;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StreamStore
 {
-    class Stream: IStream
+    sealed class Stream: IStream
     {
 
         List<Id>? eventIds;
@@ -83,8 +83,17 @@ namespace StreamStore
 
         public void Dispose()
         {
-            uow?.Dispose();
-            uow = null;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                uow?.Dispose();
+                uow = null;
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ namespace StreamStore.Serialization
     {
         public static readonly TypeRegistry Instance = new TypeRegistry();
 
-        ConcurrentDictionary<string, Type> types = new ConcurrentDictionary<string, Type>();
+        readonly ConcurrentDictionary<string, Type> types = new ConcurrentDictionary<string, Type>();
 
         public string ByType(Type type)
         {
@@ -21,10 +21,10 @@ namespace StreamStore.Serialization
 
         public Type ByName(string name)
         {
-            return types.GetOrAdd(name, _ => Type.GetType(name));
+            return types.GetOrAdd(name, _ => Type.GetType(_));
         }
 
-        string ComposeName(Type type)
+        static string ComposeName(Type type)
         {
             return $"{type.FullName}, {type.Assembly.GetName().Name}";
         }
