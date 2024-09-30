@@ -1,14 +1,14 @@
 # <p align="center">StreamStore</p>
 
-Lightweight library provides logical layer for storing and querying events as a stream.
+A lightweight library provides a logical layer for storing and querying events as a stream.
 
 Heavily inspired by Greg Young's Event Store and [`Streamstone`](https://github.com/yevhen/Streamstone) solutions.
 
 ## Overview
 
-Library itself does not contain any production  ready database storage implementation _yet_, but it is designed to be easily extended with custom database backends.
+The library itself does not provide any production-ready database storage implementation _yet_, but it is designed to be easily extended with custom database backends.
 
-`In-memory`[InMemoryStreamDatabase.cs] database implementation is provided **for testing and educational purposes only**.
+[In-memory][InMemoryStreamDatabase.cs] database implementation is provided **for testing and educational purposes only**.
 
 ## Features
 
@@ -17,8 +17,8 @@ The general idea is to highlight the general characteristics and features of eve
 - [x] Event ordering.
 - [x] Serialization/deserialization of events.
 - [x] Optimistic concurrency control.
-- [x] Event duplication detection based on event id.
-- [ ] Database agnostic test framework , including benchmarking test scenarios.
+- [x] Event duplication detection based on event ID.
+- [ ] Database agnostic test framework, including benchmarking test scenarios.
 - [ ] Binary serialization/deserialization of events.
 - [ ] Custom event properties (?).
 - [ ] External transaction support (?).
@@ -39,12 +39,11 @@ Also add implementations of particular storage backends, such as:
   // Create store
   var storage = new StreamStore(new InMemoryDatabase());
 
-  // Create store with your own database implementation and/or event serializer
-  var storage = new StreamStore(new YourDatabase(), new YourEventSerializer());
+  var storage = new StreamStore(new InMemoryStreamDatabase());
 
   var streamId = new Id("stream-1"); // you also can use regular string
 
-  //Append events to stream or create new stream if it does not exist
+  //Append events to stream or create a new stream if it does not exist
   var events = new Event[] {...}; // your events
 
   await store.OpenStreamAsync()
@@ -75,7 +74,7 @@ Also add implementations of particular storage backends, such as:
 
 ### Good to know
 
-- _[`Id`][Id]  is a value object (immutable class) has implicit conversion from and to string_.  
+- _[`Id`][Id]  is a value object (immutable class) that has implicit conversion from and to string_.  
 
   Thus you don't need to create [Id] object explicitly and use `ToString()` to convert to string back.  
   Also implements `IEquatable`  for [itself][Id] and for `String`.
@@ -83,11 +82,12 @@ Also add implementations of particular storage backends, such as:
 - _[`StreamEntity`][StreamEntity] returned by store is a read-only consistent object_, i.e.:
   - Contains only **unique events ordered by revision**.
   - Contains only **events that were committed**.
-- _Stream revision is always revision of event with maximum revision value_.
+- _Stream revision is always the revision of an event with maximum revision value_.
 
 - _Idempotency of get and delete operations fully depends on particular database implementation._
 
-- _You don't need to retrieve stream entity to append events to the stream_.  
+- _You don't need to retrieve stream entity to append events to the stream_.
+ 
   Appending stream and getting stream entity are separate operations.
 
 
@@ -122,15 +122,14 @@ To create your own database implementation, you need to implement the following 
 
 ### Considerations
 
-- _You can register own database implementation in the DI container it using any kind of lifetime (i.e. Singleton, Transient, Scoped etc.)_  
+- _You can register your own database implementation in the DI container using any kind of lifetime (i.e. Singleton, Transient, Scoped, etc.)_  
   
-  However, if your register it as a singleton, you should be aware that it should be thread-safe and preferably stateless.
+  However, if you register it as a singleton, you should be aware that it should be thread-safe and preferably stateless.
 
 - _Solution already provides optimistic concurrency and event duplication control mechanisms, as a **pre-check** during stream opening_.  
   
-  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation.  
-  For instance, you can use transaction mechanism for implementing stream  database in `ACID complaint DBMS`.  
-  In educational purposes, [InMemoryStreamUnitOfWork.cs] already contains such mechanisms.  
+  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation. For instance, you can use a transaction mechanism for  `ACID complaint DBMS`.  
+  For educational purposes, [InMemoryStreamUnitOfWork.cs] already contains such mechanisms.  
   
 - _Get and Delete operations must be implemented as idempotent by their nature._
 
