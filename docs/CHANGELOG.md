@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
+
+## [0.2.0] - 2024-09-30
+
+### Fixed
+
+- Fixed bug in the StreamStore class, when converter was using default event serializer instead of the provided one.
+
+### Changed
+
+- Change the way how events are serialized/deserialized, now it is using converter instead of event serializer.
+
 ## [0.1.2] - 2024-09-30
 
 ### Added
