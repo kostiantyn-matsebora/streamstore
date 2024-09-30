@@ -18,7 +18,7 @@ The general idea is to highlight the general characteristics and features of eve
 - [x] Serialization/deserialization of events.
 - [x] Optimistic concurrency control.
 - [x] Event duplication detection based on event id.
-- [ ] Solution framework database agnostic, including benchmark test scenarios.
+- [ ] Database agnostic test framework , including benchmarking test scenarios.
 - [ ] Binary serialization/deserialization of events.
 - [ ] Custom event properties (?).
 - [ ] External transaction support (?).
