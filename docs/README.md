@@ -44,9 +44,8 @@ To install the package, you can use the following command from the command line:
 or from Nuget Package Manager Console:
 
 ```powershell
-  Install-Package StreamStore.Contracts
+  Install-Package StreamStore
 ```
-
 
 ## Usage
 
