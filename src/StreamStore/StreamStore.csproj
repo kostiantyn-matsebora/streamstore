@@ -9,9 +9,9 @@
     <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
     <Authors>kostiantyn-matsebora</Authors>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>StreamStore</PackageId>
-    <Version>0.1.0-dev</Version>
+    <Version>0.1.0</Version>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>event sourcing; streams; stream store</PackageTags>
