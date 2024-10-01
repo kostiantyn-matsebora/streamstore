@@ -53,8 +53,6 @@ or from Nuget Package Manager Console:
 
 ```csharp
   // Create store
-  var storage = new StreamStore(new InMemoryDatabase());
-
   var storage = new StreamStore(new InMemoryStreamDatabase());
 
   var streamId = new Id("stream-1"); // you also can use regular string
