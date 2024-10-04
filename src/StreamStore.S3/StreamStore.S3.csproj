@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <Version>0.1.0</Version>
+    <Authors>kostiantyn-matsebora</Authors>
+    <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
+    <Description>S3 Database implementation for StreamStore</Description>
+    <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.7.404.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
