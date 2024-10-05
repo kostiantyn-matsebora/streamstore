@@ -1,32 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.S3.Client;
 
 
 namespace StreamStore.S3
 {
     public class S3StreamUnitOfWork : IStreamUnitOfWork
-    {
-        readonly IS3Client client;
-        readonly S3StreamDatabaseSettings settings;
+    {        
         readonly List<EventRecord> records = new List<EventRecord>();
         readonly Id id;
         readonly int expectedRevision;
+        readonly S3AbstractFactory factory;
 
-        public S3StreamUnitOfWork(Id streamId, int expectedRevision, IS3Client client, S3StreamDatabaseSettings settings)
+        public S3StreamUnitOfWork(Id streamId, int expectedRevision,  S3AbstractFactory factory)
         {
+
             if (streamId == Id.None)
-                throw new ArgumentException("StreamId must be specified.", nameof(streamId));
+                throw new ArgumentNullException(nameof(streamId));
             id = streamId;
+            if (expectedRevision < 0)
+                throw new ArgumentOutOfRangeException(nameof(expectedRevision));
             this.expectedRevision = expectedRevision;
-            if (client == null)
-                throw new ArgumentNullException(nameof(client));
-            this.client = client;
-            if (settings == null)
-                throw new ArgumentNullException(nameof(settings));
-            this.settings = settings;
+            
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public IStreamUnitOfWork Add(Id eventId, int revision, DateTime timestamp, string data)
@@ -48,33 +46,54 @@ namespace StreamStore.S3
 
         public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
+            using var client = factory.CreateClient();
+
             if (records.Count == 0)
                 throw new InvalidOperationException("No events to save.");
             int revision = expectedRevision;
 
-            var metadata = await client.FindBlobMetadataAsync(settings.BucketName!, id, cancellationToken);
-            if (metadata != null)
+            var blobMetadata = await client.FindBlobMetadataAsync(id, cancellationToken);
+            if (blobMetadata != null)
             {
-                revision = Convert.ToInt32(metadata["stream-revision"]);
+                revision = Convert.ToInt32(blobMetadata["stream-revision"]);
                 if (revision != expectedRevision)
                     new OptimisticConcurrencyException(expectedRevision, revision, id);
             }
 
-            // TODO: Add lock mechanism here
+            using var lockObject = factory.CreateLock(id);
+            var acquired = await lockObject.AcquireAsync(cancellationToken);
+            
+            if (!acquired)
+                throw new StreamLockedException(id);
 
-            // Upload events
-            using var memoryStream = 
-                new MemoryStream(
-                System.Text.Encoding.UTF8.GetBytes(
-                    Newtonsoft.Json.JsonConvert.SerializeObject(
-                        new StreamRecord(id, records))));
-
-            Dictionary<string, string> data = new Dictionary<string, string>
+            try
             {
-                { "stream-revision", revision.ToString() }
-            };
+                // Get the current revision
+                blobMetadata = await client.FindBlobMetadataAsync(id, cancellationToken);
+                if (blobMetadata != null)
+                {
+                    revision = Convert.ToInt32(blobMetadata["stream-revision"]);
+                    if (revision != expectedRevision)
+                        new OptimisticConcurrencyException(expectedRevision, revision, id);
+                }
 
-            await client.UploadBlobAsync(settings.BucketName!, id, memoryStream, data, cancellationToken);
+                // Upload events
+                var data =
+                    System.Text.Encoding.UTF8.GetBytes(
+                        Newtonsoft.Json.JsonConvert.SerializeObject(
+                            new StreamRecord(id, records)));
+
+                var metadata = 
+                    new S3MetadataCollection()
+                    .Add("stream-revision", revision.ToString());
+
+                await client.UploadBlobAsync(id, data, metadata, cancellationToken);
+
+            }
+            finally
+            {
+                await lockObject.ReleaseAsync(cancellationToken);
+            }
         }
     }
 }

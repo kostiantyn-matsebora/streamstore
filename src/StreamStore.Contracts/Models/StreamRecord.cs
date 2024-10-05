@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 namespace StreamStore
 {
-    public abstract class StreamRecord<T> where T : EventMetadataRecord
+    public abstract class StreamRecord<T>: StreamHeader where T : EventMetadataRecord
     {
-
-        public Id Id { get; }
-
-        public int Revision { get; }
 
         public T[] Events { get; }
 
@@ -20,7 +16,7 @@ namespace StreamStore
 
             if (records == null)
                 throw new ArgumentNullException(nameof(records));
-            
+
             Events = records.ToArray();
 
             Revision = Events.Any() ? Events.Max(e => e.Revision) : 0;
@@ -29,7 +25,7 @@ namespace StreamStore
 
     public sealed class StreamRecord : StreamRecord<EventRecord>
     {
-        public StreamRecord(Id id): this(id, new EventRecord[0]) { }
+        public StreamRecord(Id id) : this(id, new EventRecord[0]) { }
         public StreamRecord(Id id, IEnumerable<EventRecord> records) : base(id, records) { }
     }
 
@@ -38,5 +34,10 @@ namespace StreamStore
         public StreamMetadataRecord(Id id, IEnumerable<EventMetadataRecord> records) : base(id, records)
         {
         }
+    }
+
+    public class StreamHeader {
+        public Id Id { get; set; }
+        public int Revision { get; set; }
     }
 }

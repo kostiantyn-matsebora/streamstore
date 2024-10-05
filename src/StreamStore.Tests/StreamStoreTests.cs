@@ -3,20 +3,21 @@ using AutoFixture;
 using FluentAssertions;
 using Moq;
 using StreamStore.InMemory;
+using StreamStore.Serialization;
 
 namespace StreamStore.Tests
 {
     public class StreamStoreTests
     {
         readonly Mock<IStreamDatabase> mockStreamDatabase;
-        readonly Mock<IEventSerializer> mockEventSerializer;
+        readonly IEventSerializer serializer;
         StreamStore streamStore;
 
         public StreamStoreTests()
         {
             mockStreamDatabase = new Mock<IStreamDatabase>();
-            mockEventSerializer = new Mock<IEventSerializer>();
-            streamStore = new StreamStore(mockStreamDatabase.Object, mockEventSerializer.Object);
+            serializer = new EventSerializer();
+            streamStore = new StreamStore(mockStreamDatabase.Object, serializer);
         }
 
         [Fact]
@@ -81,12 +82,18 @@ namespace StreamStore.Tests
             await act.Should().ThrowAsync<ArgumentNullException>();
         }
 
-        [Fact]
-        public async Task GetAsync_ShouldReturnStreamEntityWithEvents()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(3)]
+        [InlineData(10)]
+        [InlineData(100)]
+        [InlineData(1000)]
+        [InlineData(10000)]
+        public async Task GetAsync_ShouldReturnStreamEntityWithEvents(int count)
         {
             // Arrange
             Fixture fixture = new Fixture();
-            var streamRecord = fixture.Create<StreamRecord>();
+            var streamRecord = new StreamRecord(fixture.Create<string>(), fixture.CreateEventRecords(count).ToArray());
 
             var streamId = streamRecord.Id;
             var eventCount = streamRecord.Events.Length;

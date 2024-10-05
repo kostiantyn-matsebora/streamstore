@@ -10,10 +10,18 @@ namespace StreamStore
         public int DuplicateRevision { get; set; }
 
         public Id StreamId { get; }
+
+
         public OptimisticConcurrencyException(int duplicateRevision, Id streamId) :
             base($"Stream has been already changed, revision {duplicateRevision} is already exists.")
         {
             DuplicateRevision = duplicateRevision;
+            StreamId = streamId;
+        }
+
+        public OptimisticConcurrencyException(Id streamId) :
+            base($"Stream has been already changed.")
+        {
             StreamId = streamId;
         }
 

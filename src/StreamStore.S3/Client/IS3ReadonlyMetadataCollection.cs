@@ -1,11 +1,11 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Text;
 
-namespace StreamStore.S3
+
+namespace StreamStore.S3.Client
 {
 
-    public interface IMetadataCollection
+    public interface IS3ReadonlyMetadataCollection
     {
         string this[string name] { get; }
         ICollection<string> Keys { get; }

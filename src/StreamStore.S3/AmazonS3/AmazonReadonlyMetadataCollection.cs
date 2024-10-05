@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Amazon.S3.Model;
+using StreamStore.S3.Client;
 
 namespace StreamStore.S3.AmazonS3
 {
-    internal class AmazonMetadataCollection : IMetadataCollection
+    internal class AmazonReadonlyMetadataCollection : IS3ReadonlyMetadataCollection
     {
         private readonly MetadataCollection collection;
 
@@ -12,7 +13,7 @@ namespace StreamStore.S3.AmazonS3
 
         public string this[string name] => collection[name];
 
-        public AmazonMetadataCollection(MetadataCollection collection)
+        public AmazonReadonlyMetadataCollection(MetadataCollection collection)
         {
             this.collection = collection ?? throw new ArgumentNullException(nameof(collection));
         }

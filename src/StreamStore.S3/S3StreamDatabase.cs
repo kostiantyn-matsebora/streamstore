@@ -7,38 +7,34 @@ namespace StreamStore.S3
 {
     public class S3StreamDatabase : IStreamDatabase
     {
-        private IS3ClientFactory clientFactory;
-        private S3StreamDatabaseSettings settings;
 
-        public S3StreamDatabase(IS3ClientFactory clientFactory, S3StreamDatabaseSettings settings)
+        readonly S3AbstractFactory factory;
+        public S3StreamDatabase(S3AbstractFactory factory)
         {
-            if (clientFactory == null)
-                throw new ArgumentNullException(nameof(clientFactory));
-            this.clientFactory = clientFactory;
-            this.settings = settings;
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public IStreamUnitOfWork BeginAppend(string streamId, int expectedStreamVersion = 0)
         {
-            return new S3StreamUnitOfWork(streamId, expectedStreamVersion, clientFactory.CreateClient(), settings);
+            return new S3StreamUnitOfWork(streamId, expectedStreamVersion, factory);
         }
 
         public async Task DeleteAsync(string streamId, CancellationToken cancellationToken)
         {
-            using var client = clientFactory.CreateClient();
-            await client.DeleteBlobAsync(settings.BucketName!, streamId, cancellationToken);
+            using var client = factory.CreateClient();
+            await client.DeleteBlobAsync(streamId, cancellationToken);
         }
 
         public async Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken)
         {
-            using  var client = clientFactory.CreateClient();
-            using var stream = await client.FindBlobAsync(settings.BucketName!, streamId, cancellationToken);
-            if (stream ==null)
+            using  var client = factory.CreateClient();
+            var data = await client.FindBlobAsync(streamId, cancellationToken);
+            if (data ==null)
                 return null;
 
               
-            var data = System.Text.Encoding.UTF8.GetString(stream.ToArray());
-            StreamRecord? record = JsonConvert.DeserializeObject<StreamRecord>(data);
+            var stream = System.Text.Encoding.UTF8.GetString(data);
+            StreamRecord? record = JsonConvert.DeserializeObject<StreamRecord>(stream);
             return record;
         }
 
