@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StreamStore.S3
 {
-    public class S3StreamUnitOfWork : IStreamUnitOfWork
+    public sealed class S3StreamUnitOfWork : IStreamUnitOfWork
     {        
         readonly List<EventRecord> records = new List<EventRecord>();
         readonly Id id;
@@ -38,11 +38,6 @@ namespace StreamStore.S3
             return this;
         }
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
             using var client = factory.CreateClient();
@@ -53,15 +48,11 @@ namespace StreamStore.S3
 
             var blobMetadata = await client.FindBlobMetadataAsync(id, cancellationToken);
             if (blobMetadata != null)
-            {
-                
-                if (blobMetadata.Revision!= expectedRevision)
-                    new OptimisticConcurrencyException(expectedRevision, revision, id);
-            }
+                ThrowIfStreamAlreadyChanged(blobMetadata);
 
             using var lockObject = factory.CreateLock(id);
             var acquired = await lockObject.AcquireAsync(cancellationToken);
-            
+
             if (!acquired)
                 throw new StreamAlreadyLockedException(id);
 
@@ -70,10 +61,7 @@ namespace StreamStore.S3
                 // Get the current revision
                 blobMetadata = await client.FindBlobMetadataAsync(id, cancellationToken);
                 if (blobMetadata != null)
-                {
-                    if (blobMetadata.Revision != expectedRevision)
-                        new OptimisticConcurrencyException(expectedRevision, revision, id);
-                }
+                    ThrowIfStreamAlreadyChanged(blobMetadata);
 
                 // Upload events
                 var data =
@@ -88,6 +76,24 @@ namespace StreamStore.S3
             {
                 await lockObject.ReleaseAsync(cancellationToken);
             }
+
+         }
+
+        void ThrowIfStreamAlreadyChanged(IStreamMetadata metadata)
+        {
+            if (metadata.Revision != expectedRevision)
+                throw new OptimisticConcurrencyException(expectedRevision, metadata.Revision, id);
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        void Dispose(bool disposing)
+        {
+        }
+       
     }
 }

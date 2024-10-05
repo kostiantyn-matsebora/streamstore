@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace StreamStore.S3
 {
-    public class S3StreamDatabase : IStreamDatabase
+    public sealed class S3StreamDatabase : IStreamDatabase
     {
 
         readonly S3AbstractFactory factory;
