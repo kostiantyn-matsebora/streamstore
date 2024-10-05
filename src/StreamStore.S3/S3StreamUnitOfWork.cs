@@ -93,7 +93,8 @@ namespace StreamStore.S3
 
         void Dispose(bool disposing)
         {
+            // There is no IDisposable objects to dispose
         }
-       
+
     }
 }

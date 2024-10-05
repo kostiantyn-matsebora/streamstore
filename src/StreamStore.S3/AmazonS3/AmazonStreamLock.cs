@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using StreamStore.S3.Lock;
+using System.Linq;
 
 
 namespace StreamStore.S3.AmazonS3
@@ -32,9 +33,14 @@ namespace StreamStore.S3.AmazonS3
             {
                 BucketName = lockBucketName,
                 Key = streamId,
-                ContentBody = Guid.NewGuid().ToString(),
+                ContentBody = Guid.NewGuid().ToString(), // for debugging purposes
                 ObjectLockLegalHoldStatus = ObjectLockLegalHoldStatus.On
             };
+            var lockMetadata = new AmazonStreamLockMetadata();
+
+            lockMetadata.Keys
+                .ToList()
+                .ForEach(key => request.Metadata.Add(key, lockMetadata[key]));
 
             var response = await client!.PutObjectAsync(request, token);
 
@@ -51,9 +57,8 @@ namespace StreamStore.S3.AmazonS3
                 {
                     Status = ObjectLockLegalHoldStatus.Off
                 },
-
-
             };
+            
             await client!.PutObjectLegalHoldAsync(request, token);
         }
 
