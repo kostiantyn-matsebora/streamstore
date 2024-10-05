@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.S3;
@@ -16,14 +17,23 @@ namespace StreamStore.S3.AmazonS3
         AmazonS3Client? client;
         string? bucketName;
 
-        public AmazonClient(AmazonS3Client client, string bucketName)
+        public AmazonClient(S3StreamDatabaseSettings settings)
         {
-            this.client = client ?? throw new ArgumentNullException(nameof(client));
-            this.bucketName = bucketName ?? throw new ArgumentNullException(nameof(bucketName));
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings));
+
+            client = NewNativeClient(settings);
+            bucketName = settings.BucketName;
+        }
+
+        public static AmazonS3Client NewNativeClient(S3StreamDatabaseSettings settings)
+        {
+            return new AmazonS3Client(settings!.Credentials!.AccessKey, settings.Credentials.AccessKeyId, new AmazonS3Config() { ServiceURL = settings.Endpoint });
+
         }
 
         public async Task DeleteObjectAsync(string key, CancellationToken token)
-        {          
+        {
             await client!.DeleteObjectAsync(bucketName, key, token);
         }
 
@@ -50,7 +60,7 @@ namespace StreamStore.S3.AmazonS3
                     .ForEach(async entry => objects.Add(await GetObjectData(objects, entry, token)));
             }
 
-            return objects.Any() ? objects: null;
+            return objects.Any() ? objects : null;
         }
 
         async Task<byte[]> GetObjectData(List<byte[]> objects, S3Object entry, CancellationToken token)
@@ -61,15 +71,15 @@ namespace StreamStore.S3.AmazonS3
             return memory.ToArray();
         }
 
-        public async Task UploadObjectAsync(string key, byte[] data, IS3ReadonlyMetadataCollection metadata, CancellationToken token, bool lockObject = false)
+        public async Task UploadObjectAsync(string key, string data, IS3ReadonlyMetadataCollection metadata, CancellationToken token, bool lockObject = false)
         {
             var request = new PutObjectRequest
             {
                 BucketName = bucketName,
                 Key = key,
-                InputStream = new MemoryStream(data),
-                AutoCloseStream = true,
+                ContentBody = data,
                 AutoResetStreamPosition = true,
+                CalculateContentMD5Header = true
             };
 
             if (lockObject)
@@ -85,21 +95,31 @@ namespace StreamStore.S3.AmazonS3
                 throw new AmazonS3Exception($"Failed to put object to S3. HttpStatusCode: {response.HttpStatusCode}.");
         }
 
-        public async Task<byte[]?> FindObjectAsync(string key, CancellationToken token)
+        public async Task<string?> FindObjectAsync(string key, CancellationToken token)
         {
             var request = new GetObjectRequest
             {
                 BucketName = bucketName,
-                Key = key,
+                Key = key
             };
 
-            var response = await client!.GetObjectAsync(request, token);
+            try
+            {
+                var response = await client!.GetObjectAsync(request, token);
+                if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                    return null;
 
-            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
-                return null;
-            var memory = new Memory<byte>();
-            response.ResponseStream.Write(memory.Span);
-            return memory.ToArray();
+                using var memory = new MemoryStream();
+                response.ResponseStream.CopyTo(memory);
+                return Encoding.UTF8.GetString(memory.ToArray());
+
+            }
+            catch (AmazonS3Exception ex)
+            {
+                if (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    return null;
+                throw;
+            }
         }
 
 

@@ -2,6 +2,7 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.S3.Operations;
 
 
 namespace StreamStore.S3
@@ -39,7 +40,7 @@ namespace StreamStore.S3
 
         public async Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken)
         {
-            using var loader = factory.CreateLoader(streamId);
+            using var loader = new S3StreamLoader(streamId, factory.CreateClient());
             var stream = await loader.LoadAsync(cancellationToken);
             if (stream == null) return null;
             return new StreamRecord(streamId, stream.Events);
@@ -47,7 +48,7 @@ namespace StreamStore.S3
 
         public async Task<StreamMetadataRecord?> FindMetadataAsync(string streamId, CancellationToken cancellationToken)
         {
-          using var loader = factory.CreateLoader(streamId); 
+          using var loader = new S3StreamLoader(streamId, factory.CreateClient());
           var stream = await loader.LoadAsync(cancellationToken);
           if (stream == null) return null;
           return new StreamMetadataRecord(streamId, stream.Events);

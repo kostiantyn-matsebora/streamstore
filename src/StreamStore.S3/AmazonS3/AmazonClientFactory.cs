@@ -1,5 +1,4 @@
 ﻿using System;
-using Amazon.S3;
 using StreamStore.S3.Client;
 
 namespace StreamStore.S3.AmazonS3
@@ -15,7 +14,7 @@ namespace StreamStore.S3.AmazonS3
 
         public IS3Client CreateClient()
         {
-           return new AmazonClient(new AmazonS3Client(), settings!.BucketName!);
+           return new AmazonClient(settings!);
         }
     }
 }

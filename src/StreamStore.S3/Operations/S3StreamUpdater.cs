@@ -22,20 +22,24 @@ namespace StreamStore.S3.Operations
         public async Task UpdateAsync(CancellationToken token)
         {
             var streamId = stream!.Metadata.StreamId!;
-            foreach (var @event in stream.Events)
+
+            Parallel.ForEach(stream.Events, async @event =>
             {
-                var data = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(@event));
+                var data = Converter.ToString(@event);
+
                 await client!.UploadObjectAsync(
                     S3Naming.EventKey(streamId, @event.Id),
-                    Converter.ToByteArray(data),
-                    S3EventMetadataCollection.New(@event.Id, @event.Revision),
-                    token);
-            }
+                    data,
+                    S3EventObjectMetadataCollection.New(@event.Id, @event.Revision),
+                    token,
+                    false);
+            });
 
+            // Update stream
             await client!.UploadObjectAsync(
                 S3Naming.StreamKey(streamId),
-                Converter.ToByteArray(stream.Metadata),
-                S3MetadataCollection.Empty,
+                Converter.ToString(stream.Metadata),
+                S3ObjectMetadataCollection.Empty,
                 token);
         }
 

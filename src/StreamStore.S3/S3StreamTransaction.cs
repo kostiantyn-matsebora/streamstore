@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamStore.S3.Client;
 using StreamStore.S3.Lock;
 using StreamStore.S3.Models;
 using StreamStore.S3.Operations;
@@ -12,13 +11,12 @@ namespace StreamStore.S3
     internal sealed class S3StreamTransaction: IDisposable
     {
         Id streamId;
-        IS3Client? client;
         S3AbstractFactory factory;
         IS3StreamLock? streamLock;
         bool commited = false;
         bool rolledBack = false;
 
-        public S3Stream? Stream { get; private set; }
+        public S3StreamMetadata? Before { get; private set; }
 
         S3StreamTransaction(Id streamId, S3AbstractFactory factory)
         {
@@ -33,8 +31,8 @@ namespace StreamStore.S3
                 throw new StreamAlreadyLockedException(streamId);
 
             // Get stream metadata first
-            using var streamLoader = new S3StreamLoader(streamId, client!);
-            Stream = await streamLoader.LoadAsync(token);
+            using var streamLoader = new S3StreamLoader(streamId, factory.CreateClient());
+            Before = (await streamLoader.LoadAsync(token))?.Metadata;
         }
 
 
@@ -45,39 +43,41 @@ namespace StreamStore.S3
 
             // Just releasing lock
             await streamLock!.ReleaseAsync(token);
+            commited = true;
         }
 
 
         public async Task RollbackAsync()
         {
-            if (commited || rolledBack)
+            if (commited)
+                return;
+            if (rolledBack)
                 throw new InvalidOperationException("Transaction already commited or rolled back.");
 
             try
             {
                 // First get current stream
-                using var loader = factory!.CreateLoader(streamId);
+                using var client = factory.CreateClient();
+                using var loader = new S3StreamLoader(streamId, factory.CreateClient());
                 var stream = await loader.LoadAsync(CancellationToken.None);
 
                 // Delete events were added during transaction
                 if (stream != null)
                 {
-                    var newEventIds =
-                        stream.Events.Select(e => e.Id)
-                        .Except(Stream!.Events.Select(e => e.Id))
-                        .ToList();
+                    var current = stream.Events.ToEventMetadata();
 
-                    using var client = factory.CreateClient();
-                    foreach (var eventId in newEventIds)
+                    var after = Before != null ? current.Except(Before!.Events) : current;
+                    foreach (var eventMetadata in after)
                     {
-                        await client.DeleteObjectAsync(S3Naming.EventKey(streamId, eventId), CancellationToken.None);
+                        await client.DeleteObjectAsync(S3Naming.EventKey(streamId, eventMetadata.Id), CancellationToken.None);
                     }
                 }
 
-                // Then update stream by stored version
-                if (Stream != null)
+                // Then update stream metadata by stored version
+                if (Before != null)
                 {
-                    using var updater = factory.CreateUpdater(Stream);
+                    var onlyMetadata = S3Stream.New(Before, new S3EventRecordCollection(Array.Empty<S3EventRecord>()));
+                    using var updater = factory.CreateUpdater(onlyMetadata);
                     await updater.UpdateAsync(CancellationToken.None);
                 }
             } catch {
@@ -98,12 +98,9 @@ namespace StreamStore.S3
             {
                 if (!commited && !rolledBack) 
                     RollbackAsync().Wait();
-
-                client?.Dispose();
-                client = null;
                 streamLock?.Dispose();
                 streamLock = null;
-                Stream = null!;
+                Before = null!;
 
             }
         }

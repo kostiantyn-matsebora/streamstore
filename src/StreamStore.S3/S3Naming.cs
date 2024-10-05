@@ -6,12 +6,12 @@ namespace StreamStore.S3
         public const string Delimiter = "/";
 
         public static string EventKey(Id streamId, Id eventId)
-            => $"stream_{streamId}{Delimiter}event_{eventId}";
-
-        public static string StreamEventPrefix(Id streamId)
-            => $"stream_{streamId}{Delimiter}event_";
+            => $"{streamId}{Delimiter}events{Delimiter}{eventId}";
 
         public static string StreamKey(string streamId)
-            => $"stream_{streamId}{Delimiter}/stream";
+            => $"{streamId}{Delimiter}metadata";
+
+        public static string LockKey(Id streamId)
+          => $"{streamId}{Delimiter}lock";
     }
 }

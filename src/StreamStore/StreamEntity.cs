@@ -10,9 +10,9 @@ namespace StreamStore
     {
         public Id StreamId { get; }
 
-        public EventEntity[] EventEntities { get; }
+        public EventEntityCollection EventEntities { get; }
 
-        public int Revision { get; }
+        public int Revision => EventEntities.MaxRevision;
 
         internal StreamEntity(Id id, IEnumerable<EventEntity> events)
         {
@@ -24,8 +24,14 @@ namespace StreamStore
             if (events == null)
                 throw new ArgumentNullException(nameof(events));
 
-            EventEntities = events.OrderBy(e => e.Revision).ToArray();
-            Revision = EventEntities.Any() ? EventEntities.Max(e => e.Revision): 0;
+            EventEntities = new EventEntityCollection(events);
+        }
+    }
+
+    public sealed class EventEntityCollection : RevisionedItemCollection<EventEntity>
+    {
+        public EventEntityCollection(IEnumerable<EventEntity> items) : base(items)
+        {
         }
     }
 }

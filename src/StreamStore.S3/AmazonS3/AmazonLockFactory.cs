@@ -1,5 +1,4 @@
 ﻿using System;
-using Amazon.S3;
 using StreamStore.S3.Lock;
 
 
@@ -11,13 +10,12 @@ namespace StreamStore.S3.AmazonS3
 
         public AmazonLockFactory(S3StreamDatabaseSettings settings)
         {
-
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
         public IS3StreamLock CreateLock(Id streamId)
         {
-            return new AmazonStreamLock(streamId, settings!.LockBucketName!, new AmazonS3Client());
+            return new AmazonStreamLock(streamId, settings!.BucketName!, AmazonClient.NewNativeClient(settings));
         }
     }
 }

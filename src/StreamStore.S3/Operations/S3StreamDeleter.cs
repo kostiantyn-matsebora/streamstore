@@ -28,12 +28,12 @@ namespace StreamStore.S3.Operations
             if (data == null)
                 return;
 
-            var metadata = Converter.FromByteArray<S3StreamMetadata>(data);
+            var metadata = Converter.FromString<S3StreamMetadata>(data);
 
             // Delete all events
-            foreach (var @event in metadata!.EventIds!)
+            foreach (var eventMetadata in metadata!.Events!)
             {
-                await client!.DeleteObjectAsync(S3Naming.EventKey(streamId, @event), token);
+                await client!.DeleteObjectAsync(S3Naming.EventKey(streamId, eventMetadata.Id), token);
             }
 
             // Delete metadata

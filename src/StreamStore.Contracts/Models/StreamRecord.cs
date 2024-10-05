@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 namespace StreamStore
 {
     public abstract class StreamRecord<T>  where T : EventMetadataRecord
     {
         public Id Id { get; set; }
-        public int Revision { get; set; }
+        public int Revision => Events.MaxRevision;
 
-        public T[] Events { get; }
+        public RevisionedItemCollection<T> Events { get; }
 
         protected StreamRecord(string id, IEnumerable<T> records)
         {
@@ -19,9 +20,9 @@ namespace StreamStore
             if (records == null)
                 throw new ArgumentNullException(nameof(records));
 
-            Events = records.ToArray();
+            Events = new RevisionedItemCollection<T>(records.ToArray());
 
-            Revision = Events.Any() ? Events.Max(e => e.Revision) : 0;
+
         }
     }
 

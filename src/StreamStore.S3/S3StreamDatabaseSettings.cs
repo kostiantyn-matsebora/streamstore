@@ -6,7 +6,10 @@ namespace StreamStore.S3
     public sealed class S3StreamDatabaseSettings
     {
         public string? BucketName { get; internal set;  }
-        public string? LockBucketName { get; internal set; }
+
+        public S3Credentials? Credentials { get; internal set; }
+
+        public string? Endpoint { get; internal set; }
 
         internal S3StreamDatabaseSettings()
         {
@@ -20,15 +23,27 @@ namespace StreamStore.S3
 
     }
 
+    public class S3Credentials
+    {
+        public string AccessKeyId { get; }
+        public string AccessKey { get;  }
+
+        internal S3Credentials(string accessKey, string accessKeyId)
+        {
+            AccessKeyId = accessKeyId;
+            AccessKey = accessKey;
+        }
+    }
+
     public sealed class S3StreamDatabaseSettingsBuilder
     {
         string? bucketName;
-        string? lockBucketName;
+        S3Credentials? credentials;
+        string? endpoint;
 
         public static S3StreamDatabaseSettings DefaultSettings(string bucketName) =>
                    new S3StreamDatabaseSettingsBuilder()
                    .WithBucketName(bucketName)
-
                    .Build();
 
         public S3StreamDatabaseSettingsBuilder WithBucketName(string bucketName)
@@ -37,21 +52,30 @@ namespace StreamStore.S3
             return this;
         }
 
-        public S3StreamDatabaseSettingsBuilder WithLockBucketName(string bucketName)
+
+        public S3StreamDatabaseSettingsBuilder WithCredentials(string keyId, string key)
         {
-            this.lockBucketName = bucketName;
+            credentials = new S3Credentials(keyId, key);
+            return this;
+        }
+
+        public S3StreamDatabaseSettingsBuilder WithEndpoint(string endpoint)
+        {
+            this.endpoint = endpoint;
             return this;
         }
 
         public S3StreamDatabaseSettings Build()
         {
-           if (bucketName == null)
-              throw new InvalidOperationException("Bucket name is required");
-
+            if (credentials == null)
+                throw new InvalidOperationException("Credentials are required.");
+            if (endpoint == null)
+                throw new InvalidOperationException("Endpoint is required.");
             return new S3StreamDatabaseSettings
             {
-                BucketName = bucketName,
-                LockBucketName = lockBucketName ?? $"{bucketName}_locks"
+                BucketName = bucketName ?? "streamstore",
+                Credentials = credentials,
+                Endpoint = endpoint
             };
         }
     }

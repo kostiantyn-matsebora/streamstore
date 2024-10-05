@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
-using Amazon.S3.Model;
 using StreamStore.S3.Client;
 using StreamStore.S3.Models;
 
@@ -14,7 +12,7 @@ namespace StreamStore.S3
 {
     internal sealed class S3StreamUnitOfWork : IStreamUnitOfWork
     {        
-        readonly List<EventRecord> records = new List<EventRecord>();
+        readonly S3EventRecordCollection records = new S3EventRecordCollection();
         readonly Id id;
         readonly int expectedRevision;
         readonly S3AbstractFactory factory;
@@ -35,7 +33,7 @@ namespace StreamStore.S3
         public IStreamUnitOfWork Add(Id eventId, int revision, DateTime timestamp, string data)
         {
             records.Add(
-                new EventRecord {
+                new S3EventRecord {
                     Id = eventId,
                     Revision = revision,
                     Timestamp = timestamp,
@@ -48,7 +46,7 @@ namespace StreamStore.S3
         {
             using var client = factory.CreateClient();
 
-            if (records.Count == 0)
+            if (!records.Any())
                 throw new InvalidOperationException("No events to save.");
 
             await ThrowIfStreamAlreadyChanged(client, cancellationToken);
@@ -60,24 +58,26 @@ namespace StreamStore.S3
                 try
                 {
                     // Get the current revision
-                    var stream = await ThrowIfStreamAlreadyChanged(client, cancellationToken);
+                    var existingMetadata = await ThrowIfStreamAlreadyChanged(client, cancellationToken);
 
-                    var ids = new List<string>();
+                    var streamMetadata = S3StreamMetadata.New(id, records.ToEventMetadata());
 
                     // If there is already events for stream
-                    var mergedIds = stream != null ? ids.Concat(stream!.EventIds) : ids;
+                    if (existingMetadata != null)
+                     streamMetadata.AddRange(existingMetadata);
 
                     // Create new stream
-                    var newStream = new S3Stream(S3StreamMetadata.New(id, revision, mergedIds), records);
+                    var newStream = S3Stream.New(streamMetadata, records);
 
                     // Update stream
-                    using var updater =factory.CreateUpdater(newStream);
+                    using var updater = factory.CreateUpdater(newStream);
                     await updater.UpdateAsync(cancellationToken);
                     await transaction.CommitAsync(cancellationToken);
                 }
                 catch
                 {
                     await transaction.RollbackAsync();
+                    throw;
                 }
             }
         }
@@ -88,7 +88,7 @@ namespace StreamStore.S3
             var data = await client.FindObjectAsync(S3Naming.StreamKey(id), token);
             if (data == null)
                 return null;
-            var stream = Converter.FromByteArray<S3StreamMetadata>(data);
+            var stream = Converter.FromString<S3StreamMetadata>(data);
 
             if (stream!.Revision != expectedRevision)
                 throw new OptimisticConcurrencyException(expectedRevision, stream!.Revision, id);

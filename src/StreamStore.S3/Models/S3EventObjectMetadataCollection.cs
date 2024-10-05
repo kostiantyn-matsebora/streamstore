@@ -4,21 +4,21 @@ using StreamStore.S3.Client;
 
 namespace StreamStore.S3.Models
 {
-    internal sealed class S3EventMetadataCollection : IS3ReadonlyMetadataCollection
+    internal sealed class S3EventObjectMetadataCollection : IS3ReadonlyMetadataCollection
     {
         readonly IS3ReadonlyMetadataCollection collection;
-        const string EventId = " x-amz-meta-event-id";
+        const string EventId = "x-amz-meta-event-id";
         const string EventRevision = "x-amz-meta-event-revision";
 
-        public S3EventMetadataCollection(IS3ReadonlyMetadataCollection collection)
+        public S3EventObjectMetadataCollection(IS3ReadonlyMetadataCollection collection)
         {
             this.collection = collection ?? throw new System.ArgumentNullException(nameof(collection));
         }
 
-        public static S3EventMetadataCollection New(Id id, int revision)
+        public static S3EventObjectMetadataCollection New(Id id, int revision)
         {
-            return new S3EventMetadataCollection(
-                new S3MetadataCollection()
+            return new S3EventObjectMetadataCollection(
+                new S3ObjectMetadataCollection()
                     .Add(EventId, id)
                     .Add(EventRevision, revision.ToString()));
         }

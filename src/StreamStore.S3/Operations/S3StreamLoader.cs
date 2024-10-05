@@ -29,17 +29,17 @@ namespace StreamStore.S3.Operations
             if (data == null) // Probably already has been deleted
                 return null;
 
-            var metadata = Converter.FromByteArray<S3StreamMetadata>(data);
-            var events = new List<EventRecord>();
+            var metadata = Converter.FromString<S3StreamMetadata>(data);
+            var events = new S3EventRecordCollection();
 
-            foreach (var eventId in metadata!.EventIds!)
+            foreach (var eventMetadata in metadata!.Events!)
             {
-                var @event = await client.FindObjectAsync(S3Naming.EventKey(streamId, eventId), token);
-                var @eventString = System.Text.Encoding.UTF8.GetString(@event);
-                events.Add(JsonConvert.DeserializeObject<EventRecord>(@eventString)!);
+                var eventData = await client.FindObjectAsync(S3Naming.EventKey(streamId, eventMetadata.Id), token);
+                var @event = Converter.FromString<S3EventRecord>(eventData!);
+                events.Add(@event!);
             }
 
-            return new S3Stream(metadata, events);
+            return S3Stream.New(metadata, events);
         }
 
         public void Dispose()

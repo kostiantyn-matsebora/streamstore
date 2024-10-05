@@ -96,7 +96,7 @@ namespace StreamStore.Tests
             var streamRecord = new StreamRecord(fixture.Create<string>(), fixture.CreateEventRecords(count).ToArray());
 
             var streamId = streamRecord.Id;
-            var eventCount = streamRecord.Events.Length;
+            var eventCount = streamRecord.Events.Count();
             var eventIds = streamRecord.Events.Select(e => e.Id).ToArray();
 
             mockStreamDatabase.Setup(db => db.FindAsync(streamId, It.IsAny<CancellationToken>())).ReturnsAsync(streamRecord);

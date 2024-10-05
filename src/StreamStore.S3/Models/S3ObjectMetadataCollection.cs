@@ -4,7 +4,7 @@ using StreamStore.S3.Client;
 
 namespace StreamStore.S3.Models
 {
-    internal sealed class S3MetadataCollection : IS3MetadataCollection
+    internal sealed class S3ObjectMetadataCollection : IS3MetadataCollection
     {
         readonly Dictionary<string, string> metadata = new Dictionary<string, string>();
         public string this[string key] => metadata[key];
@@ -17,6 +17,6 @@ namespace StreamStore.S3.Models
             return this;
         }
 
-        public static readonly S3MetadataCollection Empty = new S3MetadataCollection();
+        public static readonly S3ObjectMetadataCollection Empty = new S3ObjectMetadataCollection();
     }
 }

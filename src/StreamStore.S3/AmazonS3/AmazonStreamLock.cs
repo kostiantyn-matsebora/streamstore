@@ -12,18 +12,18 @@ namespace StreamStore.S3.AmazonS3
     internal sealed class AmazonStreamLock: IS3StreamLock
     {
         readonly Id streamId;
-        string? lockBucketName;
+        string? bucketName;
         AmazonS3Client? client;
 
-        public AmazonStreamLock(Id streamId, string lockBucketName, AmazonS3Client client) 
+        public AmazonStreamLock(Id streamId, string bucketName, AmazonS3Client client) 
         {
             if (streamId == Id.None)
                 throw new ArgumentException("Stream Id must be specified", nameof(streamId));
             this.streamId = streamId;
 
-            if (string.IsNullOrWhiteSpace(lockBucketName))
-                throw new ArgumentException("Bucket name must be specified", nameof(lockBucketName));
-            this.lockBucketName = lockBucketName;
+            if (string.IsNullOrWhiteSpace(bucketName))
+                throw new ArgumentException("Bucket name must be specified", nameof(bucketName));
+            this.bucketName = bucketName;
             this.client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
@@ -31,10 +31,11 @@ namespace StreamStore.S3.AmazonS3
         {
             var request = new PutObjectRequest
             {
-                BucketName = lockBucketName,
-                Key = streamId,
-                ContentBody = Guid.NewGuid().ToString(), // for debugging purposes
-                ObjectLockLegalHoldStatus = ObjectLockLegalHoldStatus.On
+                BucketName = bucketName,
+                Key = S3Naming.LockKey(streamId),
+                ContentBody = "lock", // for debugging purposes
+                //ObjectLockLegalHoldStatus = ObjectLockLegalHoldStatus.On,
+                CalculateContentMD5Header = true,
             };
             var lockMetadata = new AmazonStreamLockMetadata();
 
@@ -44,22 +45,18 @@ namespace StreamStore.S3.AmazonS3
 
             var response = await client!.PutObjectAsync(request, token);
 
-            return response.HttpStatusCode != System.Net.HttpStatusCode.OK;
+            return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
         }
 
         public async Task ReleaseAsync(CancellationToken token)
         {
-            var request = new PutObjectLegalHoldRequest
+            var request = new DeleteObjectRequest
             {
-                BucketName = $"{lockBucketName}_locks",
-                Key = streamId,
-                LegalHold = new ObjectLockLegalHold
-                {
-                    Status = ObjectLockLegalHoldStatus.Off
-                },
+                BucketName = bucketName,
+                Key = S3Naming.LockKey(streamId),
             };
             
-            await client!.PutObjectLegalHoldAsync(request, token);
+            await client!.DeleteObjectAsync(request, token);
         }
 
         public void Dispose()
@@ -72,8 +69,9 @@ namespace StreamStore.S3.AmazonS3
         {
             if (disposing)
             {
+                client!.Dispose();
                 client = null;
-                lockBucketName = null;
+                bucketName = null;
             }
         }
     }
