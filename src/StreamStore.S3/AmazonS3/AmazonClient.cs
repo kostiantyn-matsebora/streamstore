@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -21,34 +22,46 @@ namespace StreamStore.S3.AmazonS3
             this.bucketName = bucketName ?? throw new ArgumentNullException(nameof(bucketName));
         }
 
-        public async Task DeleteBlobAsync(string key, CancellationToken token)
+        public async Task DeleteObjectAsync(string key, CancellationToken token)
         {          
             await client!.DeleteObjectAsync(bucketName, key, token);
         }
 
-        public async Task<byte[]?> FindBlobAsync(string key, CancellationToken token)
+        public async Task<IEnumerable<byte[]>?> FindObjectsByPrefixAsync(string prefix, CancellationToken token)
         {
-            var response = await client!.GetObjectAsync(bucketName, key, token);
-            if (response.HttpStatusCode == System.Net.HttpStatusCode.NotFound)
-                return null;
+            var request = new ListObjectsV2Request
+            {
+                BucketName = bucketName,
+                Prefix = prefix,
+            };
 
-            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
-                throw new AmazonS3Exception($"Failed to get object from S3. HttpStatusCode: {response.HttpStatusCode}.");
+            var listObjectsV2Paginator = client!.Paginators.ListObjectsV2(new ListObjectsV2Request
+            {
+                BucketName = bucketName,
+                Prefix = prefix
+            });
 
-            using var memoryStream = new MemoryStream();
-            await response.ResponseStream.CopyToAsync(memoryStream);
-            return memoryStream.ToArray();
+            var objects = new List<byte[]>();
+
+            await foreach (var response in listObjectsV2Paginator.Responses)
+            {
+                response
+                    .S3Objects
+                    .ForEach(async entry => objects.Add(await GetObjectData(objects, entry, token)));
+            }
+
+            return objects.Any() ? objects: null;
         }
 
-        public async Task<IStreamMetadata> FindBlobMetadataAsync(string key, CancellationToken token)
+        async Task<byte[]> GetObjectData(List<byte[]> objects, S3Object entry, CancellationToken token)
         {
-            var response = await client!.GetObjectMetadataAsync(bucketName, key, token);
-            if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
-                throw new AmazonS3Exception($"Failed to get object from S3. HttpStatusCode: {response.HttpStatusCode}.");
-            return new AmazonStreamMetadata(response.Metadata);
+            var objectResponse = await client!.GetObjectAsync(bucketName, entry.Key, token);
+            var memory = new Memory<byte>();
+            await objectResponse.ResponseStream.WriteAsync(memory, token);
+            return memory.ToArray();
         }
 
-        public async Task UploadBlobAsync(string key, byte[] data, IStreamMetadata metadata, CancellationToken token)
+        public async Task UploadObjectAsync(string key, byte[] data, IS3ReadonlyMetadataCollection metadata, CancellationToken token, bool lockObject = false)
         {
             var request = new PutObjectRequest
             {
@@ -56,18 +69,39 @@ namespace StreamStore.S3.AmazonS3
                 Key = key,
                 InputStream = new MemoryStream(data),
                 AutoCloseStream = true,
-                AutoResetStreamPosition = true
+                AutoResetStreamPosition = true,
             };
-            var objectMetadata = new AmazonStreamMetadata(metadata);
-            objectMetadata.Keys
+
+            if (lockObject)
+                request.ObjectLockLegalHoldStatus = ObjectLockLegalHoldStatus.On;
+
+            metadata.Keys
                 .ToList()
-                .ForEach(k => request.Metadata.Add(k, objectMetadata[k]));
+                .ForEach(k => request.Metadata.Add(k, metadata[k]));
 
             var response = await client!.PutObjectAsync(request, token);
 
             if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
                 throw new AmazonS3Exception($"Failed to put object to S3. HttpStatusCode: {response.HttpStatusCode}.");
         }
+
+        public async Task<byte[]?> FindObjectAsync(string key, CancellationToken token)
+        {
+            var request = new GetObjectRequest
+            {
+                BucketName = bucketName,
+                Key = key,
+            };
+
+            var response = await client!.GetObjectAsync(request, token);
+
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                return null;
+            var memory = new Memory<byte>();
+            response.ResponseStream.Write(memory.Span);
+            return memory.ToArray();
+        }
+
 
         public void Dispose()
         {

@@ -1,15 +1,15 @@
 ﻿using System;
+
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+
 
 namespace StreamStore.S3
 {
     public sealed class S3StreamDatabase : IStreamDatabase
     {
-
         readonly S3AbstractFactory factory;
-        public S3StreamDatabase(S3AbstractFactory factory)
+        internal S3StreamDatabase(S3AbstractFactory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
@@ -21,30 +21,36 @@ namespace StreamStore.S3
 
         public async Task DeleteAsync(string streamId, CancellationToken cancellationToken)
         {
-            using var client = factory.CreateClient();
-            await client.DeleteBlobAsync(streamId, cancellationToken);
+            using var transaction = await S3StreamTransaction.BeginAsync(streamId, factory);
+            {
+                try
+                {
+                    using var deleter = factory.CreateDeleter(streamId);
+                    await deleter.DeleteAsync(cancellationToken);
+                    await transaction.CommitAsync(cancellationToken);
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            }
         }
 
         public async Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken)
         {
-            using  var client = factory.CreateClient();
-            var data = await client.FindBlobAsync(streamId, cancellationToken);
-            if (data ==null)
-                return null;
-
-              
-            var stream = System.Text.Encoding.UTF8.GetString(data);
-            StreamRecord? record = JsonConvert.DeserializeObject<StreamRecord>(stream);
-            return record;
+            using var loader = factory.CreateLoader(streamId);
+            var stream = await loader.LoadAsync(cancellationToken);
+            if (stream == null) return null;
+            return new StreamRecord(streamId, stream.Events);
         }
 
         public async Task<StreamMetadataRecord?> FindMetadataAsync(string streamId, CancellationToken cancellationToken)
         {
-            var record = await FindAsync(streamId, cancellationToken);
-            if (record == null)
-                return null;
-
-            return new StreamMetadataRecord(record.Id, record.Events);
+          using var loader = factory.CreateLoader(streamId); 
+          var stream = await loader.LoadAsync(cancellationToken);
+          if (stream == null) return null;
+          return new StreamMetadataRecord(streamId, stream.Events);
         }
     }
 }

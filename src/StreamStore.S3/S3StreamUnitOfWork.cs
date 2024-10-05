@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
+using Amazon.S3.Model;
+using StreamStore.S3.Client;
+using StreamStore.S3.Models;
 
 
 namespace StreamStore.S3
 {
-    public sealed class S3StreamUnitOfWork : IStreamUnitOfWork
+    internal sealed class S3StreamUnitOfWork : IStreamUnitOfWork
     {        
         readonly List<EventRecord> records = new List<EventRecord>();
         readonly Id id;
@@ -44,45 +50,49 @@ namespace StreamStore.S3
 
             if (records.Count == 0)
                 throw new InvalidOperationException("No events to save.");
+
+            await ThrowIfStreamAlreadyChanged(client, cancellationToken);
+
             int revision = expectedRevision;
 
-            var blobMetadata = await client.FindBlobMetadataAsync(id, cancellationToken);
-            if (blobMetadata != null)
-                ThrowIfStreamAlreadyChanged(blobMetadata);
-
-            using var lockObject = factory.CreateLock(id);
-            var acquired = await lockObject.AcquireAsync(cancellationToken);
-
-            if (!acquired)
-                throw new StreamAlreadyLockedException(id);
-
-            try
+            using (var transaction = await S3StreamTransaction.BeginAsync(id, factory))
             {
-                // Get the current revision
-                blobMetadata = await client.FindBlobMetadataAsync(id, cancellationToken);
-                if (blobMetadata != null)
-                    ThrowIfStreamAlreadyChanged(blobMetadata);
+                try
+                {
+                    // Get the current revision
+                    var stream = await ThrowIfStreamAlreadyChanged(client, cancellationToken);
 
-                // Upload events
-                var data =
-                    System.Text.Encoding.UTF8.GetBytes(
-                        Newtonsoft.Json.JsonConvert.SerializeObject(
-                            new StreamRecord(id, records)));
+                    var ids = new List<string>();
 
-                await client.UploadBlobAsync(id, data, new StreamMetadata(id, revision), cancellationToken);
+                    // If there is already events for stream
+                    var mergedIds = stream != null ? ids.Concat(stream!.EventIds) : ids;
 
+                    // Create new stream
+                    var newStream = new S3Stream(S3StreamMetadata.New(id, revision, mergedIds), records);
+
+                    // Update stream
+                    using var updater =factory.CreateUpdater(newStream);
+                    await updater.UpdateAsync(cancellationToken);
+                    await transaction.CommitAsync(cancellationToken);
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                }
             }
-            finally
-            {
-                await lockObject.ReleaseAsync(cancellationToken);
-            }
+        }
 
-         }
-
-        void ThrowIfStreamAlreadyChanged(IStreamMetadata metadata)
+        async Task<S3StreamMetadata?> ThrowIfStreamAlreadyChanged(IS3Client client, CancellationToken token)
         {
-            if (metadata.Revision != expectedRevision)
-                throw new OptimisticConcurrencyException(expectedRevision, metadata.Revision, id);
+
+            var data = await client.FindObjectAsync(S3Naming.StreamKey(id), token);
+            if (data == null)
+                return null;
+            var stream = Converter.FromByteArray<S3StreamMetadata>(data);
+
+            if (stream!.Revision != expectedRevision)
+                throw new OptimisticConcurrencyException(expectedRevision, stream!.Revision, id);
+            return stream;
         }
 
         public void Dispose()
