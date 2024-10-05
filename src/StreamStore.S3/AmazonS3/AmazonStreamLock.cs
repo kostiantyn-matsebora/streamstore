@@ -13,7 +13,6 @@ namespace StreamStore.S3.AmazonS3
         readonly Id streamId;
         string? lockBucketName;
         AmazonS3Client? client;
-        bool disposedValue;
 
         public AmazonStreamLock(Id streamId, string lockBucketName, AmazonS3Client client) 
         {
@@ -60,21 +59,17 @@ namespace StreamStore.S3.AmazonS3
 
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected void Dispose(bool disposing)
+        void Dispose(bool disposing)
         {
-            if (disposing) 
-                if (!disposedValue)
-                {
-                    // Since don't we create the client in the constructor, we don't need to dispose it here
-                    client = null;
-                    lockBucketName = null;
-                    disposedValue = true;
-                }
+            if (disposing)
+            {
+                client = null;
+                lockBucketName = null;
+            }
         }
     }
 }

@@ -57,7 +57,5 @@ namespace StreamStore
 
             return converter.ConvertToEntity(streamRecord);
         }
-
-
     }
 }
