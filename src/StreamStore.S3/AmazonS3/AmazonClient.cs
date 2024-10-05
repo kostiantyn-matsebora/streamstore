@@ -10,7 +10,7 @@ using StreamStore.S3.Client;
 
 namespace StreamStore.S3.AmazonS3
 {
-    internal class AmazonClient : IS3Client
+    internal sealed class AmazonClient : IS3Client
     {
         AmazonS3Client? client;
         string? bucketName;

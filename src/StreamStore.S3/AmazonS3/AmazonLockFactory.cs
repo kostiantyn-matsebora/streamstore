@@ -5,7 +5,7 @@ using StreamStore.S3.Lock;
 
 namespace StreamStore.S3.AmazonS3
 {
-    internal class AmazonLockFactory : IS3StreamLockFactory
+    internal sealed class AmazonLockFactory : IS3StreamLockFactory
     {
         readonly S3StreamDatabaseSettings? settings;
 

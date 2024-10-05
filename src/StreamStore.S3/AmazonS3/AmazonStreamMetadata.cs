@@ -4,7 +4,7 @@ using Amazon.S3.Model;
 
 namespace StreamStore.S3.AmazonS3
 {
-    internal class AmazonStreamMetadata : IStreamMetadata
+    internal sealed class AmazonStreamMetadata : IStreamMetadata
     {
         readonly MetadataCollection collection;
 

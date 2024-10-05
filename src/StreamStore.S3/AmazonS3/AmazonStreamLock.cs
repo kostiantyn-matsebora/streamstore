@@ -8,7 +8,7 @@ using StreamStore.S3.Lock;
 
 namespace StreamStore.S3.AmazonS3
 {
-    internal class AmazonStreamLock: IS3StreamLock
+    internal sealed class AmazonStreamLock: IS3StreamLock
     {
         readonly Id streamId;
         string? lockBucketName;

@@ -4,7 +4,7 @@ using StreamStore.S3.Client;
 
 namespace StreamStore.S3.AmazonS3
 {
-    internal class AmazonClientFactory : IS3ClientFactory
+    internal sealed class AmazonClientFactory : IS3ClientFactory
     {
         readonly S3StreamDatabaseSettings? settings;
 
