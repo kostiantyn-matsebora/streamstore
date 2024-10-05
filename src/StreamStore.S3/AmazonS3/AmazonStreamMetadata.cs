@@ -8,8 +8,8 @@ namespace StreamStore.S3.AmazonS3
     {
         readonly MetadataCollection collection;
 
-        const string StreamId = "stream-id";
-        const string StreamRevision = "stream-revision";
+        const string StreamId = " x-amz-meta-stream-id";
+        const string StreamRevision = "x-amz-meta-stream-revision";
 
         public string this[string key] => collection[key];
 
