@@ -44,17 +44,17 @@ namespace StreamStore.S3.AmazonS3
             return memoryStream.ToArray();
         }
 
-        public async Task<IS3ReadonlyMetadataCollection> FindBlobMetadataAsync(string key, CancellationToken token)
+        public async Task<IStreamMetadata> FindBlobMetadataAsync(string key, CancellationToken token)
         {
             using var client = new AmazonS3Client();
 
             var response = await client.GetObjectMetadataAsync(bucketName, key, token);
             if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
                 throw new AmazonS3Exception($"Failed to get object from S3. HttpStatusCode: {response.HttpStatusCode}.");
-            return new AmazonReadonlyMetadataCollection(response.Metadata);
+            return new AmazonStreamMetadata(response.Metadata);
         }
 
-        public async Task UploadBlobAsync(string key, byte[] data, IS3ReadonlyMetadataCollection metadata, CancellationToken token)
+        public async Task UploadBlobAsync(string key, byte[] data, IStreamMetadata metadata, CancellationToken token)
         {
             using var client = new AmazonS3Client();
             var request = new PutObjectRequest
@@ -65,10 +65,10 @@ namespace StreamStore.S3.AmazonS3
                 AutoCloseStream = true,
                 AutoResetStreamPosition = true
             };
-
-            metadata.Keys
+            var objectMetadata = new AmazonStreamMetadata(metadata);
+            objectMetadata.Keys
                 .ToList()
-                .ForEach(k => request.Metadata.Add(k, metadata[k]));
+                .ForEach(k => request.Metadata.Add(k, objectMetadata[k]));
 
             var response = await client.PutObjectAsync(request, token);
 

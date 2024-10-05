@@ -6,13 +6,11 @@ namespace StreamStore.S3
 {
     public sealed class S3AbstractFactory
     {
-        readonly S3StreamDatabaseSettings settings;
         readonly IS3ClientFactory clientFactory;
         readonly IS3StreamLockFactory lockFactory;
 
-        public S3AbstractFactory(S3StreamDatabaseSettings settings, IS3ClientFactory clientFactory, IS3StreamLockFactory lockFactory)
+        public S3AbstractFactory(IS3ClientFactory clientFactory, IS3StreamLockFactory lockFactory)
         {
-            this.settings = settings;
             this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
             this.lockFactory = lockFactory ?? throw new ArgumentNullException(nameof(lockFactory));
         }
@@ -25,7 +23,7 @@ namespace StreamStore.S3
 
         public IS3StreamLock CreateLock(Id streamId)
         {
-            return lockFactory.CreateLock(streamId, settings.LockPolicy);
+            return lockFactory.CreateLock(streamId);
         }
     }
 }

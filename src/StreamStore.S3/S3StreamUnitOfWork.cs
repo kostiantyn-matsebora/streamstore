@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamStore.S3.Client;
 
 
 namespace StreamStore.S3
@@ -55,8 +54,8 @@ namespace StreamStore.S3
             var blobMetadata = await client.FindBlobMetadataAsync(id, cancellationToken);
             if (blobMetadata != null)
             {
-                revision = Convert.ToInt32(blobMetadata["stream-revision"]);
-                if (revision != expectedRevision)
+                
+                if (blobMetadata.Revision!= expectedRevision)
                     new OptimisticConcurrencyException(expectedRevision, revision, id);
             }
 
@@ -64,7 +63,7 @@ namespace StreamStore.S3
             var acquired = await lockObject.AcquireAsync(cancellationToken);
             
             if (!acquired)
-                throw new StreamLockedException(id);
+                throw new StreamAlreadyLockedException(id);
 
             try
             {
@@ -72,8 +71,7 @@ namespace StreamStore.S3
                 blobMetadata = await client.FindBlobMetadataAsync(id, cancellationToken);
                 if (blobMetadata != null)
                 {
-                    revision = Convert.ToInt32(blobMetadata["stream-revision"]);
-                    if (revision != expectedRevision)
+                    if (blobMetadata.Revision != expectedRevision)
                         new OptimisticConcurrencyException(expectedRevision, revision, id);
                 }
 
@@ -83,11 +81,7 @@ namespace StreamStore.S3
                         Newtonsoft.Json.JsonConvert.SerializeObject(
                             new StreamRecord(id, records)));
 
-                var metadata = 
-                    new S3MetadataCollection()
-                    .Add("stream-revision", revision.ToString());
-
-                await client.UploadBlobAsync(id, data, metadata, cancellationToken);
+                await client.UploadBlobAsync(id, data, new StreamMetadata(id, revision), cancellationToken);
 
             }
             finally

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 namespace StreamStore
 {
-    public abstract class StreamRecord<T>: StreamHeader where T : EventMetadataRecord
+    public abstract class StreamRecord<T>  where T : EventMetadataRecord
     {
+        public Id Id { get; set; }
+        public int Revision { get; set; }
 
         public T[] Events { get; }
 
@@ -34,10 +36,5 @@ namespace StreamStore
         public StreamMetadataRecord(Id id, IEnumerable<EventMetadataRecord> records) : base(id, records)
         {
         }
-    }
-
-    public class StreamHeader {
-        public Id Id { get; set; }
-        public int Revision { get; set; }
     }
 }

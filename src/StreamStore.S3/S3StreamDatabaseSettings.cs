@@ -1,12 +1,12 @@
 ﻿using System;
-using StreamStore.S3.Client;
+
 
 namespace StreamStore.S3
 {
     public sealed class S3StreamDatabaseSettings
     {
         public string? BucketName { get; internal set;  }
-        public S3StreamLockPolicy? LockPolicy { get; internal set; }
+        public string? LockBucketName { get; internal set; }
 
         internal S3StreamDatabaseSettings()
         {
@@ -22,57 +22,37 @@ namespace StreamStore.S3
 
     public sealed class S3StreamDatabaseSettingsBuilder
     {
-        private string? bucketName;
-        private S3StreamLockPolicy? lockPolicy;
+        string? bucketName;
+        string? lockBucketName;
 
         public static S3StreamDatabaseSettings DefaultSettings(string bucketName) =>
                    new S3StreamDatabaseSettingsBuilder()
                    .WithBucketName(bucketName)
-                   .WithLockPolicy(S3StreamLockPolicy.Default)
+
                    .Build();
+
         public S3StreamDatabaseSettingsBuilder WithBucketName(string bucketName)
         {
             this.bucketName = bucketName;
             return this;
         }
 
-        public S3StreamDatabaseSettingsBuilder WithRetainLock(TimeSpan period)
+        public S3StreamDatabaseSettingsBuilder WithLockBucketName(string bucketName)
         {
-            return WithLockPolicy(new S3RetainLockPolicy(period));
-        
-        }
-
-        public S3StreamDatabaseSettingsBuilder WithHoldLock()
-        {
-            return WithLockPolicy(new S3HoldLockPolicy());
-        }
-
-        private S3StreamDatabaseSettingsBuilder WithLockPolicy(S3StreamLockPolicy lockPolicy)
-        {
-            if (lockPolicy == null)
-                throw new InvalidOperationException("Lock policy is required");
-            this.lockPolicy = lockPolicy;
+            this.lockBucketName = bucketName;
             return this;
         }
 
         public S3StreamDatabaseSettings Build()
         {
            if (bucketName == null)
-            {
-                throw new InvalidOperationException("Bucket name is required");
-            }
-           if (lockPolicy == null)
-            {
-                throw new InvalidOperationException("Lock policy is required");
-            }
+              throw new InvalidOperationException("Bucket name is required");
+
             return new S3StreamDatabaseSettings
             {
                 BucketName = bucketName,
-                LockPolicy = lockPolicy
+                LockBucketName = lockBucketName ?? $"{bucketName}_locks"
             };
         }
-
     }
-
-
 }
