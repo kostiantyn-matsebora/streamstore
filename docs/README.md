@@ -170,13 +170,14 @@ If you experience any issues, have a question or a suggestion, or if you wish
 to contribute, feel free to [open an issue][issues] or
 [start a discussion][discussions].
 
-[issues]: https://github.com/kostiantyn-matsebora/workspace-cli/issues
-[discussions]: https://github.com/kostiantyn-matsebora/workspace-cli/discussions
+
 
 ## License
 
 [`MIT License`](../LICENSE)
 
+[issues]: https://github.com/kostiantyn-matsebora/streamstore/issues
+[discussions]: https://github.com/kostiantyn-matsebora/streamstore/discussions
 [InMemoryStreamDatabase.cs]: ../src/StreamStore/InMemory/InMemoryStreamDatabase.cs
 [InMemoryStreamUnitOfWork.cs]: ../src/StreamStore/InMemory/InMemoryStreamUnitOfWork.cs
 [Id]: ../src/StreamStore.Contracts/Id.cs
