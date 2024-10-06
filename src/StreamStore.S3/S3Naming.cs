@@ -1,7 +1,7 @@
 ﻿
 namespace StreamStore.S3
 {
-    internal sealed class S3Naming
+    internal static class S3Naming
     {
         public const string Delimiter = "/";
 

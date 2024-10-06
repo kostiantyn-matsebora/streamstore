@@ -2,9 +2,8 @@
 
 namespace StreamStore.S3
 {
-    internal class Converter
+    internal static class Converter
     {
-
         public static byte[] ToByteArray(object obj)
         {
             return Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(obj));

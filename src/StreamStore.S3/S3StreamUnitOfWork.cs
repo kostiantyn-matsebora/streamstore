@@ -51,8 +51,6 @@ namespace StreamStore.S3
 
             await ThrowIfStreamAlreadyChanged(client, cancellationToken);
 
-            int revision = expectedRevision;
-
             using var transaction = await S3StreamTransaction.BeginAsync(id, factory);
             try
             {

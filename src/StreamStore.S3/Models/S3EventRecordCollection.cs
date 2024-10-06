@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using StreamStore.S3.Models;
 
 
-namespace StreamStore
+namespace StreamStore.S3.Models
 {
-    internal class S3EventRecordCollection: RevisionedItemCollection<S3EventRecord>
+    internal class S3EventRecordCollection : RevisionedItemCollection<S3EventRecord>
     {
         public S3EventRecordCollection() : base(Enumerable.Empty<S3EventRecord>())
         {

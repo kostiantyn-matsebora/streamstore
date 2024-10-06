@@ -57,12 +57,12 @@ namespace StreamStore.S3.B2
 
         public ValueTask DisposeAsync()
         {
-            Dispose(true);
+            DisposeInternal(true);
             GC.SuppressFinalize(this);
             return new ValueTask(Task.CompletedTask);
         }
 
-        void Dispose(bool disposing)
+        void DisposeInternal(bool disposing)
         {
             if (disposing)
             {

@@ -24,18 +24,21 @@ namespace StreamStore.S3
         public async Task DeleteAsync(string streamId, CancellationToken cancellationToken)
         {
             using var transaction = await S3StreamTransaction.BeginAsync(streamId, factory);
+            await TryDeleteAsync(streamId, transaction, cancellationToken);
+        }
+
+        private async Task TryDeleteAsync(string streamId, S3StreamTransaction transaction, CancellationToken cancellationToken)
+        {
+            try
             {
-                try
-                {
-                    using var deleter =  S3StreamDeleter.New(streamId, factory.CreateClient());
-                    await deleter.DeleteAsync(cancellationToken);
-                    await transaction.CommitAsync(cancellationToken);
-                }
-                catch
-                {
-                    await transaction.RollbackAsync();
-                    throw;
-                }
+                using var deleter = S3StreamDeleter.New(streamId, factory.CreateClient());
+                await deleter.DeleteAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
             }
         }
 
