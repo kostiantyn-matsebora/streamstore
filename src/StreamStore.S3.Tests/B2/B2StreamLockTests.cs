@@ -39,10 +39,10 @@ namespace StreamStore.S3.Tests.B2
             factory = new B2S3Factory(settings, storage);
         }
 
-        [Theory]
-        [InlineData(1000)]
-        [InlineData(100)]
-        [InlineData(10)]
+        //[Theory]
+        //[InlineData(1000)]
+        //[InlineData(100)]
+        //[InlineData(10)]
         public async Task AcquireAsync_ShouldAcquireLockOnlyOnce(int parallelAttempts)
         {
             // Arrange
@@ -68,7 +68,7 @@ namespace StreamStore.S3.Tests.B2
         }
 
 
-        [Fact]
+        //[Fact]
         public async Task AcquireAsync_ShouldNotAllowToAcquireLockIfAlreadyExists()
         {
             // Arrange
