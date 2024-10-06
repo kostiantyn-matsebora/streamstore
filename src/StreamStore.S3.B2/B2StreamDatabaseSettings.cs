@@ -1,26 +1,19 @@
 ﻿using System;
 
 
-namespace StreamStore.S3
+namespace StreamStore.S3.B2
 {
     public sealed class B2StreamDatabaseSettings
     {
-        public string? BucketId { get; internal set;  }
+        public string? BucketId { get; internal set; }
 
         public string? BucketName { get; internal set; }
 
-        public S3Credentials? Credentials { get; internal set; }
+        public B2S3Credentials? Credentials { get; internal set; }
 
-        internal B2StreamDatabaseSettings()
-        {
-        }
+        internal B2StreamDatabaseSettings() { }
 
         public static B2StreamDatabaseSettingsBuilder New => new B2StreamDatabaseSettingsBuilder();
-
-        public static B2StreamDatabaseSettings Default(string bucketId) =>
-            B2StreamDatabaseSettingsBuilder.DefaultSettings(bucketId);
-
-
     }
 
     public sealed class B2StreamDatabaseSettingsBuilder
@@ -28,12 +21,8 @@ namespace StreamStore.S3
         string? bucketId;
         string? bucketName;
 
-        S3Credentials? credentials;
-  
-        public static B2StreamDatabaseSettings DefaultSettings(string bucketName) =>
-                   new B2StreamDatabaseSettingsBuilder()
-                   .WithBucketId(bucketName)
-                   .Build();
+        B2S3Credentials? credentials;
+
 
         public B2StreamDatabaseSettingsBuilder WithBucketId(string bucketId)
         {
@@ -49,7 +38,7 @@ namespace StreamStore.S3
 
         public B2StreamDatabaseSettingsBuilder WithCredentials(string keyId, string key)
         {
-            credentials = new S3Credentials(keyId, key);
+            credentials = new B2S3Credentials(keyId, key);
             return this;
         }
 
@@ -59,6 +48,7 @@ namespace StreamStore.S3
                 throw new InvalidOperationException("credentials are required.");
             if (bucketId == null)
                 throw new InvalidOperationException("bucketId is required.");
+
             return new B2StreamDatabaseSettings
             {
                 BucketId = bucketId,

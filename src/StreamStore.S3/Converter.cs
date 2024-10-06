@@ -5,14 +5,14 @@ namespace StreamStore.S3
     internal class Converter
     {
 
-        public static string ToString(object obj)
+        public static byte[] ToByteArray(object obj)
         {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(obj);
+            return Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(obj));
         }
 
-        public static T? FromString<T>(string data) where T : class
+        public static T? FromByteArray<T>(byte[] data) where T : class
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(data));
         }
     }
 }

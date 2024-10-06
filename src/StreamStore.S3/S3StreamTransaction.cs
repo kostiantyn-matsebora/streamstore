@@ -8,26 +8,33 @@ using StreamStore.S3.Operations;
 
 namespace StreamStore.S3
 {
-    internal sealed class S3StreamTransaction: IDisposable
+    internal sealed class S3StreamTransaction : IDisposable, IAsyncDisposable
     {
-        Id streamId;
-        IS3Factory factory;
-        IS3StreamLock? streamLock;
+        readonly Id streamId;
+        readonly IS3Factory factory;
+        IS3LockHandle? handle;
         bool commited = false;
         bool rolledBack = false;
+        readonly IS3StreamLock @lock;
 
         public S3StreamMetadata? Before { get; private set; }
 
-        S3StreamTransaction(Id streamId, IS3Factory factory)
+        private S3StreamTransaction(Id streamId, IS3StreamLock @lock, IS3Factory factory)
         {
+            if (streamId == Id.None)
+                throw new ArgumentException("Stream id is not set.", nameof(streamId));
             this.streamId = streamId;
-            this.factory = factory;
+            this.@lock = @lock ?? throw new ArgumentNullException(nameof(@lock));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
+
+
 
         async Task BeginAsync(CancellationToken token)
         {
-            streamLock = factory!.CreateLock(streamId);
-            if (!(await streamLock.AcquireAsync(token)))
+            handle = await @lock.AcquireAsync(token);
+
+            if (handle == null)
                 throw new StreamAlreadyLockedException(streamId);
 
             // Get stream metadata first
@@ -42,24 +49,24 @@ namespace StreamStore.S3
                 throw new InvalidOperationException("Transaction already commited or rolled back.");
 
             // Just releasing lock
-            await streamLock!.ReleaseAsync(token);
+            await handle!.ReleaseAsync(token);
             commited = true;
         }
 
 
-        public async Task RollbackAsync()
+        public async Task RollbackAsync() //TODO: Add retry logic
         {
-            if (commited)
-                return;
+            if (commited) return;
             if (rolledBack)
                 throw new InvalidOperationException("Transaction already commited or rolled back.");
 
             try
             {
                 // First get current stream
-                using var client = factory.CreateClient();
-                using var loader = new S3StreamLoader(streamId, factory.CreateClient());
-                var stream = await loader.LoadAsync(CancellationToken.None);
+                await using var client = factory.CreateClient();
+                S3Stream? stream = null;
+                using (var loader = new S3StreamLoader(streamId, factory.CreateClient()))
+                    stream = await loader.LoadAsync(CancellationToken.None);
 
                 // Delete events were added during transaction
                 if (stream != null)
@@ -80,7 +87,9 @@ namespace StreamStore.S3
                     using var updater = S3StreamUpdater.New(onlyMetadata, factory.CreateClient());
                     await updater.UpdateAsync(CancellationToken.None);
                 }
-            } catch {
+            }
+            catch
+            {
                 rolledBack = true; // at least we've tried
                 throw;
             }
@@ -88,26 +97,32 @@ namespace StreamStore.S3
 
         public void Dispose()
         {
-            Dispose(true);
+            DisposeAsync(true).ConfigureAwait(false);
             GC.SuppressFinalize(this);
         }
 
-        void Dispose(bool disposing)
+        async Task DisposeAsync(bool disposing)
         {
             if (disposing)
             {
-                if (!commited && !rolledBack) 
-                    RollbackAsync().Wait();
-                streamLock?.Dispose();
-                streamLock = null;
+                if (!commited && !rolledBack) await RollbackAsync();
+
+                handle?.DisposeAsync();
+                handle = null;
                 Before = null!;
 
             }
         }
 
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true);
+            GC.SuppressFinalize(this);
+        }
+
         public static async Task<S3StreamTransaction> BeginAsync(Id streamId, IS3Factory factory)
         {
-            var transaction = new S3StreamTransaction(streamId, factory);
+            var transaction = new S3StreamTransaction(streamId, factory.CreateLock(streamId), factory);
             await transaction.BeginAsync(CancellationToken.None);
             return transaction;
         }

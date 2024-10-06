@@ -24,18 +24,18 @@ namespace StreamStore.S3.Operations
         public async Task<S3Stream?> LoadAsync(CancellationToken token)
         {
 
-            var data = await client!.FindObjectAsync(S3Naming.StreamKey(streamId), token);
+            var response = await client!.FindObjectAsync(S3Naming.StreamKey(streamId), token);
 
-            if (data == null) // Probably already has been deleted
-                return null;
+            if (response == null) return null;// Probably already has been deleted
 
-            var metadata = Converter.FromString<S3StreamMetadata>(data);
+
+            var metadata = Converter.FromByteArray<S3StreamMetadata>(response.Data!);
             var events = new S3EventRecordCollection();
 
             foreach (var eventMetadata in metadata!.Events!)
             {
-                var eventData = await client.FindObjectAsync(S3Naming.EventKey(streamId, eventMetadata.Id), token);
-                var @event = Converter.FromString<S3EventRecord>(eventData!);
+                var eventResponse = await client.FindObjectAsync(S3Naming.EventKey(streamId, eventMetadata.Id), token);
+                var @event = Converter.FromByteArray<S3EventRecord>(eventResponse!.Data!);
                 events.Add(@event!);
             }
 
@@ -52,7 +52,7 @@ namespace StreamStore.S3.Operations
         {
             if (disposing)
             {
-                client?.Dispose();
+                client?.DisposeAsync().ConfigureAwait(false);
                 client = null;
                 streamId = Id.None;
             }

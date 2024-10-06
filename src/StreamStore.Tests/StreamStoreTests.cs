@@ -92,8 +92,8 @@ namespace StreamStore.Tests
         public async Task GetAsync_ShouldReturnStreamEntityWithEvents(int count)
         {
             // Arrange
-            Fixture fixture = new Fixture();
-            var streamRecord = new StreamRecord(fixture.Create<string>(), fixture.CreateEventRecords(count).ToArray());
+            Fixture fixture = new();
+            var streamRecord = new StreamRecord(fixture.Create<string>(), [.. fixture.CreateEventRecords(count)]);
 
             var streamId = streamRecord.Id;
             var eventCount = streamRecord.Events.Count();

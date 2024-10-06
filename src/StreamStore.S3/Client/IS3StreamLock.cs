@@ -4,9 +4,8 @@ using System.Threading;
 
 namespace StreamStore.S3.Client
 {
-    public interface IS3StreamLock : IDisposable
+    public interface IS3StreamLock
     {
-        abstract Task<bool> AcquireAsync(CancellationToken token);
-        abstract Task ReleaseAsync(CancellationToken token);
+        abstract Task<IS3LockHandle?> AcquireAsync(CancellationToken token);
     }
 }

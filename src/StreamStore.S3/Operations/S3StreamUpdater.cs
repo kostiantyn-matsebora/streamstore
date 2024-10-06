@@ -25,22 +25,24 @@ namespace StreamStore.S3.Operations
 
             Parallel.ForEach(stream.Events, async @event =>
             {
-                var data = Converter.ToString(@event);
+                var data = Converter.ToByteArray(@event);
 
-                await client!.UploadObjectAsync(
-                    S3Naming.EventKey(streamId, @event.Id),
-                    data,
-                    S3EventObjectMetadataCollection.New(@event.Id, @event.Revision),
-                    token,
-                    false);
+                var request = new UploadObjectRequest
+                {
+                    Key = S3Naming.EventKey(streamId, @event.Id),
+                    Data = data
+                };
+                await client!.UploadObjectAsync(request,token);
             });
 
+            var request = new UploadObjectRequest
+            {
+                Key = S3Naming.StreamKey(streamId),
+                Data = Converter.ToByteArray(stream.Metadata)
+            };
+
             // Update stream
-            await client!.UploadObjectAsync(
-                S3Naming.StreamKey(streamId),
-                Converter.ToString(stream.Metadata),
-                S3ObjectMetadataCollection.Empty,
-                token);
+            await client!.UploadObjectAsync(request, token);
         }
 
         public void Dispose()
@@ -53,7 +55,7 @@ namespace StreamStore.S3.Operations
         {
             if (disposing)
             {
-                client?.Dispose();
+                client?.DisposeAsync().ConfigureAwait(false);
                 client = null;
                 stream = null;
             }

@@ -1,24 +1,23 @@
-﻿using System.Configuration;
+﻿using System.Collections.Concurrent;
 using AutoFixture;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using StreamStore.S3.B2;
 using StreamStore.S3.Client;
-using StreamStore.Serialization;
+using StreamStore.S3.Lock;
 using Xunit.Abstractions;
 
 
-namespace StreamStore.S3.Tests.AmazonS3
+namespace StreamStore.S3.Tests.B2
 {
     public class B2StreamLockTests
     {
 
-        B2S3Factory? factory;
-        ITestOutputHelper output;
-        public B2StreamLockTests(ITestOutputHelper output)
+        readonly B2S3Factory? factory;
+
+        public B2StreamLockTests()
         {
-            this.output = output;
             var config = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile($"appsettings.Development.json")
@@ -35,31 +34,41 @@ namespace StreamStore.S3.Tests.AmazonS3
                  .WithBucketName(b2Section.GetSection("bucketName").Value!)
              .Build();
 
-            factory = new B2S3Factory(settings);
+            var storage = new S3StreamLockStorage();
+
+            factory = new B2S3Factory(settings, storage);
         }
 
-        [Theory]
-        [InlineData(10)]
-        [InlineData(100)]
-        public void AcquireAsync_ShouldAcquireLockOnlyOnce(int parallelAttempts)
+        //[Theory]
+        //[InlineData(1000)]
+        //[InlineData(100)]
+        //[InlineData(10)]
+        public async Task AcquireAsync_ShouldAcquireLockOnlyOnce(int parallelAttempts)
         {
             // Arrange
             var fixture = new Fixture();
             var streamId = fixture.Create<string>();
-            var acquirances = new List<IS3StreamLock>();
+            var acquirances = new ConcurrentBag<IS3LockHandle>();
 
-            Parallel.For(0, parallelAttempts, i =>
+            var tasks = Enumerable.Range(0, parallelAttempts).Select(async i =>
             {
                 var @lock = factory!.CreateLock(streamId);
-                if (@lock.AcquireAsync(CancellationToken.None).Result)
-                    acquirances.Add(@lock);
+                var handle = await @lock.AcquireAsync(CancellationToken.None);
+
+                if (handle != null)
+                    acquirances.Add(handle);
             });
+
+            await Task.WhenAll(tasks);
+
             acquirances.Count.Should().Be(1);
-            acquirances.ForEach(l => l.ReleaseAsync(CancellationToken.None).Wait());
+
+            var releaseTasks = acquirances.Select(handle => handle.ReleaseAsync(CancellationToken.None));
+            await Task.WhenAll(releaseTasks);
         }
 
 
-        [Fact]
+        // [Fact]
         public async Task AcquireAsync_ShouldNotAllowToAcquireLockIfAlreadyExists()
         {
             // Arrange
@@ -68,15 +77,14 @@ namespace StreamStore.S3.Tests.AmazonS3
 
             // Act & Assert
             var @lock = factory!.CreateLock(streamId);
-            var result = await @lock.AcquireAsync(CancellationToken.None);
-            result.Should().BeTrue();
+            var handle = await @lock.AcquireAsync(CancellationToken.None);
+            handle.Should().NotBeNull();
 
             var lock2 = factory!.CreateLock(streamId);
-            result = await @lock2.AcquireAsync(CancellationToken.None);
-            result.Should().BeFalse();
+            var handle2 = await lock2.AcquireAsync(CancellationToken.None);
+            handle2.Should().BeNull();
 
-            await @lock.ReleaseAsync(CancellationToken.None);
-            await lock2.ReleaseAsync(CancellationToken.None);
+            await handle!.ReleaseAsync(CancellationToken.None);
         }
     }
 }

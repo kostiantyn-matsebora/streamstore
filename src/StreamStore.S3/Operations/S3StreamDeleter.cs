@@ -23,12 +23,10 @@ namespace StreamStore.S3.Operations
         {
 
             // First get stream metadata
-            var data = await client!.FindObjectAsync(S3Naming.StreamKey(streamId), token);
+            var response = await client!.FindObjectAsync(S3Naming.StreamKey(streamId), token);
+            if (response == null) return;
 
-            if (data == null)
-                return;
-
-            var metadata = Converter.FromString<S3StreamMetadata>(data);
+            var metadata = Converter.FromByteArray<S3StreamMetadata>(response.Data!);
 
             // Delete all events
             foreach (var eventMetadata in metadata!.Events!)
@@ -50,7 +48,7 @@ namespace StreamStore.S3.Operations
         {
             if (disposing)
             {
-                client?.Dispose();
+                client?.DisposeAsync().ConfigureAwait(false);
                 client = null;
                 streamId = Id.None;
             }

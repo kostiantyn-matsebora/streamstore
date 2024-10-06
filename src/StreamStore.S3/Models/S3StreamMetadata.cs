@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Amazon.S3.Model;
 
 namespace StreamStore.S3.Models
 {

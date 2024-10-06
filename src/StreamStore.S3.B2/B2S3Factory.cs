@@ -1,32 +1,36 @@
 ﻿using System;
-using System.Collections.Concurrent;
+
 using B2Net;
 using B2Net.Models;
 using StreamStore.S3.Client;
+using StreamStore.S3.Lock;
 
 namespace StreamStore.S3.B2
 {
     internal class B2S3Factory : IS3Factory
     {
         readonly B2StreamDatabaseSettings settings;
-        ConcurrentBag<Id> streamLocks = new ConcurrentBag<Id>();
+        readonly S3StreamLockStorage storage;
+        readonly B2Client? client; //TODO: create pool of clients
 
-        B2Client? client;
-
-        public B2S3Factory(B2StreamDatabaseSettings settings)
+        public B2S3Factory(B2StreamDatabaseSettings settings, S3StreamLockStorage storage)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            this.storage = storage ?? throw new ArgumentNullException(nameof(storage));
+            client = CreateB2Client();
+            client.Authorize();
         }
 
         public IS3Client CreateClient()
         {
-            return new B2S3Client();
+            return new B2S3Client(settings, client!);
         }
 
         public IS3StreamLock CreateLock(Id streamId)
         {
-            return new B2S3StreamLock(streamId, settings.BucketId!, settings.BucketName!, CreateB2Client());
-
+            var inMemoryLock = new S3StreamInMemoryLock(streamId, storage);
+            var fileLock = new S3FileLock(streamId, CreateClient());
+            return new S3CompositeStreamLock(inMemoryLock, fileLock);
         }
 
         B2Client CreateB2Client()
