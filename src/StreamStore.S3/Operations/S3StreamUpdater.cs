@@ -12,7 +12,7 @@ namespace StreamStore.S3.Operations
         IS3Client? client;
         S3Stream? stream;
 
-        public S3StreamUpdater(S3Stream stream, IS3Client client)
+        S3StreamUpdater(S3Stream stream, IS3Client client)
         {
             this.stream = stream ?? throw new ArgumentNullException(nameof(stream));
             this.client = client ?? throw new ArgumentNullException(nameof(client));
@@ -57,6 +57,11 @@ namespace StreamStore.S3.Operations
                 client = null;
                 stream = null;
             }
+        }
+
+        public static S3StreamUpdater New(S3Stream stream, IS3Client client)
+        {
+            return new S3StreamUpdater(stream, client);
         }
     }
 }

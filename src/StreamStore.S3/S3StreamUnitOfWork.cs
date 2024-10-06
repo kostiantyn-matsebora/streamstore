@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
 using StreamStore.S3.Models;
+using StreamStore.S3.Operations;
 
 
 namespace StreamStore.S3
@@ -15,9 +16,9 @@ namespace StreamStore.S3
         readonly S3EventRecordCollection records = new S3EventRecordCollection();
         readonly Id id;
         readonly int expectedRevision;
-        readonly S3AbstractFactory factory;
+        readonly IS3Factory factory;
 
-        public S3StreamUnitOfWork(Id streamId, int expectedRevision,  S3AbstractFactory factory)
+        public S3StreamUnitOfWork(Id streamId, int expectedRevision, IS3Factory factory)
         {
 
             if (streamId == Id.None)
@@ -70,7 +71,7 @@ namespace StreamStore.S3
                     var newStream = S3Stream.New(streamMetadata, records);
 
                     // Update stream
-                    using var updater = factory.CreateUpdater(newStream);
+                    using var updater = S3StreamUpdater.New(newStream, factory.CreateClient());
                     await updater.UpdateAsync(cancellationToken);
                     await transaction.CommitAsync(cancellationToken);
                 }

@@ -1,16 +1,20 @@
 ﻿using System;
-using StreamStore.S3.Lock;
-
+using StreamStore.S3.Client;
 
 namespace StreamStore.S3.AmazonS3
 {
-    internal sealed class AmazonLockFactory : IS3StreamLockFactory
+    internal sealed class AmazonS3Factory : IS3Factory
     {
-        readonly S3StreamDatabaseSettings? settings;
+        readonly AmazonDatabaseSettings? settings;
 
-        public AmazonLockFactory(S3StreamDatabaseSettings settings)
+        public AmazonS3Factory(AmazonDatabaseSettings settings)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
+        }
+
+        public IS3Client CreateClient()
+        {
+            return new AmazonClient(settings!);
         }
 
         public IS3StreamLock CreateLock(Id streamId)

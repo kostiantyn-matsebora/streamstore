@@ -55,5 +55,10 @@ namespace StreamStore.S3.Operations
                 streamId = Id.None;
             }
         }
+
+        public static S3StreamDeleter New(Id streamId, IS3Client client)
+        {
+            return new S3StreamDeleter(streamId, client);
+        }
     }
 }

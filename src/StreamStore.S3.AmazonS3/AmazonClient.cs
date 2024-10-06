@@ -17,7 +17,7 @@ namespace StreamStore.S3.AmazonS3
         AmazonS3Client? client;
         string? bucketName;
 
-        public AmazonClient(S3StreamDatabaseSettings settings)
+        public AmazonClient(AmazonDatabaseSettings settings)
         {
             if (settings == null)
                 throw new ArgumentNullException(nameof(settings));
@@ -26,7 +26,7 @@ namespace StreamStore.S3.AmazonS3
             bucketName = settings.BucketName;
         }
 
-        public static AmazonS3Client NewNativeClient(S3StreamDatabaseSettings settings)
+        public static AmazonS3Client NewNativeClient(AmazonDatabaseSettings settings)
         {
             return new AmazonS3Client(settings!.Credentials!.AccessKey, settings.Credentials.AccessKeyId, new AmazonS3Config() { ServiceURL = settings.Endpoint });
 

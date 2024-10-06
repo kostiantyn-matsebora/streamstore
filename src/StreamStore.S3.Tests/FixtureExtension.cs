@@ -2,6 +2,7 @@
 using StreamStore.Serialization;
 
 
+
 namespace StreamStore.S3.Tests
 {
     internal static class FixtureExtension
@@ -28,7 +29,5 @@ namespace StreamStore.S3.Tests
         {
             return CreateEventRecords(fixture,  1, count);
         }
-
-
     }
 }

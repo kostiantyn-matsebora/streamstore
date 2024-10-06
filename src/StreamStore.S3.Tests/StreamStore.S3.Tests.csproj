@@ -13,6 +13,8 @@
     <PackageReference Include="AutoFixture" Version="4.18.1" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.5.3" />
@@ -20,13 +22,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
-    <ProjectReference Include="..\StreamStore.S3\StreamStore.S3.csproj" />
+    <ProjectReference Include="..\StreamStore.S3.B2\StreamStore.S3.B2.csproj" />
     <ProjectReference Include="..\StreamStore\StreamStore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

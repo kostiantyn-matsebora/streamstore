@@ -3,19 +3,19 @@ using Amazon.S3;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-using StreamStore.S3.Lock;
 using System.Linq;
-
+using StreamStore.S3.Client;
 
 namespace StreamStore.S3.AmazonS3
 {
-    internal sealed class AmazonStreamLock: IS3StreamLock
+    internal sealed class AmazonStreamLock : IS3StreamLock
     {
         readonly Id streamId;
         string? bucketName;
         AmazonS3Client? client;
+        string? versionId;
 
-        public AmazonStreamLock(Id streamId, string bucketName, AmazonS3Client client) 
+        public AmazonStreamLock(Id streamId, string bucketName, AmazonS3Client client)
         {
             if (streamId == Id.None)
                 throw new ArgumentException("Stream Id must be specified", nameof(streamId));
@@ -29,15 +29,17 @@ namespace StreamStore.S3.AmazonS3
 
         public async Task<bool> AcquireAsync(CancellationToken token)
         {
+
             var request = new PutObjectRequest
             {
                 BucketName = bucketName,
                 Key = S3Naming.LockKey(streamId),
                 ContentBody = "lock", // for debugging purposes
-                //ObjectLockLegalHoldStatus = ObjectLockLegalHoldStatus.On,
+                ObjectLockMode = ObjectLockMode.Governance,
+                ObjectLockRetainUntilDate = DateTime.UtcNow.AddMinutes(1),
                 CalculateContentMD5Header = true,
             };
-            var lockMetadata = new AmazonStreamLockMetadata();
+            var lockMetadata = new S3StreamLockMetadata();
 
             lockMetadata.Keys
                 .ToList()
@@ -45,7 +47,10 @@ namespace StreamStore.S3.AmazonS3
 
             var response = await client!.PutObjectAsync(request, token);
 
-            return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                return false;
+            versionId = response.VersionId;
+            return true;
         }
 
         public async Task ReleaseAsync(CancellationToken token)
@@ -54,8 +59,9 @@ namespace StreamStore.S3.AmazonS3
             {
                 BucketName = bucketName,
                 Key = S3Naming.LockKey(streamId),
+                VersionId = null
             };
-            
+
             await client!.DeleteObjectAsync(request, token);
         }
 
@@ -72,6 +78,7 @@ namespace StreamStore.S3.AmazonS3
                 client!.Dispose();
                 client = null;
                 bucketName = null;
+                versionId = null;
             }
         }
     }

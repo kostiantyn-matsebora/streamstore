@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamStore.S3.Lock;
+using StreamStore.S3.Client;
 using StreamStore.S3.Models;
 using StreamStore.S3.Operations;
 
@@ -11,14 +11,14 @@ namespace StreamStore.S3
     internal sealed class S3StreamTransaction: IDisposable
     {
         Id streamId;
-        S3AbstractFactory factory;
+        IS3Factory factory;
         IS3StreamLock? streamLock;
         bool commited = false;
         bool rolledBack = false;
 
         public S3StreamMetadata? Before { get; private set; }
 
-        S3StreamTransaction(Id streamId, S3AbstractFactory factory)
+        S3StreamTransaction(Id streamId, IS3Factory factory)
         {
             this.streamId = streamId;
             this.factory = factory;
@@ -77,7 +77,7 @@ namespace StreamStore.S3
                 if (Before != null)
                 {
                     var onlyMetadata = S3Stream.New(Before, new S3EventRecordCollection(Array.Empty<S3EventRecord>()));
-                    using var updater = factory.CreateUpdater(onlyMetadata);
+                    using var updater = S3StreamUpdater.New(onlyMetadata, factory.CreateClient());
                     await updater.UpdateAsync(CancellationToken.None);
                 }
             } catch {
@@ -105,7 +105,7 @@ namespace StreamStore.S3
             }
         }
 
-        public static async Task<S3StreamTransaction> BeginAsync(Id streamId, S3AbstractFactory factory)
+        public static async Task<S3StreamTransaction> BeginAsync(Id streamId, IS3Factory factory)
         {
             var transaction = new S3StreamTransaction(streamId, factory);
             await transaction.BeginAsync(CancellationToken.None);

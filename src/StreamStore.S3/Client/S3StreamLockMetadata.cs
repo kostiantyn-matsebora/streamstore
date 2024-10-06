@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 
 
-namespace StreamStore.S3.AmazonS3
+namespace StreamStore.S3.Client
 {
-  
-
-    internal class AmazonStreamLockMetadata
+    internal class S3StreamLockMetadata
     {
         const string LockAcquiredAt = "x-amz-meta-stream-lock-acquired-at";
         readonly Dictionary<string, string> metadata = new Dictionary<string, string>();
@@ -15,7 +13,7 @@ namespace StreamStore.S3.AmazonS3
 
         public ICollection<string> Keys => metadata.Keys;
 
-        public AmazonStreamLockMetadata()
+        public S3StreamLockMetadata()
         {
             metadata.Add(LockAcquiredAt, DateTime.UtcNow.ToString());
         }

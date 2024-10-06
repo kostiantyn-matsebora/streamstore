@@ -2,6 +2,7 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.S3.Client;
 using StreamStore.S3.Operations;
 
 
@@ -9,8 +10,8 @@ namespace StreamStore.S3
 {
     public sealed class S3StreamDatabase : IStreamDatabase
     {
-        readonly S3AbstractFactory factory;
-        internal S3StreamDatabase(S3AbstractFactory factory)
+        readonly IS3Factory factory;
+        internal S3StreamDatabase(IS3Factory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
@@ -26,7 +27,7 @@ namespace StreamStore.S3
             {
                 try
                 {
-                    using var deleter = factory.CreateDeleter(streamId);
+                    using var deleter =  S3StreamDeleter.New(streamId, factory.CreateClient());
                     await deleter.DeleteAsync(cancellationToken);
                     await transaction.CommitAsync(cancellationToken);
                 }
