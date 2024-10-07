@@ -1,12 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using AutoFixture;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
-using Moq;
+
 using StreamStore.S3.B2;
 using StreamStore.S3.Client;
-using StreamStore.S3.Lock;
-using Xunit.Abstractions;
 
 
 namespace StreamStore.S3.Tests.B2
@@ -18,38 +15,23 @@ namespace StreamStore.S3.Tests.B2
 
         public B2StreamLockTests()
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile($"appsettings.Development.json")
-                .Build();
-
-            var b2Section = config.GetSection("b2");
-
-            var settings =
-                 new B2StreamDatabaseSettingsBuilder()
-                 .WithCredentials(
-                     b2Section.GetSection("applicationKeyId").Value!,
-                     b2Section.GetSection("applicationKey").Value!)
-                 .WithBucketId(b2Section.GetSection("bucketId").Value!)
-                 .WithBucketName(b2Section.GetSection("bucketName").Value!)
-             .Build();
-
-            var storage = new S3InMemoryStreamLockStorage();
-
-            factory = new B2S3Factory(settings, storage);
+            factory = B2TestsSuite.CreateFactory();
         }
 
-        //[Theory]
-        //[InlineData(1000)]
-        //[InlineData(100)]
-        //[InlineData(10)]
+        [InlineData(1000)]
+        [InlineData(100)]
+        [InlineData(10)]
+        [SkippableTheory]
         public async Task AcquireAsync_ShouldAcquireLockOnlyOnce(int parallelAttempts)
         {
+            Skip.IfNot(factory != null, "B2 configuration is missing");
+
             // Arrange
             var fixture = new Fixture();
             var streamId = fixture.Create<string>();
             var acquirances = new ConcurrentBag<IS3LockHandle>();
 
+            // Act
             var tasks = Enumerable.Range(0, parallelAttempts).Select(async i =>
             {
                 var @lock = factory!.CreateLock(streamId);
@@ -61,6 +43,7 @@ namespace StreamStore.S3.Tests.B2
 
             await Task.WhenAll(tasks);
 
+            // Assert
             acquirances.Count.Should().Be(1);
 
             var releaseTasks = acquirances.Select(handle => handle.ReleaseAsync(CancellationToken.None));
@@ -68,9 +51,11 @@ namespace StreamStore.S3.Tests.B2
         }
 
 
-        //[Fact]
+        [SkippableFact]
         public async Task AcquireAsync_ShouldNotAllowToAcquireLockIfAlreadyExists()
         {
+            Skip.IfNot(factory != null, "B2 configuration is missing");
+
             // Arrange
             var fixture = new Fixture();
             var streamId = fixture.Create<string>();
@@ -85,6 +70,31 @@ namespace StreamStore.S3.Tests.B2
             handle2.Should().BeNull();
 
             await handle!.ReleaseAsync(CancellationToken.None);
+        }
+
+        [SkippableFact]
+        public async Task AcquireAsync_ShouldAcquireLockIfReleased()
+        {
+            Skip.IfNot(factory != null, "B2 configuration is missing");
+
+            // Arrange
+            var fixture = new Fixture();
+            var streamId = fixture.Create<string>();
+
+            // Act & Assert
+            var @lock = factory!.CreateLock(streamId);
+            var handle = await @lock.AcquireAsync(CancellationToken.None);
+            handle.Should().NotBeNull();
+
+            (await @lock.AcquireAsync(CancellationToken.None)).Should().BeNull();
+
+            await handle!.ReleaseAsync(CancellationToken.None);
+
+            var lock2 = factory!.CreateLock(streamId);
+            var handle2 = await lock2.AcquireAsync(CancellationToken.None);
+            handle2.Should().NotBeNull();
+
+            await handle2!.ReleaseAsync(CancellationToken.None);
         }
     }
 }
