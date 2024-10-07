@@ -20,15 +20,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <Compile Remove="Domain\**" />
+    <EmbeddedResource Remove="Domain\**" />
+    <None Remove="Domain\**" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Domain\" />
+    <ProjectReference Include="..\StreamStore.InMemory\StreamStore.InMemory.csproj" />
+    <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +40,10 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
   </ItemGroup>
 
 </Project>

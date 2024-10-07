@@ -3,7 +3,7 @@
 
 namespace StreamStore
 {
-    public sealed class EventEntity {
+    public sealed class EventEntity: IHasRevision {
         public Id EventId { get; }
         public DateTime Timestamp { get; }
         public int Revision { get; }

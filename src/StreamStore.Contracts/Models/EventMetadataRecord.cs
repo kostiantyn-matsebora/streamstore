@@ -1,7 +1,7 @@
 ﻿using System;
 namespace StreamStore
 {
-    public class EventMetadataRecord
+    public class EventMetadataRecord: IHasRevision
     {
         public Id Id { get; set; }
 

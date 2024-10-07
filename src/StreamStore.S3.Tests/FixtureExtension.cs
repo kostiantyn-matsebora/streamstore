@@ -1,17 +1,24 @@
 ﻿using AutoFixture;
+using StreamStore.Serialization;
 
-namespace StreamStore.Tests
+
+
+namespace StreamStore.S3.Tests
 {
     internal static class FixtureExtension
     {
+        
         public static EventRecord[] CreateEventRecords(this Fixture fixture,  int initialRevision, int count)
         {
+            var serializer = new EventSerializer();
+
             var revision = initialRevision;
 
             var records =
                     fixture
                     .Build<EventRecord>()
-                    .With(x => x.Revision, () => revision++)
+                    .With(x => x.Revision, () =>revision++)
+                    .With(x => x.Data, serializer.Serialize(fixture.Create<RootEvent>()))
                     .CreateMany(count)
                     .ToArray();
 
@@ -20,7 +27,7 @@ namespace StreamStore.Tests
 
         public static EventRecord[] CreateEventRecords(this Fixture fixture, int count)
         {
-            return CreateEventRecords(fixture, count, 1);
+            return CreateEventRecords(fixture,  1, count);
         }
     }
 }

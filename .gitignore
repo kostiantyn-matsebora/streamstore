@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/src/StreamStore.S3.Tests/appsettings.Development.json
+**/*.Development.json

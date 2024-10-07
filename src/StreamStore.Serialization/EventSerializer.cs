@@ -2,7 +2,7 @@
 
 namespace StreamStore.Serialization
 {
-    class EventSerializer : IEventSerializer
+    public sealed class EventSerializer : IEventSerializer
     {
         public string Serialize(object @event)
         {

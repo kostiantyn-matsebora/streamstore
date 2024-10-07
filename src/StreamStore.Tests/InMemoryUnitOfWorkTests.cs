@@ -3,6 +3,7 @@
 using AutoFixture;
 using FluentAssertions;
 using StreamStore.InMemory;
+using StreamStore.Testing;
 
 namespace StreamStore.Tests
 {
