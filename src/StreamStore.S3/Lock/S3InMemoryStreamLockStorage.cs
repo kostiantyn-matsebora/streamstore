@@ -1,23 +1,49 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Threading;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace StreamStore.S3.Lock
 {
     class S3InMemoryStreamLockStorage
     {
-        readonly ConcurrentDictionary<Id, LockId> locks = new ConcurrentDictionary<Id, LockId>();
+        MemoryCache locks = new MemoryCache(new MemoryCacheOptions());
+        readonly TimeSpan ttl;
+        readonly SemaphoreSlim semaphore;
 
-        public LockId? TryLock(Id streamId)
+        public S3InMemoryStreamLockStorage(TimeSpan ttl, int parallelCount = 1)
         {
-            if (locks.ContainsKey(streamId)) return null;
-
-            var lockId = new LockId();
-            if (locks.TryAdd(streamId, lockId)) return lockId;
-            return null;
+            if (ttl == TimeSpan.Zero) 
+                throw new ArgumentException("TTL must be set.", nameof(ttl));
+            this.ttl = ttl;
+            if (parallelCount <= 0)
+                throw new ArgumentException("Parallel count must be greater than 0.", nameof(parallelCount));
+            semaphore = new SemaphoreSlim(parallelCount);
         }
 
-        public void ReleaseLock(Id streamId)
+        public LockId? TryAdd(Id streamId)
         {
-            locks.TryRemove(streamId, out _);
+            semaphore.Wait();
+            try
+            {
+                locks.TryGetValue(streamId, out LockId? lockId);
+                if (lockId != null) return null;
+                
+                lockId = new LockId();
+                
+                return  locks.Set(streamId, lockId,
+                    new MemoryCacheEntryOptions { AbsoluteExpirationRelativeToNow  = ttl }
+                );
+                
+            } finally
+            {
+                semaphore.Release();
+            }
+        }
+
+        public void TryRemove(Id streamId)
+        {
+            locks.Remove(streamId);
         }
     }
 }

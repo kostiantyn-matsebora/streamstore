@@ -21,7 +21,7 @@ namespace StreamStore.S3.Lock
 
         public Task ReleaseAsync(CancellationToken token)
         {
-            storage!.ReleaseLock(streamId);
+            storage!.TryRemove(streamId);
             return Task.CompletedTask;
         }
 

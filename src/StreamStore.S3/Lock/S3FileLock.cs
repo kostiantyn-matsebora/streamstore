@@ -10,8 +10,9 @@ namespace StreamStore.S3.Lock
     {
         readonly Id streamId;
         readonly IS3Client client;
+        int parallelCount;
 
-        public S3FileLock(Id streamId, IS3Client client)
+        public S3FileLock(Id streamId, IS3Client client, int parallelCount = 10)
         {
             if (streamId == Id.None)
                 throw new ArgumentException("Stream id is not set.", nameof(streamId));
@@ -19,6 +20,9 @@ namespace StreamStore.S3.Lock
             this.streamId = streamId;
 
             this.client = client ?? throw new ArgumentNullException(nameof(client));
+
+            if (parallelCount <= 0)
+                throw new ArgumentException("Parallel count must be greater than 0.", nameof(parallelCount));
         }
 
         public async Task<IS3LockHandle?> AcquireAsync(CancellationToken token)

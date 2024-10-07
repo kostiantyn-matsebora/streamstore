@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using AutoFixture;
+using Bytewizer.Backblaze.Extensions;
 using FluentAssertions;
 using StreamStore.S3.Client;
 
@@ -20,6 +21,7 @@ namespace StreamStore.S3.Tests
         [InlineData(1000)]
         [InlineData(100)]
         [InlineData(10)]
+        [InlineData(1)]
         [SkippableTheory]
         public async Task AcquireAsync_ShouldAcquireLockOnlyOnce(int parallelAttempts)
         {
@@ -29,18 +31,15 @@ namespace StreamStore.S3.Tests
             var fixture = new Fixture();
             var streamId = fixture.Create<string>();
             var acquirances = new ConcurrentBag<IS3LockHandle>();
-
             // Act
-            var tasks = Enumerable.Range(0, parallelAttempts).Select(async i =>
+            await Enumerable.Range(0, parallelAttempts).ForEachAsync(parallelAttempts, async i =>
             {
                 var @lock = factory!.CreateLock(streamId);
                 var handle = await @lock.AcquireAsync(CancellationToken.None);
 
                 if (handle != null)
                     acquirances.Add(handle);
-            }).ToList();
-
-            await Task.WhenAll(tasks);
+            });
 
             // Assert
             acquirances.Count.Should().Be(1);

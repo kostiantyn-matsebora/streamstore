@@ -28,7 +28,7 @@ namespace StreamStore.S3.Tests.B2
                  .WithBucketName(b2Section.GetSection("bucketName").Value!)
              .Build();
 
-            var storage = new S3InMemoryStreamLockStorage();
+            var storage = new S3InMemoryStreamLockStorage(settings.InMemoryLockTTL);
 
             return new B2S3Factory(settings, storage);
         }
