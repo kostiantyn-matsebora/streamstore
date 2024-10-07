@@ -7,7 +7,7 @@ namespace StreamStore.S3.Lock
 {
     class S3InMemoryStreamLockStorage
     {
-        MemoryCache locks = new MemoryCache(new MemoryCacheOptions());
+        readonly MemoryCache locks = new MemoryCache(new MemoryCacheOptions());
         readonly TimeSpan ttl;
         readonly SemaphoreSlim semaphore;
 

@@ -32,5 +32,15 @@ namespace StreamStore.S3.Tests.B2
 
             return new B2S3Factory(settings, storage);
         }
+
+        public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, int expectedRevision = 0)
+        {
+            var factory = CreateFactory();
+            if (factory == null)
+                return null;
+
+            return new S3StreamUnitOfWork(streamId, expectedRevision, factory);
+        }
+
     }
 }

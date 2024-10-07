@@ -7,12 +7,12 @@ using StreamStore.S3.Client;
 namespace StreamStore.S3.Tests
 {
 
-    public abstract class S3ClientTests
+    public abstract class S3ClientTestsBase
     {
-        IS3Factory? factory;
-        IS3Client? client;
+        readonly IS3Factory? factory;
+        readonly IS3Client? client;
 
-        public S3ClientTests(IS3Factory? factory)
+        public S3ClientTestsBase(IS3Factory? factory)
         {
             this.factory = factory;
             client = this.factory?.CreateClient();

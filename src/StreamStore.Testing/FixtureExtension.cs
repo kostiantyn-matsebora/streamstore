@@ -1,12 +1,13 @@
 ﻿using AutoFixture;
 using StreamStore.Serialization;
 
-namespace StreamStore.Tests
+
+namespace StreamStore.Testing
 {
-    internal static class FixtureExtension
+    public static class FixtureExtension
     {
-        
-        public static EventRecord[] CreateEventRecords(this Fixture fixture,  int initialRevision, int count)
+
+        public static EventRecord[] CreateEventRecords(this Fixture fixture, int initialRevision, int count)
         {
             var serializer = new EventSerializer();
 
@@ -25,9 +26,7 @@ namespace StreamStore.Tests
 
         public static EventRecord[] CreateEventRecords(this Fixture fixture, int count)
         {
-            return CreateEventRecords(fixture,  1, count);
+            return fixture.CreateEventRecords(1, count);
         }
-
-
     }
 }

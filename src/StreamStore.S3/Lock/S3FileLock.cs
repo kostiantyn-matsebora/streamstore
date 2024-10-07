@@ -10,7 +10,6 @@ namespace StreamStore.S3.Lock
     {
         readonly Id streamId;
         readonly IS3Client client;
-        int parallelCount;
 
         public S3FileLock(Id streamId, IS3Client client)
         {

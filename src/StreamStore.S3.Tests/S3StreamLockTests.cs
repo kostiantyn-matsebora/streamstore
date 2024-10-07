@@ -8,16 +8,8 @@ using StreamStore.S3.Client;
 
 namespace StreamStore.S3.Tests
 {
-    public abstract class S3StreamLockTests
+    public abstract class S3StreamLockTests(IS3Factory? factory)
     {
-
-        readonly IS3Factory? factory;
-
-        public S3StreamLockTests(IS3Factory? factory)
-        {
-            this.factory = factory;
-        }
-
         [InlineData(1000)]
         [InlineData(100)]
         [InlineData(10)]

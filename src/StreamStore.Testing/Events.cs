@@ -1,6 +1,4 @@
-﻿using AutoFixture;
-
-namespace StreamStore.Tests
+﻿namespace StreamStore.Testing
 {
     public class LeafEvent
     {

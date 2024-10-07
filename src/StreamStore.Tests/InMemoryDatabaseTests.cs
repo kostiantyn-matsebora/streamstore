@@ -1,10 +1,9 @@
 ﻿
 
 using StreamStore.InMemory;
+using StreamStore.Testing;
 using AutoFixture;
 using FluentAssertions;
-using FluentAssertions.Equivalency;
-using System.Diagnostics.CodeAnalysis;
 
 namespace StreamStore.Tests;
 

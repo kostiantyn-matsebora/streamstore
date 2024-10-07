@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using StreamStore.InMemory;
 using StreamStore.Serialization;
+using StreamStore.Testing;
 
 namespace StreamStore.Tests
 {

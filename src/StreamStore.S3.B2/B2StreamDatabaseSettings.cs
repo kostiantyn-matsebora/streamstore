@@ -11,7 +11,7 @@ namespace StreamStore.S3.B2
 
         public B2S3Credentials? Credentials { get; internal set; }
 
-        public string Delimiter { get; internal set; }
+        public string? Delimiter { get; internal set; }
 
         internal B2StreamDatabaseSettings() { }
 

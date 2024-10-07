@@ -15,9 +15,9 @@ namespace StreamStore.S3.B2
     internal class B2S3Client : IS3Client
     {
         readonly B2StreamDatabaseSettings settings;
+        readonly int maxDegreeOfParallelism = 10;
         IStorageClient? client;
         const int maxFileCount = 10000;
-        int maxDegreeOfParallelism = 10;
 
         public B2S3Client(B2StreamDatabaseSettings settings, IStorageClient client)
         {
@@ -29,7 +29,7 @@ namespace StreamStore.S3.B2
         {
             var request = new ListFileVersionRequest(settings.BucketId)
             {
-                Prefix = !string.IsNullOrEmpty(prefix) ? prefix: null,
+                Prefix = !string.IsNullOrEmpty(prefix) ? prefix : null,
                 StartFileName = key,
                 MaxFileCount = maxFileCount,
                 Delimiter = !string.IsNullOrEmpty(prefix) ? settings.Delimiter : null,
@@ -82,7 +82,7 @@ namespace StreamStore.S3.B2
             var response = await client!.UploadAsync(settings.BucketId, request.Key, stream);
 
             if (!response.IsSuccessStatusCode) return null;
-           
+
             return new UploadObjectResponse
             {
                 FileId = response.Response.FileId,

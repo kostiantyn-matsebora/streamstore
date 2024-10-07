@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using AutoFixture;
 using StreamStore.Serialization;
+using StreamStore.Testing;
 using FluentAssertions;
 
 namespace StreamStore.Tests
