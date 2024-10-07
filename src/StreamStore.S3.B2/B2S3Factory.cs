@@ -1,7 +1,6 @@
 ﻿using System;
 
-using B2Net;
-using B2Net.Models;
+using Bytewizer.Backblaze.Client;
 using StreamStore.S3.Client;
 using StreamStore.S3.Lock;
 
@@ -11,14 +10,13 @@ namespace StreamStore.S3.B2
     {
         readonly B2StreamDatabaseSettings settings;
         readonly S3InMemoryStreamLockStorage storage;
-        readonly B2Client? client; //TODO: create pool of clients
+        readonly BackblazeClient? client; //TODO: create pool of clients
 
         public B2S3Factory(B2StreamDatabaseSettings settings, S3InMemoryStreamLockStorage storage)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.storage = storage ?? throw new ArgumentNullException(nameof(storage));
             client = CreateB2Client();
-            client.Authorize();
         }
 
         public IS3Client CreateClient()
@@ -33,16 +31,12 @@ namespace StreamStore.S3.B2
             return new S3CompositeStreamLock(inMemoryLock, fileLock);
         }
 
-        B2Client CreateB2Client()
+        BackblazeClient CreateB2Client()
         {
-            var options = new B2Options()
-            {
-                KeyId = settings.Credentials!.AccessKeyId,
-                ApplicationKey = settings.Credentials!.AccessKey,
-                BucketId = settings.BucketId,
-            };
+            var client = new BackblazeClient();
+            client.Connect(settings.Credentials!.AccessKeyId, settings.Credentials!.AccessKey);
 
-            return new B2Client(options, authorizeOnInitialize: true);
+            return client;
         }
     }
 }

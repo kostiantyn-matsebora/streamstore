@@ -81,7 +81,7 @@ namespace StreamStore.S3
         async Task<S3StreamMetadata?> ThrowIfStreamAlreadyChanged(IS3Client client, CancellationToken token)
         {
 
-            var response = await client.FindObjectAsync(S3Naming.StreamKey(id), token);
+            var response = await client.FindObjectAsync(S3Naming.StreamMetadataKey(id), token);
             if (response == null) return null;
 
             var stream = Converter.FromByteArray<S3StreamMetadata>(response.Data!);

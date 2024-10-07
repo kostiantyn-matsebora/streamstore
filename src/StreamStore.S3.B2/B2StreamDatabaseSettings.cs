@@ -11,6 +11,8 @@ namespace StreamStore.S3.B2
 
         public B2S3Credentials? Credentials { get; internal set; }
 
+        public string Delimiter { get; internal set; }
+
         internal B2StreamDatabaseSettings() { }
 
         public static B2StreamDatabaseSettingsBuilder New => new B2StreamDatabaseSettingsBuilder();
@@ -20,6 +22,7 @@ namespace StreamStore.S3.B2
     {
         string? bucketId;
         string? bucketName;
+        string delimiter = S3Naming.Delimiter;
 
         B2S3Credentials? credentials;
 
@@ -42,6 +45,12 @@ namespace StreamStore.S3.B2
             return this;
         }
 
+        public B2StreamDatabaseSettingsBuilder WithDelimiter(string delimiter)
+        {
+            this.delimiter = delimiter;
+            return this;
+        }
+
         public B2StreamDatabaseSettings Build()
         {
             if (credentials == null)
@@ -54,6 +63,7 @@ namespace StreamStore.S3.B2
                 BucketId = bucketId,
                 BucketName = bucketName ?? "streamstore",
                 Credentials = credentials,
+                Delimiter = delimiter
             };
         }
     }

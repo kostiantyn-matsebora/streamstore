@@ -1,21 +1,20 @@
 ﻿using System.Collections.Concurrent;
 using AutoFixture;
 using FluentAssertions;
-
-using StreamStore.S3.B2;
 using StreamStore.S3.Client;
 
 
-namespace StreamStore.S3.Tests.B2
+
+namespace StreamStore.S3.Tests
 {
-    public class B2StreamLockTests
+    public abstract class S3StreamLockTests
     {
 
-        readonly B2S3Factory? factory;
+        readonly IS3Factory? factory;
 
-        public B2StreamLockTests()
+        public S3StreamLockTests(IS3Factory? factory)
         {
-            factory = B2TestsSuite.CreateFactory();
+            this.factory = factory;
         }
 
         [InlineData(1000)]
@@ -24,7 +23,7 @@ namespace StreamStore.S3.Tests.B2
         [SkippableTheory]
         public async Task AcquireAsync_ShouldAcquireLockOnlyOnce(int parallelAttempts)
         {
-            Skip.IfNot(factory != null, "B2 configuration is missing");
+            Skip.IfNot(factory != null, "Configuration is missing");
 
             // Arrange
             var fixture = new Fixture();
@@ -39,7 +38,7 @@ namespace StreamStore.S3.Tests.B2
 
                 if (handle != null)
                     acquirances.Add(handle);
-            });
+            }).ToList();
 
             await Task.WhenAll(tasks);
 
@@ -54,7 +53,7 @@ namespace StreamStore.S3.Tests.B2
         [SkippableFact]
         public async Task AcquireAsync_ShouldNotAllowToAcquireLockIfAlreadyExists()
         {
-            Skip.IfNot(factory != null, "B2 configuration is missing");
+            Skip.IfNot(factory != null, "Configuration is missing");
 
             // Arrange
             var fixture = new Fixture();
@@ -75,7 +74,7 @@ namespace StreamStore.S3.Tests.B2
         [SkippableFact]
         public async Task AcquireAsync_ShouldAcquireLockIfReleased()
         {
-            Skip.IfNot(factory != null, "B2 configuration is missing");
+            Skip.IfNot(factory != null, "Configuration is missing");
 
             // Arrange
             var fixture = new Fixture();

@@ -8,13 +8,15 @@ namespace StreamStore.S3.Client
     {
         Task<FindObjectResponse?> FindObjectAsync(string key, CancellationToken token);
         Task<UploadObjectResponse?> UploadObjectAsync(UploadObjectRequest request, CancellationToken token);
-        Task DeleteObjectAsync(string key, CancellationToken token, string? fileId = null);
+        Task DeleteObjectAsync(string prefix, string key, CancellationToken token);
+        Task DeleteObjectByFileIdAsync(string fileId, string key, CancellationToken token);
     }
 
 
     public class FindObjectResponse
     {
         public byte[]? Data { get; set; }
+        public string? Name { get; set; }
         public string? FileId { get; set; }
     }
 
@@ -25,6 +27,7 @@ namespace StreamStore.S3.Client
 
     public class UploadObjectResponse
     {
+        public string? Name { get; set; }
         public string? FileId { get; set; }
     }
 }

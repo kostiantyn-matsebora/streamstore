@@ -24,7 +24,7 @@ namespace StreamStore.S3.Operations
         public async Task<S3Stream?> LoadAsync(CancellationToken token)
         {
 
-            var response = await client!.FindObjectAsync(S3Naming.StreamKey(streamId), token);
+            var response = await client!.FindObjectAsync(S3Naming.StreamMetadataKey(streamId), token);
 
             if (response == null) return null;// Probably already has been deleted
 

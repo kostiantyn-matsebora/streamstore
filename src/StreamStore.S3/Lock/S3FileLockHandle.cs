@@ -28,7 +28,7 @@ namespace StreamStore.S3.Lock
             if (!lockReleased)
             {
                 lockReleased = true;
-                await client!.DeleteObjectAsync(S3Naming.LockKey(streamId), token, fileId);
+                await client!.DeleteObjectByFileIdAsync(fileId!, S3Naming.LockKey(streamId), token);
             }
         }
 
