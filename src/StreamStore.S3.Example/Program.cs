@@ -1,9 +1,8 @@
-using StreamStore;
 using StreamStore.S3.B2;
 
 namespace StreamStore.S3.Example
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {

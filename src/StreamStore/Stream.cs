@@ -9,7 +9,7 @@ namespace StreamStore
     sealed class Stream: IStream
     {
 
-        List<Id>? eventIdentifiers = new List<Id>();
+        readonly List<Id>? eventTracking = new List<Id>();
         int revision;
         string? streamId;
 
@@ -47,7 +47,7 @@ namespace StreamStore
                 if (expectedRevision != stream.Revision)
                    throw new OptimisticConcurrencyException(expectedRevision, stream.Revision, streamId);
 
-                eventIdentifiers!.AddRange(stream.EventIds);
+                eventTracking!.AddRange(stream.EventIds);
                 revision = stream.Revision;
             }
 
@@ -65,10 +65,10 @@ namespace StreamStore
             if (eventId == Id.None)
                 throw new ArgumentNullException(nameof(eventId));
 
-            if (eventIdentifiers!.Contains(eventId))
+            if (eventTracking!.Contains(eventId))
                 throw new DuplicateEventException(eventId, streamId!);
 
-            eventIdentifiers!.Add(eventId);
+            eventTracking!.Add(eventId);
             revision++;
 
             uow!.Add(eventId, revision, timestamp, converter.ConvertToString(@event));

@@ -15,7 +15,8 @@ namespace StreamStore.S3.B2
         public B2S3Factory(B2StreamDatabaseSettings settings)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            client = CreateB2Client();
+            client = new BackblazeClient();
+            client.Connect(settings.Credentials!.AccessKeyId, settings.Credentials!.AccessKey);
         }
 
         public IS3Client CreateClient()
@@ -28,14 +29,6 @@ namespace StreamStore.S3.B2
             var inMemoryLock = new S3StreamInMemoryLock(streamId, storage);
             var fileLock = new S3FileLock(streamId, this);
             return new S3CompositeStreamLock(inMemoryLock, fileLock);
-        }
-
-        BackblazeClient CreateB2Client()
-        {
-            var client = new BackblazeClient();
-            client.Connect(settings.Credentials!.AccessKeyId, settings.Credentials!.AccessKey);
-
-            return client;
         }
     }
 }

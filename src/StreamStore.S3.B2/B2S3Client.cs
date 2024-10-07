@@ -37,7 +37,7 @@ namespace StreamStore.S3.B2
                 Delimiter = !string.IsNullOrEmpty(prefix) ? settings.Delimiter : null,
             };
 
-            List<FileItem> victims = new List<FileItem>();
+            List<FileItem> victims;
 
             do
             {

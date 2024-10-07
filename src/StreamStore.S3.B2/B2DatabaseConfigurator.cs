@@ -11,7 +11,7 @@ namespace StreamStore.S3.B2
     {
         readonly IServiceCollection services;
 
-        B2StreamDatabaseSettingsBuilder builder = new B2StreamDatabaseSettingsBuilder();
+        readonly B2StreamDatabaseSettingsBuilder builder = new B2StreamDatabaseSettingsBuilder();
 
         public B2DatabaseConfigurator(IServiceCollection services)
         {

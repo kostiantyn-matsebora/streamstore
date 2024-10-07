@@ -23,24 +23,28 @@ namespace StreamStore.S3.Operations
 
         public async Task<S3Stream?> LoadAsync(CancellationToken token) //TODO: Add retry logic
         {
-
             var response = await client!.FindObjectAsync(S3Naming.StreamMetadataKey(streamId), token);
 
-            if (response == null) return null;// Probably already has been deleted
-
+            if (response == null) return null; // Probably already has been deleted
 
             var metadataRecord = Converter.FromByteArray<S3StreamMetadataRecord>(response.Data!);
             var metadata = metadataRecord!.ToStreamMetadata();
 
             var events = new S3EventRecordCollection();
+
             foreach (var eventMetadata in metadata)
             {
-                var eventResponse = await client.FindObjectAsync(S3Naming.EventKey(streamId, eventMetadata.Id), token);
-                var eventRecord = Converter.FromByteArray<S3EventRecord>(eventResponse!.Data!);
-                events.Add(eventRecord!);
-            };
+                events.Add(await GetEvent(eventMetadata, token));
+            }
 
             return S3Stream.New(metadata, events);
+        }
+
+        private async Task<S3EventRecord> GetEvent(S3EventMetadata eventMetadata, CancellationToken token)
+        {
+            var eventResponse = await client!.FindObjectAsync(S3Naming.EventKey(streamId, eventMetadata.Id), token);
+            var eventRecord = Converter.FromByteArray<S3EventRecord>(eventResponse!.Data!);
+            return eventRecord!;
         }
     }
 }
