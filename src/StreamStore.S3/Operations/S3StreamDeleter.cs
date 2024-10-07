@@ -26,13 +26,11 @@ namespace StreamStore.S3.Operations
             var response = await client!.FindObjectAsync(S3Naming.StreamMetadataKey(streamId), token);
             if (response == null) return;
 
-            var metadata = Converter.FromByteArray<S3StreamMetadata>(response.Data!);
+            var metadata = Converter.FromByteArray<S3StreamMetadataRecord>(response.Data!);
 
             // Delete all events
             foreach (var eventMetadata in metadata!.Events!)
-            {
                 await client!.DeleteObjectAsync(S3Naming.StreamPrefix(streamId), S3Naming.EventKey(streamId, eventMetadata.Id), token);
-            }
 
             // Delete metadata
             await client!.DeleteObjectAsync(S3Naming.StreamPrefix(streamId),S3Naming.StreamMetadataKey(streamId), token);

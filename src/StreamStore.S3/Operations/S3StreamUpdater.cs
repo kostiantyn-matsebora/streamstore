@@ -38,7 +38,7 @@ namespace StreamStore.S3.Operations
             var request = new UploadObjectRequest
             {
                 Key = S3Naming.StreamMetadataKey(streamId),
-                Data = Converter.ToByteArray(stream.Metadata)
+                Data = Converter.ToByteArray(new S3StreamMetadataRecord(stream.Metadata))
             };
 
             // Update stream

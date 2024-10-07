@@ -2,7 +2,7 @@
 {
     public  class B2S3ClientTests : S3ClientTestsBase
     {
-        public B2S3ClientTests() : base(B2TestsSuite.CreateFactory())
+        public B2S3ClientTests() : base(B2S3TestsSuite.CreateFactory())
         {
         }
     

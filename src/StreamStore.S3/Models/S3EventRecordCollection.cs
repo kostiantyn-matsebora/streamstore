@@ -23,12 +23,15 @@ namespace StreamStore.S3.Models
 
     internal class S3EventRecord : EventRecord, IEquatable<EventRecord>
     {
+        public S3EventRecord()
+        {
+        }
+
         public bool Equals(EventRecord other)
         {
             if (other == null) return false;
             return Equals(other.Id);
         }
-
 
         public static implicit operator S3EventMetadata(S3EventRecord record) => new S3EventMetadata(record.Id, record.Revision);
     }

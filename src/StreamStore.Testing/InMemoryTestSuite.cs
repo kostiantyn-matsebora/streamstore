@@ -4,7 +4,7 @@ namespace StreamStore.Testing
 {
     internal class InMemoryTestSuite : ITestSuite
     {
-        public IStreamDatabase CreateDatabase()
+        public IStreamDatabase? CreateDatabase()
         {
             return new InMemoryStreamDatabase();
         }

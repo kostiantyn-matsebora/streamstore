@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.S3.B2\StreamStore.S3.B2.csproj" />
+    <ProjectReference Include="..\StreamStore.Testing\StreamStore.Testing.csproj" />
     <ProjectReference Include="..\StreamStore\StreamStore.csproj" />
   </ItemGroup>
 

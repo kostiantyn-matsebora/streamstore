@@ -73,7 +73,7 @@ namespace StreamStore.S3
                 {
                     var current = stream.Events.ToEventMetadata();
 
-                    var after = Before != null ? current.Except(Before!.Events) : current;
+                    var after = Before != null ? current.Except(Before!) : current;
                     foreach (var eventMetadata in after)
                     {
                         await client.DeleteObjectAsync(S3Naming.StreamPrefix(streamId), S3Naming.EventKey(streamId, eventMetadata.Id), CancellationToken.None);
