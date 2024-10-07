@@ -14,12 +14,10 @@ namespace StreamStore.S3.Tests.B2
             if (settings == null)
                 return null;
 
-            var storage = new S3InMemoryStreamLockStorage(settings.InMemoryLockTTL);
+            var storage = CreateLockStorage(settings);
 
             return new B2S3Factory(settings, storage);
         }
-
-
 
         public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, int expectedRevision = 0)
         {
@@ -39,7 +37,7 @@ namespace StreamStore.S3.Tests.B2
             return new S3StreamDatabase(factory);
         }
 
-        static B2StreamDatabaseSettings ConfigureSettings()
+        static B2StreamDatabaseSettings? ConfigureSettings()
         {
 
             if (!File.Exists(
@@ -63,7 +61,7 @@ namespace StreamStore.S3.Tests.B2
              .Build();
         }
 
-        S3InMemoryStreamLockStorage CreateLockStorage(B2StreamDatabaseSettings settings)
+        static S3InMemoryStreamLockStorage CreateLockStorage(B2StreamDatabaseSettings settings)
         {
             return new S3InMemoryStreamLockStorage(settings.InMemoryLockTTL);
         }

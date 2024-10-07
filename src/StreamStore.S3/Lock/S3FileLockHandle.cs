@@ -11,16 +11,16 @@ namespace StreamStore.S3.Lock
         bool lockReleased = false;
         Id streamId;
         string? fileId;
-        IS3Client? client;
+        readonly IS3Factory? factory;
 
-        public S3FileLockHandle(Id streamId, string fileId, IS3Client client)
+        public S3FileLockHandle(Id streamId, string fileId, IS3Factory factory)
         {
             if (streamId == Id.None)
                 throw new ArgumentException("Stream id is not set.", nameof(streamId));
 
             this.streamId = streamId;
             this.fileId = fileId;
-            this.client = client ?? throw new ArgumentNullException(nameof(client));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public async Task ReleaseAsync(CancellationToken token)
@@ -28,6 +28,7 @@ namespace StreamStore.S3.Lock
             if (!lockReleased)
             {
                 lockReleased = true;
+                await using var client = factory!.CreateClient();
                 await client!.DeleteObjectByFileIdAsync(fileId!, S3Naming.LockKey(streamId), token);
             }
         }
@@ -43,7 +44,6 @@ namespace StreamStore.S3.Lock
             if (disposing)
             {
                 await ReleaseAsync(CancellationToken.None);
-                client = null;
                 fileId = null;
                 streamId = Id.None;
             }

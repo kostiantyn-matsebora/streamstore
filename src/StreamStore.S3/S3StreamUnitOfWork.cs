@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
+
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -67,9 +66,10 @@ namespace StreamStore.S3
                 var newStream = S3Stream.New(streamMetadata, records);
 
                 // Update stream
-                using var updater = S3StreamUpdater.New(newStream, factory.CreateClient());
+                var updater = S3StreamUpdater.New(newStream, client);
                 await updater.UpdateAsync(cancellationToken);
                 await transaction.CommitAsync(cancellationToken);
+
             }
             catch
             {

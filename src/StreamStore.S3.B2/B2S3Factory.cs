@@ -27,7 +27,7 @@ namespace StreamStore.S3.B2
         public IS3StreamLock CreateLock(Id streamId)
         {
             var inMemoryLock = new S3StreamInMemoryLock(streamId, storage);
-            var fileLock = new S3FileLock(streamId, CreateClient());
+            var fileLock = new S3FileLock(streamId, this);
             return new S3CompositeStreamLock(inMemoryLock, fileLock);
         }
 

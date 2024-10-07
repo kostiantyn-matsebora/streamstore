@@ -1,23 +1,23 @@
 ﻿using System.Collections.Concurrent;
 using StreamStore.S3.Client;
 
-namespace StreamStore.S3.Tests.Fakes
+namespace StreamStore.S3.Tests.InMemory
 {
-    internal class InMemoryS3Client : IS3Client
+    internal class S3InMemoryClient : IS3Client
     {
 
-        ConcurrentDictionary<string, byte[]> objects = new ConcurrentDictionary<string, byte[]>();
-
+        static readonly ConcurrentDictionary<string, byte[]> objects = new();
 
         public Task DeleteObjectByFileIdAsync(string? fileId, string key, CancellationToken token)
         {
-            objects.Remove(key, out _);
+            objects.TryRemove(key, out _);
             return Task.CompletedTask;
         }
 
-        public Task DeleteObjectAsync(string prefix, string key, CancellationToken token)
+        public Task DeleteObjectAsync(string prefix, string? key, CancellationToken token)
         {
-            throw new NotImplementedException();
+            objects.Keys.Where(k => k.StartsWith($"{prefix}{key}")).ToList().ForEach(k => objects.TryRemove(k, out _));
+            return Task.CompletedTask;
         }
 
         public ValueTask DisposeAsync()

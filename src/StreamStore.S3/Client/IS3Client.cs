@@ -8,7 +8,7 @@ namespace StreamStore.S3.Client
     {
         Task<FindObjectResponse?> FindObjectAsync(string key, CancellationToken token);
         Task<UploadObjectResponse?> UploadObjectAsync(UploadObjectRequest request, CancellationToken token);
-        Task DeleteObjectAsync(string prefix, string key, CancellationToken token);
+        Task DeleteObjectAsync(string prefix, string? key, CancellationToken token);
         Task DeleteObjectByFileIdAsync(string fileId, string key, CancellationToken token);
     }
 

@@ -9,16 +9,16 @@ namespace StreamStore.S3.Lock
     partial class S3FileLock : IS3StreamLock
     {
         readonly Id streamId;
-        readonly IS3Client client;
+        readonly IS3Factory factory;
 
-        public S3FileLock(Id streamId, IS3Client client)
+        public S3FileLock(Id streamId, IS3Factory factory)
         {
             if (streamId == Id.None)
                 throw new ArgumentException("Stream id is not set.", nameof(streamId));
 
             this.streamId = streamId;
 
-            this.client = client ?? throw new ArgumentNullException(nameof(client));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public async Task<IS3LockHandle?> AcquireAsync(CancellationToken token)
@@ -27,6 +27,7 @@ namespace StreamStore.S3.Lock
             var lockId = new LockId();
 
             // Trying to figure out if lock already acquired
+            await using var client = factory.CreateClient();
             var response = await client.FindObjectAsync(S3Naming.LockKey(streamId), token);
             if (response != null) return null;
 
@@ -48,7 +49,7 @@ namespace StreamStore.S3.Lock
 
             if (!lockId.Equals(existingLockId!)) return null;
 
-            return new S3FileLockHandle(streamId, uploadResponse!.FileId!, client);
+            return new S3FileLockHandle(streamId, uploadResponse!.FileId!, factory);
         }
     }
 }

@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+
 using StreamStore.S3.Client;
 using StreamStore.S3.Models;
 
 namespace StreamStore.S3.Operations
 {
-    internal sealed class S3StreamLoader : IDisposable
+    internal sealed class S3StreamLoader
     {
-        IS3Client? client;
-        Id streamId;
+        readonly IS3Client? client;
+        readonly Id streamId;
         public S3StreamLoader(Id streamId, IS3Client client)
         {
             if (streamId == Id.None)
@@ -43,22 +42,6 @@ namespace StreamStore.S3.Operations
             }
 
             return S3Stream.New(metadata, events);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                client?.DisposeAsync().ConfigureAwait(false);
-                client = null;
-                streamId = Id.None;
-            }
         }
     }
 }

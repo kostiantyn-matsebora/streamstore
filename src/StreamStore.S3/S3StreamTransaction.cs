@@ -17,7 +17,7 @@ namespace StreamStore.S3
         bool rolledBack = false;
         readonly IS3StreamLock @lock;
 
-        public S3StreamMetadata? Before { get; private set; }
+        public S3Stream? Before { get; private set; }
 
         private S3StreamTransaction(Id streamId, IS3StreamLock @lock, IS3Factory factory)
         {
@@ -38,8 +38,8 @@ namespace StreamStore.S3
                 throw new StreamAlreadyLockedException(streamId);
 
             // Get stream metadata first
-            using var streamLoader = new S3StreamLoader(streamId, factory.CreateClient());
-            Before = (await streamLoader.LoadAsync(token))?.Metadata;
+            await using var client = factory.CreateClient();
+            Before = await GetStream(client);
         }
 
 
@@ -58,34 +58,27 @@ namespace StreamStore.S3
         {
             if (commited) return;
             if (rolledBack)
-                throw new InvalidOperationException("Transaction already commited or rolled back.");
+                throw new InvalidOperationException("Transaction already rolled back.");
 
             try
             {
-                // First get current stream
-                await using var client = factory.CreateClient();
-                S3Stream? stream = null;
-                using (var loader = new S3StreamLoader(streamId, factory.CreateClient()))
-                    stream = await loader.LoadAsync(CancellationToken.None);
-
-                // Delete events were added during transaction
-                if (stream != null)
+                await using (var client = factory.CreateClient()) 
                 {
-                    var current = stream.Events.ToEventMetadata();
+                    // First get current stream
+                    S3Stream? current = await GetStream(client);
 
-                    var after = Before != null ? current.Except(Before!) : current;
-                    foreach (var eventMetadata in after)
+                    // Delete events were added during transaction
+                    if (Before == null)
+                        await DeleteStreamFully(client);
+                    else
                     {
-                        await client.DeleteObjectAsync(S3Naming.StreamPrefix(streamId), S3Naming.EventKey(streamId, eventMetadata.Id), CancellationToken.None);
+                        //Deleting uncommited events only
+                        if (current != null)
+                           await DeleteUncommitedEvents(client, current);
+                        // Fully restoring events from state before transaction
+                        else
+                            await RestoreStream(client);
                     }
-                }
-
-                // Then update stream metadata by stored version
-                if (Before != null)
-                {
-                    var onlyMetadata = S3Stream.New(Before, new S3EventRecordCollection(Array.Empty<S3EventRecord>()));
-                    using var updater = S3StreamUpdater.New(onlyMetadata, factory.CreateClient());
-                    await updater.UpdateAsync(CancellationToken.None);
                 }
             }
             catch
@@ -95,9 +88,41 @@ namespace StreamStore.S3
             }
         }
 
+        private async Task RestoreStream(IS3Client client)
+        {
+            var updater = S3StreamUpdater.New(Before!, client);
+            await updater.UpdateAsync(CancellationToken.None);
+        }
+
+        private async Task DeleteStreamFully(IS3Client client)
+        {
+            await client.DeleteObjectAsync(S3Naming.StreamPrefix(streamId), null, CancellationToken.None);
+        }
+
+        async Task<S3Stream?> GetStream(IS3Client client)
+        {
+            var loader = new S3StreamLoader(streamId, client);
+            return  await loader.LoadAsync(CancellationToken.None);
+        }
+
+        async Task DeleteUncommitedEvents(IS3Client client, S3Stream? stream)
+        {
+            var current = stream!.Events.ToEventMetadata();
+
+            var before = Before?.Events.ToEventMetadata();
+
+            var after = Before != null ? current.Except(before) : current;
+
+            foreach (var eventMetadata in after)
+                await client.DeleteObjectAsync(
+                    S3Naming.StreamPrefix(streamId), 
+                    S3Naming.EventKey(streamId, eventMetadata.Id), 
+                    CancellationToken.None);
+        }
+
         public void Dispose()
         {
-            DisposeAsync(true).ConfigureAwait(false);
+            DisposeAsync(true).GetAwaiter().GetResult();
             GC.SuppressFinalize(this);
         }
 
@@ -106,11 +131,8 @@ namespace StreamStore.S3
             if (disposing)
             {
                 if (!commited && !rolledBack) await RollbackAsync();
-
-                handle?.DisposeAsync();
                 handle = null;
                 Before = null!;
-
             }
         }
 

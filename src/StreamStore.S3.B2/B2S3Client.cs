@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -25,7 +27,7 @@ namespace StreamStore.S3.B2
             this.client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task DeleteObjectAsync(string prefix, string key, CancellationToken token)
+        public async Task DeleteObjectAsync(string prefix, string? key, CancellationToken token)
         {
             var request = new ListFileVersionRequest(settings.BucketId)
             {
@@ -35,7 +37,7 @@ namespace StreamStore.S3.B2
                 Delimiter = !string.IsNullOrEmpty(prefix) ? settings.Delimiter : null,
             };
 
-            FileItem[] victims = new FileItem[0];
+            List<FileItem> victims = new List<FileItem>();
 
             do
             {
@@ -44,11 +46,16 @@ namespace StreamStore.S3.B2
                 if (!files.IsSuccessStatusCode)
                     return;
 
-                victims = files.Response.Files.Where(f => f.FileName == key).ToArray();
+                victims = files.Response.Files;
+                if (!string.IsNullOrEmpty(key))
+                    victims = victims.Where(f => f.FileName == key).ToList();
 
                 await victims.ForEachAsync(
                     maxDegreeOfParallelism,
-                    async victim => await client!.Files.DeleteAsync(victim.FileId, key));
+                    async victim =>
+                    {
+                      await client!.Files.DeleteAsync(victim.FileId, victim.FileName);
+                    });
 
             } while (victims.Any());
         }
