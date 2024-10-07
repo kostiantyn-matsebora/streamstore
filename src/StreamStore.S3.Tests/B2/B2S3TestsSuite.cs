@@ -16,7 +16,7 @@ namespace StreamStore.S3.Tests.B2
 
             var storage = CreateLockStorage(settings);
 
-            return new B2S3Factory(settings, storage);
+            return new B2S3Factory(settings);
         }
 
         public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, int expectedRevision = 0)

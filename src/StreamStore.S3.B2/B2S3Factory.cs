@@ -9,13 +9,12 @@ namespace StreamStore.S3.B2
     internal class B2S3Factory : IS3Factory
     {
         readonly B2StreamDatabaseSettings settings;
-        readonly S3InMemoryStreamLockStorage storage;
         readonly BackblazeClient? client; //TODO: create pool of clients
+        readonly S3InMemoryStreamLockStorage storage = new S3InMemoryStreamLockStorage();
 
-        public B2S3Factory(B2StreamDatabaseSettings settings, S3InMemoryStreamLockStorage storage)
+        public B2S3Factory(B2StreamDatabaseSettings settings)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
-            this.storage = storage ?? throw new ArgumentNullException(nameof(storage));
             client = CreateB2Client();
         }
 

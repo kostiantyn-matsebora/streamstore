@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace StreamStore.S3.Operations
         }
 
 
-        public async Task<S3Stream?> LoadAsync(CancellationToken token)
+        public async Task<S3Stream?> LoadAsync(CancellationToken token) //TODO: Add retry logic
         {
 
             var response = await client!.FindObjectAsync(S3Naming.StreamMetadataKey(streamId), token);
@@ -32,14 +33,12 @@ namespace StreamStore.S3.Operations
             var metadata = metadataRecord!.ToStreamMetadata();
 
             var events = new S3EventRecordCollection();
-
-            foreach (var eventMetadata in metadata!)
+            foreach (var eventMetadata in metadata)
             {
                 var eventResponse = await client.FindObjectAsync(S3Naming.EventKey(streamId, eventMetadata.Id), token);
                 var eventRecord = Converter.FromByteArray<S3EventRecord>(eventResponse!.Data!);
-
                 events.Add(eventRecord!);
-            }
+            };
 
             return S3Stream.New(metadata, events);
         }

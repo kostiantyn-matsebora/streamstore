@@ -11,7 +11,7 @@ namespace StreamStore.S3
     public sealed class S3StreamDatabase : IStreamDatabase
     {
         readonly IS3Factory factory;
-        internal S3StreamDatabase(IS3Factory factory)
+        public S3StreamDatabase(IS3Factory factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }

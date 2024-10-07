@@ -84,7 +84,8 @@ namespace StreamStore.S3
             var response = await client.FindObjectAsync(S3Naming.StreamMetadataKey(id), token);
             if (response == null) return null;
 
-            var stream = Converter.FromByteArray<S3StreamMetadata>(response.Data!);
+            var record = Converter.FromByteArray<S3StreamMetadataRecord>(response.Data!);
+            var stream = record!.ToStreamMetadata();
 
             if (stream!.Revision != expectedRevision)
                 throw new OptimisticConcurrencyException(expectedRevision, stream!.Revision, id);

@@ -18,12 +18,18 @@ namespace StreamStore
             return Task.CompletedTask;
         }
 
+        public static IStream Add(this IStream stream, Event @event)
+        {
+            stream.Add(@event.Id, @event.Timestamp, @event.EventObject);
+            return stream;
+        }
+
         public static Task<IStream> AddRangeAsync(this Task<IStream> stream, IEnumerable<Event> events)
         {
             var streamResult = stream.Result!;
             foreach (var @event in events)
             {
-                streamResult.Add(@event.Id, @event.Timestamp, @event.EventObject);
+                streamResult.Add(@event);
             }
             return Task.FromResult(streamResult);
         }

@@ -60,6 +60,7 @@ namespace StreamStore.S3.B2
             } while (victims.Any());
         }
 
+
         public async Task DeleteObjectByFileIdAsync(string fileId, string key, CancellationToken token)
         {
             await client!.Files.DeleteAsync(fileId, key);

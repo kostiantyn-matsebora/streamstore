@@ -105,18 +105,18 @@ namespace StreamStore.S3
             return  await loader.LoadAsync(CancellationToken.None);
         }
 
-        async Task DeleteUncommitedEvents(IS3Client client, S3Stream? stream)
+        async Task DeleteUncommitedEvents(IS3Client client, S3Stream stream)
         {
-            var current = stream!.Events.ToEventMetadata();
+            var current = stream.Events.ToEventMetadata();
 
-            var before = Before?.Events.ToEventMetadata();
+            var before = Before!.Events.ToEventMetadata();
 
-            var after = Before != null ? current.Except(before) : current;
+            var after = current.Except(before);
 
-            foreach (var eventMetadata in after)
+            foreach (var @event in after)
                 await client.DeleteObjectAsync(
                     S3Naming.StreamPrefix(streamId), 
-                    S3Naming.EventKey(streamId, eventMetadata.Id), 
+                    S3Naming.EventKey(streamId, @event.Id), 
                     CancellationToken.None);
         }
 

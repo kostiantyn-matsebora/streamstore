@@ -11,6 +11,8 @@ namespace StreamStore
 
         public RevisionedItemCollection<T> Events { get; }
 
+        public IEnumerable<Id> EventIds => Events.Select(x => x.Id);
+
         protected StreamRecord(string id, IEnumerable<T> records)
         {
             if (string.IsNullOrEmpty(id))
@@ -21,8 +23,6 @@ namespace StreamStore
                 throw new ArgumentNullException(nameof(records));
 
             Events = new RevisionedItemCollection<T>(records.ToArray());
-
-
         }
     }
 

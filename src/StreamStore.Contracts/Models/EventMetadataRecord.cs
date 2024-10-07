@@ -8,6 +8,5 @@ namespace StreamStore
         public DateTime Timestamp { get; set; }
 
         public int Revision { get; set; }
-
     }
 }

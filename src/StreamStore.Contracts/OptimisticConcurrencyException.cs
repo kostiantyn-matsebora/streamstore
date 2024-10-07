@@ -4,10 +4,10 @@ namespace StreamStore
 {
     public sealed class OptimisticConcurrencyException : StreamStoreException
     {
-        public int ExpectedRevision { get; set; }
-        public int ActualRevision { get; set; }
+        public int? ExpectedRevision { get; set; }
+        public int? ActualRevision { get; set; }
 
-        public int DuplicateRevision { get; set; }
+        public int? DuplicateRevision { get; set; }
 
         public Id StreamId { get; }
 

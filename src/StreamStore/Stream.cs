@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,7 +9,7 @@ namespace StreamStore
     sealed class Stream: IStream
     {
 
-        List<Id>? eventIds;
+        List<Id>? eventIdentifiers = new List<Id>();
         int revision;
         string? streamId;
 
@@ -37,7 +36,7 @@ namespace StreamStore
                 throw new ArgumentOutOfRangeException(nameof(expectedRevision), "Expected revision must be greater or equal 0");
 
             this.streamId = streamId;
-            eventIds = new List<Id>();
+
             revision = 0;
             uow = null;
 
@@ -48,7 +47,7 @@ namespace StreamStore
                 if (expectedRevision != stream.Revision)
                    throw new OptimisticConcurrencyException(expectedRevision, stream.Revision, streamId);
 
-                eventIds!.AddRange(stream.Events.Select(e => e.Id));
+                eventIdentifiers!.AddRange(stream.EventIds);
                 revision = stream.Revision;
             }
 
@@ -58,7 +57,7 @@ namespace StreamStore
                 throw new InvalidOperationException("Failed to open stream, either stream does not exist or revision is incorrect.");
         }
 
-        public IStream Add(Id eventId, DateTime timestamp, object @event, CancellationToken cancellationToken = default)
+        public IStream Add(Id eventId, DateTime timestamp, object @event)
         {
             if (string.IsNullOrEmpty(streamId))
                 throw new InvalidOperationException("Stream is not open.");
@@ -66,10 +65,10 @@ namespace StreamStore
             if (eventId == Id.None)
                 throw new ArgumentNullException(nameof(eventId));
 
-            if (eventIds!.Contains(eventId))
+            if (eventIdentifiers!.Contains(eventId))
                 throw new DuplicateEventException(eventId, streamId!);
 
-            eventIds!.Add(eventId);
+            eventIdentifiers!.Add(eventId);
             revision++;
 
             uow!.Add(eventId, revision, timestamp, converter.ConvertToString(@event));

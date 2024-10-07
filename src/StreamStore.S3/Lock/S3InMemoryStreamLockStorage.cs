@@ -10,7 +10,7 @@ namespace StreamStore.S3.Lock
         readonly MemoryCache locks = new MemoryCache(new MemoryCacheOptions());
         readonly TimeSpan ttl;
         readonly SemaphoreSlim semaphore;
-
+        public S3InMemoryStreamLockStorage(): this(TimeSpan.FromSeconds(10)) { }
         public S3InMemoryStreamLockStorage(TimeSpan ttl, int parallelCount = 1)
         {
             if (ttl == TimeSpan.Zero) 

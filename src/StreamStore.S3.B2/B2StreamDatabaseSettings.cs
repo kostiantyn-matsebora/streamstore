@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 
 
 namespace StreamStore.S3.B2
@@ -20,7 +21,7 @@ namespace StreamStore.S3.B2
         public TimeSpan InMemoryLockTTL { get; internal set; }
     }
 
-    public sealed class B2StreamDatabaseSettingsBuilder
+    public class B2StreamDatabaseSettingsBuilder: IConfigurator
     {
         string? bucketId;
         string? bucketName;
@@ -59,7 +60,6 @@ namespace StreamStore.S3.B2
             return this;
         }
 
-
         public B2StreamDatabaseSettings Build()
         {
             if (credentials == null)
@@ -76,5 +76,16 @@ namespace StreamStore.S3.B2
                 InMemoryLockTTL = ttl
             };
         }
+
+        public virtual IServiceCollection Configure()
+        {
+            return new ServiceCollection();
+        }
+    }
+
+    public interface IConfigurator
+    {
+        IServiceCollection Configure();
     }
 }
+
