@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using System.Linq;
+using StreamStore.Exceptions;
 
 
 
@@ -36,7 +37,7 @@ namespace StreamStore.InMemory
             revision = expectedStreamVersion;
         }
 
-        public Task SaveChangesAsync(CancellationToken cancellationToken)
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             var record = new StreamRecord(streamId, events!);
             database.store.AddOrUpdate(streamId, record, (key, oldValue) =>
@@ -47,7 +48,7 @@ namespace StreamStore.InMemory
                 return record;
             });
 
-            return Task.CompletedTask;
+            return Task.FromResult(record.Revision);
         }
 
         public IStreamUnitOfWork Add(Id eventId, DateTime timestamp, string data)

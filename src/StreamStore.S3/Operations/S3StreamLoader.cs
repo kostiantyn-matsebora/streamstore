@@ -31,10 +31,11 @@ namespace StreamStore.S3.Operations
 
             var events = new EventRecordCollection();
 
-            foreach (var eventMetadata in metadata)
+            await metadata.ForEachAsync(5, async (eventMetadata) =>
             {
-                events.Add(await GetEvent(eventMetadata, token));
-            }
+                var @event = await  GetEvent(eventMetadata, token);
+                events.Add(@event);
+            });
 
             return S3Stream.New(metadata, events);
         }

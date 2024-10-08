@@ -22,29 +22,27 @@ namespace StreamStore.S3.Operations
         {
             var streamId = ctx.StreamId;
 
-            UploadObjectRequest request; 
-
-            foreach (var @event in uncommited)
+            
+            await uncommited.ForEachAsync(5, async (@event) =>
             {
                 var data = Converter.ToByteArray(@event);
-
-                request = new UploadObjectRequest
+                var request = new UploadObjectRequest
                 {
                     Key = ctx.EventKey(@event.Id),
                     Data = data
                 };
                 await client!.UploadObjectAsync(request, token);
-            }
+            });
            
 
-            request = new UploadObjectRequest
+            var uploadRequest = new UploadObjectRequest
             {
                 Key = ctx.MetadataKey,
                 Data = Converter.ToByteArray(new S3StreamMetadataRecord(metadata))
             };
 
             // Update stream
-            await client!.UploadObjectAsync(request, token);
+            await client!.UploadObjectAsync(uploadRequest, token);
         }
 
         public static S3StreamUploader New(S3StreamContext ctx, IS3Client client)

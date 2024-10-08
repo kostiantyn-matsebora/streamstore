@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Exceptions;
 using StreamStore.S3.Client;
 using StreamStore.S3.Operations;
 
@@ -28,7 +29,7 @@ namespace StreamStore.S3
             handle = await @lock.AcquireAsync(token);
 
             if (handle == null)
-                throw new S3StreamAlreadyLockedException(ctx.StreamId);
+                throw new PessimisticConcurrencyException(ctx.StreamId);
         }
 
         public async Task CommitAsync(CancellationToken token)

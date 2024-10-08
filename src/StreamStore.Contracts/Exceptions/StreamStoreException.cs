@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace StreamStore
+namespace StreamStore.Exceptions
 {
     public abstract class StreamStoreException : Exception
     {

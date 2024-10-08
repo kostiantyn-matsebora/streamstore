@@ -2,6 +2,7 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Exceptions;
 using StreamStore.S3.Client;
 using StreamStore.S3.Models;
 using StreamStore.S3.Operations;
@@ -42,7 +43,7 @@ namespace StreamStore.S3
             return this;
         }
 
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             await using var client = factory.CreateClient();
             if (!ctx.HasChanges)
@@ -72,6 +73,7 @@ namespace StreamStore.S3
 
                 // Commit transaction
                 await transaction.CommitAsync(cancellationToken);
+                return metadata.Revision;
             }
             catch
             {

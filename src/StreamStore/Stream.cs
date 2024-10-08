@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Exceptions;
 
 
 namespace StreamStore
@@ -75,9 +76,9 @@ namespace StreamStore
             return this;
         }
 
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
-            await uow!.SaveChangesAsync(cancellationToken);
+            return await uow!.SaveChangesAsync(cancellationToken);
         }
 
         public void Dispose()

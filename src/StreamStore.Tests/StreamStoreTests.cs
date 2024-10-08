@@ -2,6 +2,7 @@
 using AutoFixture;
 using FluentAssertions;
 using Moq;
+using StreamStore.Exceptions;
 using StreamStore.InMemory;
 using StreamStore.Serialization;
 using StreamStore.Testing;
