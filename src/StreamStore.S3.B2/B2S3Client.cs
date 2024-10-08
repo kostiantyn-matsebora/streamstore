@@ -61,6 +61,45 @@ namespace StreamStore.S3.B2
         }
 
 
+        public async Task CopyAsync(string sourcePrefix, string destinationPrefix, CancellationToken token)
+        {
+            var request = new ListFileVersionRequest(settings.BucketId)
+            {
+                Prefix = !string.IsNullOrEmpty(sourcePrefix) ? sourcePrefix : null,
+                MaxFileCount = maxFileCount,
+                Delimiter = settings.Delimiter,
+            };
+
+            List<FileItem> victims;
+            string lastCopiedFile = string.Empty;
+
+            do
+            {
+                var files = await client!.Files.ListVersionsAsync(request);
+
+                if (!files.IsSuccessStatusCode)
+                    return;
+
+                // Remove last copied file from the list of files to copy
+                victims = 
+                    files.Response.Files
+                    .Where(f => f.FileName != request.StartFileName)
+                    .ToList();
+
+                foreach (var victim in victims)
+                {
+                    var copyRequest = new CopyFileRequest(
+                        victim.FileId,
+                        victim.FileName.Replace(
+                            sourcePrefix, destinationPrefix, StringComparison.InvariantCultureIgnoreCase));
+                 
+                    await client!.Files.CopyAsync(copyRequest);
+                    request.StartFileName = victim.FileName;
+                }
+
+            } while (victims.Any());
+        }
+
         public async Task DeleteObjectByFileIdAsync(string fileId, string key, CancellationToken token)
         {
             await client!.Files.DeleteAsync(fileId, key);

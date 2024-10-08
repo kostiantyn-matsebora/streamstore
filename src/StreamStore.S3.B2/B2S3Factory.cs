@@ -24,10 +24,10 @@ namespace StreamStore.S3.B2
             return new B2S3Client(settings, client!);
         }
 
-        public IS3StreamLock CreateLock(Id streamId)
+        public IS3StreamLock CreateLock(IS3TransactionContext ctx)
         {
-            var inMemoryLock = new S3StreamInMemoryLock(streamId, storage);
-            var fileLock = new S3FileLock(streamId, this);
+            var inMemoryLock = new S3StreamInMemoryLock(ctx.StreamId, storage);
+            var fileLock = new S3FileLock(ctx, this);
             return new S3CompositeStreamLock(inMemoryLock, fileLock);
         }
     }

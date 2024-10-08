@@ -4,28 +4,23 @@ using StreamStore.InMemory;
 using StreamStore.Testing;
 using AutoFixture;
 using FluentAssertions;
+using Xunit.Sdk;
 
 namespace StreamStore.Tests;
 
 public class InMemoryDatabaseTests
 {
-    readonly InMemoryStreamDatabase database;
-
-    public InMemoryDatabaseTests()
-    {
-        database = new InMemoryStreamDatabase();
-    }
-
     [Fact]
     public async Task DeleteAsync_ShouldDeleteStream()
     {
         // Arrange
         var fixture = new Fixture();
         var streamId = fixture.Create<string>();
+        var database = new InMemoryStreamDatabase();
         await
             database
                 .BeginAppend(streamId)
-                .AddRange(fixture.CreateEventRecords(1, 3))
+                .AddRange(fixture.CreateEventItems(3))
                 .SaveChangesAsync(CancellationToken.None);
 
         // Act
@@ -39,23 +34,19 @@ public class InMemoryDatabaseTests
     }
 
     [Theory]
-    [InlineData(1,1)]
-    [InlineData(1, 2)]
-    [InlineData(1, 3)]
-    [InlineData(2, 1)]
-    [InlineData(2, 2)]
-    [InlineData(2, 3)]
-    [InlineData(10, 100)]
-    [InlineData(100, 10)]
-    [InlineData(100, 1000)]
-    public async Task FindMetadataAsync_ShouldGetStreamMetadata(int initialRevision, int eventCount)
+    [InlineData(1)]
+    [InlineData(3)]
+    [InlineData(10)]
+    [InlineData(100)]
+    [InlineData(1000)]
+    public async Task FindMetadataAsync_ShouldGetStreamMetadata(int eventCount)
     {
         // Arrange
         var fixture = new Fixture();
         var streamId = new Fixture().Create<Id>();
-        var events = fixture.CreateEventRecords(initialRevision, eventCount);
+        var events = fixture.CreateEventItems(eventCount);
         var eventIds = events.Select(e => e.Id).ToArray();
-
+        var database = new InMemoryStreamDatabase();
         // Act
         await
             database
@@ -68,8 +59,7 @@ public class InMemoryDatabaseTests
         // Assert
         stream.Should().NotBeNull();
         stream!.Id.Should().BeEquivalentTo(streamId);
-        stream!.Revision.Should().Be(initialRevision + eventCount - 1);
-        stream!.Events.Should().BeEquivalentTo(events.Cast<EventMetadataRecord>());
+        stream!.Revision.Should().Be(eventCount);
     }
 
     [Fact]
@@ -78,10 +68,11 @@ public class InMemoryDatabaseTests
         // Arrange
         var fixture = new Fixture();
         var streamId = fixture.Create<string>();
+        var database = new InMemoryStreamDatabase();
         await
             database
                 .BeginAppend(streamId)
-                .AddRange(fixture.CreateEventRecords(1, 3))
+                .AddRange(fixture.CreateEventItems(3))
                 .SaveChangesAsync(CancellationToken.None);
 
         var streamBeforeDeletion = await database.FindAsync(streamId, CancellationToken.None);

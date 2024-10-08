@@ -8,17 +8,17 @@ namespace StreamStore.S3.Operations
         public S3StreamMetadataRecord() { }
         internal S3StreamMetadataRecord(S3StreamMetadata metadata)
         {
-            Events = metadata.Select(x => new S3EventMetadataRecord(x)).ToArray();
+            Events = metadata.Select(x => x.ToRecord()).ToArray();
             StreamId = metadata.StreamId;
         }
 
-        public S3EventMetadataRecord[]? Events { get; set; }
+        public EventMetadataRecord[]? Events { get; set; }
         public string? StreamId { get; set; }
 
 
-        public S3StreamMetadata ToStreamMetadata()
+        public S3StreamMetadata ToMetadata()
         {
-            return S3StreamMetadata.New(StreamId!, Events.Select(x => x.ToEventMetadata())); 
+            return S3StreamMetadata.New(StreamId!, Events.Select(x => x.ToMetadata())); 
         }
     }
 }

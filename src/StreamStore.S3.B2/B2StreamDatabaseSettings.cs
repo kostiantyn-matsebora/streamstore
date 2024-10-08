@@ -25,7 +25,7 @@ namespace StreamStore.S3.B2
     {
         string? bucketId;
         string? bucketName;
-        string delimiter = S3Naming.Delimiter;
+
 
         B2S3Credentials? credentials;
         TimeSpan ttl = TimeSpan.FromSeconds(30);
@@ -48,12 +48,6 @@ namespace StreamStore.S3.B2
             return this;
         }
 
-        public B2StreamDatabaseSettingsBuilder WithDelimiter(string delimiter)
-        {
-            this.delimiter = delimiter;
-            return this;
-        }
-
         public B2StreamDatabaseSettingsBuilder WithInMemoryLockTTL(TimeSpan ttl)
         {
             this.ttl = ttl;
@@ -72,8 +66,8 @@ namespace StreamStore.S3.B2
                 BucketId = bucketId,
                 BucketName = bucketName ?? "streamstore",
                 Credentials = credentials,
-                Delimiter = delimiter,
-                InMemoryLockTTL = ttl
+                InMemoryLockTTL = ttl,
+                Delimiter = "/"
             };
         }
 

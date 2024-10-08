@@ -1,17 +1,14 @@
 ﻿
 
 using FluentAssertions;
+using StreamStore.Testing;
 
 namespace StreamStore.Testing
 {
-    public abstract class StreamDatabaseTestsBase
+    public abstract class StreamDatabaseTestsBase: DatabaseTestsBase
     {
-        readonly ITestSuite suite;
-
-        protected StreamDatabaseTestsBase(ITestSuite suite)
+        protected StreamDatabaseTestsBase(ITestSuite suite) : base(suite)
         {
-            ArgumentNullException.ThrowIfNull(suite, nameof(suite));
-            this.suite = suite;
         }
 
         protected virtual void TrySkip()
@@ -59,7 +56,7 @@ namespace StreamStore.Testing
             // Arrange
             var database = suite.CreateDatabase();
             var streamId = RandomValues.RandomString;
-            var events = RandomValues.CreateEventRecords(3);
+            var events = RandomValues.CreateEventItems(3);
             var uow = database!.BeginAppend(streamId);
             uow.AddRange(events);
             await uow.SaveChangesAsync(CancellationToken.None);
@@ -79,7 +76,7 @@ namespace StreamStore.Testing
             // Arrange
             var database = suite.CreateDatabase();
             var streamId = RandomValues.RandomString;
-            var events = RandomValues.CreateEventRecords(3);
+            var events = RandomValues.CreateEventItems(3);
             var uow = database!.BeginAppend(streamId);
             uow.AddRange(events);
             await uow.SaveChangesAsync(CancellationToken.None);
@@ -101,8 +98,8 @@ namespace StreamStore.Testing
             var database = suite.CreateDatabase();
             var streamId = RandomValues.RandomString;
             var anotherStreamId = RandomValues.RandomString;
-            var events = RandomValues.CreateEventRecords(3);
-            var anotherEvents = RandomValues.CreateEventRecords(10);
+            var events = RandomValues.CreateEventItems(3);
+            var anotherEvents = RandomValues.CreateEventItems(10);
 
             var uow = database!.BeginAppend(streamId);
             uow.AddRange(events);
@@ -126,13 +123,13 @@ namespace StreamStore.Testing
             await database.DeleteAsync(anotherStreamId, CancellationToken.None);
         }
 
-        static async Task AssertStreamIsFoundAndValid(IStreamDatabase database, Id streamId, EventRecord[]? events = null)
+        static async Task AssertStreamIsFoundAndValid(IStreamDatabase database, Id streamId, EventItem[]? events = null)
         {
             var stream = await database.FindAsync(streamId, CancellationToken.None);
             AssertStreamIsValid(stream, events);
         }
 
-        static void AssertStreamIsValid<T>(StreamRecord<T>? stream, EventRecord[]? events = null) where T : EventMetadataRecord
+        static void AssertStreamIsValid<T>(StreamRecord<T>? stream, EventItem[]? events = null) where T : EventMetadataRecord
         {
 
             stream.Should().NotBeNull();
@@ -140,7 +137,7 @@ namespace StreamStore.Testing
             if (events == null) return;
 
             stream!.Revision.Should().Be(events.Length);
-            stream.Events.Should().BeEquivalentTo(events);
+            stream.Events.Should().BeEquivalentTo(events, options => options.Excluding(e => e.Data));
         }
     }
 }

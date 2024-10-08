@@ -15,7 +15,8 @@ namespace StreamStore.InMemory
         int expectedStreamVersion;
         InMemoryStreamDatabase database;
         string streamId;
-        List<EventRecord>? events;
+        EventRecordCollection events = new EventRecordCollection();
+        int revision;
 
         public InMemoryStreamUnitOfWork(string streamId, int expectedStreamVersion, InMemoryStreamDatabase database, StreamRecord? existing)
         {
@@ -29,9 +30,10 @@ namespace StreamStore.InMemory
             this.expectedStreamVersion = expectedStreamVersion;
             this.database = database;
 
-            events = existing?.Events.Any() == true
-                ? new List<EventRecord>(existing.Events)
-                : new List<EventRecord>();
+            if (existing != null && existing.Events.Any())
+                events.AddRange(existing.Events);
+
+            revision = expectedStreamVersion;
         }
 
         public Task SaveChangesAsync(CancellationToken cancellationToken)
@@ -48,16 +50,15 @@ namespace StreamStore.InMemory
             return Task.CompletedTask;
         }
 
-        public IStreamUnitOfWork Add(Id eventId, int revision, DateTime timestamp, string data)
+        public IStreamUnitOfWork Add(Id eventId, DateTime timestamp, string data)
         {
             ThrowIfDuplicateEventId(eventId);
-            ThrowIfRevisionAlreadyExists(revision);
 
             events!.Add(
                 new EventRecord
                 {
                     Id = eventId,
-                    Revision = revision,
+                    Revision = ++revision,
                     Timestamp = timestamp,
                     Data = data
                 }
@@ -68,13 +69,13 @@ namespace StreamStore.InMemory
 
         void ThrowIfRevisionAlreadyExists(int revision)
         {
-            if (events!.Exists(e => e.Revision == revision))
+            if (events!.Any(e => e.Revision == revision))
                 throw new OptimisticConcurrencyException(revision, streamId);
         }
 
         void ThrowIfDuplicateEventId(Id eventId)
         {
-            if (events!.Exists(e => e.Id == eventId))
+            if (events!.Any(e => e.Id == eventId))
                 throw new DuplicateEventException(eventId, streamId);
         }
 

@@ -5,6 +5,7 @@ namespace StreamStore.S3.Example
         private readonly ILogger<Worker> logger;
         private readonly IStreamStore store;
         private readonly string streamId = "stream-1";
+        int actualVersion = 0;
         public Worker(ILogger<Worker> logger, IStreamStore store)
         {
             this.logger = logger;
@@ -18,7 +19,6 @@ namespace StreamStore.S3.Example
                 IStream stream;
                 StreamEntity entity;
 
-                
                 try
                 {
                     logger.LogDebug("Opening stream.");

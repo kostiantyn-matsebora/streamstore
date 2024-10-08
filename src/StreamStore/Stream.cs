@@ -71,7 +71,7 @@ namespace StreamStore
             eventTracking!.Add(eventId);
             revision++;
 
-            uow!.Add(eventId, revision, timestamp, converter.ConvertToString(@event));
+            uow!.Add(eventId, timestamp, converter.ConvertToString(@event));
             return this;
         }
 

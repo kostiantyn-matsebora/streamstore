@@ -1,23 +1,28 @@
-﻿using StreamStore.S3.Models;
+﻿using System;
+using System.Collections.Generic;
+using StreamStore.S3.Models;
 
 namespace StreamStore.S3.Operations
 {
 
-    internal class S3EventMetadataRecord // Entity is made for serialization
-    {
-        public S3EventMetadataRecord() { }
-        internal S3EventMetadataRecord(S3EventMetadata metadata)
-        {
-            this.Id = metadata.Id;
-            this.Revision = metadata.Revision;
-        }
+    //internal class S3EventMetadataRecord : IHasRevision // Entity is made for serialization
+    //{
+    //    public S3EventMetadataRecord() { }
 
-        public Id Id { get; set; }
-        public int Revision { get; set; }
+    //    public S3EventMetadataRecord(S3EventMetadata metadata)
+    //    {
+    //        this.Id = metadata.Id;
+    //        this.Revision = metadata.Revision;
+    //    }
 
-        internal S3EventMetadata ToEventMetadata()
-        {
-           return new S3EventMetadata(Id, Revision);
-        }
-    }
+    //    public Id Id { get; set; }
+    //    public int Revision { get; set; }
+
+    //    public DateTime Timestamp { get; set; }
+
+    //    internal S3EventMetadata ToEventMetadata()
+    //    {
+    //        return new S3EventMetadata(Id, Revision);
+    //    }
+    //}
 }

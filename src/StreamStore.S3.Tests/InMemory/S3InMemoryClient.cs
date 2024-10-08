@@ -48,5 +48,19 @@ namespace StreamStore.S3.Tests.InMemory
                 Name = request.Key
             });
         }
+
+        public Task CopyAsync(string sourcePrefix, string destinationPrefix, CancellationToken token)
+        {
+            objects.Keys
+                .Where(k => k.StartsWith(sourcePrefix)).ToList()
+                .ForEach(k => {
+                    var destinationKey = k.Replace(sourcePrefix, destinationPrefix);
+                    if (objects.ContainsKey(destinationKey))
+                        objects.TryRemove(destinationKey, out _);
+                    objects.TryAdd(destinationKey, objects[k]);
+                 });
+
+            return Task.CompletedTask;
+        }
     }
 }

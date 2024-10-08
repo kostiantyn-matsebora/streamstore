@@ -7,9 +7,12 @@ namespace StreamStore.S3.Client
     public interface IS3Client : IAsyncDisposable
     {
         Task<FindObjectResponse?> FindObjectAsync(string key, CancellationToken token);
+
         Task<UploadObjectResponse?> UploadObjectAsync(UploadObjectRequest request, CancellationToken token);
         Task DeleteObjectAsync(string prefix, string? key, CancellationToken token);
         Task DeleteObjectByFileIdAsync(string fileId, string key, CancellationToken token);
+        Task CopyAsync(string sourcePrefix, string destinationPrefix, CancellationToken token);
+
     }
 
 
@@ -19,6 +22,7 @@ namespace StreamStore.S3.Client
         public string? Name { get; set; }
         public string? FileId { get; set; }
     }
+
 
     public class UploadObjectRequest {
         public string? Key { get; set; }
