@@ -13,10 +13,10 @@ Designed to be easily extended with custom database backends.
 
 ## Databases
 
-  | Package                  | Description                                                                        | Nuget |
-  | ------------------------ | ---------------------------------------------------------------------------------- | ----- |
-  | [StreamStore.InMemory] | In-memory implementation is provided **for testing and educational purposes only** |       |
-  | [StreamStore.S3.B2]    | Backblaze B2 implementation                                                        |       |
+  | Package                  | Description                                                                        |
+  | ------------------------ | ---------------------------------------------------------------------------------- |
+  | [StreamStore.InMemory] | In-memory implementation is provided **for testing and educational purposes only** |
+  | [StreamStore.S3.B2]    | [`Backblaze B2`] implementation                                                        |
 
 ## Features
 
