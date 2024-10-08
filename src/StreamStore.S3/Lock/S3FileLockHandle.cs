@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 
 
 namespace StreamStore.S3.Lock
@@ -9,16 +10,14 @@ namespace StreamStore.S3.Lock
     class S3FileLockHandle : IS3LockHandle
     {
         bool lockReleased = false;
-        Id streamId;
+        readonly IS3TransactionContext ctx;
         string? fileId;
         readonly IS3Factory? factory;
 
-        public S3FileLockHandle(Id streamId, string fileId, IS3Factory factory)
-        {
-            if (streamId == Id.None)
-                throw new ArgumentException("Stream id is not set.", nameof(streamId));
-
-            this.streamId = streamId;
+        public S3FileLockHandle(IS3TransactionContext ctx, string fileId, IS3Factory factory)
+       {
+        
+            this.ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
             this.fileId = fileId;
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
@@ -29,7 +28,7 @@ namespace StreamStore.S3.Lock
             {
                 lockReleased = true;
                 await using var client = factory!.CreateClient();
-                await client!.DeleteObjectByFileIdAsync(fileId!, S3Naming.LockKey(streamId), token);
+                await client!.DeleteObjectByFileIdAsync(fileId!, ctx.LockKey, token);
             }
         }
 
@@ -45,7 +44,6 @@ namespace StreamStore.S3.Lock
             {
                 await ReleaseAsync(CancellationToken.None);
                 fileId = null;
-                streamId = Id.None;
             }
         }
     }

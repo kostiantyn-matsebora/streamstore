@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Models;
 
 namespace StreamStore.S3.Operations
@@ -11,40 +13,45 @@ namespace StreamStore.S3.Operations
     internal sealed class S3StreamLoader
     {
         readonly IS3Client? client;
-        readonly Id streamId;
-        public S3StreamLoader(Id streamId, IS3Client client)
-        {
-            if (streamId == Id.None)
-                throw new ArgumentException("StreamId cannot be empty", nameof(streamId));
-            this.streamId = streamId;
-            this.client = client ?? throw new ArgumentNullException(nameof(client));
-        }
+        readonly S3StreamContext ctx;
 
+        S3StreamLoader(S3StreamContext ctx, IS3Client client)
+        {
+            this.client = client ?? throw new ArgumentNullException(nameof(client));
+            this.ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
+        }
 
         public async Task<S3Stream?> LoadAsync(CancellationToken token) //TODO: Add retry logic
         {
-            var response = await client!.FindObjectAsync(S3Naming.StreamMetadataKey(streamId), token);
 
-            if (response == null) return null; // Probably already has been deleted
+            var metadata = await S3StreamMetadataLoader
+                    .New(ctx, client!)
+                    .LoadAsync(token);
 
-            var metadataRecord = Converter.FromByteArray<S3StreamMetadataRecord>(response.Data!);
-            var metadata = metadataRecord!.ToStreamMetadata();
+            var bag = new ConcurrentBag<EventRecord>();
 
-            var events = new S3EventRecordCollection();
+            if (metadata == null) return null;
 
-            foreach (var eventMetadata in metadata)
+            var tasks = metadata.Select(async e =>
             {
-                events.Add(await GetEvent(eventMetadata, token));
-            }
+                var record = await GetEventAsync(e, token);
+                bag.Add(record);
+            });
 
-            return S3Stream.New(metadata, events);
+            await Task.WhenAll(tasks);
+
+            return S3Stream.New(metadata, new EventRecordCollection(bag));
         }
 
-        private async Task<S3EventRecord> GetEvent(S3EventMetadata eventMetadata, CancellationToken token)
+        async Task<EventRecord> GetEventAsync(S3EventMetadata eventMetadata, CancellationToken token)
         {
-            var eventResponse = await client!.FindObjectAsync(S3Naming.EventKey(streamId, eventMetadata.Id), token);
-            var eventRecord = Converter.FromByteArray<S3EventRecord>(eventResponse!.Data!);
+            var eventResponse = await client!.FindObjectAsync(ctx.EventKey(eventMetadata.Id), token);
+            var eventRecord = Converter.FromByteArray<EventRecord>(eventResponse!.Data!);
             return eventRecord!;
+        }
+        public static S3StreamLoader New(S3StreamContext ctx, IS3Client client)
+        {
+            return new S3StreamLoader(ctx, client);
         }
     }
 }

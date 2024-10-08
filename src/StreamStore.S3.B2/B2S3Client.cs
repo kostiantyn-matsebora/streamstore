@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Bytewizer.Backblaze.Client;
-using Bytewizer.Backblaze.Extensions;
 using Bytewizer.Backblaze.Models;
 using StreamStore.S3.Client;
+
 
 
 namespace StreamStore.S3.B2
@@ -17,9 +15,8 @@ namespace StreamStore.S3.B2
     internal class B2S3Client : IS3Client
     {
         readonly B2StreamDatabaseSettings settings;
-        readonly int maxDegreeOfParallelism = 10;
         IStorageClient? client;
-        const int maxFileCount = 10000;
+        const int maxFileCount = 100;
 
         public B2S3Client(B2StreamDatabaseSettings settings, IStorageClient client)
         {
@@ -27,39 +24,62 @@ namespace StreamStore.S3.B2
             this.client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task DeleteObjectAsync(string prefix, string? key, CancellationToken token)
+
+        public async Task<ObjectDescriptor?> FindObjectDescriptorAsync(string key, CancellationToken token)
         {
             var request = new ListFileVersionRequest(settings.BucketId)
             {
-                Prefix = !string.IsNullOrEmpty(prefix) ? prefix : null,
-                StartFileName = key,
-                MaxFileCount = maxFileCount,
-                Delimiter = !string.IsNullOrEmpty(prefix) ? settings.Delimiter : null,
+                Prefix = key,
+                MaxFileCount = 1,
+                Delimiter = settings.Delimiter
             };
 
-            List<FileItem> victims;
+            var files = await client!.Files.ListVersionsAsync(request);
 
-            do
+            if (!files.IsSuccessStatusCode || !files.Response.Files.Any())
+                return null;
+
+            return new ObjectDescriptor
             {
-                var files = await client!.Files.ListVersionsAsync(request);
-
-                if (!files.IsSuccessStatusCode)
-                    return;
-
-                victims = files.Response.Files;
-                if (!string.IsNullOrEmpty(key))
-                    victims = victims.Where(f => f.FileName == key).ToList();
-
-                await victims.ForEachAsync(
-                    maxDegreeOfParallelism,
-                    async victim =>
-                    {
-                      await client!.Files.DeleteAsync(victim.FileId, victim.FileName);
-                    });
-
-            } while (victims.Any());
+                FileName = files.Response.Files[0].FileName,
+                FileId = files.Response.Files[0].FileId
+            };
         }
 
+        public async Task<ListObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token)
+        {
+            var request = new ListFileVersionRequest(settings.BucketId)
+            {
+                Prefix = !string.IsNullOrEmpty(sourcePrefix) ? sourcePrefix : null,
+                MaxFileCount = maxFileCount,
+                StartFileId = !string.IsNullOrEmpty(startObjectName) ? startObjectName : null,
+                Delimiter = !string.IsNullOrEmpty(sourcePrefix) ? settings.Delimiter : null,
+            };
+            var files = await client!.Files.ListVersionsAsync(request);
+
+            if (!files.IsSuccessStatusCode)
+                return null;
+
+            return new ListObjectsResponse
+            {
+                Objects = files.Response.Files.Select(f => new ObjectDescriptor
+                {
+                    FileName = f.FileName,
+                    FileId = f.FileId
+                }).ToArray(),
+                NextFileName = files.Response.NextFileName
+            };
+        }
+
+
+        public async Task CopyByFileIdAsync(string sourceFileId, string destinationName, CancellationToken token)
+        {
+            var copyRequest = new CopyFileRequest(
+                        sourceFileId,
+                        destinationName);
+
+            await client!.Files.CopyAsync(copyRequest);
+        }
 
         public async Task DeleteObjectByFileIdAsync(string fileId, string key, CancellationToken token)
         {
@@ -113,5 +133,8 @@ namespace StreamStore.S3.B2
             }
         }
 
+
     }
+
+
 }

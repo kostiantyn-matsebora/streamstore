@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 
 using System.Threading;
 using System.Collections.Concurrent;
+using StreamStore.Exceptions;
 
 
 namespace StreamStore.InMemory

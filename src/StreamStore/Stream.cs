@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Exceptions;
 
 
 namespace StreamStore
@@ -10,8 +11,8 @@ namespace StreamStore
     {
 
         readonly List<Id>? eventTracking = new List<Id>();
-        int revision;
         string? streamId;
+        bool isOpened;
 
         IStreamUnitOfWork? uow;
         readonly EventConverter converter;
@@ -37,9 +38,6 @@ namespace StreamStore
 
             this.streamId = streamId;
 
-            revision = 0;
-            uow = null;
-
             var stream = await database.FindMetadataAsync(streamId, cancellationToken);
 
             if (stream != null)
@@ -48,18 +46,18 @@ namespace StreamStore
                    throw new OptimisticConcurrencyException(expectedRevision, stream.Revision, streamId);
 
                 eventTracking!.AddRange(stream.EventIds);
-                revision = stream.Revision;
             }
 
            uow = database.BeginAppend(streamId, expectedRevision);
 
            if (uow == null)
                 throw new InvalidOperationException("Failed to open stream, either stream does not exist or revision is incorrect.");
+           isOpened = true;
         }
 
         public IStream Add(Id eventId, DateTime timestamp, object @event)
         {
-            if (string.IsNullOrEmpty(streamId))
+            if (!isOpened)
                 throw new InvalidOperationException("Stream is not open.");
 
             if (eventId == Id.None)
@@ -69,15 +67,14 @@ namespace StreamStore
                 throw new DuplicateEventException(eventId, streamId!);
 
             eventTracking!.Add(eventId);
-            revision++;
 
-            uow!.Add(eventId, revision, timestamp, converter.ConvertToString(@event));
+            uow!.Add(eventId, timestamp, converter.ConvertToString(@event));
             return this;
         }
 
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
-            await uow!.SaveChangesAsync(cancellationToken);
+            return await uow!.SaveChangesAsync(cancellationToken);
         }
 
         public void Dispose()

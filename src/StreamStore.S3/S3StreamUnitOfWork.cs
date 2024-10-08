@@ -1,9 +1,10 @@
 ﻿using System;
 
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Exceptions;
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Models;
 using StreamStore.S3.Operations;
 
@@ -11,65 +12,68 @@ using StreamStore.S3.Operations;
 namespace StreamStore.S3
 {
     internal sealed class S3StreamUnitOfWork : IStreamUnitOfWork
-    {        
-        readonly S3EventRecordCollection records = new S3EventRecordCollection();
-        readonly Id id;
+    {
         readonly int expectedRevision;
         readonly IS3Factory factory;
+        readonly S3TransactionContext ctx;
+        int revision;
 
         public S3StreamUnitOfWork(Id streamId, int expectedRevision, IS3Factory factory)
         {
-
             if (streamId == Id.None)
                 throw new ArgumentNullException(nameof(streamId));
-            id = streamId;
+
             if (expectedRevision < 0)
                 throw new ArgumentOutOfRangeException(nameof(expectedRevision));
             this.expectedRevision = expectedRevision;
-            
+
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            ctx = S3TransactionContext.New(streamId);
+            revision = expectedRevision;
         }
 
-        public IStreamUnitOfWork Add(Id eventId, int revision, DateTime timestamp, string data)
+        public IStreamUnitOfWork Add(Id eventId, DateTime timestamp, string data)
         {
-            records.Add(
-                new S3EventRecord {
+            ctx.Add(
+                new EventRecord
+                {
                     Id = eventId,
-                    Revision = revision,
+                    Revision = ++revision,
                     Timestamp = timestamp,
                     Data = data
-            });
+                });
             return this;
         }
 
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             await using var client = factory.CreateClient();
-            if (!records.Any())
+            if (!ctx.HasChanges)
                 throw new InvalidOperationException("No events to save.");
 
-            await ThrowIfStreamAlreadyChanged(client, cancellationToken);
+            ThrowIfStreamAlreadyChanged(
+                await GetStreamMetadata(client, cancellationToken));
 
-            using var transaction = await S3StreamTransaction.BeginAsync(id, factory);
+            using var transaction = await S3StreamTransaction.BeginAsync(ctx, factory);
             try
             {
                 // Get the current revision
-                var existingMetadata = await ThrowIfStreamAlreadyChanged(client, cancellationToken);
+                var metadata = await GetStreamMetadata(client, cancellationToken);
+                ThrowIfStreamAlreadyChanged(metadata);
 
-                var streamMetadata = S3StreamMetadata.New(id, records.ToEventMetadata());
-
-                // If there is already events for stream
-                if (existingMetadata != null)
-                    streamMetadata.AddRange(existingMetadata);
-
-                // Create new stream
-                var newStream = S3Stream.New(streamMetadata, records);
+                if (metadata == null)
+                    metadata = S3StreamMetadata.New(ctx.StreamId, ctx.UncommitedMetadata);
+                else
+                    metadata.AddRange(ctx.UncommitedMetadata);
 
                 // Update stream
-                var updater = S3StreamUpdater.New(newStream, client);
-                await updater.UpdateAsync(cancellationToken);
-                await transaction.CommitAsync(cancellationToken);
+                await S3StreamUploader
+                    .New(ctx.Transient, client)
+                    .UploadAsync(metadata, ctx.Uncommited, cancellationToken);
 
+                // Commit transaction
+                await transaction.CommitAsync(cancellationToken);
+                return metadata.Revision;
             }
             catch
             {
@@ -78,18 +82,21 @@ namespace StreamStore.S3
             }
         }
 
-        async Task<S3StreamMetadata?> ThrowIfStreamAlreadyChanged(IS3Client client, CancellationToken token)
+        async Task<S3StreamMetadata?> GetStreamMetadata(IS3Client client, CancellationToken token)
         {
-
-            var response = await client.FindObjectAsync(S3Naming.StreamMetadataKey(id), token);
+            var response = await client.FindObjectAsync(ctx.Persistent.MetadataKey, token);
             if (response == null) return null;
 
             var record = Converter.FromByteArray<S3StreamMetadataRecord>(response.Data!);
-            var stream = record!.ToStreamMetadata();
+            return record!.ToMetadata();
+        }
 
+        void ThrowIfStreamAlreadyChanged(S3StreamMetadata? stream)
+        {
+            if (stream == null)
+                return;
             if (stream!.Revision != expectedRevision)
-                throw new OptimisticConcurrencyException(expectedRevision, stream!.Revision, id);
-            return stream;
+                throw new OptimisticConcurrencyException(expectedRevision, stream!.Revision, ctx.StreamId);
         }
 
         public void Dispose()

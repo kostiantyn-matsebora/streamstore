@@ -8,7 +8,7 @@ namespace StreamStore.S3.Tests
     internal static class FixtureExtension
     {
         
-        public static EventRecord[] CreateEventRecords(this Fixture fixture,  int initialRevision, int count)
+        public static EventRecord[] CreateEventItems(this Fixture fixture,  int initialRevision, int count)
         {
             var serializer = new EventSerializer();
 
@@ -25,9 +25,9 @@ namespace StreamStore.S3.Tests
             return records;
         }
 
-        public static EventRecord[] CreateEventRecords(this Fixture fixture, int count)
+        public static EventRecord[] CreateEventItems(this Fixture fixture, int count)
         {
-            return CreateEventRecords(fixture,  1, count);
+            return CreateEventItems(fixture,  1, count);
         }
     }
 }

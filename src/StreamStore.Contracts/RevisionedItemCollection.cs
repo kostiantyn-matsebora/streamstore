@@ -11,6 +11,10 @@ namespace StreamStore
 
         public int MaxRevision => items.Any()? items.Last().Key : 0;
 
+        public RevisionedItemCollection(): this(Enumerable.Empty<T>())
+        {
+        }
+
         public RevisionedItemCollection(IEnumerable<T> records)
         {
            AddRange(records);

@@ -10,14 +10,9 @@ namespace StreamStore.Testing
 
         public static byte[] RandomByteArray => Converter.ToByteArray(RandomString);
 
-        public static EventRecord[] CreateEventRecords(int initialRevision, int count)
+        public static EventItem[] CreateEventItems(int count)
         {
-            return new Fixture().CreateEventRecords(initialRevision, count);
-        }
-
-        public static EventRecord[] CreateEventRecords(int count)
-        {
-            return new Fixture().CreateEventRecords(count);
+            return new Fixture().CreateEventItems(count);
         }
     }
 }

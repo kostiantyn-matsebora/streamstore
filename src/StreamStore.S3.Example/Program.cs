@@ -8,7 +8,10 @@ namespace StreamStore.S3.Example
         {
             var builder = Host.CreateApplicationBuilder(args);
 
+            builder.Services.AddHostedService<Janitor>();
             builder.Services.AddHostedService<Worker>();
+            builder.Services.AddHostedService<Worker2>();
+            builder.Services.AddHostedService<Worker3>();
 
             builder
                 .Services
@@ -16,6 +19,8 @@ namespace StreamStore.S3.Example
                 .UseB2StreamStoreDatabase(builder.Configuration);
             var host = builder.Build();
             host.Run();
+
         }
+
     }
 }

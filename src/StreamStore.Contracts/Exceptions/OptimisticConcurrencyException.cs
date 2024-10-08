@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace StreamStore
+namespace StreamStore.Exceptions
 {
-    public sealed class OptimisticConcurrencyException : StreamStoreException
+    public sealed class OptimisticConcurrencyException : ConcurrencyException
     {
         public int? ExpectedRevision { get; set; }
         public int? ActualRevision { get; set; }
@@ -16,12 +16,6 @@ namespace StreamStore
             base($"Stream has been already changed, revision {duplicateRevision} is already exists.")
         {
             DuplicateRevision = duplicateRevision;
-            StreamId = streamId;
-        }
-
-        public OptimisticConcurrencyException(Id streamId) :
-            base($"Stream has been already changed.")
-        {
             StreamId = streamId;
         }
 

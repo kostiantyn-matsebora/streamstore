@@ -72,13 +72,32 @@ or you can provide the configuration in code, see section below.
 
 ## Good to know
 
-- The library implements `two-phase locking mechanism` for optimistic concurrency control. First, it trying to lock in memory and if it is successful, it tries to lock in the storage.
+- The library implements `two-phase locking mechanism` for `pessimistic concurrency control` on stream level.  
+First, it trying to lock in memory and if it is successful, it tries to exclusively lock stream in the storage for the duration of the transaction. If it fails to lock in storage, it will release the lock in memory.
 
 - Since B2 does not provide locking mechanism for files, lock in storage implemented by creating a file with the same name as the stream id and trying to lock it by creating a file with the same name and checking if it is already exists.
 
+- Committed and uncommitted events are stored in separate root directories.
+
 - Each event is stored in a separate file with the name of the event id.
 
-- Each stream is stored in a separate folder with the name of the stream id.
+- Each stream is stored in a separate directory with the name of the stream id.
+
+### Storage structure
+
+- `persistent-streams` - committed streams
+  - `[stream-id]` - directory with stream data
+    - `events` - directory with events
+      - `[event-id]` - file with event data
+    - `__metadata` - file with stream metadata
+  - `transient-streams` - uncommitted streams
+    - `[stream-id]` - directory with stream transactions
+      - `[transaction-id]` - directory with transaction data
+        - `events` - directory with events
+          - `[event-id]` - file with event data
+        - `__metadata` - file with transaction metadata
+  - `locks` - directory with locks
+    - `[stream-id]` - file with lock data
 
 ## Example
 

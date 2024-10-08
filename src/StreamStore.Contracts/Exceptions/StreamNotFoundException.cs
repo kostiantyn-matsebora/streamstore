@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StreamStore
+namespace StreamStore.Exceptions
 {
     public class StreamNotFoundException : StreamStoreException
     {

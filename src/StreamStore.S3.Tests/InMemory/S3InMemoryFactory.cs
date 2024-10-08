@@ -1,4 +1,5 @@
 ﻿using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Lock;
 
 
@@ -11,9 +12,9 @@ namespace StreamStore.S3.Tests.InMemory
             return new S3InMemoryClient();
         }
 
-        public IS3StreamLock CreateLock(Id streamId)
+        public IS3StreamLock CreateLock(IS3TransactionContext ctx)
         {
-            return new S3StreamInMemoryLock(streamId, new S3InMemoryStreamLockStorage(TimeSpan.FromSeconds(10)));
+            return new S3StreamInMemoryLock(ctx.StreamId, new S3InMemoryStreamLockStorage(TimeSpan.FromSeconds(10)));
         }
     }
 }

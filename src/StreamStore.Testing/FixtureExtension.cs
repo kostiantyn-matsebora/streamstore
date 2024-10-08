@@ -7,6 +7,21 @@ namespace StreamStore.Testing
     public static class FixtureExtension
     {
 
+        public static EventItem[] CreateEventItems(this Fixture fixture, int count)
+        {
+            var serializer = new EventSerializer();
+
+
+            var records =
+                    fixture
+                    .Build<EventItem>()
+                    .With(x => x.Data, serializer.Serialize(fixture.Create<RootEvent>()))
+                    .CreateMany(count)
+                    .ToArray();
+
+            return records;
+        }
+
         public static EventRecord[] CreateEventRecords(this Fixture fixture, int initialRevision, int count)
         {
             var serializer = new EventSerializer();
@@ -24,9 +39,9 @@ namespace StreamStore.Testing
             return records;
         }
 
-        public static EventRecord[] CreateEventRecords(this Fixture fixture, int count)
+        public static EventRecord[] CreateEventRecords(this Fixture fixture,  int count)
         {
-            return fixture.CreateEventRecords(1, count);
+            return CreateEventRecords(fixture, 1, count);
         }
     }
 }

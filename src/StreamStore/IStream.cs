@@ -8,6 +8,6 @@ namespace StreamStore
     {
         Task OpenAsync(Id streamId, int expectedRevision, CancellationToken cancellationToken = default);
         IStream Add(Id eventId, DateTime timestamp, object @event);
-        Task SaveChangesAsync(CancellationToken cancellationToken);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

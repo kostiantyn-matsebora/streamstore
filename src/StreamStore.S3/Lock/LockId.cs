@@ -3,18 +3,17 @@
 
 namespace StreamStore.S3.Lock
 {
-    class LockId : IEquatable<LockId>
+    class LockId : IEquatable<LockId>, IEquatable<Id>
     {
-        public Guid Id { get; set; }
+        public Id Id { get; set; }
 
-        public LockId(Guid id)
+        public LockId(Id id)
         {
             Id = id;
         }
 
         public LockId()
         {
-            Id = Guid.NewGuid();
         }
 
         public bool Equals(LockId other)
@@ -28,6 +27,10 @@ namespace StreamStore.S3.Lock
             if (obj == null) return false;
             if (obj.GetType() != GetType()) return false;
             return Equals((LockId)obj);
+        }
+        public bool Equals(Id other)
+        {
+            return Id.Equals(other);
         }
 
         public override int GetHashCode()
