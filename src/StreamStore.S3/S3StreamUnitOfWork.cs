@@ -49,8 +49,6 @@ namespace StreamStore.S3
             if (!ctx.HasChanges)
                 throw new InvalidOperationException("No events to save.");
 
-            var metadata = await GetStreamMetadata(client, cancellationToken);
-
             ThrowIfStreamAlreadyChanged(
                 await GetStreamMetadata(client, cancellationToken));
 
@@ -58,7 +56,7 @@ namespace StreamStore.S3
             try
             {
                 // Get the current revision
-                metadata = await GetStreamMetadata(client, cancellationToken);
+                var metadata = await GetStreamMetadata(client, cancellationToken);
                 ThrowIfStreamAlreadyChanged(metadata);
 
                 if (metadata == null)

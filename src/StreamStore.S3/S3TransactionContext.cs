@@ -25,15 +25,13 @@ namespace StreamStore.S3
         public Id TransactionId => transactionId;
         public Id StreamId { get; }
 
-        public bool HasChanges => Uncommited.Count() > 0;
+        public bool HasChanges => Uncommited.Any();
 
         public IEnumerable<EventRecord> Uncommited => uncommited;
 
         public IEnumerable<S3EventMetadata> UncommitedMetadata => uncommitedMetadata;
 
-        string LockPrefix => $"locks{S3StreamContext.Delimiter}";
-
-        public string LockKey => $"{LockPrefix}{StreamId}";
+        public string LockKey => $"locks{S3StreamContext.Delimiter}{StreamId}";
 
         public S3TransactionContext Add(EventRecord eventRecord)
         {

@@ -2,7 +2,7 @@
 {
     public  class Worker3: Worker
     {
-        public Worker3(ILogger<Worker> logger, IStreamStore store) : base(logger, store)
+        public Worker3(ILogger<Worker3> logger, IStreamStore store) : base(logger, store)
         {
         }
     }

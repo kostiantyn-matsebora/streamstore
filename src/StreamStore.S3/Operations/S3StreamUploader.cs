@@ -20,9 +20,6 @@ namespace StreamStore.S3.Operations
 
         public async Task UploadAsync(S3StreamMetadata metadata, IEnumerable<EventRecord> uncommited, CancellationToken token)
         {
-            var streamId = ctx.StreamId;
-
-            
             await uncommited.ForEachAsync(5, async (@event) =>
             {
                 var data = Converter.ToByteArray(@event);

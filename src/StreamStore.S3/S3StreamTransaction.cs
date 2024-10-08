@@ -15,7 +15,7 @@ namespace StreamStore.S3
         IS3LockHandle? handle;
         bool commited = false;
         bool rolledBack = false;
-        IS3StreamLock? @lock;
+
 
         private S3StreamTransaction(S3TransactionContext ctx, IS3Factory factory)
         {
@@ -25,7 +25,7 @@ namespace StreamStore.S3
 
         async Task BeginAsync(CancellationToken token)
         {
-            @lock = factory.CreateLock(ctx);
+            var @lock = factory.CreateLock(ctx);
             handle = await @lock.AcquireAsync(token);
 
             if (handle == null)

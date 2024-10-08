@@ -18,6 +18,11 @@ namespace StreamStore.S3.Models
             Timestamp = record.Timestamp;
         }
 
+        public S3EventMetadata(Id id, int revision)
+        {
+            Id = id;
+            Revision = revision;
+        }
 
         public bool Equals(S3EventMetadata other)
         {
@@ -29,14 +34,6 @@ namespace StreamStore.S3.Models
         {
             return Id.Equals(other);
         }
-
-        public S3EventMetadata(Id id, int revision)
-        {
-            Id = id;
-            Revision = revision;
-        }
-
-
 
         public EventMetadataRecord ToRecord()
         {

@@ -28,15 +28,14 @@ namespace StreamStore.S3.Lock
             if (obj.GetType() != GetType()) return false;
             return Equals((LockId)obj);
         }
+        public bool Equals(Id other)
+        {
+            return Id.Equals(other);
+        }
 
         public override int GetHashCode()
         {
             return Id.GetHashCode();
-        }
-
-        public bool Equals(Id other)
-        {
-          return Id.Equals(other);
         }
     }
 }

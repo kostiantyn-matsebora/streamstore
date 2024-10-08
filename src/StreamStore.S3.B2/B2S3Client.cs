@@ -71,7 +71,6 @@ namespace StreamStore.S3.B2
             };
 
             List<FileItem> victims;
-            string lastCopiedFile = string.Empty;
 
             do
             {

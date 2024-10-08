@@ -7,9 +7,9 @@ namespace StreamStore.S3.Operations
 {
     internal class S3StreamCopier
     {
-        private S3StreamContext source;
-        private S3StreamContext destination;
-        private IS3Client client;
+        readonly S3StreamContext source;
+        readonly S3StreamContext destination;
+        readonly IS3Client client;
 
         S3StreamCopier(S3StreamContext source, S3StreamContext destination, IS3Client client)
         {

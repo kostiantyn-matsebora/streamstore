@@ -2,10 +2,10 @@
 {
     public class Janitor : BackgroundService
     {
-        private ILogger<Worker> logger;
-        private IStreamStore store;
+        readonly ILogger<Janitor> logger;
+        readonly IStreamStore store;
 
-        public Janitor(ILogger<Worker> logger, IStreamStore store, IHostApplicationLifetime appLifetime)
+        public Janitor(ILogger<Janitor> logger, IStreamStore store, IHostApplicationLifetime appLifetime)
         {
             this.logger = logger;
             this.store = store;
