@@ -9,12 +9,16 @@
 To install the package, you can use the following command from the command line:
 
 ```dotnetcli
+  dotnet add package StreamStore
   dotnet add package StreamStore.S3.B2
 ```
 
 or from Nuget Package Manager Console:
 
 ```powershell
+
+
+  Install-Package StreamStore
 
   Install-Package StreamStore.S3.B2
 ```
