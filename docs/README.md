@@ -222,8 +222,8 @@ to contribute, feel free to [open an issue][issues] or
 [StreamEntity]: ../src/StreamStore/StreamEntity.cs
 [IStreamUnitOfWork]: ../src/StreamStore.Contracts/IStreamUnitOfWork.cs
 [IStreamDatabase]: ../src/StreamStore.Contracts/IStreamDatabase.cs
-[StreamStore.S3.B2]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.B2
-[StreamStore.InMemory]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.InMemory
+[StreamStore.S3.B2]: ../src/StreamStore.S3.B2
+[StreamStore.InMemory]: ../src/StreamStore.InMemory
 [`In-Memory`]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.InMemory
 [`Backblaze B2`]: https://www.backblaze.com/b2/cloud-storage.html
 
