@@ -1,5 +1,7 @@
 # StreamStore.InMemory
 
+[![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/)
+
 In-memory database backend for [`StreamStore`](https://github.com/kostiantyn-matsebora/streamstore/tree/master) storage is provided **for testing and educational purposes only**.
 
 ## Installation
