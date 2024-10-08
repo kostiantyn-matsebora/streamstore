@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.3.0] - 2024-10-08
+
+### Added
+
+- Add support of Backblaze B2 storage backend.
+- Add testing framework for StreamStore.
+
+### Changed
+
+- Signatures of IStreamStore and IStreamDatabase interfaces, as well implementations.
+- Documentation, added instructions how to use Backblaze B2 storage backend.
+  
 ## [0.2.2] - 2024-10-01
 
 ### Fixed

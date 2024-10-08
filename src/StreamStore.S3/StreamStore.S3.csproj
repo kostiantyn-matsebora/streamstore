@@ -6,9 +6,7 @@
     <Version>0.1.0</Version>
     <Authors>kostiantyn-matsebora</Authors>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
-    <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
-    <Description>S3 Database implementation for StreamStore</Description>
-    <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

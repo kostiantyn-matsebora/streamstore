@@ -13,7 +13,7 @@ namespace StreamStore.S3.Example
             builder
                 .Services
                 .ConfigureStreamStore()
-                .UseB2Database(builder.Configuration);
+                .UseB2StreamStoreDatabase(builder.Configuration);
             var host = builder.Build();
             host.Run();
         }

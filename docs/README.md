@@ -1,4 +1,5 @@
 # StreamStore 
+
 [![StreamStore](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/streamstore.yml/badge.svg)](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/streamstore.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kostiantyn-matsebora_streamstore&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kostiantyn-matsebora_streamstore)
 [![NuGet version (StreamStore)](https://img.shields.io/nuget/v/StreamStore.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore/)
 
@@ -8,9 +9,14 @@ Heavily inspired by Greg Young's Event Store and [`Streamstone`](https://github.
 
 ## Overview
 
-The library itself does not provide any production-ready database storage implementation _yet_, but it is designed to be easily extended with custom database backends.
+Designed to be easily extended with custom database backends.
 
-[In-memory][InMemoryStreamDatabase.cs] database implementation is provided **for testing and educational purposes only**.
+## Databases
+
+  | Package                  | Description                                                                        |
+  | ------------------------ | ---------------------------------------------------------------------------------- |
+  | [StreamStore.InMemory] | In-memory implementation is provided **for testing and educational purposes only** |
+  | [StreamStore.S3.B2]    | [`Backblaze B2`] implementation                                                        |
 
 ## Features
 
@@ -21,7 +27,6 @@ The general idea is to highlight the general characteristics and features of eve
 - [x] Optimistic concurrency control.
 - [x] Event duplication detection based on event ID.
 - [ ] Database agnostic test framework, including benchmarking test scenarios.
-- [ ] Binary serialization/deserialization of events.
 - [ ] Custom event properties (?).
 - [ ] External transaction support (?).
 - [ ] Transactional outbox pattern implementation (?).
@@ -30,44 +35,95 @@ The general idea is to highlight the general characteristics and features of eve
 
 Also add implementations of particular storage backends, such as:
 
-- [x] [`In-memory`][IStreamUnitOfWork] - for testing purposes.
-- [ ] [`Entity Framework`](https://www.microsoft.com/en-us/sql-server/sql-server-2022) - for SQL Server.
-- [ ] [`Dapper`](https://github.com/DapperLib/Dapper) - for SQL Server, PostgreSQL, MySQL, SQLite etc.
-- [ ] [`Cassandra DB`](https://cassandra.apache.org/_/index.html) -  for distributed storage.
+- [x] [`In-memory`] - for testing purposes.
+- [x] [`Backblaze B2`] - Backblaze B2.
+- [ ] [`SQL`](https://github.com/DapperLib/Dapper) -  SQL Server, PostgreSQL, MySQL, SQLite etc.
+- [ ] [`Cassandra DB`](https://cassandra.apache.org/_/index.html) - distributed storage.
 
 ## Installation
 
 To install the package, you can use the following command from the command line:
 
 ```dotnetcli
+  # Install StreamStore package
+  
   dotnet add package StreamStore
+
+  #Install package of particular database implementation, for instance InMemory
+
+  dotnet add package StreamStore.InMemory
 ```
 
 or from Nuget Package Manager Console:
 
 ```powershell
+   # Install StreamStore package
   Install-Package StreamStore
+
+   #Install package of particular database implementation, for instance InMemory
+  Install-Package StreamStore.InMemory
+
 ```
 
 ## Usage
 
+- Register store in DI container
+  
 ```csharp
-  // Create store
-  var storage = new StreamStore(new InMemoryStreamDatabase());
+       services.ConfigureStreamStore();
+```
 
-  var streamId = new Id("stream-1"); // you also can use regular string
+- Add database implementation, see instructions for particular database in [Databases](#databases) section.
+  
+  For instance, to use in-memory database, you can add the following code:
 
+```csharp
+      services.UseInMemoryStreamDatabase();
+```
+
+- Use store in your application
+  
+```csharp
+
+   // Inject IStreamStore in your service
+    public class MyService
+    {
+        private readonly IStreamStore store;
+  
+        public MyService(IStreamStore store)
+        {
+            this.store = store;
+        }
+    }
+ 
   //Append events to stream or create a new stream if it does not exist
   var events = new Event[] {...}; // your events
 
-  await store.OpenStreamAsync()
-              // EventObject property is where you store your event
-              .AddAsync(new Event { Id = new Id("event-1"), Timestamp = DateTime.Now, EventObject = event1 }) 
-              .AddAsync(new Event { Id = new Id("event-2"), Timestamp = DateTime.Now, EventObject = event2 })
-              .AddAsync(new Id("event-3"), DateTime.Now, event3)
-              .AddRangeAsync(events)
-            .SaveChangesAsync(streamId);
-  
+  var streamId = new Id("stream-1");
+
+  // Open stream like new since version is not provided.
+  IStream stream = await store.OpenStreamAsync(streamId);
+
+  try {
+    stream
+      // EventObject property is where you store your event
+      .AddAsync(new Event { Id = new Id("event-1"), Timestamp = DateTime.Now, EventObject = events[0] }) 
+      .AddAsync(new Event { Id = new Id("event-2"), Timestamp = DateTime.Now, EventObject = events[1] })
+      .AddAsync(new Id("event-3"), DateTime.Now, event[2])
+      .AddRangeAsync(events)
+    .SaveChangesAsync(streamId);
+
+  } catch (StreamConcurrencyException ex) {
+
+    // Implement your logic for handling concurrency exception, or try to push with latest revision, like this
+    ...
+    store
+        .OpenStreamAsync(streamId, ex.ActualRevision)
+        .AddAsync(new Event { Id = new Id("event-4"), Timestamp = DateTime.Now, EventObject = events[3] })
+        ...
+        .SaveChangesAsync(streamId);
+  }
+
   // Get stream read-only entity
   StreamEntity streamEntity = await store.GetAsync(streamId);
 
@@ -76,17 +132,7 @@ or from Nuget Package Manager Console:
 
 ```
 
-### Register in DI container
-  
-  ```csharp
-    services.AddSingleton<IStreamDatabase, InMemoryStreamDatabase>();
-    services.AddSingleton<IStreamUnitOfWork, InMemoryStreamUnitOfWork>();
-    services.AddSingleton<IEventSerializer, JsonEventSerializer>();
-  
-    services.AddSingleton<IStreamStore, StreamStore>();
-  ```
-
-### Good to know
+## Good to know
 
 - _[`Id`][Id]  is a value object (immutable class) that has implicit conversion from and to string_.  
 
@@ -117,7 +163,6 @@ or from Nuget Package Manager Console:
 ```powershell
   Install-Package StreamStore.Contracts
 ```
-
 
 ### Create your own database implementation
 
@@ -155,22 +200,15 @@ To create your own database implementation, you need to implement the following 
 
 - _Solution already provides optimistic concurrency and event duplication control mechanisms, as a **pre-check** during stream opening_.  
 
-  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation. For instance, you can use a transaction mechanism suppored by `ACID compliant DBMS`.  
-  For educational purposes, [InMemoryStreamUnitOfWork.cs] already contains such mechanisms.  
+  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation. For instance, you can use a transaction mechanism suppored by `ACID compliant DBMS`.
 
 - _Get and Delete operations must be implemented as idempotent by their nature._
-
-### Example
-
-Solution already contains [InMemoryStreamDatabase.cs] and [InMemoryStreamUnitOfWork.cs] implementations **for testing and educational purposes only**.
 
 ## Contributing
 
 If you experience any issues, have a question or a suggestion, or if you wish
 to contribute, feel free to [open an issue][issues] or
 [start a discussion][discussions].
-
-
 
 ## License
 
@@ -184,3 +222,8 @@ to contribute, feel free to [open an issue][issues] or
 [StreamEntity]: ../src/StreamStore/StreamEntity.cs
 [IStreamUnitOfWork]: ../src/StreamStore.Contracts/IStreamUnitOfWork.cs
 [IStreamDatabase]: ../src/StreamStore.Contracts/IStreamDatabase.cs
+[StreamStore.S3.B2]: ../src/StreamStore.S3.B2
+[StreamStore.InMemory]: ../src/StreamStore.InMemory
+[`In-Memory`]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.InMemory
+[`Backblaze B2`]: https://www.backblaze.com/b2/cloud-storage.html
+
