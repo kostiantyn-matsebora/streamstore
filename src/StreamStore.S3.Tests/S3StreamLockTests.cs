@@ -4,6 +4,7 @@ using Bytewizer.Backblaze.Extensions;
 using FluentAssertions;
 using Moq;
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 
 
 

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 
 
 namespace StreamStore.S3.Operations
@@ -19,9 +22,33 @@ namespace StreamStore.S3.Operations
 
         public async Task DeleteAsync(CancellationToken token)
         {
-            //Delete all objects from container
-            await client!.DeleteObjectAsync(ctx.EventsKey, null, token);
-            await client!.DeleteObjectAsync(ctx.MetadataKey, null, token);
+            // Delete all objects from container
+            List<ObjectDescriptor> victims;
+
+            // Delete events
+            do
+            {
+                var response = await client!.ListObjectsAsync(ctx.EventsKey, null, token);
+
+                if (response == null)
+                    break;
+
+                victims = response.Objects!.ToList();
+                var tasks = victims.Select(async e =>
+                {
+                    await client.DeleteObjectByFileIdAsync(e.FileId!, e.FileName!, token);
+                });
+
+                await Task.WhenAll(tasks);
+
+            } while (victims.Any());
+
+
+            // Delete metadata
+            var metadata = await client!.FindObjectDescriptorAsync(ctx.MetadataKey, token);
+            if (metadata == null) return;
+
+            await client!.DeleteObjectByFileIdAsync(metadata.FileId!, metadata.FileName!, token);
         }
 
         public static S3StreamDeleter New(S3StreamContext ctx, IS3Client client)

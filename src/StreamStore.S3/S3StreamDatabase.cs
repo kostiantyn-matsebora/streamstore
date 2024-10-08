@@ -3,6 +3,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Models;
 using StreamStore.S3.Operations;
 

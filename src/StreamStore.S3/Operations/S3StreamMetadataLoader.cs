@@ -5,6 +5,7 @@ using StreamStore.S3.Models;
 using System.Threading.Tasks;
 using System.Threading;
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 
 namespace StreamStore.S3.Operations
 {

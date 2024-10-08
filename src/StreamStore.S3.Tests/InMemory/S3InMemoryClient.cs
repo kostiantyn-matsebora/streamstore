@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Text;
 using StreamStore.S3.Client;
 
 namespace StreamStore.S3.Tests.InMemory
@@ -12,17 +13,6 @@ namespace StreamStore.S3.Tests.InMemory
         {
             objects.TryRemove(key, out _);
             return Task.CompletedTask;
-        }
-
-        public Task DeleteObjectAsync(string prefix, string? key, CancellationToken token)
-        {
-            objects.Keys.Where(k => k.StartsWith($"{prefix}{key}")).ToList().ForEach(k => objects.TryRemove(k, out _));
-            return Task.CompletedTask;
-        }
-
-        public ValueTask DisposeAsync()
-        {
-            return new ValueTask(Task.CompletedTask);
         }
 
         public Task<FindObjectResponse?> FindObjectAsync(string key, CancellationToken token)
@@ -49,18 +39,65 @@ namespace StreamStore.S3.Tests.InMemory
             });
         }
 
-        public Task CopyAsync(string sourcePrefix, string destinationPrefix, CancellationToken token)
+        public Task<ListObjectsResponse> ListObjectsAsync(string sourcePrefix, string? startFileName, CancellationToken token)
         {
-            objects.Keys
-                .Where(k => k.StartsWith(sourcePrefix)).ToList()
-                .ForEach(k => {
-                    var destinationKey = k.Replace(sourcePrefix, destinationPrefix);
-                    if (objects.ContainsKey(destinationKey))
-                        objects.TryRemove(destinationKey, out _);
-                    objects.TryAdd(destinationKey, objects[k]);
-                 });
+            
+            if (startFileName == null) 
+            {
+                var response = new ListObjectsResponse
+                {
+                    Objects = objects.Keys
+                            .Where(k => k.StartsWith(sourcePrefix))
+                            .Select(k => new ObjectDescriptor
+                            {
+                                FileName = k,
+                                FileId = k
+                            }).ToArray()
+                };
 
+                return Task.FromResult(response);
+            }
+
+            return Task.FromResult(new ListObjectsResponse
+            {
+                Objects = Enumerable.Empty<ObjectDescriptor>().ToArray(),
+                NextFileName = Guid.NewGuid().ToString()
+            });
+        }
+
+        public Task<ObjectDescriptor?> FindObjectDescriptorAsync(string key, CancellationToken token)
+        {
+            if (objects.TryGetValue(key, out var _))
+            {
+                return Task.FromResult<ObjectDescriptor?>(new ObjectDescriptor
+                {
+                    FileName = key,
+                    FileId = key
+                });
+            }
+            return Task.FromResult<ObjectDescriptor?>(null);
+        }
+
+        public Task CopyByFileIdAsync(string sourceFileId, string destinationName, CancellationToken token)
+        {
+            lock (objects)
+            {
+                if (objects.TryGetValue(sourceFileId, out var data))
+                {
+                    var content = Encoding.UTF8.GetString(data);
+                    if (objects.ContainsKey(destinationName))
+                    {
+                        objects.TryRemove(destinationName, out _);
+                    }
+                    objects.TryAdd(destinationName, data);
+                }
+            }
             return Task.CompletedTask;
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            return new ValueTask(Task.CompletedTask);
         }
     }
 }

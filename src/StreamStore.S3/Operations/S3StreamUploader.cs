@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Models;
 
 namespace StreamStore.S3.Operations
@@ -20,7 +23,7 @@ namespace StreamStore.S3.Operations
 
         public async Task UploadAsync(S3StreamMetadata metadata, IEnumerable<EventRecord> uncommited, CancellationToken token)
         {
-            await uncommited.ForEachAsync(5, async (@event) =>
+            var tasks = uncommited.Select(async @event =>
             {
                 var data = Converter.ToByteArray(@event);
                 var request = new UploadObjectRequest
@@ -30,7 +33,8 @@ namespace StreamStore.S3.Operations
                 };
                 await client!.UploadObjectAsync(request, token);
             });
-           
+
+            await Task.WhenAll(tasks);
 
             var uploadRequest = new UploadObjectRequest
             {

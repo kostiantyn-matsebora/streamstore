@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Models;
 using StreamStore.S3.Operations;
 
@@ -21,11 +22,11 @@ namespace StreamStore.S3
         {
             if (streamId == Id.None)
                 throw new ArgumentNullException(nameof(streamId));
-          
+
             if (expectedRevision < 0)
                 throw new ArgumentOutOfRangeException(nameof(expectedRevision));
             this.expectedRevision = expectedRevision;
-            
+
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
             ctx = S3TransactionContext.New(streamId);
             revision = expectedRevision;
@@ -34,12 +35,13 @@ namespace StreamStore.S3
         public IStreamUnitOfWork Add(Id eventId, DateTime timestamp, string data)
         {
             ctx.Add(
-                new EventRecord {
+                new EventRecord
+                {
                     Id = eventId,
                     Revision = ++revision,
                     Timestamp = timestamp,
                     Data = data
-            });
+                });
             return this;
         }
 
@@ -61,7 +63,7 @@ namespace StreamStore.S3
 
                 if (metadata == null)
                     metadata = S3StreamMetadata.New(ctx.StreamId, ctx.UncommitedMetadata);
-                else 
+                else
                     metadata.AddRange(ctx.UncommitedMetadata);
 
                 // Update stream

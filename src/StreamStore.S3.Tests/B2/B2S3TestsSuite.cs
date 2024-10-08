@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using StreamStore.S3.B2;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Lock;
 using StreamStore.Testing;
 

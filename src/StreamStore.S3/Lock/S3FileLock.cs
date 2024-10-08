@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 
 
 namespace StreamStore.S3.Lock

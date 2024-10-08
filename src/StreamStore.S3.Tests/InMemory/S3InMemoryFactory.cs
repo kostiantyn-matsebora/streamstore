@@ -1,4 +1,5 @@
 ﻿using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Lock;
 
 

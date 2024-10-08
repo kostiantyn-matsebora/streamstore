@@ -5,7 +5,7 @@ using StreamStore.Exceptions;
 using StreamStore.S3.Client;
 using StreamStore.S3.Operations;
 
-namespace StreamStore.S3
+namespace StreamStore.S3.Concurrency
 {
     internal sealed class S3StreamTransaction : IDisposable, IAsyncDisposable
     {

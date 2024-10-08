@@ -1,11 +1,14 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 
 
 namespace StreamStore.S3.Operations
 {
-    internal class S3StreamCopier
+    internal class S3StreamCopier : OperationBase
     {
         readonly S3StreamContext source;
         readonly S3StreamContext destination;
@@ -20,11 +23,40 @@ namespace StreamStore.S3.Operations
 
         public async Task CopyAsync(CancellationToken token)
         {
-            // First copy events
-            await client.CopyAsync(source.EventsKey, destination.EventsKey, token);
+            string? startObjectName = null;
+            List<ObjectDescriptor> files;
 
-            // Then copy metadata
-            await client.CopyAsync(source.MetadataKey, destination.MetadataKey, token);
+            // Copy events
+            do
+            {
+                var response = await client!.ListObjectsAsync(source.EventsKey, startObjectName, token);
+
+                if (response == null)
+                    break;
+
+                files = response.Objects!.ToList();
+                files = files.Where(e => e.FileName != startObjectName).ToList();
+                if (!files.Any()) break;
+
+                startObjectName = files.Last().FileName;
+
+                var tasks = files.Select(
+                    async e =>
+                    {
+                        var destinationKey = CalculateDestinationKey(e.FileName!, source.EventsKey, destination.EventsKey);
+                        await client.CopyByFileIdAsync(e.FileId!, destinationKey, token);
+                     
+                    });
+
+                await Task.WhenAll(tasks);
+            } while (files.Any());
+
+
+            // Copy metadata
+            var metadata = await client!.FindObjectDescriptorAsync(source.MetadataKey, token);
+            if (metadata == null) return;
+
+            await client!.CopyByFileIdAsync(metadata.FileId!, destination.MetadataKey, token);
         }
 
         public static S3StreamCopier New(S3StreamContext source, S3StreamContext destination, IS3Client client)

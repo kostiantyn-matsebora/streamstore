@@ -4,9 +4,9 @@ using System.Linq;
 using StreamStore.S3.Models;
 
 
-namespace StreamStore.S3
+namespace StreamStore.S3.Concurrency
 {
-    class S3TransactionContext: IS3TransactionContext
+    class S3TransactionContext : IS3TransactionContext
     {
         readonly EventRecordCollection uncommited = new EventRecordCollection();
         readonly S3EventMetadataCollection uncommitedMetadata = new S3EventMetadataCollection();

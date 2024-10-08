@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace StreamStore.S3
+namespace StreamStore.S3.Concurrency
 {
 
     internal abstract class S3StreamContext
@@ -38,7 +38,7 @@ namespace StreamStore.S3
             {
             }
 
-            public override string StreamId => this.streamId;
+            public override string StreamId => streamId;
         }
 
         class S3TransientContext : S3StreamContext
@@ -49,7 +49,7 @@ namespace StreamStore.S3
                 this.transactionId = transactionId;
             }
 
-            public override string StreamId => $"{this.streamId}{Delimiter}{transactionId}";
+            public override string StreamId => $"{streamId}{Delimiter}{transactionId}";
         }
     }
 }

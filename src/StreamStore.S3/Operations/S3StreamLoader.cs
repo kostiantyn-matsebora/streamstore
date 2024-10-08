@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Models;
 
 namespace StreamStore.S3.Operations
@@ -12,13 +14,12 @@ namespace StreamStore.S3.Operations
     {
         readonly IS3Client? client;
         readonly S3StreamContext ctx;
-        
+
         S3StreamLoader(S3StreamContext ctx, IS3Client client)
         {
             this.client = client ?? throw new ArgumentNullException(nameof(client));
             this.ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
         }
-
 
         public async Task<S3Stream?> LoadAsync(CancellationToken token) //TODO: Add retry logic
         {
@@ -27,20 +28,24 @@ namespace StreamStore.S3.Operations
                     .New(ctx, client!)
                     .LoadAsync(token);
 
+            var bag = new ConcurrentBag<EventRecord>();
+
             if (metadata == null) return null;
 
             var events = new EventRecordCollection();
 
-            await metadata.ForEachAsync(5, async (eventMetadata) =>
+            var tasks = metadata.Select(async e =>
             {
-                var @event = await  GetEvent(eventMetadata, token);
-                events.Add(@event);
+                var record = await GetEventAsync(e, token);
+                bag.Add(record);
             });
 
-            return S3Stream.New(metadata, events);
+            await Task.WhenAll(tasks);
+
+            return S3Stream.New(metadata, new EventRecordCollection(bag));
         }
 
-        async Task<EventRecord> GetEvent(S3EventMetadata eventMetadata, CancellationToken token)
+        async Task<EventRecord> GetEventAsync(S3EventMetadata eventMetadata, CancellationToken token)
         {
             var eventResponse = await client!.FindObjectAsync(ctx.EventKey(eventMetadata.Id), token);
             var eventRecord = Converter.FromByteArray<EventRecord>(eventResponse!.Data!);

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace StreamStore.S3
+﻿namespace StreamStore.S3.Concurrency
 {
     public interface IS3TransactionContext
     {

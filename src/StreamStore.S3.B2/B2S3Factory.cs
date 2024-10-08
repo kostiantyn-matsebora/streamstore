@@ -2,6 +2,7 @@
 
 using Bytewizer.Backblaze.Client;
 using StreamStore.S3.Client;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Lock;
 
 namespace StreamStore.S3.B2

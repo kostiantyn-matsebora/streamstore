@@ -2,7 +2,7 @@
 
 
 using FluentAssertions;
-using StreamStore.Testing;
+
 
 namespace StreamStore.Testing
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,12 +8,13 @@ namespace StreamStore.S3.Client
     public interface IS3Client : IAsyncDisposable
     {
         Task<FindObjectResponse?> FindObjectAsync(string key, CancellationToken token);
-
         Task<UploadObjectResponse?> UploadObjectAsync(UploadObjectRequest request, CancellationToken token);
-        Task DeleteObjectAsync(string prefix, string? key, CancellationToken token);
+        //Task DeleteObjectAsync(string prefix, string? key, CancellationToken token);
         Task DeleteObjectByFileIdAsync(string fileId, string key, CancellationToken token);
-        Task CopyAsync(string sourcePrefix, string destinationPrefix, CancellationToken token);
-
+        //Task CopyAsync(string sourcePrefix, string destinationPrefix, CancellationToken token);
+        Task<ListObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startFileName, CancellationToken token);
+        Task<ObjectDescriptor?> FindObjectDescriptorAsync(string key, CancellationToken token);
+        Task CopyByFileIdAsync(string sourceFileId, string destinationName, CancellationToken token);
     }
 
 
@@ -34,4 +36,17 @@ namespace StreamStore.S3.Client
         public string? Name { get; set; }
         public string? FileId { get; set; }
     }
+
+    public class ListObjectsResponse
+    {
+        public ObjectDescriptor[]? Objects { get; set; }
+        public string? NextFileName { get; set; }
+    }
+
+    public class ObjectDescriptor
+    {
+        public string? FileName { get; set; }
+        public string? FileId { get; set; }
+    }
 }
+
