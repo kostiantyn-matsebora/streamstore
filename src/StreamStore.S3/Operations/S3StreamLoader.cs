@@ -32,8 +32,6 @@ namespace StreamStore.S3.Operations
 
             if (metadata == null) return null;
 
-            var events = new EventRecordCollection();
-
             var tasks = metadata.Select(async e =>
             {
                 var record = await GetEventAsync(e, token);

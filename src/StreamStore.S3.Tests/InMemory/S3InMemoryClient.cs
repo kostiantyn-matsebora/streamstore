@@ -39,10 +39,10 @@ namespace StreamStore.S3.Tests.InMemory
             });
         }
 
-        public Task<ListObjectsResponse> ListObjectsAsync(string sourcePrefix, string? startFileName, CancellationToken token)
+        public Task<ListObjectsResponse> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token)
         {
             
-            if (startFileName == null) 
+            if (startObjectName == null) 
             {
                 var response = new ListObjectsResponse
                 {
@@ -84,7 +84,6 @@ namespace StreamStore.S3.Tests.InMemory
             {
                 if (objects.TryGetValue(sourceFileId, out var data))
                 {
-                    var content = Encoding.UTF8.GetString(data);
                     if (objects.ContainsKey(destinationName))
                     {
                         objects.TryRemove(destinationName, out _);

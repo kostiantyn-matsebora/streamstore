@@ -31,8 +31,7 @@ namespace StreamStore.S3.Operations
             {
                 var response = await client!.ListObjectsAsync(source.EventsKey, startObjectName, token);
 
-                if (response == null)
-                    break;
+                if (response == null) break;
 
                 files = response.Objects!.ToList();
                 files = files.Where(e => e.FileName != startObjectName).ToList();

@@ -41,8 +41,8 @@ namespace StreamStore.S3.B2
 
             return new ObjectDescriptor
             {
-                FileName = files.Response.Files.First().FileName,
-                FileId = files.Response.Files.First().FileId
+                FileName = files.Response.Files[0].FileName,
+                FileId = files.Response.Files[0].FileId
             };
         }
 

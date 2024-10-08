@@ -6,7 +6,7 @@ namespace StreamStore.S3.Operations
 {
     internal abstract class OperationBase
     {
-        protected string CalculateDestinationKey(string sourceKey, string sourcePrefix, string destinationPrefix)
+        protected static string CalculateDestinationKey(string sourceKey, string sourcePrefix, string destinationPrefix)
         {
             if (sourceKey == null)
                 throw new ArgumentNullException(nameof(sourceKey));

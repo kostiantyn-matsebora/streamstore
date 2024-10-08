@@ -11,7 +11,7 @@ namespace StreamStore.Testing
         {
         }
 
-        protected virtual void TrySkip()
+        protected override void TrySkip()
         {
             Skip.If(suite.CreateDatabase() == null, "Database is not set.");
         }
