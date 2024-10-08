@@ -10,6 +10,7 @@ To install the package, you can use the following command from the command line:
 
 ```dotnetcli
   dotnet add package StreamStore
+
   dotnet add package StreamStore.S3.B2
 ```
 

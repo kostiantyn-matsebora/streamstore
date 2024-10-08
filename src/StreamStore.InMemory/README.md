@@ -9,7 +9,7 @@ In-memory database backend for [`StreamStore`](https://github.com/kostiantyn-mat
 To install the package, you can use the following command from the command line:
 
 ```dotnetcli
-   dotnet add package StreamStore
+  dotnet add package StreamStore
 
   dotnet add package StreamStore.InMemory
 ```
