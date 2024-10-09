@@ -20,7 +20,6 @@ namespace StreamStore.S3.AWS
 
     public class AWSS3DatabaseSettingsBuilder : IConfigurator
     {
-        string? bucketId;
         string? bucketName;
 
         TimeSpan ttl = TimeSpan.FromSeconds(30);

@@ -13,7 +13,7 @@ namespace StreamStore.S3.AWS
             return new AWSS3DatabaseConfigurator(services);
         }
 
-        public static IServiceCollection UseS3AmazonStreamStoreDatabase(this IServiceCollection services, ConfigurationManager configuration)
+        public static IServiceCollection UseS3AmazonStreamStoreDatabase(this IServiceCollection services)
         {
             return new AWSS3DatabaseConfigurator(services).Configure();
         }

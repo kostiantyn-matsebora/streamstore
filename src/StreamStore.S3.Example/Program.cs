@@ -17,7 +17,7 @@ namespace StreamStore.S3.Example
             builder
                 .Services
                 .ConfigureStreamStore()
-                .UseS3AmazonStreamStoreDatabase(builder.Configuration); // Uncomment this line to use AWS
+                .UseS3AmazonStreamStoreDatabase(); // Uncomment this line to use AWS
             //.UseB2StreamStoreDatabase(builder.Configuration); // Uncomment this line to use B2
             var host = builder.Build();
             host.Run();

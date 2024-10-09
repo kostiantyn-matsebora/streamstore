@@ -1,6 +1,6 @@
-# StreamStore.S3.B2
+# StreamStore.S3.AWS
 
-[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)
+[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)
 
 [Amazon S3] backend database for [StreamStore] event stream library.
 
@@ -45,8 +45,8 @@ or you can provide the configuration in code, see section below.
    // Adding StreamStore
    services.ConfigureStreamStore();
 
-   // Adding B2 database with configuration from appsettings.json
-   services.ConfigureS3AmazonStreamStoreDatabase(Configuration);
+   // Adding AWS S3 database 
+   services.ConfigureS3AmazonStreamStoreDatabase();
 
   // Or configuring it manually
   services
@@ -63,7 +63,7 @@ or you can provide the configuration in code, see section below.
 - The library implements `two-phase locking mechanism` for `pessimistic concurrency control` on stream level.  
 First, it trying to lock in memory and if it is successful, it tries to exclusively lock stream in the storage for the duration of the transaction. If it fails to lock in storage, it will release the lock in memory.
 
-- Since B2 does not provide locking mechanism for files, lock in storage implemented by creating a file with the same name as the stream id and trying to lock it by creating a file with the same name and checking if it is already exists.
+- Since S3 storage does not provide locking mechanism for files, lock in storage implemented by creating a file with the same name as the stream id and trying to lock it by creating a file with the same name and checking if it is already exists.
 
 - Committed and uncommitted events are stored in separate root directories.
 
