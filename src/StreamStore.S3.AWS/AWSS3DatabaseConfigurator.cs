@@ -1,0 +1,24 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using StreamStore.S3.Client;
+
+namespace StreamStore.S3.AWS
+{
+    public sealed class AWSS3DatabaseConfigurator: AWSS3DatabaseSettingsBuilder
+    {
+        readonly IServiceCollection services;
+
+        public AWSS3DatabaseConfigurator(IServiceCollection services)
+        {
+            this.services = services;
+            services.AddSingleton<IS3Factory, AWSS3Factory>();
+            services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
+        }
+
+        public override IServiceCollection Configure()
+        {
+            var settings = Build();
+            services.AddSingleton(settings);
+            return services;
+        }
+    }
+}

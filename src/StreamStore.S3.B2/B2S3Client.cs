@@ -46,7 +46,7 @@ namespace StreamStore.S3.B2
             };
         }
 
-        public async Task<ListObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token)
+        public async Task<ListS3ObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token)
         {
             var request = new ListFileVersionRequest(settings.BucketId)
             {
@@ -60,7 +60,7 @@ namespace StreamStore.S3.B2
             if (!files.IsSuccessStatusCode)
                 return null;
 
-            return new ListObjectsResponse
+            return new ListS3ObjectsResponse
             {
                 Objects = files.Response.Files.Select(f => new ObjectDescriptor
                 {
@@ -72,7 +72,7 @@ namespace StreamStore.S3.B2
         }
 
 
-        public async Task CopyByFileIdAsync(string sourceFileId, string destinationName, CancellationToken token)
+        public async Task CopyByFileIdAsync(string sourceFileId, string sourceName, string destinationName, CancellationToken token)
         {
             var copyRequest = new CopyFileRequest(
                         sourceFileId,

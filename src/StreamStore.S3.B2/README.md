@@ -18,7 +18,6 @@ or from Nuget Package Manager Console:
 
 ```powershell
 
-
   Install-Package StreamStore
 
   Install-Package StreamStore.S3.B2
@@ -28,7 +27,7 @@ or from Nuget Package Manager Console:
 
 ### Storage
 
-To be able to use library you need to have already created a bucket in [Backblaze B2], by default named `streamstore` and have read and write permissions to it.
+See storage requirements for [Amazon S3 database](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#storage) implementation.
 
 ### Configuration
 
@@ -72,36 +71,15 @@ or you can provide the configuration in code, see section below.
 
 ## Good to know
 
-- The library implements `two-phase locking mechanism` for `pessimistic concurrency control` on stream level.  
-First, it trying to lock in memory and if it is successful, it tries to exclusively lock stream in the storage for the duration of the transaction. If it fails to lock in storage, it will release the lock in memory.
-
-- Since B2 does not provide locking mechanism for files, lock in storage implemented by creating a file with the same name as the stream id and trying to lock it by creating a file with the same name and checking if it is already exists.
-
-- Committed and uncommitted events are stored in separate root directories.
-
-- Each event is stored in a separate file with the name of the event id.
-
-- Each stream is stored in a separate directory with the name of the stream id.
+See  [Amazon S3 database](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#good-to-know) documentation.
 
 ### Storage structure
 
-- `persistent-streams` - committed streams
-  - `[stream-id]` - directory with stream data
-    - `events` - directory with events
-      - `[event-id]` - file with event data
-    - `__metadata` - file with stream metadata
-  - `transient-streams` - uncommitted streams
-    - `[stream-id]` - directory with stream transactions
-      - `[transaction-id]` - directory with transaction data
-        - `events` - directory with events
-          - `[event-id]` - file with event data
-        - `__metadata` - file with transaction metadata
-  - `locks` - directory with locks
-    - `[stream-id]` - file with lock data
+See  [Amazon S3 database](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#storage-structure) documentation.
 
 ## Example
 
-You can find an example of usage in the [StreamStore.S3.B2.Example](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.Example) project.
+See  [Amazon S3 database](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#example) documentation.
 
 ## Testing
 

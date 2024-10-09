@@ -39,12 +39,12 @@ namespace StreamStore.S3.Tests.InMemory
             });
         }
 
-        public Task<ListObjectsResponse> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token)
+        public Task<ListS3ObjectsResponse> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token)
         {
             
             if (startObjectName == null) 
             {
-                var response = new ListObjectsResponse
+                var response = new ListS3ObjectsResponse
                 {
                     Objects = objects.Keys
                             .Where(k => k.StartsWith(sourcePrefix))
@@ -58,7 +58,7 @@ namespace StreamStore.S3.Tests.InMemory
                 return Task.FromResult(response);
             }
 
-            return Task.FromResult(new ListObjectsResponse
+            return Task.FromResult(new ListS3ObjectsResponse
             {
                 Objects = Enumerable.Empty<ObjectDescriptor>().ToArray(),
                 NextFileName = Guid.NewGuid().ToString()
@@ -78,7 +78,7 @@ namespace StreamStore.S3.Tests.InMemory
             return Task.FromResult<ObjectDescriptor?>(null);
         }
 
-        public Task CopyByFileIdAsync(string sourceFileId, string destinationName, CancellationToken token)
+        public Task CopyByFileIdAsync(string sourceFileId, string sourceFileName, string destinationName, CancellationToken token)
         {
             lock (objects)
             {
