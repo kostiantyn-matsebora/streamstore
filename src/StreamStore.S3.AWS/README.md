@@ -78,13 +78,13 @@ First, it trying to lock in memory and if it is successful, it tries to exclusiv
     - `events` - directory with events
       - `[event-id]` - file with event data
     - `__metadata` - file with stream metadata
-  - `transient-streams` - uncommitted streams
+- `transient-streams` - uncommitted streams
     - `[stream-id]` - directory with stream transactions
       - `[transaction-id]` - directory with transaction data
         - `events` - directory with events
           - `[event-id]` - file with event data
         - `__metadata` - file with transaction metadata
-  - `locks` - directory with locks
+- `locks` - directory with locks
     - `[stream-id]` - file with lock data
 
 ## Example
