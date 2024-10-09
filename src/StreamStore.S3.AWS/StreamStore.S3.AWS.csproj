@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <Description>[Amazon S3] backend database for StreamStore] event stream library.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>
