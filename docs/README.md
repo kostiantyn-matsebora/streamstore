@@ -13,10 +13,11 @@ Designed to be easily extended with custom database backends.
 
 ## Databases
 
-  | Package                  | Description                                                                        |
-  | ------------------------ | ---------------------------------------------------------------------------------- |
-  | [StreamStore.InMemory] | In-memory implementation is provided **for testing and educational purposes only** |
-  | [StreamStore.S3.B2]    | [`Backblaze B2`] implementation                                                        |
+  | Package                | Description                                                                        |
+  | ---------------------- | ---------------------------------------------------------------------------------- |
+  | [StreamStore.InMemory] | `In-memory` implementation is provided **for testing and educational purposes only** |
+  | [StreamStore.S3.AWS]   |  [`Amazon S3`] implementation                                                      |
+  | [StreamStore.S3.B2]    | [`Backblaze B2`] implementation                                                    |
 
 ## Features
 
@@ -26,7 +27,7 @@ The general idea is to highlight the general characteristics and features of eve
 - [x] Serialization/deserialization of events.
 - [x] Optimistic concurrency control.
 - [x] Event duplication detection based on event ID.
-- [ ] Database agnostic test framework, including benchmarking test scenarios.
+- [x] Database agnostic test framework, including benchmarking test scenarios.
 - [ ] Custom event properties (?).
 - [ ] External transaction support (?).
 - [ ] Transactional outbox pattern implementation (?).
@@ -37,6 +38,7 @@ Also add implementations of particular storage backends, such as:
 
 - [x] [`In-memory`] - for testing purposes.
 - [x] [`Backblaze B2`] - Backblaze B2.
+- [x] [`Amazon S3`] - Amazon S3.
 - [ ] [`SQL`](https://github.com/DapperLib/Dapper) -  SQL Server, PostgreSQL, MySQL, SQLite etc.
 - [ ] [`Cassandra DB`](https://cassandra.apache.org/_/index.html) - distributed storage.
 
@@ -223,7 +225,9 @@ to contribute, feel free to [open an issue][issues] or
 [IStreamUnitOfWork]: ../src/StreamStore.Contracts/IStreamUnitOfWork.cs
 [IStreamDatabase]: ../src/StreamStore.Contracts/IStreamDatabase.cs
 [StreamStore.S3.B2]: ../src/StreamStore.S3.B2
+[StreamStore.S3.AWS]: ../src/StreamStore.S3.AWS
 [StreamStore.InMemory]: ../src/StreamStore.InMemory
 [`In-Memory`]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.InMemory
 [`Backblaze B2`]: https://www.backblaze.com/b2/cloud-storage.html
+[`Amazon S3`]: https://aws.amazon.com/s3/
 
