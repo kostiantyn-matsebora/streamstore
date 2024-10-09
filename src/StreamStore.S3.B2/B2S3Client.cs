@@ -72,7 +72,7 @@ namespace StreamStore.S3.B2
         }
 
 
-        public async Task CopyByFileIdAsync(string sourceFileId, string sourceFileName, string destinationName, CancellationToken token)
+        public async Task CopyByFileIdAsync(string sourceFileId, string sourceName, string destinationName, CancellationToken token)
         {
             var copyRequest = new CopyFileRequest(
                         sourceFileId,

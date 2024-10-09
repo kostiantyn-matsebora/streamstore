@@ -19,7 +19,7 @@
 
         private void OnStopped() {
             logger.LogInformation("Cleaning up...");
-            //store.DeleteAsync(Worker.StreamId, CancellationToken.None).Wait();
+            store.DeleteAsync(Worker.StreamId, CancellationToken.None).Wait();
         }
     }
 }
