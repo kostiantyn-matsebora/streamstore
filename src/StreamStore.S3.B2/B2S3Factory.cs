@@ -7,7 +7,7 @@ using StreamStore.S3.Lock;
 
 namespace StreamStore.S3.B2
 {
-    internal class B2S3Factory : IS3Factory
+    internal class B2S3Factory : S3FactoryBase
     {
         readonly B2StreamDatabaseSettings settings;
         readonly BackblazeClient? client; //TODO: create pool of clients
@@ -20,16 +20,9 @@ namespace StreamStore.S3.B2
             client.Connect(settings.Credentials!.AccessKeyId, settings.Credentials!.AccessKey);
         }
 
-        public IS3Client CreateClient()
+        public override IS3Client CreateClient()
         {
             return new B2S3Client(settings, client!);
-        }
-
-        public IS3StreamLock CreateLock(IS3TransactionContext ctx)
-        {
-            var inMemoryLock = new S3StreamInMemoryLock(ctx.StreamId, storage);
-            var fileLock = new S3FileLock(ctx, this);
-            return new S3CompositeStreamLock(inMemoryLock, fileLock);
         }
     }
 }

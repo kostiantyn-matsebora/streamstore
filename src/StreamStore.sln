@@ -20,15 +20,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.S3.Tests", "Str
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.S3.B2", "StreamStore.S3.B2\StreamStore.S3.B2.csproj", "{93C16E36-05EE-4D3F-AC0B-04CDB851E30E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.Testing", "StreamStore.Testing\StreamStore.Testing.csproj", "{0A4ECEE2-A275-4324-A455-5149C96AB937}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Testing", "StreamStore.Testing\StreamStore.Testing.csproj", "{0A4ECEE2-A275-4324-A455-5149C96AB937}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "S3", "S3", "{E0544129-B157-4BE7-AB8E-527DCAB0774E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.InMemory", "StreamStore.InMemory\StreamStore.InMemory.csproj", "{CF164C1F-7A62-4A3F-8CCA-AFE7A0F8D991}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.InMemory", "StreamStore.InMemory\StreamStore.InMemory.csproj", "{CF164C1F-7A62-4A3F-8CCA-AFE7A0F8D991}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.Serialization", "StreamStore.Serialization\StreamStore.Serialization.csproj", "{01D67992-EF4F-4879-8616-664EDC6F44D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Serialization", "StreamStore.Serialization\StreamStore.Serialization.csproj", "{01D67992-EF4F-4879-8616-664EDC6F44D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.S3.Example", "StreamStore.S3.Example\StreamStore.S3.Example.csproj", "{F7F1484E-7ED7-42E5-9987-2D3639608D85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.S3.Example", "StreamStore.S3.Example\StreamStore.S3.Example.csproj", "{F7F1484E-7ED7-42E5-9987-2D3639608D85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.S3.AWS", "StreamStore.S3.AWS\StreamStore.S3.AWS.csproj", "{2FDEE61D-6A8C-4151-8E06-2918D85F5FF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,10 @@ Global
 		{F7F1484E-7ED7-42E5-9987-2D3639608D85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7F1484E-7ED7-42E5-9987-2D3639608D85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7F1484E-7ED7-42E5-9987-2D3639608D85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FDEE61D-6A8C-4151-8E06-2918D85F5FF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FDEE61D-6A8C-4151-8E06-2918D85F5FF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FDEE61D-6A8C-4151-8E06-2918D85F5FF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FDEE61D-6A8C-4151-8E06-2918D85F5FF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{2E3644CB-C3A7-4161-B2E0-74F0DDC5A375} = {E0544129-B157-4BE7-AB8E-527DCAB0774E}
 		{93C16E36-05EE-4D3F-AC0B-04CDB851E30E} = {E0544129-B157-4BE7-AB8E-527DCAB0774E}
 		{F7F1484E-7ED7-42E5-9987-2D3639608D85} = {E0544129-B157-4BE7-AB8E-527DCAB0774E}
+		{2FDEE61D-6A8C-4151-8E06-2918D85F5FF0} = {E0544129-B157-4BE7-AB8E-527DCAB0774E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B91B9475-41C6-4A0C-8FA4-2894665CE39D}

@@ -43,7 +43,7 @@ namespace StreamStore.S3.Operations
                     async e =>
                     {
                         var destinationKey = CalculateDestinationKey(e.FileName!, source.EventsKey, destination.EventsKey);
-                        await client.CopyByFileIdAsync(e.FileId!, destinationKey, token);
+                        await client.CopyByFileIdAsync(e.FileId!, e.FileName!, destinationKey, token);
                      
                     });
 
@@ -55,7 +55,7 @@ namespace StreamStore.S3.Operations
             var metadata = await client!.FindObjectDescriptorAsync(source.MetadataKey, token);
             if (metadata == null) return;
 
-            await client!.CopyByFileIdAsync(metadata.FileId!, destination.MetadataKey, token);
+            await client!.CopyByFileIdAsync(metadata.FileId!, metadata.FileName!, destination.MetadataKey, token);
         }
 
         public static S3StreamCopier New(S3StreamContext source, S3StreamContext destination, IS3Client client)

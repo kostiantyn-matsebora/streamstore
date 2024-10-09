@@ -3,11 +3,36 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Description>[Amazon S3] backend database for StreamStore] event stream library.</Description>
+    <Version>0.1.0</Version>
+    <Company>kostiantyn-matsebora</Company>
+    <Description>Amazon S3 backend database for StreamStore event stream library.</Description>
+    <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
+    <PackageTags>event sourcing; streams; stream store; stream; S3; amazon; AWS</PackageTags>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\StreamStore.S3.B2\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.7.404.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
+    <ProjectReference Include="..\StreamStore.S3\StreamStore.S3.csproj" />
   </ItemGroup>
 
 </Project>

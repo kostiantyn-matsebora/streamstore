@@ -11,8 +11,6 @@ namespace StreamStore.S3.B2
     {
         readonly IServiceCollection services;
 
-        readonly B2StreamDatabaseSettingsBuilder builder = new B2StreamDatabaseSettingsBuilder();
-
         public B2DatabaseConfigurator(IServiceCollection services)
         {
             this.services = services;
@@ -22,7 +20,7 @@ namespace StreamStore.S3.B2
 
         public override IServiceCollection Configure()
         {
-            var settings = builder.Build();
+            var settings = Build();
             services.AddSingleton(settings);
             return services;
         }
@@ -33,13 +31,13 @@ namespace StreamStore.S3.B2
             if (!section.Exists())
                 throw new InvalidOperationException("streamStore:b2 configuration section not found.");
 
-            builder.WithCredentials(
+            WithCredentials(
             section.GetSection("applicationKeyId").Value!,
             section.GetSection("applicationKey").Value!)
                  .WithBucketId(section.GetSection("bucketId").Value!)
                  .WithBucketName(section.GetSection("bucketName").Value!);
 
-            var settings = builder.Build();
+            var settings = Build();
             services.AddSingleton(settings);
 
             return services;

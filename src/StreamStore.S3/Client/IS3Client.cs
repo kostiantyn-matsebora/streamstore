@@ -10,9 +10,9 @@ namespace StreamStore.S3.Client
         Task<FindObjectResponse?> FindObjectAsync(string key, CancellationToken token);
         Task<UploadObjectResponse?> UploadObjectAsync(UploadObjectRequest request, CancellationToken token);
         Task DeleteObjectByFileIdAsync(string fileId, string key, CancellationToken token);
-        Task<ListObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token);
+        Task<ListS3ObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token);
         Task<ObjectDescriptor?> FindObjectDescriptorAsync(string key, CancellationToken token);
-        Task CopyByFileIdAsync(string sourceFileId, string destinationName, CancellationToken token);
+        Task CopyByFileIdAsync(string sourceFileId, string sourceName, string destinationName, CancellationToken token);
     }
 
 
@@ -35,7 +35,7 @@ namespace StreamStore.S3.Client
         public string? FileId { get; set; }
     }
 
-    public class ListObjectsResponse
+    public class ListS3ObjectsResponse
     {
         public ObjectDescriptor[]? Objects { get; set; }
         public string? NextFileName { get; set; }
