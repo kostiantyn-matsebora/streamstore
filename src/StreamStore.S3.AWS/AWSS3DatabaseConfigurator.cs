@@ -9,7 +9,7 @@ namespace StreamStore.S3.AWS
 
         public AWSS3DatabaseConfigurator(IServiceCollection services)
         {
-            this.services = services;
+            this.services = services ?? throw new System.ArgumentNullException(nameof(services));
             services.AddSingleton<IS3Factory, AWSS3Factory>();
             services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
         }

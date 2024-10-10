@@ -11,7 +11,6 @@ namespace StreamStore.S3.B2
     {
         readonly B2StreamDatabaseSettings settings;
         readonly BackblazeClient? client; //TODO: create pool of clients
-        readonly S3InMemoryStreamLockStorage storage = new S3InMemoryStreamLockStorage();
 
         public B2S3Factory(B2StreamDatabaseSettings settings)
         {

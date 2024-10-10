@@ -67,13 +67,6 @@ namespace StreamStore.InMemory
             return this;
         }
 
-
-        void ThrowIfRevisionAlreadyExists(int revision)
-        {
-            if (events!.Any(e => e.Revision == revision))
-                throw new OptimisticConcurrencyException(revision, streamId);
-        }
-
         void ThrowIfDuplicateEventId(Id eventId)
         {
             if (events!.Any(e => e.Id == eventId))
