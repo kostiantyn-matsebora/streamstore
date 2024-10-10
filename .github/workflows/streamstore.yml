@@ -10,8 +10,6 @@ on:
       - 'src/**'
   pull_request:
     branches: [ "master" ]
-    paths:
-      - 'src/**'
   workflow_dispatch:
 
 permissions:
@@ -29,12 +27,55 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: 'zulu' # Alternative distribution options are available.        
+
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v4
+      with:
+        path: ~\sonar\cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+    - name: Cache SonarCloud scanner
+      id: cache-sonar-scanner
+      uses: actions/cache@v4
+      with:
+        path: sonar\scanner
+        key: ${{ runner.os }}-sonar-scanner
+        restore-keys: ${{ runner.os }}-sonar-scanner
+    - name: Install SonarCloud scanner
+      if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+      run: |
+        mkdir -p sonar/scanner
+        dotnet tool update dotnet-sonarscanner --tool-path sonar/scanner
     - name: Restore dependencies
-      run: dotnet restore src
+      run: dotnet restore src        
+    - name: Begin SonarScanner session
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        sonar/scanner/dotnet-sonarscanner begin \
+          /k:"kostiantyn-matsebora_streamstore" /o:"kostiantyn-matsebora" \
+          /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" \
+          /d:sonar.scanner.scanAll=false /d:sonar.inclusions="src/**" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml \
+          /d:sonar.cs.vstest.reportsPaths=**/*.trx
     - name: Build
-      run: dotnet build src -c Release --no-restore
+      run: |
+        dotnet build src -c Release --no-restore
     - name: Test
-      run: dotnet test src -c Release --no-build --verbosity detailed --logger:trx --results-directory output/test-results
+      run: |
+        dotnet-coverage collect 'dotnet test src -c Release --no-build --verbosity normal `
+        --logger:trx --results-directory output/test-results' -f xml -o 'coverage.xml'
+    - name: End SonarScanner session
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"            
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/linux@v2
       if:  always()
