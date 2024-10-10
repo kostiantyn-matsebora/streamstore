@@ -72,8 +72,9 @@ jobs:
         dotnet build src -c Release --no-restore
     - name: Test
       run: |
-        dotnet-coverage collect 'dotnet test src -c Release --no-build --verbosity normal `
-        --logger:trx --results-directory output/test-results' -f xml -o 'coverage.xml'
+        dotnet-coverage collect \
+        'dotnet test src -c Release --no-build --verbosity normal --logger:trx --results-directory output/test-results' \
+        -f xml -o 'coverage.xml'
     - name: End SonarScanner session
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
