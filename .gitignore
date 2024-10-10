@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /src/StreamStore.S3.Tests/appsettings.Development.json
 **/*.Development.json
+/output/test-results
+/src/output/test-results
