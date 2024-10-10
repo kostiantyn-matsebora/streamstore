@@ -34,13 +34,18 @@ jobs:
     - name: Build
       run: dotnet build src -c Release --no-restore
     - name: Test
-      run: dotnet test src -c Release --no-build --verbosity detailed --logger:trx --results-directory output/test-results
+      run: dotnet test src -c Release --no-build --verbosity detailed --logger:trx --collect:"Code Coverage" --results-directory output/test-results
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/linux@v2
       if:  always()
       with:
         files: |
           output/test-results/*.trx
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     - name: Package
       run: dotnet pack src -c Release --no-build --output output/artifacts
       if: success()
