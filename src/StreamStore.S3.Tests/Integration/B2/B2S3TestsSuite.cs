@@ -1,12 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using StreamStore.S3.B2;
-using StreamStore.S3.Concurrency;
 using StreamStore.S3.Lock;
 using StreamStore.Testing;
 
-namespace StreamStore.S3.Tests.B2
+namespace StreamStore.S3.Tests.Integration.B2
 {
-    class B2S3TestsSuite: ITestSuite
+    class B2S3TestsSuite : ITestSuite
     {
         public static B2S3Factory? CreateFactory()
         {
@@ -17,7 +16,7 @@ namespace StreamStore.S3.Tests.B2
 
             var storage = CreateLockStorage(settings);
 
-            return new B2S3Factory(settings);
+            return new B2S3Factory(settings, new BackblazeClientFactory());
         }
 
         public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, int expectedRevision = 0)
@@ -31,7 +30,7 @@ namespace StreamStore.S3.Tests.B2
 
         public IStreamDatabase? CreateDatabase()
         {
-           var factory = CreateFactory();
+            var factory = CreateFactory();
             if (factory == null)
                 return null;
 

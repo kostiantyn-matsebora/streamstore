@@ -23,7 +23,7 @@ namespace StreamStore.Testing
 
             // Arrange
             var database = suite.CreateDatabase();
-            var streamId = RandomValues.RandomString;
+            var streamId = GeneratedValues.String;
 
             //Act
             var stream = await database!.FindAsync(streamId, CancellationToken.None);
@@ -39,7 +39,7 @@ namespace StreamStore.Testing
 
             // Arrange
             var database = suite.CreateDatabase();
-            var streamId = RandomValues.RandomString;
+            var streamId = GeneratedValues.String;
 
             //Act
             var stream = await database!.FindAsync(streamId, CancellationToken.None);
@@ -55,8 +55,8 @@ namespace StreamStore.Testing
 
             // Arrange
             var database = suite.CreateDatabase();
-            var streamId = RandomValues.RandomString;
-            var events = RandomValues.CreateEventItems(3);
+            var streamId = GeneratedValues.String;
+            var events = GeneratedValues.CreateEventItems(3);
             var uow = database!.BeginAppend(streamId);
             uow.AddRange(events);
             await uow.SaveChangesAsync(CancellationToken.None);
@@ -75,8 +75,8 @@ namespace StreamStore.Testing
 
             // Arrange
             var database = suite.CreateDatabase();
-            var streamId = RandomValues.RandomString;
-            var events = RandomValues.CreateEventItems(3);
+            var streamId = GeneratedValues.String;
+            var events = GeneratedValues.CreateEventItems(3);
             var uow = database!.BeginAppend(streamId);
             uow.AddRange(events);
             await uow.SaveChangesAsync(CancellationToken.None);
@@ -96,10 +96,10 @@ namespace StreamStore.Testing
 
             // Arrange
             var database = suite.CreateDatabase();
-            var streamId = RandomValues.RandomString;
-            var anotherStreamId = RandomValues.RandomString;
-            var events = RandomValues.CreateEventItems(3);
-            var anotherEvents = RandomValues.CreateEventItems(10);
+            var streamId = GeneratedValues.String;
+            var anotherStreamId = GeneratedValues.String;
+            var events = GeneratedValues.CreateEventItems(3);
+            var anotherEvents = GeneratedValues.CreateEventItems(10);
 
             var uow = database!.BeginAppend(streamId);
             uow.AddRange(events);
