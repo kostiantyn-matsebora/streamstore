@@ -10,7 +10,7 @@ namespace StreamStore.S3.Lock
         IS3LockHandle[]? handles;
         bool lockReleased;
 
-        public S3CompositeLockHandle(IS3LockHandle[] handles)
+        public S3CompositeLockHandle(params IS3LockHandle[] handles)
         {
             this.handles = handles ?? throw new ArgumentNullException(nameof(handles));
         }
@@ -20,13 +20,19 @@ namespace StreamStore.S3.Lock
             GC.SuppressFinalize(this);
         }
 
-        async Task DisposeAsync(bool disposing)
+        Task DisposeAsync(bool disposing)
         {
             if (disposing)
             {
-                await ReleaseAsync(CancellationToken.None);
+
+                foreach (var handle in handles!)
+                {
+                    handle.DisposeAsync();
+                }
+
                 handles = null;
             }
+            return Task.CompletedTask;
         }
 
         public async Task ReleaseAsync(CancellationToken token)

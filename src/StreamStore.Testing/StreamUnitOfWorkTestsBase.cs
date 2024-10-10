@@ -19,12 +19,12 @@ namespace StreamStore.Testing
 
             // Arrange
             var database = suite.CreateDatabase();
-            var streamId = RandomValues.RandomString;
+            var streamId = GeneratedValues.String;
   
             var uow = database!.BeginAppend(streamId);
 
             // Act
-            uow.AddRange(RandomValues.CreateEventItems(3));
+            uow.AddRange(GeneratedValues.CreateEventItems(3));
             var act = () => uow.SaveChangesAsync(CancellationToken.None);
 
             // Assert
@@ -32,7 +32,7 @@ namespace StreamStore.Testing
 
             // Act
             uow = database!.BeginAppend(streamId, 3);
-            uow.AddRange(RandomValues.CreateEventItems(5));
+            uow.AddRange(GeneratedValues.CreateEventItems(5));
             act = () => uow.SaveChangesAsync(CancellationToken.None);
 
             // Assert
@@ -40,7 +40,7 @@ namespace StreamStore.Testing
 
             // Act
             uow = database!.BeginAppend(streamId, 8);
-            uow.AddRange(RandomValues.CreateEventItems(8));
+            uow.AddRange(GeneratedValues.CreateEventItems(8));
             act = () => uow.SaveChangesAsync(CancellationToken.None);
 
             // Assert
