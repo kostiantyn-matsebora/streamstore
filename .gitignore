@@ -364,5 +364,6 @@ FodyWeavers.xsd
 /src/StreamStore.S3.Tests/appsettings.Development.json
 **/*.Development.json
 /.sonarqube/conf
-/output/test-results
 /sonar/scanner
+/output
+

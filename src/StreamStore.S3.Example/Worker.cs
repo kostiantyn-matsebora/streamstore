@@ -24,9 +24,9 @@ namespace StreamStore.S3.Example
 
                 try
                 {
-                    logger.LogDebug("Opening stream of revision {0}", actualRevision);
+                    logger.LogDebug("Opening stream of revision {actualRevision}", actualRevision);
                     if (stoppingToken.IsCancellationRequested) break;
-                    logger.LogInformation("Current version of stream: {0}", actualRevision);
+                    logger.LogInformation("Current version of stream: {actualRevision}", actualRevision);
                     logger.LogDebug("Opening stream with latest version.");
 
                     stream = await store.OpenStreamAsync(StreamId, actualRevision, stoppingToken);
@@ -44,28 +44,27 @@ namespace StreamStore.S3.Example
                     actualRevision = await stream.SaveChangesAsync(stoppingToken);
 
                     if (stoppingToken.IsCancellationRequested) break;
-                  
 
-                    logger.LogInformation("New version of stream: {0}", actualRevision);
+                    logger.LogInformation("New version of stream: {actualRevision}", actualRevision);
                     logger.LogInformation("Congratulations! You have successfully written and read from the stream.");
 
                 }
                 catch (OptimisticConcurrencyException ex)
                 {
                     if (stoppingToken.IsCancellationRequested) break;
-                    logger.LogWarning("Optimistic concurrency exception: {0}", ex.Message);
+                    logger.LogWarning("Optimistic concurrency exception: {errorMessage}", ex.Message);
                     logger.LogDebug("Trying to get latest version of the stream from exception.");
 
                     if (ex.ActualRevision != null)
                     {
                         actualRevision = ex.ActualRevision!.Value;
-                        logger.LogInformation("We've got lucky, actual revision: {0}", ex.ActualRevision);
+                        logger.LogInformation("We've got lucky, actual revision: {actualRevision}", ex.ActualRevision);
                     }
                 }
                 catch (PessimisticConcurrencyException ex)
                 {
                     if (stoppingToken.IsCancellationRequested) break;
-                    logger.LogWarning("Pessimistic concurrency exception: {0}", ex.Message);
+                    logger.LogWarning("Pessimistic concurrency exception: {errorMessage}", ex.Message);
                 }
 
                 logger.LogInformation("Waiting 3 seconds before next iteration.");
@@ -73,7 +72,7 @@ namespace StreamStore.S3.Example
             }
         }
 
-        Event CreateEvent()
+        static Event CreateEvent()
         {
             return new Event
             {
@@ -89,6 +88,7 @@ namespace StreamStore.S3.Example
             };
         }
     }
+
     class EventExample
     {
         public Guid InvoiceId { get; set; }

@@ -2,7 +2,7 @@
 
 namespace StreamStore.InMemory
 {
-    public static class ServiceColelctionExtension
+    public static class ServiceCollectionExtension
     {
         public static IServiceCollection AddInMemoryStreamDatabase(this IServiceCollection services)
         {

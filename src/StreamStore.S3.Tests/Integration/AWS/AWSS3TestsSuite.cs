@@ -3,9 +3,9 @@ using StreamStore.S3.AWS;
 using StreamStore.S3.Lock;
 using StreamStore.Testing;
 
-namespace StreamStore.S3.Tests.AWS
+namespace StreamStore.S3.Tests.Integration.AWS
 {
-    class AWSS3TestsSuite: ITestSuite
+    class AWSS3TestsSuite : ITestSuite
     {
         public static AWSS3Factory? CreateFactory()
         {
@@ -30,7 +30,7 @@ namespace StreamStore.S3.Tests.AWS
 
         public IStreamDatabase? CreateDatabase()
         {
-           var factory = CreateFactory();
+            var factory = CreateFactory();
             if (factory == null)
                 return null;
 

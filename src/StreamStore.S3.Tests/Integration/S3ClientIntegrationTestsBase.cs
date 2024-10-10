@@ -4,15 +4,15 @@ using Bytewizer.Backblaze.Extensions;
 using FluentAssertions;
 using StreamStore.S3.Client;
 
-namespace StreamStore.S3.Tests
+namespace StreamStore.S3.Tests.Integration
 {
 
-    public abstract class S3ClientTestsBase
+    public abstract class S3ClientIntegrationTestsBase
     {
         readonly IS3Factory? factory;
         readonly IS3Client? client;
 
-        public S3ClientTestsBase(IS3Factory? factory)
+        public S3ClientIntegrationTestsBase(IS3Factory? factory)
         {
             this.factory = factory;
             client = this.factory?.CreateClient();

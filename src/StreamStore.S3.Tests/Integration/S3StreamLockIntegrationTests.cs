@@ -8,9 +8,9 @@ using StreamStore.S3.Concurrency;
 
 
 
-namespace StreamStore.S3.Tests
+namespace StreamStore.S3.Tests.Integration
 {
-    public abstract class S3StreamLockTests(IS3Factory? factory)
+    public abstract class S3StreamLockIntegrationTests(IS3Factory? factory)
     {
         [InlineData(1000)]
         [InlineData(100)]
