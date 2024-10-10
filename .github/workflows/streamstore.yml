@@ -39,32 +39,31 @@ jobs:
     - name: Cache SonarCloud packages
       uses: actions/cache@v4
       with:
-        path: ~\sonar\cache
+        path: sonar/cache
         key: ${{ runner.os }}-sonar
         restore-keys: ${{ runner.os }}-sonar
     - name: Cache SonarCloud scanner
       id: cache-sonar-scanner
       uses: actions/cache@v4
       with:
-        path: .\.sonar\scanner
+        path: sonar/scanner
         key: ${{ runner.os }}-sonar-scanner
         restore-keys: ${{ runner.os }}-sonar-scanner
     - name: Install SonarCloud scanner
       if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
       shell: powershell
       run: |
-        New-Item -Path .\.sonar\scanner -ItemType Directory
-        dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+        mkdir -p sonar/scanner
+        dotnet tool update dotnet-sonarscanner --tool-path sonar/scanner
     - name: Build and analyze
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: powershell
       run: |
-        .\.sonar\scanner\dotnet-sonarscanner begin /k:"kostiantyn-matsebora_streamstore" /o:"kostiantyn-matsebora" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.sources="src/" /d:sonar.cs.vstest.reportsPaths="**/*.trx"
+        sonar/scanner/dotnet-sonarscanner begin /k:"kostiantyn-matsebora_streamstore" /o:"kostiantyn-matsebora" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.sources="src/" /d:sonar.cs.vstest.reportsPaths="**/*.trx"
         dotnet build src -c Release --no-restore
         dotnet test src -c Release --no-build --verbosity detailed --logger:trx --collect:"Code Coverage" --results-directory output/test-results
-        .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
     - name: Package
       run: dotnet pack src -c Release --no-build --output output/artifacts
       if: success()
