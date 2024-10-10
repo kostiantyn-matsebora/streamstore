@@ -54,7 +54,7 @@ jobs:
     - name: Install dotnet-coverage      
       run: |
         mkdir -p dotnet/coverage
-        dotnet tool install dotnet-coverage --tool-path .
+        dotnet tool install dotnet-coverage --tool-path dotnet/coverage
     - name: Restore dependencies
       run: dotnet restore src        
     - name: Begin SonarScanner session
@@ -72,7 +72,7 @@ jobs:
         dotnet build src -c Release --no-restore
     - name: Test
       run: |
-        dotnet-coverage collect \
+        dotnet/coverage/dotnet-coverage collect \
         'dotnet test src -c Release --no-build --verbosity normal --logger:trx --results-directory output/test-results' \
         -f xml -o 'coverage.xml'
     - name: End SonarScanner session
