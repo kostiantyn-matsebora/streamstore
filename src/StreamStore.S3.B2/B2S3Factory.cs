@@ -8,13 +8,11 @@ namespace StreamStore.S3.B2
 {
     internal class B2S3Factory : S3FactoryBase
     {
-        readonly IStorageClientFactory clientFactory;
         readonly B2StreamDatabaseSettings settings;
         readonly IStorageClient? client; //TODO: create pool of clients
 
         public B2S3Factory(B2StreamDatabaseSettings settings, IStorageClientFactory clientFactory)
         {
-            this.clientFactory = clientFactory;
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             client = clientFactory.Create();
             client!.Connect(settings.Credentials!.AccessKeyId, settings.Credentials!.AccessKey);

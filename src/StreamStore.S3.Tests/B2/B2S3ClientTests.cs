@@ -17,7 +17,7 @@ namespace StreamStore.S3.Tests.B2
 
         Mock<IStorageClient> b2Client;
         B2StreamDatabaseSettings settings;
-        Mock<IStorageFiles> files;
+
         public B2SClientTests()
         {
             mockRepository = new MockRepository(MockBehavior.Strict);
