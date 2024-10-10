@@ -59,7 +59,7 @@ jobs:
         dotnet tool install dotnet-coverage --tool-path dotnet/coverage
     - name: Restore dependencies
       run: dotnet restore src        
-    - name: Begin SonarScanner session
+    - name: Build and Test
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -68,21 +68,12 @@ jobs:
           /k:"kostiantyn-matsebora_streamstore" /o:"kostiantyn-matsebora" \
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" \
           /d:sonar.scanner.scanAll=false /d:sonar.inclusions="src/**" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml \
-          /d:sonar.cs.vstest.reportsPaths=**/*.trx
-    - name: Build
-      run: |
+          /d:sonar.cs.vstest.reportsPaths=**/*.trx        
         dotnet build src -c Release --no-restore
-    - name: Test
-      run: |
         dotnet/coverage/dotnet-coverage collect \
         'dotnet test src -c Release --no-build --verbosity normal --logger:trx --results-directory output/test-results' \
         -f xml -o 'coverage.xml'
-    - name: End SonarScanner session
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"            
+        sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"                  
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action/linux@v2
       if:  always()
