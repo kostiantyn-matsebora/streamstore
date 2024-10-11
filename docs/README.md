@@ -21,7 +21,7 @@ Designed to be easily extended with custom database backends.
 
 ## Features
 
-The general idea is to highlight the general characteristics and features of event sourcing storage:
+The general idea is to highlight the common characteristics and features of event sourcing storage:
 
 - [x] Event ordering.
 - [x] Serialization/deserialization of events.
@@ -36,7 +36,7 @@ The general idea is to highlight the general characteristics and features of eve
 
 Also add implementations of particular storage backends, such as:
 
-- [x] [`In-memory`] - for testing purposes.
+- [x] [`In-Memory`] - for testing purposes.
 - [x] [`Backblaze B2`] - Backblaze B2.
 - [x] [`Amazon S3`] - Amazon S3.
 - [ ] [`SQL`](https://github.com/DapperLib/Dapper) -  SQL Server, PostgreSQL, MySQL, SQLite etc.
@@ -56,7 +56,7 @@ To install the package, you can use the following command from the command line:
   dotnet add package StreamStore.InMemory
 ```
 
-or from Nuget Package Manager Console:
+or from NuGet Package Manager Console:
 
 ```powershell
    # Install StreamStore package
@@ -64,7 +64,6 @@ or from Nuget Package Manager Console:
 
    #Install package of particular database implementation, for instance InMemory
   Install-Package StreamStore.InMemory
-
 ```
 
 ## Usage
@@ -160,7 +159,7 @@ To implement your own database you do not need StreamStore package, all necessar
   dotnet add package StreamStore.Contracts
 ```
 
-or from Nuget Package Manager Console:
+or from NuGet Package Manager Console:
 
 ```powershell
   Install-Package StreamStore.Contracts
@@ -202,7 +201,7 @@ To create your own database implementation, you need to implement the following 
 
 - _Solution already provides optimistic concurrency and event duplication control mechanisms, as a **pre-check** during stream opening_.  
 
-  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation. For instance, you can use a transaction mechanism suppored by `ACID compliant DBMS`.
+  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation. For instance, you can use a transaction mechanism supported by `ACID compliant DBMS`.
 
 - _Get and Delete operations must be implemented as idempotent by their nature._
 
@@ -218,8 +217,7 @@ to contribute, feel free to [open an issue][issues] or
 
 [issues]: https://github.com/kostiantyn-matsebora/streamstore/issues
 [discussions]: https://github.com/kostiantyn-matsebora/streamstore/discussions
-[InMemoryStreamDatabase.cs]: ../src/StreamStore/InMemory/InMemoryStreamDatabase.cs
-[InMemoryStreamUnitOfWork.cs]: ../src/StreamStore/InMemory/InMemoryStreamUnitOfWork.cs
+
 [Id]: ../src/StreamStore.Contracts/Id.cs
 [StreamEntity]: ../src/StreamStore/StreamEntity.cs
 [IStreamUnitOfWork]: ../src/StreamStore.Contracts/IStreamUnitOfWork.cs
@@ -230,4 +228,3 @@ to contribute, feel free to [open an issue][issues] or
 [`In-Memory`]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.InMemory
 [`Backblaze B2`]: https://www.backblaze.com/b2/cloud-storage.html
 [`Amazon S3`]: https://aws.amazon.com/s3/
-

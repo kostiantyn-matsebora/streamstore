@@ -3,7 +3,7 @@ using StreamStore.Serialization;
 
 namespace StreamStore
 {
-    public static class IServiceCollectionExtension
+    public static class ServiceCollectionExtension
     {
         public static IServiceCollection ConfigureStreamStore(this IServiceCollection services)
         {

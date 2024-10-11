@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
-using StreamStore.S3.AWS;
+using StreamStore.S3.B2;
 using StreamStore.S3.Lock;
 using StreamStore.Testing;
 
-namespace StreamStore.S3.Tests.AWS
+namespace StreamStore.S3.Tests.Integration.B2
 {
-    class AWSS3TestsSuite: ITestSuite
+    class B2S3TestsSuite : ITestSuite
     {
-        public static AWSS3Factory? CreateFactory()
+        public static B2S3Factory? CreateFactory()
         {
             var settings = ConfigureSettings();
 
@@ -16,7 +16,7 @@ namespace StreamStore.S3.Tests.AWS
 
             var storage = CreateLockStorage(settings);
 
-            return new AWSS3Factory(settings);
+            return new B2S3Factory(settings, new BackblazeClientFactory());
         }
 
         public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, int expectedRevision = 0)
@@ -30,26 +30,38 @@ namespace StreamStore.S3.Tests.AWS
 
         public IStreamDatabase? CreateDatabase()
         {
-           var factory = CreateFactory();
+            var factory = CreateFactory();
             if (factory == null)
                 return null;
 
             return new S3StreamDatabase(factory);
         }
 
-        static AWSS3DatabaseSettings? ConfigureSettings()
+        static B2StreamDatabaseSettings? ConfigureSettings()
         {
 
             if (!File.Exists(
                     Path.Combine(AppContext.BaseDirectory, "appsettings.Development.json")))
                 return null;
 
+            var config = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile($"appsettings.Development.json", true)
+                .Build();
+
+            var b2Section = config.GetSection("b2");
+
             return
-                 new AWSS3DatabaseSettingsBuilder()
+                 new B2StreamDatabaseSettingsBuilder()
+                 .WithCredentials(
+                     b2Section.GetSection("applicationKeyId").Value!,
+                     b2Section.GetSection("applicationKey").Value!)
+                 .WithBucketId(b2Section.GetSection("bucketId").Value!)
+                 .WithBucketName(b2Section.GetSection("bucketName").Value!)
              .Build();
         }
 
-        static S3InMemoryStreamLockStorage CreateLockStorage(AWSS3DatabaseSettings settings)
+        static S3InMemoryStreamLockStorage CreateLockStorage(B2StreamDatabaseSettings settings)
         {
             return new S3InMemoryStreamLockStorage(settings.InMemoryLockTTL);
         }

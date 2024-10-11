@@ -1,11 +1,8 @@
-﻿
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace StreamStore.S3.AWS
 {
-    public static class IServiceCollectionExtension
+    public static class ServiceCollectionExtension
     {
 
         public static AWSS3DatabaseConfigurator ConfigureS3AmazonStreamStoreDatabase(this IServiceCollection services)

@@ -67,7 +67,7 @@ namespace StreamStore.S3.AWS
                 {
                     Data = stream.ToArray(),
                     Name = key,
-                    FileId = response.VersionId
+                    FileId = response.VersionId != "null" ? response.VersionId: null // Weird behavior of S3 SDK
                 };
             }
             catch (AmazonS3Exception ex) {

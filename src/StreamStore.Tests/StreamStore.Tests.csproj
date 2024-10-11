@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
+    <ProjectReference Include="..\StreamStore.InMemory\StreamStore.InMemory.csproj" />
     <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" />
     <ProjectReference Include="..\StreamStore.Testing\StreamStore.Testing.csproj" />
     <ProjectReference Include="..\StreamStore\StreamStore.csproj" />
