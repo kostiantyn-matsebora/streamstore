@@ -6,9 +6,9 @@ namespace StreamStore.S3.Tests.Lock
 {
     public class S3CompositeStreamLockTests
     {
-        MockRepository mockRepository;
-        Mock<IS3StreamLock> lock1;
-        Mock<IS3StreamLock> lock2;
+        readonly MockRepository mockRepository;
+        readonly Mock<IS3StreamLock> lock1;
+        readonly Mock<IS3StreamLock> lock2;
 
 
         public S3CompositeStreamLockTests()

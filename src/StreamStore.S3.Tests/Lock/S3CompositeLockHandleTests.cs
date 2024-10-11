@@ -7,8 +7,8 @@ namespace StreamStore.S3.Tests.Lock
 {
     public class S3CompositeLockHandleTests
     {
-        Mock<IS3LockHandle> firstHandle;
-        Mock<IS3LockHandle> secondHandle;
+        readonly Mock<IS3LockHandle> firstHandle;
+        readonly Mock<IS3LockHandle> secondHandle;
 
 
         public S3CompositeLockHandleTests()

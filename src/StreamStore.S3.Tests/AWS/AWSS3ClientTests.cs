@@ -3,7 +3,6 @@ using Amazon.S3.Model;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Polly;
 using StreamStore.S3.AWS;
 using StreamStore.S3.Client;
 using StreamStore.Testing;
@@ -13,10 +12,9 @@ namespace StreamStore.S3.Tests.AWS
 {
     public class AWSS3ClientTests
     {
-        MockRepository mockRepository;
-
-        Mock<IAmazonS3> amazonClient;
-        AWSS3DatabaseSettings settings;
+        readonly MockRepository mockRepository;
+        readonly Mock<IAmazonS3> amazonClient;
+        readonly AWSS3DatabaseSettings settings;
 
         public AWSS3ClientTests()
         {

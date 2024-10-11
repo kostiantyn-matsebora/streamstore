@@ -37,18 +37,18 @@ namespace StreamStore.S3.Operations
                 files = files.Where(e => e.FileName != startObjectName).ToList();
                 if (!files.Any()) break;
 
-                startObjectName = files.Last().FileName;
+                startObjectName = files[files.Count - 1].FileName;
 
                 var tasks = files.Select(
                     async e =>
                     {
                         var destinationKey = CalculateDestinationKey(e.FileName!, source.EventsKey, destination.EventsKey);
                         await client.CopyByFileIdAsync(e.FileId!, e.FileName!, destinationKey, token);
-                     
+
                     });
 
                 await Task.WhenAll(tasks);
-            } while (files.Any());
+            } while (startObjectName != null);
 
 
             // Copy metadata

@@ -15,8 +15,8 @@ namespace StreamStore.S3.Lock
         readonly IS3Factory? factory;
 
         public S3FileLockHandle(IS3TransactionContext ctx, string fileId, IS3Factory factory)
-       {
-        
+        {
+
             this.ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
             this.fileId = fileId;
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
