@@ -10,7 +10,7 @@ namespace StreamStore.S3.B2
           return new B2DatabaseConfigurator(services);
         }
 
-        public static IServiceCollection UseB2StreamStoreDatabase(this IServiceCollection services, ConfigurationManager configuration)
+        public static IServiceCollection UseB2StreamStoreDatabase(this IServiceCollection services, IConfiguration configuration)
         {
           return new B2DatabaseConfigurator(services).ReadFromConfig(configuration);
         }
