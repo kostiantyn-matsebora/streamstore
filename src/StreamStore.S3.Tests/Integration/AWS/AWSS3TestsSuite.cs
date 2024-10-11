@@ -16,7 +16,7 @@ namespace StreamStore.S3.Tests.Integration.AWS
 
             var storage = CreateLockStorage(settings);
 
-            return new AWSS3Factory(settings);
+            return new AWSS3Factory(settings, new AmazonS3ClientFactory());
         }
 
         public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, int expectedRevision = 0)

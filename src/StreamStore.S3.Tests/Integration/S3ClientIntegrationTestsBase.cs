@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using AutoFixture;
 using Bytewizer.Backblaze.Extensions;
+using Bytewizer.Backblaze.Models;
 using FluentAssertions;
 using StreamStore.S3.Client;
 
@@ -12,7 +13,7 @@ namespace StreamStore.S3.Tests.Integration
         readonly IS3Factory? factory;
         readonly IS3Client? client;
 
-        public S3ClientIntegrationTestsBase(IS3Factory? factory)
+        protected S3ClientIntegrationTestsBase(IS3Factory? factory)
         {
             this.factory = factory;
             client = this.factory?.CreateClient();
@@ -21,7 +22,7 @@ namespace StreamStore.S3.Tests.Integration
         [SkippableFact]
         public async Task FindObjectAsync_ShouldNotFindFileDoesNotExist()
         {
-            Skip.IfNot(factory != null, "B2 configuration is missing");
+            Skip.IfNot(factory != null, "Database configuration is missing");
 
             // Arrange
             // Act
@@ -34,53 +35,54 @@ namespace StreamStore.S3.Tests.Integration
         [SkippableFact]
         public async Task UploadObjectAsync_ShouldUploadAndDeleteFileAsync()
         {
-            Skip.IfNot(factory != null, "B2 configuration is missing");
+            Skip.IfNot(factory != null, "Database configuration is missing");
 
             // Arrange
             var data = RandomByteArray;
             var objectName = RandomString;
-            string? fileId = null;
+            UploadObjectResponse? response = null;
 
             try
             {
                 // Act
-                fileId = await UploadObject(data, objectName);
+                response = await UploadObject(data, objectName);
 
                 // Assert
-                fileId.Should().NotBeNull();
-                await AssertObjectIsFoundAndValid(objectName, data, fileId);
+                response.Should().NotBeNull();
+              
+                await AssertObjectIsFoundAndValid(response!, data);
             }
             finally
             {
                 //// Cleanup && Assert
-                if (fileId != null)
-                    await DeleteObjectAndAssert(objectName, fileId);
+                if (response != null)
+                    await DeleteObjectAndAssert(objectName, response.FileId!);
             }
         }
 
         [SkippableFact]
         public async Task FindObjectAsync_ShouldFindObject()
         {
-            Skip.IfNot(factory != null, "B2 configuration is missing");
+            Skip.IfNot(factory != null, "Database configuration is missing");
 
             // Arrange
             var data = RandomByteArray;
             var objectName = RandomString;
-            string? fileId = null;
+            UploadObjectResponse? response = null;
 
             try
             {
                 // Arrange
-                fileId = await UploadObject(data, objectName);
+                response = await UploadObject(data, objectName);
 
                 // Act && Assert
-                await AssertObjectIsFoundAndValid(objectName, data, fileId);
+                await AssertObjectIsFoundAndValid(response!, data);
             }
             finally
             {
                 // Cleanup && Assert
-                if (fileId != null)
-                    await DeleteObjectAndAssert(objectName, fileId);
+                if (response != null)
+                    await DeleteObjectAndAssert(objectName, response.FileId!);
             }
         }
 
@@ -90,23 +92,22 @@ namespace StreamStore.S3.Tests.Integration
             await act.Should().NotThrowAsync();
         }
 
-        async Task<string?> UploadObject(byte[] data, string objectName)
+        async Task<UploadObjectResponse?> UploadObject(byte[] data, string objectName)
         {
-            var result = await client!.UploadObjectAsync(new UploadObjectRequest
+            return await client!.UploadObjectAsync(new UploadObjectRequest
             {
                 Key = objectName,
                 Data = data
             }, CancellationToken.None);
-            return result?.FileId;
         }
 
-        async Task AssertObjectIsFoundAndValid(string name, byte[] data, string? fileId = null)
+        async Task AssertObjectIsFoundAndValid(UploadObjectResponse response, byte[] data)
         {
-            var file = await client!.FindObjectAsync(name, CancellationToken.None);
+            var file = await client!.FindObjectAsync(response.Name!, CancellationToken.None);
             file.Should().NotBeNull();
-            file!.FileId
-                .Should().NotBeNullOrEmpty()
-                .And.BeEquivalentTo(fileId ?? file.FileId);
+            file!.Name.Should().BeEquivalentTo(response.Name);
+            if (file!.FileId is not null)
+                file.FileId.Should().BeEquivalentTo(response.FileId);
             file!.Data.Should().BeEquivalentTo(data);
         }
 

@@ -15,16 +15,16 @@ namespace StreamStore.S3.Tests.AWS
             databaseSettings = new AWSS3DatabaseSettingsBuilder().Build();
         }
 
-        AWSS3Factory CreateFactory()
+        AWSS3Factory CreateFactory(IAmazonS3ClientFactory clientFactory)
         {
-            return new AWSS3Factory(databaseSettings);
+            return new AWSS3Factory(databaseSettings, clientFactory);
         }
 
         [Fact]
         public void CreateClient_Should_ThrowArgumentNullIfSettingsNotSet()
         {
             // Act && Assert
-            Action act = () => new AWSS3Factory(null!);
+            Action act = () => new AWSS3Factory(null!, null!);
             act.Should().Throw<ArgumentNullException>();
         }
 
@@ -34,7 +34,7 @@ namespace StreamStore.S3.Tests.AWS
             // Arrange
             var amazonFactory = new Mock<IAmazonS3ClientFactory>();
             amazonFactory.Setup(x => x.CreateClient()).Returns(new Mock<IAmazonS3>().Object);
-            var factory = CreateFactory();
+            var factory = CreateFactory(amazonFactory.Object);
 
             // Act
             factory.CreateClient().Should().NotBeNull();
