@@ -56,6 +56,12 @@ or you can provide the configuration in code, see section below.
 
 ```
 
+If you want to use advanced scenarios for configuring the S3 client, you can create and register your own ``IAmazonS3ClientFactory``:
+
+```csharp
+   services.AddSingleton<IAmazonS3ClientFactory, YourOwnAmazonClientFactory>();
+```
+
 - For usage of StreamStore, please refer to the [StreamStore] documentation.
 
 ## Good to know

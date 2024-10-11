@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using Amazon.S3;
+using FluentAssertions;
+using Moq;
 using StreamStore.S3.AWS;
 
 
@@ -30,6 +32,8 @@ namespace StreamStore.S3.Tests.AWS
         public void CreateClient_Should_CreateClient()
         {
             // Arrange
+            var amazonFactory = new Mock<IAmazonS3ClientFactory>();
+            amazonFactory.Setup(x => x.CreateClient()).Returns(new Mock<IAmazonS3>().Object);
             var factory = CreateFactory();
 
             // Act
