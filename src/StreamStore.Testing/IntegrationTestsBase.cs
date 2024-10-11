@@ -1,11 +1,11 @@
 ﻿namespace StreamStore.Testing
 {
-    public abstract class DatabaseTestsBase
+    public abstract class IntegrationTestsBase
     {
 
         protected readonly ITestSuite suite;
 
-        protected DatabaseTestsBase(ITestSuite suite)
+        protected IntegrationTestsBase(ITestSuite suite)
         {
             ArgumentNullException.ThrowIfNull(suite, nameof(suite));
             this.suite = suite;
@@ -15,6 +15,5 @@
         {
             Skip.If(suite.CreateDatabase() == null, "Database is not set.");
         }
-
     }
 }

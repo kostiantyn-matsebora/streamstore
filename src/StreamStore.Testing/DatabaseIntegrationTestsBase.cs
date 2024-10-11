@@ -5,9 +5,9 @@ using StreamStore.Testing;
 
 namespace StreamStore.Testing
 {
-    public abstract class StreamDatabaseTestsBase: DatabaseTestsBase
+    public abstract class DatabaseIntegrationTestsBase: IntegrationTestsBase
     {
-        protected StreamDatabaseTestsBase(ITestSuite suite) : base(suite)
+        protected DatabaseIntegrationTestsBase(ITestSuite suite) : base(suite)
         {
         }
 

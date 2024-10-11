@@ -1,12 +1,8 @@
-﻿
-
-
-using FluentAssertions;
-
+﻿using FluentAssertions;
 
 namespace StreamStore.Testing
 {
-    public abstract class StreamUnitOfWorkTestsBase : DatabaseTestsBase
+    public abstract class StreamUnitOfWorkTestsBase : IntegrationTestsBase
     {
         protected StreamUnitOfWorkTestsBase(ITestSuite suite) : base(suite)
         {
