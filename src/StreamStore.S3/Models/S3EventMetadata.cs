@@ -1,5 +1,4 @@
 ﻿using System;
-using StreamStore.S3.Operations;
 
 namespace StreamStore.S3.Models
 {
@@ -16,12 +15,6 @@ namespace StreamStore.S3.Models
             Id = record.Id;
             Revision = record.Revision;
             Timestamp = record.Timestamp;
-        }
-
-        public S3EventMetadata(Id id, int revision)
-        {
-            Id = id;
-            Revision = revision;
         }
 
         public bool Equals(S3EventMetadata other)
