@@ -11,7 +11,6 @@ namespace StreamStore.S3.AWS
         {
             this.services = services ?? throw new System.ArgumentNullException(nameof(services));
             services.AddSingleton<IAmazonS3ClientFactory, AmazonS3ClientFactory>();
-            services.AddSingleton<IAmazonS3ClientFactory, AmazonS3ClientFactory>();
             services.AddSingleton<IS3Factory, AWSS3Factory>();
             services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
             
