@@ -6,7 +6,7 @@ namespace StreamStore
     public sealed class EventEntity: IHasRevision {
         public Id EventId { get; }
         public DateTime Timestamp { get; }
-        public Revision Revision { get; }
+        public int Revision { get; }
         public object Event { get; internal set; }
 
         public EventEntity(Id id, Revision revision, DateTime timestamp, object @event)

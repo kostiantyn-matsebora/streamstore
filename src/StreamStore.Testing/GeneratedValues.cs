@@ -21,7 +21,7 @@ namespace StreamStore.Testing
         {
             get
             {
-                return new Revision(new Random().Next(0, Int32.MaxValue).ToString());
+                return Revision.New(new Random().Next(0, Int32.MaxValue));
             }
         }
 

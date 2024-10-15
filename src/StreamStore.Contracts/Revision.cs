@@ -8,23 +8,17 @@ namespace StreamStore
         readonly int value;
 
         public int Value => value;
-        public string StringValue => value.ToString();
+      
+        public static readonly Revision Zero = new Revision(0);
+        public static readonly Revision One = new Revision(1);
 
-        public static readonly Revision Zero = new Revision(0.ToString());
-        public static readonly Revision One = new Revision(1.ToString());
-
-  
-        public Revision(string? stringValue)
+        Revision(int value)
         {
-            if (string.IsNullOrEmpty(stringValue))
+            if (value < 0)
             {
-                throw new ArgumentNullException(nameof(stringValue), "Revision must be greater than 0.");
+                throw new ArgumentNullException(nameof(value), "Revision must be greater than 0.");
             }
-            if (!int.TryParse(stringValue, out var revision))
-            {
-                throw new ArgumentException("Revision must be a valid integer.");
-            }
-            value = revision;
+            this.value = value;
         }
 
         public Revision Increment() => New(Value + 1);
@@ -63,10 +57,10 @@ namespace StreamStore
 
         public override int GetHashCode()
         {
-            return StringValue.GetHashCode();
+            return Value.GetHashCode();
         }
 
-        public override string ToString() => StringValue.ToString();
+        public override string ToString() => Value.ToString();
 
         public int CompareTo(Revision other)
         {
@@ -79,16 +73,13 @@ namespace StreamStore
         }
 
         public static implicit operator int(Revision revision) => revision.Value;
-        public static implicit operator Revision(int revision)
-        {
-          return New(revision);
-        }
+        public static implicit operator Revision(int revision) => New(revision);
 
         public static Revision New(int revision)
         {
             if (revision == 0) return Zero;
             if (revision == 1) return One;
-            return new Revision(revision.ToString());
+            return new Revision(revision);
         }
     }
 }

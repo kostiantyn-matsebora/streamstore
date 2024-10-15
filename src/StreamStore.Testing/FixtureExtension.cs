@@ -27,15 +27,12 @@ namespace StreamStore.Testing
         {
             var serializer = new EventSerializer();
 
-            var revision = Revision.Zero;
+            int revision = Revision.Zero;
 
             var records =
                     fixture
                     .Build<EventRecord>()
-                    .With(x => x.Revision, () => {
-                        revision = revision.Increment();
-                        return revision;
-                    })
+                    .With(x => x.Revision, () => ++revision)
                     .With(x => x.Data, serializer.Serialize(fixture.Create<RootEvent>()))
                     .CreateMany(count)
                     .ToArray();
