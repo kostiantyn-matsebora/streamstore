@@ -14,7 +14,7 @@ namespace StreamStore.S3.Tests.Models
             {
                 Id = id,
                 Timestamp = GeneratedValues.DateTime,
-                Revision = GeneratedValues.Int
+                Revision = GeneratedValues.Revision
             };
         }
 

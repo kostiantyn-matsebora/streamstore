@@ -245,7 +245,6 @@ namespace StreamStore.S3.Tests.AWS
             await client.DisposeAsync();
 
             // Assert
-
             mockRepository.VerifyAll();
         }
     }

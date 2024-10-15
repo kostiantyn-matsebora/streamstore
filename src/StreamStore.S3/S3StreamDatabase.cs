@@ -18,12 +18,12 @@ namespace StreamStore.S3
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public IStreamUnitOfWork BeginAppend(string streamId, int expectedStreamVersion = 0)
+        public Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token)
         {
-            return new S3StreamUnitOfWork(streamId, expectedStreamVersion, factory);
+            return Task.FromResult((IStreamUnitOfWork)new S3StreamUnitOfWork(streamId, expectedStreamVersion, factory));
         }
 
-        public async Task DeleteAsync(string streamId, CancellationToken cancellationToken)
+        public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken)
         {
             using var transaction = 
                 await S3StreamTransaction
@@ -34,7 +34,7 @@ namespace StreamStore.S3
 
      
 
-        public async Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken)
+        public async Task<StreamRecord?> FindAsync(Id streamId, CancellationToken cancellationToken)
         {
             S3Stream? stream;
             await using (var client = factory.CreateClient())
@@ -47,7 +47,7 @@ namespace StreamStore.S3
             return new StreamRecord(streamId, stream.Events);
         }
 
-        public async Task<StreamMetadataRecord?> FindMetadataAsync(string streamId, CancellationToken cancellationToken)
+        public async Task<StreamMetadataRecord?> FindMetadataAsync(Id streamId, CancellationToken cancellationToken)
         {
             S3StreamMetadata? metadata;
             await using (var client = factory.CreateClient())
@@ -60,7 +60,7 @@ namespace StreamStore.S3
             return  metadata.ToRecord();
         }
 
-        async Task TryDeleteAsync(string streamId, S3StreamTransaction transaction, CancellationToken cancellationToken)
+        async Task TryDeleteAsync(Id streamId, S3StreamTransaction transaction, CancellationToken cancellationToken)
         {
             try
             {

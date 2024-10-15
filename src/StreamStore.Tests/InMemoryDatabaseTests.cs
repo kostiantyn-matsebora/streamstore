@@ -19,8 +19,8 @@ public class InMemoryDatabaseTests
         var database = new InMemoryStreamDatabase();
         await
             database
-                .BeginAppend(streamId)
-                .AddRange(fixture.CreateEventItems(3))
+                .BeginAppendAsync(streamId, Revision.Zero)
+                .AddRangeAsync(fixture.CreateEventItems(3))
                 .SaveChangesAsync(CancellationToken.None);
 
         // Act
@@ -50,8 +50,8 @@ public class InMemoryDatabaseTests
         // Act
         await
             database
-                .BeginAppend(streamId)
-                .AddRange(events)
+                .BeginAppendAsync(streamId, Revision.Zero)
+                .AddRangeAsync(events)
                 .SaveChangesAsync(CancellationToken.None);
 
         var stream = await database.FindMetadataAsync(streamId, CancellationToken.None);
@@ -71,8 +71,8 @@ public class InMemoryDatabaseTests
         var database = new InMemoryStreamDatabase();
         await
             database
-                .BeginAppend(streamId)
-                .AddRange(fixture.CreateEventItems(3))
+                .BeginAppendAsync(streamId, Revision.Zero)
+                .AddRangeAsync(fixture.CreateEventItems(3))
                 .SaveChangesAsync(CancellationToken.None);
 
         var streamBeforeDeletion = await database.FindAsync(streamId, CancellationToken.None);

@@ -12,6 +12,7 @@ namespace StreamStore
 
         public static Id None => new Id(string.Empty);
 
+
         public Id(string? value = null)
         {
             this.value = value ?? string.Empty;
@@ -21,6 +22,7 @@ namespace StreamStore
         {
             return Value == other.Value;
         }
+        
 
         public bool Equals(string other)
         {

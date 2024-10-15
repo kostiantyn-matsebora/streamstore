@@ -2,6 +2,6 @@
 {
     public interface  IHasRevision
     {
-        public int Revision { get;  }
+        public Revision Revision { get;  }
     }
 }

@@ -7,6 +7,6 @@ namespace StreamStore
 
         public DateTime Timestamp { get; set; }
 
-        public int Revision { get; set; }
+        public Revision Revision { get; set; }
     }
 }

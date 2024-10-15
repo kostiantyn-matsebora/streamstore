@@ -1,7 +1,6 @@
-﻿using StreamStore.S3.B2;
-using StreamStore.S3.Client;
+﻿using StreamStore.S3.Client;
 
-namespace StreamStore.S3.Tests.Integration
+namespace StreamStore.S3.IntegrationTests
 {
     internal interface IS3Suite
     {

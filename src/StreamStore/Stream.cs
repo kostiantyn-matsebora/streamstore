@@ -29,12 +29,9 @@ namespace StreamStore
         }
 
 
-        public async Task OpenAsync(Id streamId, int expectedRevision, CancellationToken cancellationToken = default)
+        public async Task OpenAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(streamId))
-                throw new ArgumentNullException(nameof(streamId));
-            if (expectedRevision < 0)
-                throw new ArgumentOutOfRangeException(nameof(expectedRevision), "Expected revision must be greater or equal 0");
+            streamId.ThrowIfHasNoValue();
 
             this.streamId = streamId;
 
@@ -48,14 +45,14 @@ namespace StreamStore
                 eventTracking!.AddRange(stream.EventIds);
             }
 
-           uow = database.BeginAppend(streamId, expectedRevision);
+           uow = await database.BeginAppendAsync(streamId, expectedRevision);
 
            if (uow == null)
                 throw new InvalidOperationException("Failed to open stream, either stream does not exist or revision is incorrect.");
            isOpened = true;
         }
 
-        public IStream Add(Id eventId, DateTime timestamp, object @event)
+        public async Task<IStream> AddAsync(Id eventId, DateTime timestamp, object @event, CancellationToken cancellationToken = default)
         {
             if (!isOpened)
                 throw new InvalidOperationException("Stream is not open.");
@@ -68,11 +65,11 @@ namespace StreamStore
 
             eventTracking!.Add(eventId);
 
-            uow!.Add(eventId, timestamp, converter.ConvertToString(@event));
+            await uow!.AddAsync(eventId, timestamp, converter.ConvertToString(@event));
             return this;
         }
 
-        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task<Revision> SaveChangesAsync(CancellationToken cancellationToken)
         {
             return await uow!.SaveChangesAsync(cancellationToken);
         }

@@ -8,7 +8,7 @@ namespace StreamStore.S3.Example
         private readonly ILogger<Worker> logger;
         private readonly IStreamStore store;
         public const string StreamId = "stream-1";
-        int actualRevision = 0;
+        Revision actualRevision = Revision.Zero;
 
         public Worker(ILogger<Worker> logger, IStreamStore store)
         {
@@ -33,10 +33,10 @@ namespace StreamStore.S3.Example
 
                     logger.LogDebug("Adding events to stream");
 
-                    stream
-                        .Add(CreateEvent())
-                        .Add(CreateEvent())
-                        .Add(CreateEvent());
+                    await stream
+                        .AddAsync(CreateEvent())
+                        .AddAsync(CreateEvent())
+                        .AddAsync(CreateEvent());
 
                     if (stoppingToken.IsCancellationRequested) break;
                     logger.LogDebug("Saving changes");

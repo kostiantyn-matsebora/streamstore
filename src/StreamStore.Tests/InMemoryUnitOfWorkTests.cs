@@ -18,11 +18,12 @@ namespace StreamStore.Tests
             var fixture = new Fixture();
             var streamId = fixture.Create<Id>();
             var events = fixture.CreateEventItems(5);
-          
+
 
             // Act
-            await database.BeginAppend(streamId)
-                .AddRange(events)
+            await database
+                .BeginAppendAsync(streamId, Revision.Zero)
+                .AddRangeAsync(events)
                 .SaveChangesAsync(CancellationToken.None);
 
             var stream = await database.FindAsync(streamId, CancellationToken.None);
@@ -48,8 +49,8 @@ namespace StreamStore.Tests
                 {
                     await
                        database
-                           .BeginAppend(streamId)
-                           .AddRange(fixture.CreateEventItems(100))
+                           .BeginAppendAsync(streamId, Revision.Zero)
+                           .AddRangeAsync(fixture.CreateEventItems(100))
                            .SaveChangesAsync(CancellationToken.None);
                 });
             };
@@ -61,7 +62,7 @@ namespace StreamStore.Tests
 
             stream.Should().NotBeNull();
             nonExistingStream.Should().BeNull();
-            
+
             stream!.Events.Should().HaveCount(100);
         }
 

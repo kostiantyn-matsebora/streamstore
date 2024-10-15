@@ -12,7 +12,7 @@ namespace StreamStore
 
         public EventEntityCollection EventEntities { get; }
 
-        public int Revision => EventEntities.MaxRevision;
+        public Revision Revision => EventEntities.MaxRevision;
 
         internal StreamEntity(Id id, IEnumerable<EventEntity> events)
         {

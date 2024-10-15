@@ -17,26 +17,26 @@ namespace StreamStore.Testing
             var database = suite.CreateDatabase();
             var streamId = GeneratedValues.String;
   
-            var uow = database!.BeginAppend(streamId);
+            var uow = database!.BeginAppendAsync(streamId, Revision.Zero);
 
             // Act
-            uow.AddRange(GeneratedValues.CreateEventItems(3));
+            uow.AddRangeAsync(GeneratedValues.CreateEventItems(3));
             var act = () => uow.SaveChangesAsync(CancellationToken.None);
 
             // Assert
             await act.Should().NotThrowAsync();
 
             // Act
-            uow = database!.BeginAppend(streamId, 3);
-            uow.AddRange(GeneratedValues.CreateEventItems(5));
+            uow = database!.BeginAppendAsync(streamId, 3);
+            uow.AddRangeAsync(GeneratedValues.CreateEventItems(5));
             act = () => uow.SaveChangesAsync(CancellationToken.None);
 
             // Assert
             await act.Should().NotThrowAsync();
 
             // Act
-            uow = database!.BeginAppend(streamId, 8);
-            uow.AddRange(GeneratedValues.CreateEventItems(8));
+            uow = database!.BeginAppendAsync(streamId, 8);
+            uow.AddRangeAsync(GeneratedValues.CreateEventItems(8));
             act = () => uow.SaveChangesAsync(CancellationToken.None);
 
             // Assert

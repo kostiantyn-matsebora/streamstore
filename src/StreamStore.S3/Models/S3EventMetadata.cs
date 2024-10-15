@@ -6,7 +6,7 @@ namespace StreamStore.S3.Models
     {
         public Id Id { get; }
 
-        public int Revision { get; }
+        public Revision Revision { get; }
 
         public DateTime Timestamp { get; }
 
