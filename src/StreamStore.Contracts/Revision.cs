@@ -50,6 +50,45 @@ namespace StreamStore
         {
             return left.Equals(right);
         }
+
+        public static bool operator <(Revision left, Revision right)
+        {
+            return left.Value < right.Value;
+        }
+        public static bool operator >(Revision left, Revision right)
+        {
+            return left.Value > right.Value;
+        }
+
+        public static bool operator <=(Revision left, Revision right)
+        {
+            return left.Value <= right.Value;
+        }
+
+        public static bool operator >=(Revision left, Revision right)
+        {
+            return left.Value >= right;
+        }
+
+        public static bool operator <(Revision left, int right)
+        {
+            return left.Value < right;
+        }
+        public static bool operator >(Revision left, int right)
+        {
+            return left.Value > right;
+        }
+
+        public static bool operator <=(Revision left, int right)
+        {
+            return left.Value <= right;
+        }
+
+        public static bool operator >=(Revision left, int right)
+        {
+            return left.Value >= right;
+        }
+
         public static bool operator !=(Revision left, int right)
         {
             return !left.Equals(right);

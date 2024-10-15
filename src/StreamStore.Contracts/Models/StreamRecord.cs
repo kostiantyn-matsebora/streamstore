@@ -31,7 +31,7 @@ namespace StreamStore
         public StreamRecord(Id id) : this(id, new EventRecord[0]) { }
         public StreamRecord(Id id, IEnumerable<EventRecord> records) : base(id, records) { }
 
-        public bool IsEmpty => Events.Count() == 0;
+        public bool IsEmpty => !Events.Any();
     }
 
     public sealed class StreamMetadataRecord : StreamRecord<EventMetadataRecord>
