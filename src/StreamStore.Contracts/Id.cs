@@ -30,7 +30,8 @@ namespace StreamStore
         }
         public override bool Equals(object obj)
         {
-            return !ReferenceEquals(null, obj) && obj is Id && Equals((Id)obj);
+            return !ReferenceEquals(null, obj) && 
+                ((obj is Id && Equals((Id)obj)) || (obj is string && Equals((string)obj)));
         }
 
         public static bool operator ==(Id left, Id right)

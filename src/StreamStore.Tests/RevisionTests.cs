@@ -1,24 +1,10 @@
 ﻿using FluentAssertions;
-using Moq;
-using StreamStore;
-using System;
-using Xunit;
+
 
 namespace StreamStore.Tests
 {
     public class RevisionTests
-    {
-        MockRepository mockRepository;
-
-
-
-        public RevisionTests()
-        {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-
-
-        }
-
+   {
         Revision CreateRevision(int revision = 0)
         {
             return Revision.New(revision);
@@ -67,12 +53,7 @@ namespace StreamStore.Tests
 
             // Assert
             revision.Equals((object)11).Should().BeFalse();
-
-
-            this.mockRepository.VerifyAll();
         }
-
-    
 
         [Fact]
         public void GetHashCode_Should_ReturnCodeOfIntegerValue()
