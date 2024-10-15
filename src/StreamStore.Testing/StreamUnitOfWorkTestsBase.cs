@@ -17,27 +17,29 @@ namespace StreamStore.Testing
             var database = suite.CreateDatabase();
             var streamId = GeneratedValues.String;
   
-            var uow = database!.BeginAppendAsync(streamId, Revision.Zero);
-
             // Act
-            uow.AddRangeAsync(GeneratedValues.CreateEventItems(3));
-            var act = () => uow.SaveChangesAsync(CancellationToken.None);
+            var act = () =>
+                    database!.BeginAppendAsync(streamId)
+                    .AddRangeAsync(GeneratedValues.CreateEventItems(3))
+                    .SaveChangesAsync(CancellationToken.None);
 
             // Assert
             await act.Should().NotThrowAsync();
 
             // Act
-            uow = database!.BeginAppendAsync(streamId, 3);
-            uow.AddRangeAsync(GeneratedValues.CreateEventItems(5));
-            act = () => uow.SaveChangesAsync(CancellationToken.None);
+            act = () =>
+                  database!.BeginAppendAsync(streamId,3)
+                  .AddRangeAsync(GeneratedValues.CreateEventItems(5))
+                  .SaveChangesAsync(CancellationToken.None);
 
             // Assert
             await act.Should().NotThrowAsync();
 
             // Act
-            uow = database!.BeginAppendAsync(streamId, 8);
-            uow.AddRangeAsync(GeneratedValues.CreateEventItems(8));
-            act = () => uow.SaveChangesAsync(CancellationToken.None);
+            act = () =>
+                 database!.BeginAppendAsync(streamId, 8)
+                 .AddRangeAsync(GeneratedValues.CreateEventItems(8))
+                 .SaveChangesAsync(CancellationToken.None);
 
             // Assert
             await act.Should().NotThrowAsync();
