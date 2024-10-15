@@ -84,7 +84,7 @@ namespace StreamStore
              .ToArray();
 
             if (duplicateRevisions.Any())
-                throw new OptimisticConcurrencyException(duplicateRevisions[0], streamId);
+                throw new DuplicateRevisionException(duplicateRevisions[0], streamId);
 
             var duplicateId =
                 events.GroupBy(e => e.Id)

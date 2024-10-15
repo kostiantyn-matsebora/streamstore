@@ -61,7 +61,7 @@ namespace StreamStore.S3.Example
                         logger.LogInformation("We've got lucky, actual revision: {actualRevision}", ex.ActualRevision);
                     }
                 }
-                catch (PessimisticConcurrencyException ex)
+                catch (StreamLockedException ex)
                 {
                     if (stoppingToken.IsCancellationRequested) break;
                     logger.LogWarning("Pessimistic concurrency exception: {errorMessage}", ex.Message);
