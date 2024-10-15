@@ -4,8 +4,8 @@
 namespace StreamStore.Tests
 {
     public class RevisionTests
-   {
-        Revision CreateRevision(int revision = 0)
+    {
+        static Revision CreateRevision(int revision = 0)
         {
             return Revision.New(revision);
         }
@@ -14,7 +14,7 @@ namespace StreamStore.Tests
         public void Increment_Should_CreateIncrementedInstance()
         {
             // Arrange
-            var revision = this.CreateRevision();
+            var revision = CreateRevision();
 
             // Act
             var result = revision.Increment();
@@ -28,14 +28,14 @@ namespace StreamStore.Tests
         public void Equals_Should_BeEquivalent()
         {
             // Arrange
-            var revision = this.CreateRevision(10);
+            var revision = CreateRevision(10);
             // Assert
             revision.Equals(10).Should().BeTrue();
 
             // Assert
             revision.Equals(Revision.New(10)).Should().BeTrue();
 
-           
+
             // Assert
             revision.Equals(11).Should().BeFalse();
 
@@ -43,7 +43,7 @@ namespace StreamStore.Tests
             revision.Equals(Revision.New(11)).Should().BeFalse();
 
             // Assert
-            revision.Equals(null).Should().BeFalse();
+            revision.Equals(string.Empty).Should().BeFalse();
 
             // Assert
             revision.Equals(new object()).Should().BeFalse();
@@ -59,21 +59,21 @@ namespace StreamStore.Tests
         public void GetHashCode_Should_ReturnCodeOfIntegerValue()
         {
             // Arrange
-            var revision = this.CreateRevision(11);
+            var revision = CreateRevision(11);
 
             // Act
             var result = revision.GetHashCode();
 
             // Assert
             result.Should().Be(11.GetHashCode());
-            
+
         }
 
         [Fact]
         public void ToString_Should_ReturnToStringOfIntegerValue()
         {
             // Arrange
-            var revision = this.CreateRevision(12);
+            var revision = CreateRevision(12);
 
             // Act
             var result = revision.ToString();
@@ -86,7 +86,7 @@ namespace StreamStore.Tests
         public void CompareTo_Should_CompareIntegerValue()
         {
             // Arrange
-            var revision = this.CreateRevision(13);
+            var revision = CreateRevision(13);
 
             // Assert
             revision.Should<Revision>().BeGreaterThan(Revision.New(12));
@@ -102,7 +102,7 @@ namespace StreamStore.Tests
         public void Operator_Should_CompareIntegerValue()
         {
             // Arrange
-            var revision = this.CreateRevision(14);
+            var revision = CreateRevision(14);
 
             // Assert
             (revision > 13).Should().BeTrue();
@@ -126,7 +126,5 @@ namespace StreamStore.Tests
             (revision < Revision.New(14)).Should().BeFalse();
             (revision <= Revision.New(14)).Should().BeTrue();
         }
-
-       
     }
 }

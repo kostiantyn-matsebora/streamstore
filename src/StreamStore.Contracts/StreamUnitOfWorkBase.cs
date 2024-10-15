@@ -102,15 +102,9 @@ namespace StreamStore
             GC.SuppressFinalize(this);
         }
 
-        void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                DisposeInternal();
-            }
         }
-
-        protected virtual void DisposeInternal() { }
     }
 
 }

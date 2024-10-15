@@ -32,10 +32,5 @@ namespace StreamStore.InMemory
 
             return Task.CompletedTask;
         }
-
-        protected override void DisposeInternal()
-        {
-            database = null!;
-        }
     }
 }

@@ -5,7 +5,7 @@ namespace StreamStore.Tests
 {
     public class IdTests
     {
-        Id CreateId(string? id = null)
+        static Id CreateId(string? id = null)
         {
             return new Id(id ?? GeneratedValues.String);
         }
@@ -15,7 +15,7 @@ namespace StreamStore.Tests
         {
             // Arrange
             var expected = GeneratedValues.String;
-            var id = this.CreateId(expected);
+            var id = CreateId(expected);
 
             
             // Assert
@@ -23,7 +23,7 @@ namespace StreamStore.Tests
             id.Equals(new Id(expected)).Should().BeTrue(); 
             id.Equals(GeneratedValues.String).Should().BeFalse();
             id.Equals(CreateId()).Should().BeFalse();
-            id.Equals((string)null).Should().BeFalse();
+            id.Equals(string.Empty).Should().BeFalse();
             id.Equals(new object()).Should().BeFalse();
             id.Equals((object)expected).Should().BeTrue();
             id.Equals((object)GeneratedValues.String).Should().BeFalse();
@@ -35,7 +35,7 @@ namespace StreamStore.Tests
         {
             // Arrange
             var expected = GeneratedValues.String;
-            var id = this.CreateId(expected);
+            var id = CreateId(expected);
 
             // Act
             var result = id.GetHashCode();
@@ -49,7 +49,7 @@ namespace StreamStore.Tests
         {
             // Arrange
             var expected = GeneratedValues.String;
-            var id = this.CreateId(expected);
+            var id = CreateId(expected);
 
             // Act
             var result = id.ToString();
@@ -65,7 +65,7 @@ namespace StreamStore.Tests
             var expected = GeneratedValues.String;
 
             // Arrange
-            var id = this.CreateId(expected);
+            var id = CreateId(expected);
 
             // Assert
             (id == expected).Should().BeTrue();

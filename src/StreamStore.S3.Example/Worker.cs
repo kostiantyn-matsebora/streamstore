@@ -35,9 +35,9 @@ namespace StreamStore.S3.Example
                     logger.LogDebug("Adding events to stream");
 
                     await stream
-                        .AddAsync(CreateEvent())
-                        .AddAsync(CreateEvent())
-                        .AddAsync(CreateEvent());
+                        .AddAsync(CreateEvent(), stoppingToken)
+                        .AddAsync(CreateEvent(), stoppingToken)
+                        .AddAsync(CreateEvent(), stoppingToken);
 
                     if (stoppingToken.IsCancellationRequested) break;
                     logger.LogDebug("Saving changes");

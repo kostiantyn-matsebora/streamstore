@@ -22,8 +22,8 @@ namespace StreamStore.Tests
 
             // Act
             await database
-                .BeginAppendAsync(streamId, Revision.Zero)
-                .AddRangeAsync(events)
+                .BeginAppendAsync(streamId, CancellationToken.None)
+                .AddRangeAsync(events, CancellationToken.None)
                 .SaveChangesAsync(CancellationToken.None);
 
             var stream = await database.FindAsync(streamId, CancellationToken.None);
@@ -49,8 +49,8 @@ namespace StreamStore.Tests
                 {
                     await
                        database
-                           .BeginAppendAsync(streamId, Revision.Zero)
-                           .AddRangeAsync(fixture.CreateEventItems(100))
+                           .BeginAppendAsync(streamId, CancellationToken.None)
+                           .AddRangeAsync(fixture.CreateEventItems(100), CancellationToken.None)
                            .SaveChangesAsync(CancellationToken.None);
                 });
             };
