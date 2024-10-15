@@ -1,5 +1,8 @@
-﻿namespace StreamStore.S3.Example
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace StreamStore.S3.Example
 {
+    [ExcludeFromCodeCoverage]
     public class Janitor : BackgroundService
     {
         readonly ILogger<Janitor> logger;

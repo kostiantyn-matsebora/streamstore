@@ -1,8 +1,9 @@
-using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using StreamStore.Exceptions;
 
 namespace StreamStore.S3.Example
 {
+    [ExcludeFromCodeCoverage]
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> logger;
