@@ -23,13 +23,13 @@ namespace StreamStore.S3
             return Task.FromResult((IStreamUnitOfWork)new S3StreamUnitOfWork(streamId, expectedStreamVersion, factory));
         }
 
-        public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken)
+        public async Task DeleteAsync(Id streamId, CancellationToken token = default)
         {
             using var transaction = 
                 await S3StreamTransaction
                 .BeginAsync(S3TransactionContext.New(streamId), factory);
 
-            await TryDeleteAsync(streamId, transaction, cancellationToken);
+            await TryDeleteAsync(streamId, transaction, token);
         }
 
      
