@@ -10,7 +10,7 @@ namespace StreamStore.InMemory
 {
     sealed class InMemoryStreamUnitOfWork : StreamUnitOfWorkBase
     {
-        InMemoryStreamDatabase database;
+        readonly InMemoryStreamDatabase database;
 
         public InMemoryStreamUnitOfWork(Id streamId, Revision expectedRevision, InMemoryStreamDatabase database, StreamRecord? existing): base(streamId, expectedRevision, existing)
         {
