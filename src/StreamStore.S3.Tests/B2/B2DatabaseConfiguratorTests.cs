@@ -64,14 +64,58 @@ namespace StreamStore.S3.Tests.B2
         [Fact]
         public void ReadFromConfig_Should_ReadFromConfiguration()
         {
+            // Arrange
+            var section = SetupConfiguration();
+            var b2DatabaseConfigurator = CreateB2DatabaseConfigurator();
 
+            // Act
+            b2DatabaseConfigurator.ReadFromConfig(section.Object);
+
+            // Assert
+            mockRepository.VerifyAll();
+            section.VerifyAll();
+        }
+
+        [Fact]
+        public void UseB2StreamStoreDatabase_Should_ReadFromConfiguration()
+        {
+            // Arrange
+            var collection = mockRepository.Create<IServiceCollection>();
+            var configuration = SetupConfiguration();
+
+            // Act
+            collection.Object.UseB2StreamStoreDatabase(configuration.Object);
+
+            // Assert
+            mockRepository.VerifyAll();
+            configuration.VerifyAll();
+        }
+
+        [Fact]
+        public void ConfigureB2StreamStoreDatabase_Should_ReturnConfigurator()
+        {
+            // Arrange
+            var collection = mockRepository.Create<IServiceCollection>();
+
+            // Act
+            var result = collection.Object.ConfigureB2StreamStoreDatabase();
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<B2DatabaseConfigurator>();
+            mockRepository.VerifyAll();
+        }
+
+
+        Mock<IConfiguration> SetupConfiguration()
+        {
             var applicationKeyId = GeneratedValues.String;
             var applicationKey = GeneratedValues.String;
             var bucketId = GeneratedValues.String;
             var bucketName = GeneratedValues.String;
 
             // Arrange
-            var b2DatabaseConfigurator = CreateB2DatabaseConfigurator();
+         
             var configuration = mockRepository.Create<IConfiguration>();
             var section = new Mock<IConfigurationSection>(MockBehavior.Loose);
             configuration.Setup(c => c.GetSection("streamStore:b2")).Returns(section.Object).Verifiable();
@@ -89,14 +133,7 @@ namespace StreamStore.S3.Tests.B2
             section.Setup(s => s.GetSection("applicationKey")).Returns(applicationKeySection.Object).Verifiable();
             section.Setup(s => s.GetSection("bucketId")).Returns(bucketIdSection.Object).Verifiable();
             section.Setup(s => s.GetSection("bucketName")).Returns(bucketNameSection.Object).Verifiable();
-
-
-            // Act
-            var result = b2DatabaseConfigurator.ReadFromConfig(configuration.Object);
-
-            // Assert
-            mockRepository.VerifyAll();
-            section.VerifyAll();
+            return configuration;
         }
     }
 }

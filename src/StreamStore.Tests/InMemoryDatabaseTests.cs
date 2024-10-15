@@ -4,7 +4,6 @@ using StreamStore.InMemory;
 using StreamStore.Testing;
 using AutoFixture;
 using FluentAssertions;
-using Xunit.Sdk;
 
 namespace StreamStore.Tests;
 

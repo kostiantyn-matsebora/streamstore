@@ -12,7 +12,7 @@ namespace StreamStore
         public static readonly Revision Zero = new Revision(0);
         public static readonly Revision One = new Revision(1);
 
-        Revision(int value)
+        private Revision(int value)
         {
             if (value < 0)
             {
