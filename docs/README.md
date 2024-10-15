@@ -1,6 +1,7 @@
 # StreamStore 
 
-[![StreamStore](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/streamstore.yml/badge.svg)](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/streamstore.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kostiantyn-matsebora_streamstore&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kostiantyn-matsebora_streamstore)
+[![Build](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/streamstore.yml/badge.svg)](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/streamstore.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kostiantyn-matsebora_streamstore&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kostiantyn-matsebora_streamstore)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kostiantyn-matsebora_streamstore&metric=coverage)](https://sonarcloud.io/summary/new_code?id=kostiantyn-matsebora_streamstore)
 [![NuGet version (StreamStore)](https://img.shields.io/nuget/v/StreamStore.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore/)
 
 A lightweight library provides a logical layer for storing and querying events as a stream.
@@ -13,11 +14,11 @@ Designed to be easily extended with custom database backends.
 
 ## Databases
 
-  | Package                | Description                                                                        |
-  | ---------------------- | ---------------------------------------------------------------------------------- |
-  | [StreamStore.InMemory] | `In-memory` implementation is provided **for testing and educational purposes only** |
-  | [StreamStore.S3.AWS]   |  [`Amazon S3`] implementation                                                      |
-  | [StreamStore.S3.B2]    | [`Backblaze B2`] implementation                                                    |
+  | Package                | Description                                                                          |        |
+  | ---------------------- | -------------------------------------------------------------------------------------|--------|
+  | [StreamStore.InMemory] | `In-memory` implementation is provided **for testing and educational purposes only** |[![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
+  | [StreamStore.S3.AWS]   |  [`Amazon S3`] implementation                                                        |[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)|
+  | [StreamStore.S3.B2]    | [`Backblaze B2`] implementation                                                      |[![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)|
 
 ## Features
 
@@ -108,9 +109,9 @@ or from NuGet Package Manager Console:
   try {
     stream
       // EventObject property is where you store your event
-      .AddAsync(new Event { Id = new Id("event-1"), Timestamp = DateTime.Now, EventObject = events[0] }) 
-      .AddAsync(new Event { Id = new Id("event-2"), Timestamp = DateTime.Now, EventObject = events[1] })
-      .AddAsync(new Id("event-3"), DateTime.Now, event[2])
+      .AddAsync(new Event { Id = "event-1", Timestamp = DateTime.Now, EventObject = events[0] }) 
+      .AddAsync(new Event { Id = "event-2", Timestamp = DateTime.Now, EventObject = events[1] })
+      .AddAsync("event-3", DateTime.Now, event[2])
       .AddRangeAsync(events)
     .SaveChangesAsync(streamId);
 
@@ -120,7 +121,7 @@ or from NuGet Package Manager Console:
     ...
     store
         .OpenStreamAsync(streamId, ex.ActualRevision)
-        .AddAsync(new Event { Id = new Id("event-4"), Timestamp = DateTime.Now, EventObject = events[3] })
+        .AddAsync(new Event { Id = "event-4", Timestamp = DateTime.Now, EventObject = events[3] })
         ...
         .SaveChangesAsync(streamId);
   }
