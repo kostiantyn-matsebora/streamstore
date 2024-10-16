@@ -193,11 +193,6 @@ To create your own database implementation, you need to implement the following 
   ```csharp
     class MyStreamUnitOfWork: StreamUnitOfWorkBase
     {
-      protected override Task OpenStreamAsync(string streamId, CancellationToken cancellationToken)
-      {
-        // Implement opening stream
-      }
-
       protected override Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
       {
         // Implement saving changes
@@ -206,7 +201,7 @@ To create your own database implementation, you need to implement the following 
       protected override Task OnEventAdded(EventRecord @event, CancellationToken token)
       {
             // Optionally implement logic for handling event added, 
-            // for instance logging or puting event to outbox or temporary storage
+            // such as instance logging, puting event to outbox or temporary storage etc.
       }
 
      protected override void Dispose(bool disposing)

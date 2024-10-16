@@ -16,5 +16,4 @@ Currently, the library provides the following database implementations:
 [StreamStore.S3.AWS]:https://www.nuget.org/packages/StreamStore.S3.AWS/
 [StreamStore.S3.B2]:https://www.nuget.org/packages/StreamStore.S3.B2
 
-
 More information you can find in the [documentation](https://github.com/kostiantyn-matsebora/streamstore).
