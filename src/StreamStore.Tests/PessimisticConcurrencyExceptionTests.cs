@@ -14,7 +14,7 @@ namespace StreamStore.Tests
             var streamId = new Id(GeneratedValues.String);
 
             // Act
-            var exception = new PessimisticConcurrencyException(streamId);
+            var exception = new StreamLockedException(streamId);
 
             // Assert
             exception.Should().NotBeNull();

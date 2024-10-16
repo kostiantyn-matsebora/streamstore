@@ -1,14 +1,15 @@
-using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using StreamStore.Exceptions;
 
 namespace StreamStore.S3.Example
 {
+    [ExcludeFromCodeCoverage]
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> logger;
         private readonly IStreamStore store;
         public const string StreamId = "stream-1";
-        int actualRevision = 0;
+        Revision actualRevision = Revision.Zero;
 
         public Worker(ILogger<Worker> logger, IStreamStore store)
         {
@@ -33,10 +34,10 @@ namespace StreamStore.S3.Example
 
                     logger.LogDebug("Adding events to stream");
 
-                    stream
-                        .Add(CreateEvent())
-                        .Add(CreateEvent())
-                        .Add(CreateEvent());
+                    await stream
+                        .AddAsync(CreateEvent(), stoppingToken)
+                        .AddAsync(CreateEvent(), stoppingToken)
+                        .AddAsync(CreateEvent(), stoppingToken);
 
                     if (stoppingToken.IsCancellationRequested) break;
                     logger.LogDebug("Saving changes");
@@ -61,7 +62,7 @@ namespace StreamStore.S3.Example
                         logger.LogInformation("We've got lucky, actual revision: {actualRevision}", ex.ActualRevision);
                     }
                 }
-                catch (PessimisticConcurrencyException ex)
+                catch (StreamLockedException ex)
                 {
                     if (stoppingToken.IsCancellationRequested) break;
                     logger.LogWarning("Pessimistic concurrency exception: {errorMessage}", ex.Message);

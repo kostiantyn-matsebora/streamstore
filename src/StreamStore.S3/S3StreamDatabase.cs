@@ -18,49 +18,49 @@ namespace StreamStore.S3
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public IStreamUnitOfWork BeginAppend(string streamId, int expectedStreamVersion = 0)
+        public Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
-            return new S3StreamUnitOfWork(streamId, expectedStreamVersion, factory);
+            return Task.FromResult((IStreamUnitOfWork)new S3StreamUnitOfWork(streamId, expectedStreamVersion, factory));
         }
 
-        public async Task DeleteAsync(string streamId, CancellationToken cancellationToken)
+        public async Task DeleteAsync(Id streamId, CancellationToken token = default)
         {
             using var transaction = 
                 await S3StreamTransaction
                 .BeginAsync(S3TransactionContext.New(streamId), factory);
 
-            await TryDeleteAsync(streamId, transaction, cancellationToken);
+            await TryDeleteAsync(streamId, transaction, token);
         }
 
      
 
-        public async Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken)
+        public async Task<StreamRecord?> FindAsync(Id streamId, CancellationToken token = default)
         {
             S3Stream? stream;
             await using (var client = factory.CreateClient())
             stream = await S3StreamLoader
                     .New(S3StreamContext.Persistent(streamId), client)
-                    .LoadAsync(cancellationToken);
+                    .LoadAsync(token);
 
             if (stream == null) return null;
 
             return new StreamRecord(streamId, stream.Events);
         }
 
-        public async Task<StreamMetadataRecord?> FindMetadataAsync(string streamId, CancellationToken cancellationToken)
+        public async Task<StreamMetadataRecord?> FindMetadataAsync(Id streamId, CancellationToken token = default)
         {
             S3StreamMetadata? metadata;
             await using (var client = factory.CreateClient())
                 metadata = await S3StreamMetadataLoader
                         .New(S3StreamContext.Persistent(streamId), client)
-                        .LoadAsync(cancellationToken);
+                        .LoadAsync(token);
 
             if (metadata == null) return null;
 
             return  metadata.ToRecord();
         }
 
-        async Task TryDeleteAsync(string streamId, S3StreamTransaction transaction, CancellationToken cancellationToken)
+        async Task TryDeleteAsync(Id streamId, S3StreamTransaction transaction, CancellationToken token)
         {
             try
             {
@@ -68,9 +68,9 @@ namespace StreamStore.S3
                     await
                         S3StreamDeleter
                         .New(S3StreamContext.Persistent(streamId), client)
-                        .DeleteAsync(cancellationToken);
+                        .DeleteAsync(token);
 
-                await transaction.CommitAsync(cancellationToken);
+                await transaction.CommitAsync(token);
 
             }
             catch

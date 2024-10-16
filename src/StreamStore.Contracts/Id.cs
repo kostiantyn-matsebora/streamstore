@@ -12,6 +12,7 @@ namespace StreamStore
 
         public static Id None => new Id(string.Empty);
 
+
         public Id(string? value = null)
         {
             this.value = value ?? string.Empty;
@@ -21,6 +22,7 @@ namespace StreamStore
         {
             return Value == other.Value;
         }
+        
 
         public bool Equals(string other)
         {
@@ -28,7 +30,8 @@ namespace StreamStore
         }
         public override bool Equals(object obj)
         {
-            return !ReferenceEquals(null, obj) && obj is Id && Equals((Id)obj);
+            return !ReferenceEquals(null, obj) && 
+                ((obj is Id && Equals((Id)obj)) || (obj is string && Equals((string)obj)));
         }
 
         public static bool operator ==(Id left, Id right)

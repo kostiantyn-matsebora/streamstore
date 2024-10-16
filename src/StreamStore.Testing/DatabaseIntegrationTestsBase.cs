@@ -42,7 +42,7 @@ namespace StreamStore.Testing
             var streamId = GeneratedValues.String;
 
             //Act
-            var stream = await database!.FindAsync(streamId, CancellationToken.None);
+            var stream = await database!.FindMetadataAsync(streamId, CancellationToken.None);
 
             //Act  && Assert
             stream.Should().BeNull();
@@ -57,9 +57,11 @@ namespace StreamStore.Testing
             var database = suite.CreateDatabase();
             var streamId = GeneratedValues.String;
             var events = GeneratedValues.CreateEventItems(3);
-            var uow = database!.BeginAppend(streamId);
-            uow.AddRange(events);
-            await uow.SaveChangesAsync(CancellationToken.None);
+
+            await database!
+                    .BeginAppendAsync(streamId, Revision.Zero)
+                    .AddRangeAsync(events)
+                    .SaveChangesAsync(CancellationToken.None);
 
             //Act  && Assert
             await AssertStreamIsFoundAndValid(database, streamId, events);
@@ -77,9 +79,11 @@ namespace StreamStore.Testing
             var database = suite.CreateDatabase();
             var streamId = GeneratedValues.String;
             var events = GeneratedValues.CreateEventItems(3);
-            var uow = database!.BeginAppend(streamId);
-            uow.AddRange(events);
-            await uow.SaveChangesAsync(CancellationToken.None);
+            await
+                database!
+                .BeginAppendAsync(streamId, Revision.Zero)
+                .AddRangeAsync(events)
+                .SaveChangesAsync();
 
             //Act  && Assert
             var metadata = await database!.FindMetadataAsync(streamId, CancellationToken.None);
@@ -101,14 +105,17 @@ namespace StreamStore.Testing
             var events = GeneratedValues.CreateEventItems(3);
             var anotherEvents = GeneratedValues.CreateEventItems(10);
 
-            var uow = database!.BeginAppend(streamId);
-            uow.AddRange(events);
-            await uow.SaveChangesAsync(CancellationToken.None);
+            await database!
+                    .BeginAppendAsync(streamId, Revision.Zero)
+                    .AddRangeAsync(events)
+                    .SaveChangesAsync(CancellationToken.None);
 
             //Act
-            uow = database.BeginAppend(anotherStreamId);
-            uow.AddRange(anotherEvents);
-            await uow.SaveChangesAsync(CancellationToken.None);
+            
+            await database
+                    .BeginAppendAsync(anotherStreamId, Revision.Zero)
+                    .AddRangeAsync(anotherEvents)
+                    .SaveChangesAsync(CancellationToken.None);
 
             await database.DeleteAsync(streamId, CancellationToken.None);
 

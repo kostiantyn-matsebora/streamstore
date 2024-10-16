@@ -5,17 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.5.0]
+
+### Changed
+
+- Changed public interfaces signatures to asynchronous methods.
+
+### Added
+
+- Added Revision value object.
+
 ## [0.4.0] - 2024-10-08
 
-[Changed]
+### Changed
 
 - Changed signature of IStreamUnitOfWork interface, so now it calculates stream revision automatically.
 - Changed persistence of S3 database backend, now persistent and transient data are fully separated.
   
-[Added]
+### Added
 
 - Added test for IStreamUnitOfWork implementations.
-
 
 ## [0.3.0] - 2024-10-08
 

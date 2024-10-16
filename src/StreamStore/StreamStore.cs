@@ -27,10 +27,10 @@ namespace StreamStore
 
         public Task<IStream> OpenStreamAsync(Id streamId, CancellationToken cancellationToken = default)
         {            
-            return OpenStreamAsync(streamId, 0, cancellationToken);
+            return OpenStreamAsync(streamId, Revision.Zero, cancellationToken);
         }
 
-        public async Task<IStream> OpenStreamAsync(Id streamId, int expectedRevision, CancellationToken cancellationToken = default)
+        public async Task<IStream> OpenStreamAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
             var stream = new Stream(database, converter);
             await stream.OpenAsync(streamId, expectedRevision, cancellationToken);

@@ -7,40 +7,66 @@ namespace StreamStore
 {
     public static class IStreamExtension
     {
-        public static Task SaveChangesAsync(this Task<IStream> stream, CancellationToken token)
+        public static Task<Revision> SaveChangesAsync(this Task<IStream> stream, CancellationToken token)
         {
             return stream.Result!.SaveChangesAsync(token);
         }
 
-        public static Task AddAsync(this Task<IStream> stream, Id eventId, DateTime timestamp, object @event)
+        public static async Task<IStream> AddAsync(this IStream stream, Event @event, CancellationToken token = default)
         {
-            stream.Result!.Add(eventId, timestamp, @event);
-            return Task.CompletedTask;
-        }
-
-        public static IStream Add(this IStream stream, Event @event)
-        {
-            stream.Add(@event.Id, @event.Timestamp, @event.EventObject);
+            await stream.AddAsync(@event.Id, @event.Timestamp, @event.EventObject, token);
             return stream;
         }
 
-        public static Task<IStream> AddRangeAsync(this Task<IStream> stream, IEnumerable<Event> events)
+        public static async Task<IStream> AddAsync(this Task<IStream> stream, Event @event, CancellationToken token = default)
         {
-            var streamResult = stream.Result!;
-            foreach (var @event in events)
+            await stream.ContinueWith(async t =>
             {
-                streamResult.Add(@event);
-            }
-            return Task.FromResult(streamResult);
+                await t.Result.AddAsync(@event);
+            }, token);
+
+            return stream.Result;
+        }
+
+        public static async Task<IStream> AddAsync(this Task<IStream> stream, Id eventId, DateTime timestamp, object @event, CancellationToken token = default) {
+
+            await stream.ContinueWith(async t =>
+            {
+                await t.AddAsync(eventId, timestamp, @event, token);
+            });
+
+            return stream.Result;
+        }
+
+        public static async Task<IStream> AddRangeAsync(this Task<IStream> stream, IEnumerable<Event> events, CancellationToken token = default)
+        {
+            var result = await stream.ContinueWith(async t =>
+             {
+                 foreach (var @event in events)
+                 {
+                     await t.Result.AddAsync(@event);
+                 }
+                 return t.Result;
+             }, token);
+
+            return result.Result;
         }
 
         public static IStream AddRange(this IStream stream, IEnumerable<Event> events)
         {
+
+            IStream result = stream;
             foreach (var @event in events)
             {
-                stream.Add(@event.Id, @event.Timestamp, @event.EventObject);
+              result = stream.AddAsync(@event).GetAwaiter().GetResult();
             }
-            return stream;
+
+            return result;
+        }
+
+        public static IStream Add(this IStream stream, Id eventId, DateTime timestamp, object @event)
+        {
+           return stream.AddAsync(eventId, timestamp, @event).GetAwaiter().GetResult();
         }
     }
 }

@@ -5,7 +5,7 @@ using Bytewizer.Backblaze.Models;
 using FluentAssertions;
 using StreamStore.S3.Client;
 
-namespace StreamStore.S3.Tests.Integration
+namespace StreamStore.S3.IntegrationTests
 {
 
     public abstract class S3ClientIntegrationTestsBase
@@ -49,7 +49,7 @@ namespace StreamStore.S3.Tests.Integration
 
                 // Assert
                 response.Should().NotBeNull();
-              
+
                 await AssertObjectIsFoundAndValid(response!, data);
             }
             finally

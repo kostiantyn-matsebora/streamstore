@@ -17,6 +17,14 @@ namespace StreamStore.Testing
             }
         }
 
+        public static Revision Revision
+        {
+            get
+            {
+                return Revision.New(new Random().Next(0, Int32.MaxValue));
+            }
+        }
+
         public static byte[] ByteArray => Converter.ToByteArray(String);
 
         public static EventItem[] CreateEventItems(int count)

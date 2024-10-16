@@ -1,18 +1,15 @@
 ﻿using System;
-using StreamStore.Exceptions;
 
-namespace StreamStore
+namespace StreamStore.Exceptions
 {
     public sealed class DuplicateEventException : StreamStoreException
     {
         public Id EventId { get; set; }
-        public Id StreamId { get; set; }
 
         public DuplicateEventException(Id eventId, Id streamId)
-                    : base("Found duplicated event for stream.")
+                    : base(streamId, "Found duplicated event for stream.")
         {
             EventId = eventId;
-            StreamId = streamId;
         }
     }
 }

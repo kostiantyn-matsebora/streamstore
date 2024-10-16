@@ -1,8 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using StreamStore.S3.AWS;
-using StreamStore.S3.B2;
 
 namespace StreamStore.S3.Example
 {
+    [ExcludeFromCodeCoverage]
     public static class Program
     {
         public static void Main(string[] args)

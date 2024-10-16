@@ -10,15 +10,17 @@ Heavily inspired by Greg Young's Event Store and [`Streamstone`](https://github.
 
 ## Overview
 
-Designed to be easily extended with custom database backends.
+Designed to be easily extended with custom database backends.  
+Despite the fact that component implements a logical layer for storing and querying events as a stream,
+ `it does not provide functionality of DDD aggregate`, such as state mutation, conflict resolution etc., but serves more as `persistence layer`  for it.
 
 ## Databases
 
-  | Package                | Description                                                                          |        |
-  | ---------------------- | -------------------------------------------------------------------------------------|--------|
-  | [StreamStore.InMemory] | `In-memory` implementation is provided **for testing and educational purposes only** |[![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
-  | [StreamStore.S3.AWS]   |  [`Amazon S3`] implementation                                                        |[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)|
-  | [StreamStore.S3.B2]    | [`Backblaze B2`] implementation                                                      |[![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)|
+  | Package                | Description                                                                          |                                                                                                                                                                            |
+  | ---------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | [StreamStore.InMemory] | `In-memory` implementation is provided **for testing and educational purposes only** | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
+  | [StreamStore.S3.AWS]   | [`Amazon S3`] implementation                                                         | [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
+  | [StreamStore.S3.B2]    | [`Backblaze B2`] implementation                                                      | [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
 
 ## Features
 
@@ -29,6 +31,7 @@ The general idea is to highlight the common characteristics and features of even
 - [x] Optimistic concurrency control.
 - [x] Event duplication detection based on event ID.
 - [x] Database agnostic test framework, including benchmarking test scenarios.
+- [ ] Binary serialization support.
 - [ ] Custom event properties (?).
 - [ ] External transaction support (?).
 - [ ] Transactional outbox pattern implementation (?).
@@ -40,7 +43,11 @@ Also add implementations of particular storage backends, such as:
 - [x] [`In-Memory`] - for testing purposes.
 - [x] [`Backblaze B2`] - Backblaze B2.
 - [x] [`Amazon S3`] - Amazon S3.
-- [ ] [`SQL`](https://github.com/DapperLib/Dapper) -  SQL Server, PostgreSQL, MySQL, SQLite etc.
+- [ ] [`SQL`](https://github.com/DapperLib/Dapper) based DBMS:
+  - [ ] [`SQLLite`](https://www.sqlite.org/index.html)
+  - [ ] [`PostgreSQL`](https://www.postgresql.org/)
+  - [ ] [`Azure SQL`](https://azure.microsoft.com/en-us/services/sql-database/)
+  - [ ] [`MySQL`](https://www.mysql.com/)
 - [ ] [`Cassandra DB`](https://cassandra.apache.org/_/index.html) - distributed storage.
 
 ## Installation
@@ -52,7 +59,7 @@ To install the package, you can use the following command from the command line:
   
   dotnet add package StreamStore
 
-  #Install package of particular database implementation, for instance InMemory
+  # Install package of particular database implementation, for instance InMemory
 
   dotnet add package StreamStore.InMemory
 ```
@@ -99,16 +106,16 @@ or from NuGet Package Manager Console:
     }
  
   //Append events to stream or create a new stream if it does not exist
-  var events = new Event[] {...}; // your events
-
-  var streamId = new Id("stream-1");
-
-  // Open stream like new since version is not provided.
-  IStream stream = await store.OpenStreamAsync(streamId);
+  // EventObject property is where you store your event
+  var events = new Event[] 
+      {
+        new Event { Id = "event-1", Timestamp = DateTime.Now, EventObject = eventObject } 
+        ...
+      };
 
   try {
-    stream
-      // EventObject property is where you store your event
+    store
+    .OpenStreamAsync("stream-1") // Open stream like new since version is not provided.     
       .AddAsync(new Event { Id = "event-1", Timestamp = DateTime.Now, EventObject = events[0] }) 
       .AddAsync(new Event { Id = "event-2", Timestamp = DateTime.Now, EventObject = events[1] })
       .AddAsync("event-3", DateTime.Now, event[2])
@@ -117,13 +124,17 @@ or from NuGet Package Manager Console:
 
   } catch (StreamConcurrencyException ex) {
 
-    // Implement your logic for handling concurrency exception, or try to push with latest revision, like this
+    // Implement your logic for handling optimistic concurrency exception, 
+    // or try to push with latest revision, like this
     ...
     store
-        .OpenStreamAsync(streamId, ex.ActualRevision)
+        .OpenStreamAsync("stream-1", ex.ActualRevision)
         .AddAsync(new Event { Id = "event-4", Timestamp = DateTime.Now, EventObject = events[3] })
         ...
         .SaveChangesAsync(streamId);
+  } catch (StreamLockedException ex)
+  {
+    // Some database backends like S3 do not support optimistic concurrency control
   }
 
   // Get stream read-only entity
@@ -140,6 +151,10 @@ or from NuGet Package Manager Console:
 
   Thus you don't need to create [Id] object explicitly and use `ToString()` to convert to string back.  
   Also implements `IEquatable`  for [itself][Id] and for `String`.
+- _[`Revision`][Revision] is a value object (immutable class) that represents a revision of the stream._  
+  It is used for optimistic concurrency control and event ordering.
+  It has implicit conversion from and to `Int32` type.  
+  Also implements `IEquatable` and `IComparable` for itself and for `Int32`.
 
 - _[`StreamEntity`][StreamEntity] returned by store is a read-only consistent object_, i.e.:
   - Contains only **unique events ordered by revision**.
@@ -171,27 +186,33 @@ or from NuGet Package Manager Console:
 To create your own database implementation, you need to implement the following interfaces:
 
 - [`IStreamDatabase`][IStreamDatabase] - provides methods for working with streams.
-- [`IStreamUnitOfWork`][IStreamUnitOfWork] - provides methods for appending events to the stream and saving changes.
+- [`IStreamUnitOfWork`][IStreamUnitOfWork] - provides methods for appending events to the stream and saving changes.  
+  Create your own implementation based on [`StreamUnitOfWorkBase`](../src/StreamStore.Contracts/StreamUnitOfWorkBase.cs)
+  and override following methods:
 
-```csharp
-  // Example of Azure Blob Storage database implementation
-  class AzureBlobStreamDatabase: IStreamDatabase
-  {
-    // Implement methods for working with streams in Azure blob Storage
-  }
+  ```csharp
+    class MyStreamUnitOfWork: StreamUnitOfWorkBase
+    {
+      protected override Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
+      {
+        // Implement saving changes
+      }
+  
+      protected override Task OnEventAdded(EventRecord @event, CancellationToken token)
+      {
+            // Optionally implement logic for handling event added, 
+            // such as instance logging, puting event to outbox or temporary storage etc.
+      }
 
-  class AzureBlobStreamUnitOfWork: IStreamUnitOfWork
-  {
-    // Implement methods for appending events to the stream and saving changes in Azure blob Storage
-  }
+     protected override void Dispose(bool disposing)
+     {
+        // Optionally implement disposing logic
+     }
+    }
+  ```
 
-  // Optionally you can create your own event serializer
-  class TextJsonEventSerializer: IEventSerializer
-  {
-    // Default serializer is using Newtonsoft.Json, so you can create your own using System.Text.Json or any other
-    // Implement methods for serializing/deserializing events to/from JSON
-  }
-```
+  Default serializer is using `Newtonsoft.Json` library, so you can create your own using `System.Text.Json` or any other, by
+  implementing [`IEventSerializer`](../src/StreamStore.Contracts/IEventSerializer.cs) interface.
 
 ### Considerations
 
@@ -202,7 +223,8 @@ To create your own database implementation, you need to implement the following 
 
 - _Solution already provides optimistic concurrency and event duplication control mechanisms, as a **pre-check** during stream opening_.  
 
-  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation. For instance, you can use a transaction mechanism supported by `ACID compliant DBMS`.
+  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation.  
+  For instance, you can use a transaction mechanism supported by `ACID compliant DBMS`.
 
 - _Get and Delete operations must be implemented as idempotent by their nature._
 
@@ -218,8 +240,8 @@ to contribute, feel free to [open an issue][issues] or
 
 [issues]: https://github.com/kostiantyn-matsebora/streamstore/issues
 [discussions]: https://github.com/kostiantyn-matsebora/streamstore/discussions
-
 [Id]: ../src/StreamStore.Contracts/Id.cs
+[Revision]: ../src/StreamStore.Contracts/Revision.cs
 [StreamEntity]: ../src/StreamStore/StreamEntity.cs
 [IStreamUnitOfWork]: ../src/StreamStore.Contracts/IStreamUnitOfWork.cs
 [IStreamDatabase]: ../src/StreamStore.Contracts/IStreamDatabase.cs

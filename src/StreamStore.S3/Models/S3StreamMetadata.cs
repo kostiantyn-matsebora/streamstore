@@ -8,7 +8,7 @@ namespace StreamStore.S3.Models
     {
         public string? StreamId { get; }
         
-        public int Revision => MaxRevision;
+        public Revision Revision => MaxRevision;
 
         internal S3StreamMetadata(Id streamId, IEnumerable<S3EventMetadata> eventMetadata): base(eventMetadata)
         {

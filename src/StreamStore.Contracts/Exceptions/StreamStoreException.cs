@@ -5,8 +5,11 @@ namespace StreamStore.Exceptions
 {
     public abstract class StreamStoreException : Exception
     {
-        protected StreamStoreException(string message) : base(message)
+        public Id StreamId { get; }
+
+        protected StreamStoreException(Id streamId, string message) : base(message)
         {
+            StreamId = streamId;
         }
     }
 }

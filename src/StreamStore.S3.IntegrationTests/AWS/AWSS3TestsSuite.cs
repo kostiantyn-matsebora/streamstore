@@ -3,7 +3,7 @@ using StreamStore.S3.AWS;
 using StreamStore.S3.Lock;
 using StreamStore.Testing;
 
-namespace StreamStore.S3.Tests.Integration.AWS
+namespace StreamStore.S3.IntegrationTests.AWS
 {
     class AWSS3TestsSuite : ITestSuite
     {
@@ -19,7 +19,7 @@ namespace StreamStore.S3.Tests.Integration.AWS
             return new AWSS3Factory(settings, new AmazonS3ClientFactory());
         }
 
-        public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, int expectedRevision = 0)
+        public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, Revision expectedRevision)
         {
             var factory = CreateFactory();
             if (factory == null)

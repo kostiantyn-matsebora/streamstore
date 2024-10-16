@@ -12,7 +12,7 @@ namespace StreamStore.InMemory
     {
         internal ConcurrentDictionary<string, StreamRecord> store = new ConcurrentDictionary<string, StreamRecord>();
 
-        public Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken)
+        public Task<StreamRecord?> FindAsync(Id streamId, CancellationToken token = default)
         {
             if (!store.TryGetValue(streamId, out var record))
                 return Task.FromResult<StreamRecord?>(null);
@@ -20,7 +20,7 @@ namespace StreamStore.InMemory
             return Task.FromResult<StreamRecord?>(record);
         }
 
-        public Task DeleteAsync(string streamId, CancellationToken cancellationToken)
+        public Task DeleteAsync(Id streamId, CancellationToken token = default)
         {
             if (store.ContainsKey(streamId))
                 store.TryRemove(streamId, out var commited);
@@ -28,7 +28,7 @@ namespace StreamStore.InMemory
             return Task.CompletedTask;
         }
 
-        public Task<StreamMetadataRecord?> FindMetadataAsync(string streamId, CancellationToken cancellationToken)
+        public Task<StreamMetadataRecord?> FindMetadataAsync(Id streamId, CancellationToken token = default)
         {
             if (!store.TryGetValue(streamId, out var record))
                 return Task.FromResult<StreamMetadataRecord?>(null);
@@ -36,7 +36,7 @@ namespace StreamStore.InMemory
             return Task.FromResult<StreamMetadataRecord?>(new StreamMetadataRecord(streamId, record.Events));
         }
 
-        public IStreamUnitOfWork BeginAppend(string streamId, int expectedStreamVersion = 0)
+        public Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
             if (store.TryGetValue(streamId, out var existing) && expectedStreamVersion != existing.Revision)
             {
@@ -44,7 +44,7 @@ namespace StreamStore.InMemory
                 throw new OptimisticConcurrencyException(expectedStreamVersion, existing.Revision, streamId);
             }
 
-            return new InMemoryStreamUnitOfWork(streamId, expectedStreamVersion, this, existing);
+            return Task.FromResult((IStreamUnitOfWork)new InMemoryStreamUnitOfWork(streamId, expectedStreamVersion, this, existing));
         }
     }
 }

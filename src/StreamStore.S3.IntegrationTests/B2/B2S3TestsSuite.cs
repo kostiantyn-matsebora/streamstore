@@ -3,7 +3,7 @@ using StreamStore.S3.B2;
 using StreamStore.S3.Lock;
 using StreamStore.Testing;
 
-namespace StreamStore.S3.Tests.Integration.B2
+namespace StreamStore.S3.IntegrationTests.B2
 {
     class B2S3TestsSuite : ITestSuite
     {
@@ -19,7 +19,7 @@ namespace StreamStore.S3.Tests.Integration.B2
             return new B2S3Factory(settings, new BackblazeClientFactory());
         }
 
-        public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, int expectedRevision = 0)
+        public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, Revision expectedRevision)
         {
             var factory = CreateFactory();
             if (factory == null)

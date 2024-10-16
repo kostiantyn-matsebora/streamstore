@@ -2,13 +2,11 @@
 using AutoFixture;
 using Bytewizer.Backblaze.Extensions;
 using FluentAssertions;
-using Moq;
 using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
 
 
-
-namespace StreamStore.S3.Tests.Integration
+namespace StreamStore.S3.IntegrationTests
 {
     public abstract class S3StreamLockIntegrationTests(IS3Factory? factory)
     {
