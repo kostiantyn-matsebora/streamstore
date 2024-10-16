@@ -16,7 +16,7 @@ namespace StreamStore
         {
             if (value < 0)
             {
-                throw new ArgumentNullException(nameof(value), "Revision must be greater than 0.");
+                throw new ArgumentNullException(nameof(value), "Revision must be greater or equal 0.");
             }
             this.value = value;
         }

@@ -151,6 +151,10 @@ or from NuGet Package Manager Console:
 
   Thus you don't need to create [Id] object explicitly and use `ToString()` to convert to string back.  
   Also implements `IEquatable`  for [itself][Id] and for `String`.
+- _[`Revision`][Revision] is a value object (immutable class) that represents a revision of the stream._  
+  It is used for optimistic concurrency control and event ordering.
+  It has implicit conversion from and to `Int32` type.  
+  Also implements `IEquatable` and `IComparable` for itself and for `Int32`.
 
 - _[`StreamEntity`][StreamEntity] returned by store is a read-only consistent object_, i.e.:
   - Contains only **unique events ordered by revision**.
@@ -241,8 +245,8 @@ to contribute, feel free to [open an issue][issues] or
 
 [issues]: https://github.com/kostiantyn-matsebora/streamstore/issues
 [discussions]: https://github.com/kostiantyn-matsebora/streamstore/discussions
-
 [Id]: ../src/StreamStore.Contracts/Id.cs
+[Revision]: ../src/StreamStore.Contracts/Revision.cs
 [StreamEntity]: ../src/StreamStore/StreamEntity.cs
 [IStreamUnitOfWork]: ../src/StreamStore.Contracts/IStreamUnitOfWork.cs
 [IStreamDatabase]: ../src/StreamStore.Contracts/IStreamDatabase.cs
