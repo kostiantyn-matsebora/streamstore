@@ -16,11 +16,11 @@ Despite the fact that component implements a logical layer for storing and query
 
 ## Databases
 
-  | Package                | Description                                                                          |        |
-  | ---------------------- | -------------------------------------------------------------------------------------|--------|
-  | [StreamStore.InMemory] | `In-memory` implementation is provided **for testing and educational purposes only** |[![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
-  | [StreamStore.S3.AWS]   |  [`Amazon S3`] implementation                                                        |[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)|
-  | [StreamStore.S3.B2]    | [`Backblaze B2`] implementation                                                      |[![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)|
+  | Package                | Description                                                                          |                                                                                                                                                                            |
+  | ---------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | [StreamStore.InMemory] | `In-memory` implementation is provided **for testing and educational purposes only** | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
+  | [StreamStore.S3.AWS]   | [`Amazon S3`] implementation                                                         | [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
+  | [StreamStore.S3.B2]    | [`Backblaze B2`] implementation                                                      | [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
 
 ## Features
 
@@ -107,7 +107,11 @@ or from NuGet Package Manager Console:
  
   //Append events to stream or create a new stream if it does not exist
   // EventObject property is where you store your event
-  var events = new Event[] {new Event { Id = "event-1", Timestamp = DateTime.Now, EventObject = eventObject } ...};
+  var events = new Event[] 
+      {
+        new Event { Id = "event-1", Timestamp = DateTime.Now, EventObject = eventObject } 
+        ...
+      };
 
   try {
     store
@@ -124,7 +128,7 @@ or from NuGet Package Manager Console:
     // or try to push with latest revision, like this
     ...
     store
-        .OpenStreamAsync(streamId, ex.ActualRevision)
+        .OpenStreamAsync("stream-1", ex.ActualRevision)
         .AddAsync(new Event { Id = "event-4", Timestamp = DateTime.Now, EventObject = events[3] })
         ...
         .SaveChangesAsync(streamId);
