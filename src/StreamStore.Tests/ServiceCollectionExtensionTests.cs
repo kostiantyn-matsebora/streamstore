@@ -43,7 +43,7 @@ namespace StreamStore.Tests
 
             services.Setup(m => m.Add(It.Is<ServiceDescriptor>(
             s => s.ServiceType == typeof(IEventSerializer) &&
-                    s.ImplementationType == typeof(EventSerializer) &&
+                    s.ImplementationType == typeof(NewtonsoftEventSerializer) &&
                     s.Lifetime == ServiceLifetime.Singleton)
             ));
 

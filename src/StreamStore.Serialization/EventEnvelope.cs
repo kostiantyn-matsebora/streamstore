@@ -1,8 +1,8 @@
 ﻿namespace StreamStore.Serialization
 {
-    class EventEnvelope
+    public sealed class EventEnvelope: IEventEnvelope
     {
         public string? Type { get; set; }
-        public string? Data { get; set; }
+        public byte[]? Data { get; set; }
     }
 }

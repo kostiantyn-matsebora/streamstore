@@ -65,7 +65,7 @@ namespace StreamStore
 
             eventTracking!.Add(eventId);
 
-            await uow!.AddAsync(eventId, timestamp, converter.ConvertToString(@event));
+            await uow!.AddAsync(eventId, timestamp, converter.ConvertToByteArray(@event));
             return this;
         }
 

@@ -6,7 +6,7 @@ namespace StreamStore
 {
     public interface IStreamUnitOfWork: IDisposable
     {
-        Task<IStreamUnitOfWork> AddAsync(Id eventId, DateTime timestamp, string data, CancellationToken token = default);
+        Task<IStreamUnitOfWork> AddAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default);
         Task<Revision> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

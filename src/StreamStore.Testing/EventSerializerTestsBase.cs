@@ -1,19 +1,19 @@
-﻿using Newtonsoft.Json;
-using AutoFixture;
-using StreamStore.Serialization;
-using StreamStore.Testing;
+﻿using AutoFixture;
 using FluentAssertions;
 
-namespace StreamStore.Tests
-{
-    public class EventSerializerTests
-    {
-        private readonly EventSerializer eventSerializer;
 
-        public EventSerializerTests()
+namespace StreamStore.Testing
+{
+    public abstract class EventSerializerTestsBase
+    {
+        readonly IEventSerializer eventSerializer;
+
+        protected EventSerializerTestsBase()
         {
-            eventSerializer = new EventSerializer();
+            eventSerializer = CreateEventSerializer();
         }
+
+        protected abstract IEventSerializer CreateEventSerializer();
 
         [Fact]
         public void Serialize_ShouldThrowArgumentNullException_WhenEventIsNull()
@@ -56,14 +56,11 @@ namespace StreamStore.Tests
         [Fact]
         public void Deserialize_ShouldThrowArgumentException_WhenDataIsInvalid()
         {
-            // Arrange
-            var invalidData = "invalid json string";
-
             // Act
-            Action act = () => eventSerializer.Deserialize(invalidData!);
+            Action act = () => eventSerializer.Deserialize(GeneratedValues.ByteArray);
 
             // & Assert
-            act.Should().Throw<JsonReaderException>();
-       }
+            act.Should().Throw<Exception>();
+        }
     }
 }

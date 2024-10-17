@@ -9,4 +9,15 @@ namespace StreamStore
 
         public int Revision { get; set; }
     }
+
+    public class EventMetadataRecordCollection : RevisionedItemCollection<EventMetadataRecord>
+    {
+        public EventMetadataRecordCollection() : base()
+        {
+        }
+
+        public EventMetadataRecordCollection(System.Collections.Generic.IEnumerable<EventMetadataRecord> records) : base(records)
+        {
+        }
+    }
 }

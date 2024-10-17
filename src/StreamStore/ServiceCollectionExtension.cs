@@ -5,10 +5,10 @@ namespace StreamStore
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection ConfigureStreamStore(this IServiceCollection services)
+        public static IServiceCollection ConfigureStreamStore(this IServiceCollection services, bool compression = true)
         {
             services.AddSingleton<IStreamStore, StreamStore>();
-            services.AddSingleton<IEventSerializer, EventSerializer>();
+            services.AddSingleton<IEventSerializer, NewtonsoftEventSerializer>();
             return services;
         }
     }

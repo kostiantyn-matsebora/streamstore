@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace StreamStore.Serialization
 {
-    class TypeRegistry
+    public sealed class TypeRegistry
     {
         public static readonly TypeRegistry Instance = new TypeRegistry();
 

@@ -40,7 +40,7 @@ namespace StreamStore
             return events.MaxRevision;
         }
 
-        public async Task<IStreamUnitOfWork> AddAsync(Id eventId, DateTime timestamp, string data, CancellationToken token = default)
+        public async Task<IStreamUnitOfWork> AddAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default)
         {
             ThrowIfDuplicateEventId(eventId);
 
@@ -106,5 +106,4 @@ namespace StreamStore
         {
         }
     }
-
 }
