@@ -14,7 +14,7 @@ namespace StreamStore.S3.B2
         public B2DatabaseConfigurator(IServiceCollection services)
         {
             this.services = services;
-            services.AddSingleton<IS3Factory, B2S3Factory>();
+            services.AddSingleton<IS3LockFactory, B2S3Factory>();
             services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
             services.AddSingleton<IStorageClientFactory, BackblazeClientFactory>();
         }

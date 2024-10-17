@@ -1,66 +1,66 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using StreamStore.S3.Client;
-using StreamStore.S3.Concurrency;
+﻿//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading;
+//using System.Threading.Tasks;
+//using StreamStore.S3.Client;
+//using StreamStore.S3.Concurrency;
 
 
-namespace StreamStore.S3.Operations
-{
-    internal class S3StreamCopier : OperationBase
-    {
-        readonly S3StreamContext source;
-        readonly S3StreamContext destination;
-        readonly IS3Client client;
+//namespace StreamStore.S3.Operations
+//{
+//    internal class S3StreamCopier : OperationBase
+//    {
+//        readonly S3StorageContext source;
+//        readonly S3StorageContext destination;
+//        readonly IS3Client client;
 
-        S3StreamCopier(S3StreamContext source, S3StreamContext destination, IS3Client client)
-        {
-            this.source = source ?? throw new System.ArgumentNullException(nameof(source));
-            this.destination = destination ?? throw new System.ArgumentNullException(nameof(destination));
-            this.client = client ?? throw new System.ArgumentNullException(nameof(client));
-        }
+//        S3StreamCopier(S3StorageContext source, S3StorageContext destination, IS3Client client)
+//        {
+//            this.source = source ?? throw new System.ArgumentNullException(nameof(source));
+//            this.destination = destination ?? throw new System.ArgumentNullException(nameof(destination));
+//            this.client = client ?? throw new System.ArgumentNullException(nameof(client));
+//        }
 
-        public async Task CopyAsync(CancellationToken token)
-        {
-            string? startObjectName = null;
-            List<ObjectDescriptor> files;
+//        public async Task CopyAsync(CancellationToken token)
+//        {
+//            string? startObjectName = null;
+//            List<ObjectDescriptor> files;
 
-            // Copy events
-            do
-            {
-                var response = await client!.ListObjectsAsync(source.EventsKey, startObjectName, token);
+//            // Copy events
+//            do
+//            {
+//                var response = await client!.ListObjectsAsync(source.EventsPath, startObjectName, token);
 
-                if (response == null) break;
+//                if (response == null) break;
 
-                files = response.Objects!.ToList();
-                files = files.Where(e => e.FileName != startObjectName).ToList();
-                if (!files.Any()) break;
+//                files = response.Objects!.ToList();
+//                files = files.Where(e => e.FileName != startObjectName).ToList();
+//                if (!files.Any()) break;
 
-                startObjectName = files[files.Count - 1].FileName;
+//                startObjectName = files[files.Count - 1].FileName;
 
-                var tasks = files.Select(
-                    async e =>
-                    {
-                        var destinationKey = CalculateDestinationKey(e.FileName!, source.EventsKey, destination.EventsKey);
-                        await client.CopyByFileIdAsync(e.FileId!, e.FileName!, destinationKey, token);
+//                var tasks = files.Select(
+//                    async e =>
+//                    {
+//                        var destinationKey = CalculateDestinationKey(e.FileName!, source.EventsPath, destination.EventsPath);
+//                        await client.CopyByFileIdAsync(e.FileId!, e.FileName!, destinationKey, token);
 
-                    });
+//                    });
 
-                await Task.WhenAll(tasks);
-            } while (startObjectName != null);
+//                await Task.WhenAll(tasks);
+//            } while (startObjectName != null);
 
 
-            // Copy metadata
-            var metadata = await client!.FindObjectDescriptorAsync(source.MetadataKey, token);
-            if (metadata == null) return;
+//            // Copy metadata
+//            var metadata = await client!.FindObjectDescriptorAsync(source.MetadataKey, token);
+//            if (metadata == null) return;
 
-            await client!.CopyByFileIdAsync(metadata.FileId!, metadata.FileName!, destination.MetadataKey, token);
-        }
+//            await client!.CopyByFileIdAsync(metadata.FileId!, metadata.FileName!, destination.MetadataKey, token);
+//        }
 
-        public static S3StreamCopier New(S3StreamContext source, S3StreamContext destination, IS3Client client)
-        {
-            return new S3StreamCopier(source, destination, client);
-        }
-    }
-}
+//        public static S3StreamCopier New(S3StorageContext source, S3StorageContext destination, IS3Client client)
+//        {
+//            return new S3StreamCopier(source, destination, client);
+//        }
+//    }
+//}

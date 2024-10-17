@@ -2,51 +2,47 @@
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
-using StreamStore.S3.Concurrency;
+using StreamStore.S3.Storage;
 
 
 namespace StreamStore.S3.Lock
 {
     partial class S3FileLock : IS3StreamLock
     {
-        private readonly IS3TransactionContext ctx;
-        readonly IS3Factory factory;
+        private readonly IS3Object lockObject;
+        private readonly Id transactionId;
 
-        public S3FileLock(IS3TransactionContext ctx, IS3Factory factory)
+        public S3FileLock(IS3Object lockObject, Id transactionId)
         {
-            this.ctx = ctx ?? throw new ArgumentNullException(nameof(ctx)); 
+            this.lockObject = lockObject ?? throw new ArgumentNullException(nameof(lockObject)); 
+            if (!transactionId.HasValue()) throw new ArgumentException("Transaction id is not set.", nameof(transactionId));
 
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this.transactionId = transactionId;
         }
 
         public async Task<IS3LockHandle?> AcquireAsync(CancellationToken token)
         {
+            var lockId = Guid.NewGuid().ToString();
+
             // Trying to figure out if lock already acquired
-            await using var client = factory.CreateClient();
-            var response = await client.FindObjectAsync(ctx.LockKey, token);
-            if (response != null) return null;
+            await lockObject.LoadAsync(token);
+            if (lockObject.State == S3ObjectState.Loaded) return null;
 
-            // Upload lock
-            var request = new UploadObjectRequest
-            {
-                Key = ctx.LockKey,
-                Data = Converter.ToByteArray(new LockId(ctx.TransactionId)),
-            };
-
-            var uploadResponse = await client.UploadObjectAsync(request, token);
-            if (uploadResponse == null) return null;
+            lockObject.Data = Converter.ToByteArray(new LockId(transactionId));
+            await lockObject.UploadAsync(token);
 
             // Trying to figure out if lock already acquired by someone else
-            var result = await client.FindObjectAsync(ctx.LockKey, token);
-            if (result == null) return null;
+            await lockObject.LoadAsync(token);
+            if (lockObject.State == S3ObjectState.NotExists) return null;
+            
 
-            var existingLockId = Converter.FromByteArray<LockId>(result!.Data!);
+            var existingLockId = Converter.FromByteArray<LockId>(lockObject.Data!);
 
             if (existingLockId == null) return null;
 
-            if (!existingLockId!.Equals(ctx.TransactionId)) return null;
+            if (!existingLockId!.Equals(transactionId)) return null;
 
-            return new S3FileLockHandle(ctx, uploadResponse!.FileId!, factory);
+            return new S3FileLockHandle(lockObject);
         }
     }
 }

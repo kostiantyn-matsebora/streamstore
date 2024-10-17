@@ -1,55 +1,65 @@
-﻿
-using System;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using StreamStore.S3.Operations;
+using StreamStore.S3.Storage;
 
 namespace StreamStore.S3.Concurrency
 {
-
-    internal abstract class S3StreamContext
+    internal class S3StreamContext
     {
-        protected readonly string streamContainer;
-        protected readonly Id streamId;
+        public Revision ExpectedRevision { get; }
+        public S3StreamContainer Transient { get; }
+        public S3StreamContainer Persistent { get; }
+        public Id StreamId { get; }
 
-        internal const string Delimiter = "/";
+        public Id TransactionId { get; }
 
+        public bool HasChanges => Transient.Events.Any();
 
-        public string StreamKey => $"{streamContainer}{Delimiter}{StreamId}{Delimiter}";
-
-
-        public string EventKey(Id eventId) => $"{EventsKey}{eventId}";
-
-        public string MetadataKey => $"{StreamKey}__metadata";
-
-        public string EventsKey => $"{StreamKey}events{Delimiter}";
-
-        protected S3StreamContext(Id streamId, string streamContainer)
+          public S3StreamContext(Id streamId, Revision expectedRevision, S3Storage storage)
         {
-            this.streamContainer = streamContainer;
-            this.streamId = streamId;
+            TransactionId = Guid.NewGuid().ToString();
+            ExpectedRevision = expectedRevision;
+            Transient = storage.Transient.GetChild(new S3ContainerPath(streamId).Combine(TransactionId));
+            Persistent = storage.Persistent.GetChild(streamId);
+            StreamId = streamId;
+         
         }
 
-        public abstract string StreamId { get; }
-
-        public static S3StreamContext Persistent(Id streamId) => new S3PersistentContext(streamId);
-        public static S3StreamContext Transient(Id streamId, Id transactionId) => new S3TransientContext(streamId, transactionId);
-
-        class S3PersistentContext : S3StreamContext
+        public async Task<S3StreamMetadataRecord> GetPersistentMetadataAsync(CancellationToken token)
         {
-            public S3PersistentContext(Id streamId) : base(streamId, "persistent-streams")
+           await Persistent.MetadataObject.LoadAsync(token);
+
+            if (Persistent.MetadataObject.State == S3ObjectState.Loaded)
             {
+                return Persistent.MetadataObject.Metadata!;
             }
 
-            public override string StreamId => streamId;
+            return new S3StreamMetadataRecord();
         }
 
-        class S3TransientContext : S3StreamContext
+        public async Task AddTransientEventAsync(EventRecord @event, CancellationToken token)
         {
-            readonly Id transactionId;
-            public S3TransientContext(Id streamId, Id transactionId) : base(streamId, "transient-streams")
-            {
-                this.transactionId = transactionId;
-            }
+           await Transient.AppendAsync(@event, token);
+        }
 
-            public override string StreamId => $"{streamId}{Delimiter}{transactionId}";
+        public async Task SaveChangesAsync(CancellationToken token)
+        {
+            await Persistent.CopyFrom(Transient, token);
+            await Transient.DeleteAsync(token);
+        }
+
+        public async Task RollBackAsync(CancellationToken token)
+        {
+            await Transient.DeleteAsync(token);
+        }
+
+        public void ResetState()
+        {
+            Transient.ResetState();
+            Persistent.ResetState();
         }
     }
 }
