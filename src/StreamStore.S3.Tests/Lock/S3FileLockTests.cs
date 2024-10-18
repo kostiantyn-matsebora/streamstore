@@ -4,6 +4,7 @@ using Moq;
 using StreamStore.S3.Client;
 using StreamStore.S3.Lock;
 using StreamStore.S3.Storage;
+using StreamStore.Serialization;
 using StreamStore.Testing;
 
 

@@ -1,4 +1,5 @@
 ﻿using StreamStore.S3.Client;
+using StreamStore.Serialization;
 
 
 namespace StreamStore.S3.Storage

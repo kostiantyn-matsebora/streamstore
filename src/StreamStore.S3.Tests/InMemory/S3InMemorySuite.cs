@@ -1,4 +1,5 @@
-﻿using StreamStore.Testing;
+﻿using StreamStore.S3.Storage;
+using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.InMemory
 {
@@ -6,7 +7,7 @@ namespace StreamStore.S3.Tests.InMemory
     {
         public IStreamDatabase? CreateDatabase()
         {
-            return new S3StreamDatabase(new S3InMemoryFactory(), new S3InMemoryFactory());
+            return new S3StreamDatabase(new S3InMemoryFactory(), new S3Storage(new S3InMemoryFactory()));
         }
     }
 }

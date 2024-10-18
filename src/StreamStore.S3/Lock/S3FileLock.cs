@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
 using StreamStore.S3.Storage;
+using StreamStore.Serialization;
 
 
 namespace StreamStore.S3.Lock
@@ -22,8 +23,6 @@ namespace StreamStore.S3.Lock
 
         public async Task<IS3LockHandle?> AcquireAsync(CancellationToken token)
         {
-            var lockId = Guid.NewGuid().ToString();
-
             // Trying to figure out if lock already acquired
             await lockObject.LoadAsync(token);
             if (lockObject.State == S3ObjectState.Loaded) return null;

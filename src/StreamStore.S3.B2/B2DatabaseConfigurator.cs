@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.S3.Client;
+using StreamStore.S3.Storage;
 
 
 
@@ -16,8 +17,9 @@ namespace StreamStore.S3.B2
             this.services = services;
             services.AddSingleton<IS3LockFactory, B2S3Factory>();
             services.AddSingleton<IS3ClientFactory, B2S3Factory>();
-            services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
             services.AddSingleton<IStorageClientFactory, BackblazeClientFactory>();
+            services.AddTransient<IStreamDatabase, S3StreamDatabase>();
+            services.AddTransient<S3Storage>();
         }
 
         public override IServiceCollection Configure()

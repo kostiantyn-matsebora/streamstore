@@ -9,16 +9,16 @@ using StreamStore.S3.Storage;
 
 namespace StreamStore.S3
 {
-    public sealed class S3StreamDatabase : IStreamDatabase
+    internal sealed class S3StreamDatabase : IStreamDatabase
     {
         readonly IS3LockFactory lockFactory;
         private readonly S3Storage storage;
 
-        public S3StreamDatabase(IS3ClientFactory clientFactory, IS3LockFactory lockFactory)
+        public S3StreamDatabase(IS3LockFactory lockFactory, S3Storage storage)
         {
             this.lockFactory = lockFactory ?? throw new ArgumentNullException(nameof(lockFactory));
-            if (clientFactory == null) throw new ArgumentNullException(nameof(clientFactory));
-            this.storage = new S3Storage(clientFactory);
+            if (storage == null) throw new ArgumentNullException(nameof(storage));
+            this.storage = storage;
         }
 
         public Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)

@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace StreamStore.S3.Storage
 {
-    internal struct S3ContainerPath : IEquatable<string>, IEquatable<S3ContainerPath>
+    internal struct S3ContainerPath : IEquatable<string>, IEquatable<Id>, IEquatable<S3ContainerPath>
     {
 
         private const string Delimiter = "/";
@@ -45,6 +45,17 @@ namespace StreamStore.S3.Storage
         public bool Equals(S3ContainerPath other)
         {
             return Value == other.Value;
+        }
+
+        public bool Equals(Id other)
+        {
+            return Value.Equals(other.Value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return !ReferenceEquals(null, obj) &&
+                ((obj is string && Equals((string)obj)) || (obj is Id && Equals((string)obj)));
         }
 
         public override string ToString()

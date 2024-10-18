@@ -22,8 +22,8 @@ namespace StreamStore.S3.Storage
         public S3StreamContainer(S3ContainerPath path, IS3ClientFactory clientFactory) : base(path, clientFactory)
         {
 
-            Events = GetContainer(path.Combine("events"));
-            MetadataObject = GetItem(path.Combine("__metadata"));
+            Events = GetContainer("events");
+            MetadataObject = GetItem("__metadata");
         }
 
         public async Task LoadAsync(CancellationToken token = default)

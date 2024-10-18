@@ -23,11 +23,11 @@ namespace StreamStore.S3.Storage
 
         public T GetItem(string name)
         {
-            return (T)objects.GetOrAdd(name, _ => CreateItem(name));
+            return (T)objects.GetOrAdd(name, _ => CreateItem(_));
         }
         public TContainer GetContainer(string name)
         {
-            return (TContainer)containers.GetOrAdd(name, _ => CreateContainer(name));
+            return (TContainer)containers.GetOrAdd(name, _ => CreateContainer(_));
         }
 
         protected abstract T CreateItem(string name);

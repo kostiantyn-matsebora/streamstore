@@ -13,7 +13,7 @@
 
         public static async Task<IStreamUnitOfWork> AddRangeAsync(this Task<IStreamUnitOfWork> unitOfWork, IEnumerable<EventItem> records, CancellationToken token = default)
         {
-            await unitOfWork.Result.AddRangeAsync(records);
+            await unitOfWork.Result.AddRangeAsync(records, token);
             return unitOfWork.Result;
         }
 

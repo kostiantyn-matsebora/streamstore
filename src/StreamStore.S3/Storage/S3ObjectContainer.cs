@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,12 +24,12 @@ namespace StreamStore.S3.Storage
 
         protected S3Object GetChildObject(string name)
         {
-            return objects.GetOrAdd(name, _ => new S3Object(path.Combine(name), clientFactory));
+            return objects.GetOrAdd(name, _ => new S3Object(path.Combine(_), clientFactory));
         }
 
         protected S3ObjectContainer GetChildContainer(string name)
         {
-            return containers.GetOrAdd(name, _ => new S3ObjectContainer(path.Combine(name), clientFactory));
+            return containers.GetOrAdd(name, _ => new S3ObjectContainer(path.Combine(_), clientFactory));
         }
 
         public virtual async Task DeleteAsync(CancellationToken token)
@@ -41,7 +40,6 @@ namespace StreamStore.S3.Storage
                 string? startObjectName = null;
                 do
                 {
-                    var directoryPath = path.Normalize();
                     var response = await client.ListObjectsAsync(path.Normalize(), startObjectName, token);
                     if (response == null) return;
 
