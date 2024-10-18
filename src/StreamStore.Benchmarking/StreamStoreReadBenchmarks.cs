@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using BenchmarkDotNet.Attributes;
 using StreamStore.InMemory;
+using StreamStore.Serialization;
 
 
 namespace StreamStore.Benchmarking
@@ -14,12 +15,15 @@ namespace StreamStore.Benchmarking
         readonly Event[] events;
         readonly string[] streamIds;
         readonly IStreamStore store;
+        readonly TypeRegistry registry;
 
         public StreamStoreReadBenchmarks() {
 
             var fixture = new Fixture();
+            registry = TypeRegistry.CreateAndInitialize();
+
             events = fixture.CreateMany<Event>(10).ToArray();
-            store = new StreamStore(new InMemoryStreamDatabase());
+            store = new StreamStore(new InMemoryStreamDatabase(), new NewtonsoftEventSerializer(registry));
 
             streamIds = Enumerable
                 .Range(0, 1000)

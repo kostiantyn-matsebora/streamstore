@@ -14,11 +14,13 @@ namespace StreamStore.Tests
         readonly Mock<IStreamDatabase> mockStreamDatabase;
         readonly IEventSerializer serializer;
         StreamStore streamStore;
+        readonly TypeRegistry registry;
 
         public StreamStoreTests()
         {
+            registry = TypeRegistry.CreateAndInitialize();
             mockStreamDatabase = new Mock<IStreamDatabase>();
-            serializer = new NewtonsoftEventSerializer();
+            serializer = new NewtonsoftEventSerializer(registry);
             streamStore = new StreamStore(mockStreamDatabase.Object, serializer);
         }
 
@@ -119,7 +121,7 @@ namespace StreamStore.Tests
         public async Task SaveChangesAsync_ShouldSaveChanges()
         {
             // Arrange
-            streamStore = new StreamStore(new InMemoryStreamDatabase());
+            streamStore = new StreamStore(new InMemoryStreamDatabase(), new NewtonsoftEventSerializer(registry));
             
             var eventIds = new List<Id>();
             var fixture = new Fixture() { OmitAutoProperties = false };

@@ -6,11 +6,11 @@ namespace StreamStore.Testing
 {
     public static class FixtureExtension
     {
+        readonly static TypeRegistry registry = TypeRegistry.CreateAndInitialize();
 
         public static EventItem[] CreateEventItems(this Fixture fixture, int count)
         {
-            var serializer = new NewtonsoftEventSerializer();
-
+            var serializer = new NewtonsoftEventSerializer(registry);
 
             var records =
                     fixture
@@ -24,7 +24,7 @@ namespace StreamStore.Testing
 
         public static EventRecord[] CreateEventRecords(this Fixture fixture, int initialRevision, int count)
         {
-            var serializer = new NewtonsoftEventSerializer();
+            var serializer = new NewtonsoftEventSerializer(registry);
 
             var revision = initialRevision;
 

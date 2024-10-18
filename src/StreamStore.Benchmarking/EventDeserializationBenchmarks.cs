@@ -1,48 +1,57 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using AutoFixture;
 using BenchmarkDotNet.Attributes;
 using StreamStore.Serialization;
-using StreamStore.Serialization.SharpSerializer;
+using StreamStore.Serialization.Protobuf;
+
 
 namespace StreamStore.Benchmarking
 {
 
     public class EventDeserializationBenchmarks
     {
-        readonly SharpEventSerializer sharpSerializer = new SharpEventSerializer();
-        readonly SystemTextJsonEventSerializer systemTextJsonEventSerializer = new SystemTextJsonEventSerializer();
-        readonly NewtonsoftEventSerializer newtonsoftEventSerializer = new NewtonsoftEventSerializer();
-        readonly byte[] sharpSerializedEvent;
-        readonly byte[] systemTextJsonSerializedEvent;
-        readonly byte[] newtonsoftSerializedEvent;
+        readonly Dictionary<bool,byte[]> protobufEvents = new Dictionary<bool, byte[]>();
+        readonly Dictionary<bool, byte[]> systemTextJsonEvents = new Dictionary<bool, byte[]>();
+        readonly Dictionary<bool, byte[]> newtonsoftEvents = new Dictionary<bool, byte[]>();
+        readonly TypeRegistry registry;
 
         public EventDeserializationBenchmarks()
         {
+            registry = TypeRegistry.CreateAndInitialize();
+
             var fixture = new Fixture();
             var @event = fixture.Create<RootEvent>();
-            sharpSerializedEvent = sharpSerializer.Serialize(@event);
-            systemTextJsonSerializedEvent = systemTextJsonEventSerializer.Serialize(@event);
-            newtonsoftSerializedEvent = newtonsoftEventSerializer.Serialize(@event);
+            protobufEvents.Add(true, new ProtobufEventSerializer(registry, true).Serialize(@event));
+            protobufEvents.Add(false, new ProtobufEventSerializer(registry, false).Serialize(@event));
+            systemTextJsonEvents.Add(true, new SystemTextJsonEventSerializer(registry, true).Serialize(@event));
+            systemTextJsonEvents.Add(false, new SystemTextJsonEventSerializer(registry, false).Serialize(@event));
+            newtonsoftEvents.Add(true, new NewtonsoftEventSerializer(registry, true).Serialize(@event));
+            newtonsoftEvents.Add(false, new NewtonsoftEventSerializer(registry, false).Serialize(@event));
+        }
+
+        [Params(true, false)]
+        public bool Compress { get; set; }
+
+        [Benchmark]
+        public void SystemTextJsonSerializer() 
+        {
+            var serializer = new SystemTextJsonEventSerializer(registry, Compress);
+            serializer.Deserialize(systemTextJsonEvents[Compress]);
         }
 
         [Benchmark]
-        public void SystemTextJsonSerializer_Deserialize100Events() 
+        public void NewtonsoftEventSerializer()
         {
-           systemTextJsonEventSerializer.Deserialize(systemTextJsonSerializedEvent);
-        }
-
-        [Benchmark]
-        public void NewtonsoftEventSerializer_Deserialize100Events()
-        {
-           newtonsoftEventSerializer.Deserialize(newtonsoftSerializedEvent);
+            var serializer = new NewtonsoftEventSerializer(registry, Compress);
+            serializer.Deserialize(newtonsoftEvents[Compress]);
         }
 
 
         [Benchmark]
-        public void SharpEventSerializer_Deserialize100Events()
+        public void ProtobufEventSerializer()
         {
-           sharpSerializer.Deserialize(sharpSerializedEvent);
+            var serializer = new ProtobufEventSerializer(registry, Compress);
+            serializer.Deserialize(protobufEvents[Compress]);
         }
     }
 }

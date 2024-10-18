@@ -12,10 +12,6 @@ namespace StreamStore
         readonly IStreamDatabase database;
         readonly EventConverter converter;
 
-        public StreamStore(IStreamDatabase database) : this(database, new NewtonsoftEventSerializer())
-        {
-        }
-
         public StreamStore(IStreamDatabase database, IEventSerializer serializer)
         {
             if (database == null) throw new ArgumentNullException(nameof(database));

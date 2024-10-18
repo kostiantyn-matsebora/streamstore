@@ -1,65 +1,83 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using StreamStore.Serialization;
 
 
 namespace StreamStore.Testing
 {
     public abstract class EventSerializerTestsBase
     {
-        readonly IEventSerializer eventSerializer;
+        protected static readonly TypeRegistry registry = TypeRegistry.CreateAndInitialize();
 
-        protected EventSerializerTestsBase()
+        protected abstract IEventSerializer CreateEventSerializer(bool compression);
+        protected virtual object CreateEvent()
         {
-            eventSerializer = CreateEventSerializer();
+            Fixture fixture = new Fixture();
+            return fixture.Create<RootEvent>();
         }
 
-        protected abstract IEventSerializer CreateEventSerializer();
-
-        [Fact]
-        public void Serialize_ShouldThrowArgumentNullException_WhenEventIsNull()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Serialize_ShouldThrowArgumentNullException_WhenEventIsNull(bool compression)
         {
+            // Arrange
+            var serializer = CreateEventSerializer(compression);
+
             // Act
-            Action act = () => eventSerializer.Serialize(null!);
+            Action act = () => serializer.Serialize(null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
         }
 
-        [Fact]
-        public void Serialize_ShouldSerializeDeserialize_WhenEventIsValid()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Serialize_ShouldSerializeDeserialize_WhenEventIsValid(bool compression)
         {
             // Arrange
-            Fixture fixture = new Fixture();
-            var @event = fixture.Create<RootEvent>();
+            var @event = CreateEvent();
+            var serializer = CreateEventSerializer(compression);
 
             // Act
-            var serialized = eventSerializer.Serialize(@event);
-            var deserialized = eventSerializer.Deserialize(serialized);
+            var serialized = serializer.Serialize(@event);
+            var deserialized = serializer.Deserialize(serialized);
 
             // Assert
             serialized.Should().NotBeNullOrEmpty();
             deserialized.Should().NotBeNull();
-            deserialized.Should().BeOfType<RootEvent>();
             deserialized.Should().BeEquivalentTo(@event);
         }
 
-        [Fact]
-        public void Deserialize_ShouldThrowArgumentNullException_WhenDataIsNull()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Deserialize_ShouldThrowArgumentNullException_WhenDataIsNull(bool compression)
         {
+
+            // Arrange
+            var serializer = CreateEventSerializer(compression);
+
             // Act
-            Action act = () => eventSerializer.Deserialize(null!);
+            Action act = () => serializer.Deserialize(null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
         }
 
-        [Fact]
-        public void Deserialize_ShouldThrowArgumentException_WhenDataIsInvalid()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void Deserialize_ShouldThrowArgumentException_WhenDataIsInvalid(bool compression)
         {
-            // Act
-            Action act = () => eventSerializer.Deserialize(GeneratedValues.ByteArray);
+            // Arrange
+            var serializer = CreateEventSerializer(compression);
 
-            // & Assert
+            // Act
+            Action act = () => serializer.Deserialize(GeneratedValues.ByteArray);
+
+            // Assert
             act.Should().Throw<Exception>();
         }
     }

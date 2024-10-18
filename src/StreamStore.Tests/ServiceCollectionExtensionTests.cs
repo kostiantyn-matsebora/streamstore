@@ -36,16 +36,21 @@ namespace StreamStore.Tests
         {
             // Arrange
             services.Setup(m => m.Add(It.Is<ServiceDescriptor>(
-                s => s.ServiceType == typeof(IStreamStore) &&
+                     s => s.ServiceType == typeof(IStreamStore) &&
                      s.ImplementationType == typeof(StreamStore) &&
                      s.Lifetime == ServiceLifetime.Singleton)
                 ));
 
             services.Setup(m => m.Add(It.Is<ServiceDescriptor>(
-            s => s.ServiceType == typeof(IEventSerializer) &&
-                    s.ImplementationType == typeof(NewtonsoftEventSerializer) &&
+                    s => s.ServiceType == typeof(IEventSerializer) &&
                     s.Lifetime == ServiceLifetime.Singleton)
             ));
+
+            services.Setup(m => m.Add(It.Is<ServiceDescriptor>(
+                   s => s.ServiceType == typeof(ITypeRegistry) &&
+                   s.Lifetime == ServiceLifetime.Singleton)
+           ));
+
 
             // Act
             ServiceCollectionExtension.ConfigureStreamStore(services.Object);

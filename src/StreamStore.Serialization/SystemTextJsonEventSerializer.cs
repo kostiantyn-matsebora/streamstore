@@ -3,22 +3,31 @@ using System.Text;
 
 namespace StreamStore.Serialization
 {
-    public sealed  class SystemTextJsonEventSerializer: EventSerializerBase
+    public sealed  class SystemTextJsonEventSerializer: StringEventSerializerBase
     {
-        public SystemTextJsonEventSerializer(bool compress = true): base(compress)
+        public SystemTextJsonEventSerializer(ITypeRegistry registry, bool compress = false) : base(registry, compress)
         {
-            
-        }
-        protected override byte[] SerializeObject(object @event, Type type)
-        {
-            return Encoding.UTF8.GetBytes(
-                System.Text.Json.JsonSerializer.Serialize(@event));
+
         }
 
-        protected override object DeserializeObject(byte[] data, Type type)
+        protected override string SerializeEventAsString(object value, Type type)
         {
-            return System.Text.Json.JsonSerializer.Deserialize(
-                Encoding.UTF8.GetString(data), type)!;
+            return System.Text.Json.JsonSerializer.Serialize(value);
+        }
+
+        protected override object DeserializeEventFromString(string value, Type type)
+        {
+            return System.Text.Json.JsonSerializer.Deserialize(value, type)!;
+        }
+
+        protected override string SerializeEnvelope(EventEnvelope envelope)
+        {
+            return System.Text.Json.JsonSerializer.Serialize(envelope);
+        }
+
+        protected override EventEnvelope DeserializeEnvelope(string value)
+        {
+            return System.Text.Json.JsonSerializer.Deserialize<EventEnvelope>(value)!;
         }
     }
 }

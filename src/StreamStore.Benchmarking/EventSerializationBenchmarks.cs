@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using AutoFixture;
+﻿using AutoFixture;
 using BenchmarkDotNet.Attributes;
 using StreamStore.Serialization;
-using StreamStore.Serialization.SharpSerializer;
+using StreamStore.Serialization.Protobuf;
 
 namespace StreamStore.Benchmarking
 {
@@ -10,8 +9,7 @@ namespace StreamStore.Benchmarking
     public class EventSerializationBenchmarks
     {
         readonly RootEvent @event;
-
-        readonly SharpEventSerializer sharpSerializer = new SharpEventSerializer();
+        readonly TypeRegistry registry;
 
 
         [Params(true, false)]
@@ -19,6 +17,7 @@ namespace StreamStore.Benchmarking
 
         public EventSerializationBenchmarks()
         {
+            registry = TypeRegistry.CreateAndInitialize();
             var fixture = new Fixture();
             @event = fixture.Create<RootEvent>();
         }
@@ -26,22 +25,23 @@ namespace StreamStore.Benchmarking
         [Benchmark]
         public byte[] SystemTextJsonSerializer()
         { 
-          var serializer = new SystemTextJsonEventSerializer(Compress);
+          var serializer = new SystemTextJsonEventSerializer(registry, Compress);
           return serializer.Serialize(@event);
         }
 
         [Benchmark]
         public byte[] NewtonsoftEventSerializer()
         {
-            var serializer = new NewtonsoftEventSerializer(Compress);
+            var serializer = new NewtonsoftEventSerializer(registry, Compress);
             return serializer.Serialize(@event);
         }
 
 
         [Benchmark]
-        public byte[] SharpEventSerializer()
+        public byte[] ProtobufEventSerializer()
         {
-            return sharpSerializer.Serialize(@event);
+            var serializer = new ProtobufEventSerializer(registry, Compress);
+            return serializer.Serialize(@event);
         }
     }
 }

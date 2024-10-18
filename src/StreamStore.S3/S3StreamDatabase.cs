@@ -44,7 +44,7 @@ namespace StreamStore.S3
 
             if (stream == null) return null;
 
-            return new StreamRecord(streamId, stream.Events);
+            return new StreamRecord(stream.Events);
         }
 
         public async Task<StreamMetadataRecord?> FindMetadataAsync(Id streamId, CancellationToken token = default)

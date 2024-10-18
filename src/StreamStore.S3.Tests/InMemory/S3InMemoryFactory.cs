@@ -5,16 +5,16 @@ using StreamStore.S3.Lock;
 
 namespace StreamStore.S3.Tests.InMemory
 {
-    internal class S3InMemoryFactory : IS3LockFactory
+    internal class S3InMemoryFactory : IS3Factory
     {
         public IS3Client CreateClient()
         {
             return new S3InMemoryClient();
         }
 
-        public IS3StreamLock CreateLock(Id streamId, Id transactionId)
+        public IS3StreamLock CreateLock(IS3TransactionContext ctx)
         {
-            return new S3StreamInMemoryLock(streamId, new S3InMemoryStreamLockStorage(TimeSpan.FromSeconds(10)));
+            return new S3StreamInMemoryLock(ctx.StreamId, new S3InMemoryStreamLockStorage(TimeSpan.FromSeconds(10)));
         }
     }
 }

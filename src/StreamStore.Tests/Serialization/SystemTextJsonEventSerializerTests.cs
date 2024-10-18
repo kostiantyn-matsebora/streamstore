@@ -1,14 +1,14 @@
-﻿using StreamStore.Serialization.SharpSerializer;
+﻿using StreamStore.Serialization;
 using StreamStore.Testing;
 
 
 namespace StreamStore.Tests.Serialization
 {
-    public class SharpEventSerializerTests : EventSerializerTestsBase
+    public class SystemTextJsonEventSerializerTests : EventSerializerTestsBase
     {
-        protected override IEventSerializer CreateEventSerializer()
+        protected override IEventSerializer CreateEventSerializer(bool compression)
         {
-           return new SharpEventSerializer();
+           return new SystemTextJsonEventSerializer(registry, compression);
         }
     }
 }

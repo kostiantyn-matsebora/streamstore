@@ -1,16 +1,17 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
 
 namespace StreamStore.Serialization
 {
-    public abstract class EventSerializerBase<TEnvelope> : IEventSerializer where TEnvelope : class, IEventEnvelope
+    public abstract class EventSerializerBase: IEventSerializer
     {
+        readonly ITypeRegistry typeRegistry;
         readonly bool compression;
 
-        protected EventSerializerBase(bool compression = true)
+        protected EventSerializerBase(ITypeRegistry typeRegistry, bool compression = true)
         {
+            this.typeRegistry = typeRegistry ?? throw new ArgumentNullException(nameof(typeRegistry));
             this.compression = compression;
         }
 
@@ -21,12 +22,16 @@ namespace StreamStore.Serialization
 
             var typeName = GetNameByType(@event.GetType());
 
-            var envelope = CreateEnvelope(SerializeObject(@event, @event.GetType()), typeName);
+            var eventData = SerializeEvent(@event, @event.GetType());
 
-            var serialized = SerializeObject(envelope, envelope.GetType());
-            if (!compression) return serialized;
+            var envelopeData = SerializeEnvelope(typeName, eventData);
 
-            return Compress(serialized);
+            if (compression)
+            {
+                envelopeData = Compress(envelopeData);
+            }
+
+            return envelopeData;
         }
 
         public object Deserialize(byte[] data)
@@ -34,9 +39,9 @@ namespace StreamStore.Serialization
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            if (compression) data = Decompress(data);
+            var decompressed = compression ? Decompress(data) : data;
 
-            var envelope = (TEnvelope?)DeserializeObject(data, typeof(TEnvelope));
+            var envelope = DeserializeEnvelope(decompressed);
 
             if (envelope == null || envelope.Data == null)
                 throw new ArgumentException("Cannot deserialize event", nameof(data));
@@ -46,22 +51,26 @@ namespace StreamStore.Serialization
             if (type == null)
                 throw new ArgumentException($"Cannot find type {envelope.Type}", nameof(data));
 
-            return DeserializeObject(envelope!.Data, type)
+            return DeserializeEvent(envelope!.Data, type)
                    ?? throw new InvalidOperationException("Deserialization returned null");
         }
 
-        protected abstract byte[] SerializeObject(object @event, Type type);
-        protected abstract object DeserializeObject(byte[] data, Type type);
-        protected abstract TEnvelope CreateEnvelope(byte[] data, string typeName);
+        protected abstract byte[] SerializeEvent(object value, Type type);
+
+        protected abstract EventEnvelope DeserializeEnvelope(byte[] data);
+
+        protected abstract byte[] SerializeEnvelope(string type, byte[] eventData);
+
+        protected abstract object DeserializeEvent(byte[] eventData, Type type);
 
         string GetNameByType(Type type)
         {
-            return TypeRegistry.Instance.ByType(type);
+            return typeRegistry.ResolveNameByType(type);
         }
 
         Type GetTypeByName(string name)
         {
-            return TypeRegistry.Instance.ByName(name);
+            return typeRegistry.ResolveTypeByName(name);
         }
 
         static byte[] Compress(byte[] serialized)
@@ -87,20 +96,7 @@ namespace StreamStore.Serialization
             }
         }
     }
-
-    public abstract class EventSerializerBase : EventSerializerBase<EventEnvelope>
-    {
-        protected EventSerializerBase(bool compress = true): base(compress)
-        {
-        }
-
-        protected override EventEnvelope CreateEnvelope(byte[] data, string typeName)
-        {
-            return new EventEnvelope
-            {
-                Type = typeName,
-                Data = data
-            };
-        }
-    }
 }
+
+
+

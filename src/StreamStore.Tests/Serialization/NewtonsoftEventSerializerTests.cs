@@ -4,11 +4,11 @@ using StreamStore.Testing;
 
 namespace StreamStore.Tests.Serialization
 {
-    public class SystemTextJsonEventSerializerTests : EventSerializerTestsBase
+    public class NewtonsoftEventSerializerTests : EventSerializerTestsBase
     {
-        protected override IEventSerializer CreateEventSerializer()
+        protected override IEventSerializer CreateEventSerializer(bool compression)
         {
-           return new SystemTextJsonEventSerializer();
+           return new NewtonsoftEventSerializer(registry, compression);
         }
     }
 }
