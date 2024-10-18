@@ -16,4 +16,9 @@
     <ProjectReference Include="..\StreamStore.S3.B2\StreamStore.S3.B2.csproj" />
     <ProjectReference Include="..\StreamStore\StreamStore.csproj" />
   </ItemGroup>
+  <ItemGroup>
+      <SonarQubeSetting Include="sonar.coverage.exclusions">
+        <Value>**</Value>
+      </SonarQubeSetting>
+  </ItemGroup>  
 </Project>

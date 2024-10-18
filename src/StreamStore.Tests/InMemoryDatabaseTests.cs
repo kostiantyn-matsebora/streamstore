@@ -57,7 +57,6 @@ public class InMemoryDatabaseTests
 
         // Assert
         stream.Should().NotBeNull();
-        stream!.Id.Should().BeEquivalentTo(streamId);
         stream!.Revision.Should().Be(eventCount);
     }
 

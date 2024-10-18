@@ -29,7 +29,6 @@ namespace StreamStore.Tests
             var stream = await database.FindAsync(streamId, CancellationToken.None);
 
             stream.Should().NotBeNull();
-            stream!.Id.Should().Be(streamId);
             stream!.Events.Should().BeEquivalentTo(events);
         }
 

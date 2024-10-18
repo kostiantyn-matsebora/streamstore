@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.6.0] - 2024-10-18
+
+### Changed
+
+- Serialization is changed the way to support binary serialization.
+
+### Added
+
+- Added protobuf-net library based serializer to support binary serialization.
+- Added benchmarks for serialization and in-memory store.
+- Added optional compression for event serialization.
+
 ## [0.5.0]
 
 ### Changed

@@ -31,7 +31,7 @@ The general idea is to highlight the common characteristics and features of even
 - [x] Optimistic concurrency control.
 - [x] Event duplication detection based on event ID.
 - [x] Database agnostic test framework, including benchmarking test scenarios.
-- [ ] Binary serialization support.
+- [x] Binary serialization support.
 - [ ] Custom event properties (?).
 - [ ] External transaction support (?).
 - [ ] Transactional outbox pattern implementation (?).
@@ -180,6 +180,10 @@ or from NuGet Package Manager Console:
 ```powershell
   Install-Package StreamStore.Contracts
 ```
+
+### Serialization
+
+About serialization you can read in [SERIALIZATION.md](SERIALIZATION.md) file.
 
 ### Create your own database implementation
 

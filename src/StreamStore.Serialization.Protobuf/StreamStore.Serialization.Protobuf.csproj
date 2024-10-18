@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <PackageId>StreamStore.Serialization.Protobuf</PackageId>
+    <Title>StreamStore.Serialization.Protobuf</Title>
+    <Version>0.1.0</Version>
+    <Authors>kostiantyn-matsebora</Authors>
+    <Description>Protobuf event serializer for StreamStore solution.</Description>
+    <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
+    <PackageTags>event sourcing; streams; stream store; protobuf</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="protobuf-net" Version="3.2.30" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" />
+  </ItemGroup>
+
+</Project>
