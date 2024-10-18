@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace StreamStore.S3.Operations
+namespace StreamStore.S3.Storage
 {
     internal class S3StreamMetadataRecord // Entity is made for serialization
     {

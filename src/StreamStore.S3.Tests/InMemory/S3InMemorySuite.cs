@@ -6,7 +6,7 @@ namespace StreamStore.S3.Tests.InMemory
     {
         public IStreamDatabase? CreateDatabase()
         {
-            return new S3StreamDatabase(new S3InMemoryFactory());
+            return new S3StreamDatabase(new S3InMemoryFactory(), new S3InMemoryFactory());
         }
     }
 }

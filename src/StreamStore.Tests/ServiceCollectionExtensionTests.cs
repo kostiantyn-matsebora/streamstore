@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentAssertions.Common;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore.InMemory;
 using StreamStore.Serialization;
@@ -24,10 +25,11 @@ namespace StreamStore.Tests
                 s => s.ServiceType == typeof(IStreamDatabase) &&
                      s.ImplementationType == typeof(InMemoryStreamDatabase) &&
                      s.Lifetime == ServiceLifetime.Singleton)
-                ));
+            ));
+
 
             // Act
-            InMemory.ServiceCollectionExtension.AddInMemoryStreamDatabase(services.Object);
+            services.Object.AddInMemoryStreamDatabase();
             mockRepository.VerifyAll();
         }
 

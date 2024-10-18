@@ -1,7 +1,9 @@
-﻿using Moq;
+﻿using AutoFixture;
+using Moq;
 using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
 using StreamStore.S3.Lock;
+using StreamStore.S3.Storage;
 using StreamStore.Testing;
 
 
@@ -10,35 +12,27 @@ namespace StreamStore.S3.Tests.Lock
     public class S3FileLockHandleTests
     {
         readonly MockRepository mockRepository;
-        readonly Mock<IS3TransactionContext> ctx;
-        readonly Mock<IS3Factory> mockFactory;
+
+        readonly Mock<IS3ClientFactory> mockClientFactory;
         readonly S3FileLockHandle s3FileLockHandle;
+        readonly S3Object lockObject;
 
         public S3FileLockHandleTests()
         {
+            var fixture = new Fixture();
             this.mockRepository = new MockRepository(MockBehavior.Strict);
-            mockFactory = new Mock<IS3Factory>();
-            this.ctx = this.mockRepository.Create<IS3TransactionContext>();
-            this.mockFactory = this.mockRepository.Create<IS3Factory>();
+           
+            this.mockClientFactory = this.mockRepository.Create<IS3ClientFactory>();
 
-            var fileId = GeneratedValues.String;
-            this.s3FileLockHandle = this.CreateS3FileLockHandle(fileId);
-
-            CancellationToken token = default;
             var client = new Mock<IS3Client>();
-            mockFactory.Setup(x => x.CreateClient()).Returns(client.Object);
-
-            var lockKey = GeneratedValues.String;
-            ctx.SetupGet(x => x.LockKey).Returns(lockKey);
-            client.Setup(x => x.DeleteObjectByFileIdAsync(fileId, lockKey, token)).Returns(Task.CompletedTask);
+            mockClientFactory.Setup(x => x.CreateClient()).Returns(client.Object);
+            lockObject = new S3Object(new S3ContainerPath(GeneratedValues.String), mockClientFactory.Object);
+            this.s3FileLockHandle = this.CreateS3FileLockHandle();
         }
 
-        S3FileLockHandle CreateS3FileLockHandle(string fileId)
+        S3FileLockHandle CreateS3FileLockHandle()
         {
-            return new S3FileLockHandle(
-                this.ctx.Object,
-                fileId,
-                this.mockFactory.Object);
+            return new S3FileLockHandle(lockObject);
         }
 
         [Fact]

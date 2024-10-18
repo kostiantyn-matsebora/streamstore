@@ -1,9 +1,9 @@
-﻿using System.Transactions;
+﻿using AutoFixture;
 using FluentAssertions;
 using Moq;
 using StreamStore.S3.Client;
-using StreamStore.S3.Concurrency;
 using StreamStore.S3.Lock;
+using StreamStore.S3.Storage;
 using StreamStore.Testing;
 
 
@@ -12,22 +12,24 @@ namespace StreamStore.S3.Tests.Lock
     public class S3FileLockTests
     {
         readonly MockRepository mockRepository;
-        readonly Mock<IS3TransactionContext> ctx;
-        readonly Mock<IS3Factory> factory;
+        readonly S3Object lockObject;
+        readonly Mock<IS3ClientFactory> factory;
+        readonly Id transactionId;
+        readonly S3ContainerPath path;
 
         public S3FileLockTests()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
-
-            this.ctx = this.mockRepository.Create<IS3TransactionContext>();
-            this.factory = this.mockRepository.Create<IS3Factory>();
+            var fixture = new Fixture();
+            path = fixture.Create<S3ContainerPath>();
+            mockRepository = new MockRepository(MockBehavior.Strict);
+            transactionId = GeneratedValues.Id;
+            factory = this.mockRepository.Create<IS3ClientFactory>();
+            lockObject = new S3Object(path, factory.Object);
         }
 
         S3FileLock CreateS3FileLock()
         {
-            return new S3FileLock(
-                this.ctx.Object,
-                this.factory.Object);
+            return new S3FileLock(lockObject, transactionId);
         }
 
         [Fact]
@@ -36,35 +38,32 @@ namespace StreamStore.S3.Tests.Lock
             // Arrange
             var s3FileLock = this.CreateS3FileLock();
             CancellationToken token = default;
-            var transactionId = new Id(GeneratedValues.String);
             var lockId = new LockId(transactionId);
             var lockKey = GeneratedValues.String;
             var client = new Mock<IS3Client>();
-
             factory.Setup(x => x.CreateClient()).Returns(client.Object);
-            ctx.Setup(x => x.LockKey).Returns(lockKey);
-            ctx.Setup(x => x.TransactionId).Returns(transactionId);
+
 
             var uploadResponse = new UploadObjectResponse
             {
-                Name = ctx.Object.LockKey,
+                Name = path
             };
 
             var response = new FindObjectResponse
             {
                 Data = Converter.ToByteArray(lockId),
-                Name = ctx.Object.LockKey,
+                Name = path,
             };
 
             client.
-                SetupSequence(x => x.FindObjectAsync(ctx.Object.LockKey, token))
+                SetupSequence(x => x.FindObjectAsync(path, token))
                 .ReturnsAsync((FindObjectResponse?)null)
                 .ReturnsAsync(response);
 
             client
                 .Setup(x =>
                     x.UploadObjectAsync(
-                        It.Is<UploadObjectRequest>(r => r.Key == ctx.Object.LockKey),
+                        It.Is<UploadObjectRequest>(r => r.Key == path),
                         token)
                 ).ReturnsAsync(uploadResponse);
 
@@ -89,17 +88,17 @@ namespace StreamStore.S3.Tests.Lock
             var client = new Mock<IS3Client>();
 
             factory.Setup(x => x.CreateClient()).Returns(client.Object);
-            ctx.Setup(x => x.LockKey).Returns(lockKey);
+           
 
 
             var response = new FindObjectResponse
             {
                 Data = GeneratedValues.ByteArray,
-                Name = ctx.Object.LockKey,
+                Name = path,
             };
 
             client.
-                Setup(x => x.FindObjectAsync(ctx.Object.LockKey, token))
+                Setup(x => x.FindObjectAsync(path, token))
                 .ReturnsAsync(response);
 
             // Act
@@ -122,18 +121,15 @@ namespace StreamStore.S3.Tests.Lock
             var client = new Mock<IS3Client>();
 
             factory.Setup(x => x.CreateClient()).Returns(client.Object);
-            ctx.Setup(x => x.LockKey).Returns(lockKey);
-            ctx.Setup(x => x.TransactionId).Returns(GeneratedValues.String);
-
 
             client.
-                 Setup(x => x.FindObjectAsync(ctx.Object.LockKey, token))
+                 Setup(x => x.FindObjectAsync(path, token))
                 .ReturnsAsync((FindObjectResponse?)null);
 
             client
                  .Setup(x =>
                      x.UploadObjectAsync(
-                         It.Is<UploadObjectRequest>(r => r.Key == ctx.Object.LockKey),
+                         It.Is<UploadObjectRequest>(r => r.Key == path),
                          token)
                  ).ReturnsAsync((UploadObjectResponse?)null);
 
@@ -155,32 +151,29 @@ namespace StreamStore.S3.Tests.Lock
 
             var lockKey = GeneratedValues.String;
             var client = new Mock<IS3Client>();
-            var transactionId = new Id(GeneratedValues.String);
 
             factory.Setup(x => x.CreateClient()).Returns(client.Object);
-            ctx.Setup(x => x.LockKey).Returns(lockKey);
-            ctx.Setup(x => x.TransactionId).Returns(transactionId);
 
             var uploadResponse = new UploadObjectResponse
             {
-                Name = ctx.Object.LockKey,
+                Name = path,
             };
 
             var response = new FindObjectResponse
             {
                 Data = Converter.ToByteArray(new LockId(GeneratedValues.String)),
-                Name = ctx.Object.LockKey,
+                Name = path,
             };
 
             client.
-                 SetupSequence(x => x.FindObjectAsync(ctx.Object.LockKey, token))
+                 SetupSequence(x => x.FindObjectAsync(path, token))
                 .ReturnsAsync((FindObjectResponse?)null)
                 .ReturnsAsync(response);
 
             client
                  .Setup(x =>
                      x.UploadObjectAsync(
-                         It.Is<UploadObjectRequest>(r => r.Key == ctx.Object.LockKey),
+                         It.Is<UploadObjectRequest>(r => r.Key ==path),
                          token)
                  ).ReturnsAsync((UploadObjectResponse?)uploadResponse);
 

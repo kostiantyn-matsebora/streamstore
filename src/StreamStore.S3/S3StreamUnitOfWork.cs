@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using StreamStore.Exceptions;
 using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
-using StreamStore.S3.Operations;
+using StreamStore.S3.Storage;
 
 
 namespace StreamStore.S3

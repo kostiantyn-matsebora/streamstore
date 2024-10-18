@@ -12,10 +12,12 @@ namespace StreamStore.S3.Tests.B2
 {
     public class B2S3FactoryTests
     {
-        MockRepository mockRepository;
+        readonly MockRepository mockRepository;
+        readonly B2StreamDatabaseSettings settings;
+        readonly Mock<IStorageClientFactory> factoryMock;
+        readonly Id streamId = GeneratedValues.Id;
+        readonly Id transactionId = GeneratedValues.Id;
 
-        B2StreamDatabaseSettings settings;
-        Mock<IStorageClientFactory> factoryMock;
         public B2S3FactoryTests()
         {
             mockRepository = new MockRepository(MockBehavior.Strict);
@@ -52,12 +54,10 @@ namespace StreamStore.S3.Tests.B2
             var client = new Mock<IStorageClient>();
             factoryMock.Setup(m => m.Create()).Returns(client.Object);
             client.Setup(client => client.Connect(settings.Credentials!.AccessKeyId, settings.Credentials!.AccessKey));
-            var ctx = new Mock<IS3TransactionContext>();
-            ctx.SetupGet(x => x.StreamId).Returns(GeneratedValues.String);
 
             // Act
             var factory = new B2S3Factory(settings, factoryMock.Object);
-            var result = factory.CreateLock(ctx.Object);
+            var result = factory.CreateLock(streamId, transactionId);
 
             // Assert
             result.Should().NotBeNull();

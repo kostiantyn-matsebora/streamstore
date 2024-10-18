@@ -23,7 +23,7 @@ namespace StreamStore.S3.Lock
         public IS3StreamLock CreateLock(Id streamId, Id transactionId)
         {
             var inMemoryLock = new S3StreamInMemoryLock(streamId, lockStorage);
-            var fileLock = new S3FileLock(storage.Locks.GetChild(streamId), transactionId);
+            var fileLock = new S3FileLock(storage.Locks.GetItem(streamId), transactionId);
             return new S3CompositeStreamLock(inMemoryLock, fileLock);
         }
     }

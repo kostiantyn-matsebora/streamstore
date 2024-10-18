@@ -15,6 +15,7 @@ namespace StreamStore.S3.B2
         {
             this.services = services;
             services.AddSingleton<IS3LockFactory, B2S3Factory>();
+            services.AddSingleton<IS3ClientFactory, B2S3Factory>();
             services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
             services.AddSingleton<IStorageClientFactory, BackblazeClientFactory>();
         }

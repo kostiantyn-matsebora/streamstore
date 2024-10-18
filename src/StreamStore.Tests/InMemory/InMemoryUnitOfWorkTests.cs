@@ -2,11 +2,12 @@
 
 using AutoFixture;
 using FluentAssertions;
+using StreamStore;
 using StreamStore.Exceptions;
 using StreamStore.InMemory;
 using StreamStore.Testing;
 
-namespace StreamStore.Tests
+namespace StreamStore.Tests.InMemory
 {
     public class InMemoryUnitOfWorkTests
     {

@@ -1,57 +1,77 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using StreamStore.S3.Client;
 
 
 namespace StreamStore.S3.Storage
 {
-    internal abstract class S3ObjectContainer<T>: IEnumerable<T>
+    internal class S3ObjectContainer
     {
-        readonly ConcurrentDictionary<string, T> objects = new ConcurrentDictionary<string, T>();
+        protected readonly ConcurrentDictionary<string, S3Object> objects = new ConcurrentDictionary<string, S3Object>();
+        protected readonly ConcurrentDictionary<string, S3ObjectContainer> containers = new ConcurrentDictionary<string, S3ObjectContainer>();
 
         protected S3ContainerPath path { get; }
         protected IS3ClientFactory clientFactory { get; }
 
-        protected S3ObjectContainer(S3ContainerPath path, IS3ClientFactory clientFactory)
+        public S3ObjectContainer(S3ContainerPath path, IS3ClientFactory clientFactory)
         {
             this.path = path;
             this.clientFactory = clientFactory ?? throw new System.ArgumentNullException(nameof(clientFactory));
         }
 
-        public T GetChild(string name)
+        protected S3Object GetChildObject(string name)
         {
-            return objects.GetOrAdd(name, CreateChild);
+            return objects.GetOrAdd(name, _ => new S3Object(path.Combine(name), clientFactory));
         }
 
-        public abstract T CreateChild(string name);
-
-
-        public IEnumerator<T> GetEnumerator()
+        protected S3ObjectContainer GetChildContainer(string name)
         {
-           return objects.Values.GetEnumerator();
+            return containers.GetOrAdd(name, _ => new S3ObjectContainer(path.Combine(name), clientFactory));
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public virtual async Task DeleteAsync(CancellationToken token)
         {
-            return objects.Values.GetEnumerator();
+            await using (var client = clientFactory.CreateClient())
+            {
+
+                string? startObjectName = null;
+                do
+                {
+                    var directoryPath = path.Normalize();
+                    var response = await client.ListObjectsAsync(path.Normalize(), startObjectName, token);
+                    if (response == null) return;
+
+                    if (response!.Objects!.Length == 0) return;
+
+                    var tasks = response.Objects.Select(async e =>
+                    {
+                        await client.DeleteObjectByFileIdAsync(e.FileId!, e.FileName!, token);
+                        startObjectName = e.FileName;
+                    });
+                    Task.WaitAll(tasks.ToArray());
+                } while (startObjectName != null);
+
+            }
         }
 
         public virtual void ResetState()
         {
+            foreach (var obj in objects.Values)
+            {
+                obj.ResetState();
+            }
+            foreach (var container in containers.Values)
+            {
+                container.ResetState();
+            }
+
+            containers.Clear();
             objects.Clear();
         }
     }
-
-    internal class S3ObjectContainer : S3ObjectContainer<S3ObjectContainer>
-    {
-        protected S3ObjectContainer(S3ContainerPath path, IS3ClientFactory clientFactory) : base(path, clientFactory)
-        {
-        }
-
-        public override S3ObjectContainer CreateChild(string name)
-        {
-            return new S3ObjectContainer(path.Combine(name), clientFactory);
-        }
-    }
 }
+

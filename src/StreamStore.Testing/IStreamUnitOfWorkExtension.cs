@@ -13,19 +13,13 @@
 
         public static async Task<IStreamUnitOfWork> AddRangeAsync(this Task<IStreamUnitOfWork> unitOfWork, IEnumerable<EventItem> records, CancellationToken token = default)
         {
-            await unitOfWork.ContinueWith(async t =>
-            {
-                await t.Result.AddRangeAsync(records);
-            }, token);
+            await unitOfWork.Result.AddRangeAsync(records);
             return unitOfWork.Result;
         }
 
         public static async Task<IStreamUnitOfWork> SaveChangesAsync(this Task<IStreamUnitOfWork> unitOfWork, CancellationToken token = default)
         {
-            await unitOfWork.ContinueWith(async t =>
-            {
-                await t.Result.SaveChangesAsync(token);
-            }, token);
+            await unitOfWork.Result.SaveChangesAsync(token);
             return unitOfWork.Result;
         }
     }

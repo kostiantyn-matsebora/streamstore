@@ -50,7 +50,7 @@ namespace StreamStore.S3
 
         async Task TryDeleteAsync(Id streamId, CancellationToken token)
         {
-            await storage.Persistent.DeleteAsync(streamId, token);
+            await storage.Persistent.DeleteContainerAsync(streamId, token);
         }
     }
 }

@@ -7,7 +7,7 @@ using StreamStore.S3.Client;
 
 namespace StreamStore.S3.Storage
 {
-    internal class S3StreamContainer : S3ObjectContainer
+    internal class S3StreamContainer : S3ObjectStorage<S3MetadataObject, S3EventStorage>
     {
         public S3EventStorage Events { get; }
 
@@ -15,13 +15,15 @@ namespace StreamStore.S3.Storage
 
         public EventMetadataRecord[] EventsMetadata => MetadataObject.Events!;
 
+        public bool HasChanges => Events.HasChanges;
+            
         public S3ObjectState State => MetadataObject.State;
 
         public S3StreamContainer(S3ContainerPath path, IS3ClientFactory clientFactory) : base(path, clientFactory)
         {
 
-            Events = new S3EventStorage(path.Combine("events"), clientFactory);
-            MetadataObject = new S3MetadataObject(path.Combine("__metadata"), clientFactory);
+            Events = GetContainer(path.Combine("events"));
+            MetadataObject = GetItem(path.Combine("__metadata"));
         }
 
         public async Task LoadAsync(CancellationToken token = default)
@@ -32,25 +34,27 @@ namespace StreamStore.S3.Storage
 
             var tasks = MetadataObject.Events.Select(async e =>
             {
-                await Events.LoadAsync(e.Id, token);
+                await Events.LoadEventAsync(e.Id, token);
             });
 
             await Task.WhenAll(tasks);
         }
 
-        public async Task AppendAsync(EventRecord record, CancellationToken token)
+        public async Task AppendEventAsync(EventRecord record, CancellationToken token)
         {
             await Events.AppendAsync(record, token);
             await MetadataObject.AppendAsync(record, token);
         }
 
-        public async Task DeleteAsync(CancellationToken token)
+        public async override Task DeleteAsync(CancellationToken token)
         {
             // Delete all events
             await Events.DeleteAsync(token);
 
             // Delete metadata
             await MetadataObject.DeleteAsync(token);
+
+            ResetState();
         }
 
         public async Task CopyFrom(S3StreamContainer source, CancellationToken token)
@@ -65,14 +69,14 @@ namespace StreamStore.S3.Storage
             await MetadataObject.UploadAsync(source.MetadataObject, token);
         }
 
-   
-        public override void ResetState()
+        protected override S3MetadataObject CreateItem(string name)
         {
-            base.ResetState();
-            MetadataObject.ResetState();
-            Events.ResetState();
+           return new S3MetadataObject(path.Combine(name), clientFactory);
+        }
+
+        protected override S3EventStorage CreateContainer(string name)
+        {
+            return new S3EventStorage(path.Combine(name), clientFactory);
         }
     }
-
-
 }

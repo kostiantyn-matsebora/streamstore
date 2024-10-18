@@ -8,6 +8,7 @@ namespace StreamStore.Testing
     {
         public static string String => new Fixture().Create<string>();
 
+        public static Id Id = new Fixture().Create<Id>();
         public static DateTime DateTime => DateTime.UtcNow;
         public static int Int
         {
