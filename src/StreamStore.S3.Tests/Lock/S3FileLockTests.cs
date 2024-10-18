@@ -13,7 +13,7 @@ namespace StreamStore.S3.Tests.Lock
     public class S3FileLockTests
     {
         readonly MockRepository mockRepository;
-        readonly S3Object lockObject;
+        readonly S3LockObject lockObject;
         readonly Mock<IS3ClientFactory> factory;
         readonly Id transactionId;
         readonly S3ContainerPath path;
@@ -25,7 +25,7 @@ namespace StreamStore.S3.Tests.Lock
             mockRepository = new MockRepository(MockBehavior.Strict);
             transactionId = GeneratedValues.Id;
             factory = this.mockRepository.Create<IS3ClientFactory>();
-            lockObject = new S3Object(path, factory.Object);
+            lockObject = new S3LockObject(path, factory.Object);
         }
 
         S3FileLock CreateS3FileLock()
@@ -94,7 +94,7 @@ namespace StreamStore.S3.Tests.Lock
 
             var response = new FindObjectResponse
             {
-                Data = GeneratedValues.ByteArray,
+                Data = Converter.ToByteArray(new LockId(GeneratedValues.String)),
                 Name = path,
             };
 

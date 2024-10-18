@@ -18,8 +18,8 @@ namespace StreamStore.S3.B2
             services.AddSingleton<IS3LockFactory, B2S3Factory>();
             services.AddSingleton<IS3ClientFactory, B2S3Factory>();
             services.AddSingleton<IStorageClientFactory, BackblazeClientFactory>();
-            services.AddTransient<IStreamDatabase, S3StreamDatabase>();
-            services.AddTransient<S3Storage>();
+            services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
+            services.AddSingleton<IS3StorageFactory, S3StorageFactory>();
         }
 
         public override IServiceCollection Configure()

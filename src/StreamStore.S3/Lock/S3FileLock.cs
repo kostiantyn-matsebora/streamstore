@@ -10,10 +10,10 @@ namespace StreamStore.S3.Lock
 {
     partial class S3FileLock : IS3StreamLock
     {
-        private readonly IS3Object lockObject;
+        private readonly S3LockObject lockObject;
         private readonly Id transactionId;
 
-        public S3FileLock(IS3Object lockObject, Id transactionId)
+        public S3FileLock(S3LockObject lockObject, Id transactionId)
         {
             this.lockObject = lockObject ?? throw new ArgumentNullException(nameof(lockObject)); 
             if (!transactionId.HasValue()) throw new ArgumentException("Transaction id is not set.", nameof(transactionId));
@@ -27,7 +27,8 @@ namespace StreamStore.S3.Lock
             await lockObject.LoadAsync(token);
             if (lockObject.State == S3ObjectState.Loaded) return null;
 
-            lockObject.Data = Converter.ToByteArray(new LockId(transactionId));
+            lockObject.ReplaceBy(new LockId(transactionId));
+
             await lockObject.UploadAsync(token);
 
             // Trying to figure out if lock already acquired by someone else

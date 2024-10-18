@@ -7,7 +7,7 @@ namespace StreamStore.S3.Storage
     interface IS3Object
     {
         S3ObjectState State { get; }
-        byte[] Data { get; set; }
+        byte[] Data { get;  }
         Task UploadAsync(CancellationToken token);
         Task LoadAsync(CancellationToken token);
         Task DeleteAsync(CancellationToken token);

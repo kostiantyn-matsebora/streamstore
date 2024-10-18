@@ -53,11 +53,11 @@ namespace StreamStore.S3
             await streamContext.AddTransientEventAsync(@event, token);
         }
 
-        void ThrowIfStreamAlreadyChanged(S3StreamMetadataRecord? stream)
+        void ThrowIfStreamAlreadyChanged(EventMetadataRecordCollection? stream)
         {
             if (stream == null) return;
-            if (stream!.Revision > expectedRevision)
-                throw new OptimisticConcurrencyException(expectedRevision, stream!.Revision, streamContext.StreamId);
+            if (stream!.MaxRevision > expectedRevision)
+                throw new OptimisticConcurrencyException(expectedRevision, stream!.MaxRevision, streamContext.StreamId);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace StreamStore.S3.Concurrency
 
         public bool HasChanges => Transient.HasChanges;
 
-          public S3StreamContext(Id streamId, Revision expectedRevision, S3Storage storage)
+        public S3StreamContext(Id streamId, Revision expectedRevision, IS3Storage storage)
         {
             TransactionId = Guid.NewGuid().ToString();
             ExpectedRevision = expectedRevision;
@@ -27,21 +27,37 @@ namespace StreamStore.S3.Concurrency
          
         }
 
-        public async Task<S3StreamMetadataRecord> GetPersistentMetadataAsync(CancellationToken token)
+        public async Task Initialize(CancellationToken token)
+        {
+           await CopyPersistentMetadataToTransient(CancellationToken.None);
+        }
+
+        public async Task<EventMetadataRecordCollection> GetPersistentMetadataAsync(CancellationToken token)
         {
            await Persistent.MetadataObject.LoadAsync(token);
 
             if (Persistent.MetadataObject.State == S3ObjectState.Loaded)
             {
-                return Persistent.MetadataObject.Metadata!;
+                return Persistent.MetadataObject.Events;
             }
 
-            return new S3StreamMetadataRecord();
+            return new EventMetadataRecordCollection();
         }
 
         public async Task AddTransientEventAsync(EventRecord @event, CancellationToken token)
         {
-           await Transient.AppendEventAsync(@event, token);
+            await Transient.AppendEventAsync(@event, token);
+        }
+
+        async Task CopyPersistentMetadataToTransient(CancellationToken token)
+        {
+            await Persistent.MetadataObject.LoadAsync(token);
+            if (Persistent.MetadataObject.State == S3ObjectState.Loaded)
+            {
+                await Transient.MetadataObject
+                        .ReplaceBy(Persistent.MetadataObject)
+                        .UploadAsync(token);
+            }
         }
 
         public async Task SaveChangesAsync(CancellationToken token)

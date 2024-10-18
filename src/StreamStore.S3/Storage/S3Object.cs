@@ -13,7 +13,7 @@ namespace StreamStore.S3.Storage
         readonly S3ContainerPath path;
         readonly IS3ClientFactory clientFactory;
 
-        public virtual byte[] Data { get; set; } = new byte[0];
+        public byte[] Data { get; protected set; } = new byte[0];
 
         public Id Id => path.Name;
 
@@ -25,7 +25,7 @@ namespace StreamStore.S3.Storage
             this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
 
-        public async Task DeleteAsync(CancellationToken token)
+        public virtual async Task DeleteAsync(CancellationToken token)
         {
             await using var client = clientFactory.CreateClient();
 
@@ -43,9 +43,11 @@ namespace StreamStore.S3.Storage
                     fileId = null;
                 }
             } while (fileId != null);
+
+            ResetState();
         }
 
-        public async Task LoadAsync(CancellationToken token)
+        public virtual async Task LoadAsync(CancellationToken token)
         {
             await using var client = clientFactory.CreateClient();
 
@@ -60,7 +62,7 @@ namespace StreamStore.S3.Storage
             }
         }
 
-        public async Task UploadAsync(CancellationToken token)
+        public virtual async Task UploadAsync(CancellationToken token)
         {
             await using var client = clientFactory.CreateClient();
 
@@ -73,7 +75,7 @@ namespace StreamStore.S3.Storage
             State = S3ObjectState.Loaded;
         }
 
-        public void ResetState()
+        public virtual void ResetState()
         {
             State = S3ObjectState.Unknown;
             Data = Enumerable.Empty<byte>().ToArray();

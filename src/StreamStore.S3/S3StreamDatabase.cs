@@ -12,18 +12,19 @@ namespace StreamStore.S3
     internal sealed class S3StreamDatabase : IStreamDatabase
     {
         readonly IS3LockFactory lockFactory;
-        private readonly S3Storage storage;
+        private readonly IS3StorageFactory storageFactory;
 
-        public S3StreamDatabase(IS3LockFactory lockFactory, S3Storage storage)
+        public S3StreamDatabase(IS3LockFactory lockFactory, IS3StorageFactory storageFactory)
         {
             this.lockFactory = lockFactory ?? throw new ArgumentNullException(nameof(lockFactory));
-            if (storage == null) throw new ArgumentNullException(nameof(storage));
-            this.storage = storage;
+            this.storageFactory = storageFactory ?? throw new ArgumentNullException(nameof(storageFactory));
         }
 
-        public Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
+        public async Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
-            return Task.FromResult((IStreamUnitOfWork)new S3StreamUnitOfWork(lockFactory, new S3StreamContext(streamId, expectedStreamVersion, storage)));
+            var context = new S3StreamContext(streamId, expectedStreamVersion, storageFactory.CreateStorage());
+            await context.Initialize(token);
+            return new S3StreamUnitOfWork(lockFactory, context);
         }
 
         public async Task DeleteAsync(Id streamId, CancellationToken token = default)
@@ -31,10 +32,11 @@ namespace StreamStore.S3
             await TryDeleteAsync(streamId, token);
         }
 
-         public async Task<StreamRecord?> FindAsync(Id streamId, CancellationToken token = default)
+        public async Task<StreamRecord?> FindAsync(Id streamId, CancellationToken token = default)
         {
+            var storage = storageFactory.CreateStorage();
             var container = await storage.Persistent.LoadAsync(streamId, token);
-          
+
             if (container.State == S3ObjectState.NotExists) return null;
 
             return new StreamRecord(container.Events.Select(e => e.Event!));
@@ -42,14 +44,19 @@ namespace StreamStore.S3
 
         public async Task<StreamMetadataRecord?> FindMetadataAsync(Id streamId, CancellationToken token = default)
         {
+            var storage = storageFactory.CreateStorage();
+
             var metadata = await storage.Persistent.LoadMetadataAsync(streamId);
+
             if (metadata!.State == S3ObjectState.NotExists) return null;
 
-            return new StreamMetadataRecord(metadata.Metadata!.Events!);
+            return new StreamMetadataRecord(metadata.Events!);
         }
 
         async Task TryDeleteAsync(Id streamId, CancellationToken token)
         {
+            var storage = storageFactory.CreateStorage();
+
             await storage.Persistent.DeleteContainerAsync(streamId, token);
         }
     }

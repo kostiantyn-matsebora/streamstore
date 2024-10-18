@@ -13,7 +13,7 @@ namespace StreamStore.S3.Storage
 
         public S3MetadataObject MetadataObject { get; }
 
-        public EventMetadataRecord[] EventsMetadata => MetadataObject.Events!;
+        public EventMetadataRecordCollection EventsMetadata => MetadataObject.Events!;
 
         public bool HasChanges => Events.HasChanges;
             
@@ -43,7 +43,7 @@ namespace StreamStore.S3.Storage
         public async Task AppendEventAsync(EventRecord record, CancellationToken token)
         {
             await Events.AppendAsync(record, token);
-            await MetadataObject.AppendAsync(record, token);
+            await MetadataObject.AppendEventAsync(record, token).UploadAsync(token);
         }
 
         public async override Task DeleteAsync(CancellationToken token)
@@ -66,7 +66,7 @@ namespace StreamStore.S3.Storage
             }
 
             // Copy metadata
-            await MetadataObject.UploadAsync(source.MetadataObject, token);
+            await MetadataObject.ReplaceBy(source.MetadataObject).UploadAsync(token);
         }
 
         protected override S3MetadataObject CreateItem(string name)

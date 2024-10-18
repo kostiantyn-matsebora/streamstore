@@ -15,7 +15,8 @@ namespace StreamStore.S3.AWS
             services.AddSingleton<IS3LockFactory, AWSS3Factory>();
             services.AddSingleton<IS3ClientFactory, AWSS3Factory>();
             services.AddTransient<IStreamDatabase, S3StreamDatabase>();
-            services.AddTransient<S3Storage>();
+            services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
+            services.AddSingleton<IS3StorageFactory, S3StorageFactory>();
         }
 
         public override IServiceCollection Configure()
