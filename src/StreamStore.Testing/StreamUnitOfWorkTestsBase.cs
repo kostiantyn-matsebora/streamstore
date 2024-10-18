@@ -19,7 +19,8 @@ namespace StreamStore.Testing
   
             // Act
             var act = () =>
-                    database!.BeginAppendAsync(streamId)
+                    database!
+                    .BeginAppendAsync(streamId)
                     .AddRangeAsync(GeneratedValues.CreateEventItems(3))
                     .SaveChangesAsync(CancellationToken.None);
 
@@ -28,7 +29,8 @@ namespace StreamStore.Testing
 
             // Act
             act = () =>
-                  database!.BeginAppendAsync(streamId,3)
+                  database!
+                  .BeginAppendAsync(streamId,3)
                   .AddRangeAsync(GeneratedValues.CreateEventItems(5))
                   .SaveChangesAsync(CancellationToken.None);
 

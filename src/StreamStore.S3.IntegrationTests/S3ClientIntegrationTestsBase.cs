@@ -4,16 +4,17 @@ using Bytewizer.Backblaze.Extensions;
 using Bytewizer.Backblaze.Models;
 using FluentAssertions;
 using StreamStore.S3.Client;
+using StreamStore.Serialization;
 
 namespace StreamStore.S3.IntegrationTests
 {
 
     public abstract class S3ClientIntegrationTestsBase
     {
-        readonly IS3Factory? factory;
+        readonly IS3ClientFactory? factory;
         readonly IS3Client? client;
 
-        protected S3ClientIntegrationTestsBase(IS3Factory? factory)
+        protected S3ClientIntegrationTestsBase(IS3ClientFactory? factory)
         {
             this.factory = factory;
             client = this.factory?.CreateClient();

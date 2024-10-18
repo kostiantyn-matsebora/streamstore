@@ -4,8 +4,9 @@ using StreamStore.InMemory;
 using StreamStore.Testing;
 using AutoFixture;
 using FluentAssertions;
+using StreamStore;
 
-namespace StreamStore.Tests;
+namespace StreamStore.Tests.InMemory;
 
 public class InMemoryDatabaseTests
 {

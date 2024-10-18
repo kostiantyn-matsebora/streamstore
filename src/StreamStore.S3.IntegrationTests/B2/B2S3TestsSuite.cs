@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using StreamStore.S3.B2;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Lock;
 using StreamStore.Testing;
 
@@ -25,7 +26,7 @@ namespace StreamStore.S3.IntegrationTests.B2
             if (factory == null)
                 return null;
 
-            return new S3StreamUnitOfWork(streamId, expectedRevision, factory);
+            return new S3StreamUnitOfWork(factory, new S3StreamContext(streamId, expectedRevision,factory.CreateStorage()));
         }
 
         public IStreamDatabase? CreateDatabase()
@@ -34,7 +35,7 @@ namespace StreamStore.S3.IntegrationTests.B2
             if (factory == null)
                 return null;
 
-            return new S3StreamDatabase(factory);
+            return new S3StreamDatabase(factory, factory);
         }
 
         static B2StreamDatabaseSettings? ConfigureSettings()

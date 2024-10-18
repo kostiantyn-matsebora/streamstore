@@ -13,10 +13,10 @@ namespace StreamStore.S3.Tests.B2
 {
     public class B2SClientTests
     {
-        MockRepository mockRepository;
+        readonly MockRepository mockRepository;
 
-        Mock<IStorageClient> b2Client;
-        B2StreamDatabaseSettings settings;
+        readonly Mock<IStorageClient> b2Client;
+        readonly B2StreamDatabaseSettings settings;
 
         public B2SClientTests()
         {

@@ -31,7 +31,9 @@ namespace StreamStore.S3.Tests.InMemory
 
         public Task<UploadObjectResponse?> UploadObjectAsync(UploadObjectRequest request, CancellationToken token)
         {
+            objects.TryRemove(request.Key!, out _);
             objects.TryAdd(request.Key!, request.Data!);
+            
             return Task.FromResult<UploadObjectResponse?>(new UploadObjectResponse
             {
                 FileId = request.Key,
