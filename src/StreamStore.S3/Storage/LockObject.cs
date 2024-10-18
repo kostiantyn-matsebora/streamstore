@@ -30,7 +30,7 @@ namespace StreamStore.S3.Storage
 
         public void ReplaceBy(LockId lockId)
         {
-            lockId = lockId;
+            this.lockId = lockId;
             Data = Converter.ToByteArray(lockId!);
         }
 

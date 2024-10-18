@@ -60,7 +60,5 @@ namespace StreamStore.S3.Storage
         {
             Data = Converter.ToByteArray(records);
         }
-
-      
     }
 }
