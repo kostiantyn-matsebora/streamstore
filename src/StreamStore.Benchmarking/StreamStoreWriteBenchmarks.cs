@@ -13,14 +13,13 @@ namespace StreamStore.Benchmarking
     public class StreamStoreWriteBenchmarks
     {
         readonly Event[] events;
-        readonly IStreamStore store;
-        readonly TypeRegistry registry;
+        readonly StreamStore store;
+
         public StreamStoreWriteBenchmarks() {
             var fixture = new Fixture();
 
-            registry = TypeRegistry.CreateAndInitialize();
             events = fixture.CreateMany<Event>(100).ToArray();
-            store = new StreamStore(new InMemoryStreamDatabase(), new NewtonsoftEventSerializer(registry));
+            store = new StreamStore(new InMemoryStreamDatabase(), new NewtonsoftEventSerializer(TypeRegistry.CreateAndInitialize()));
         }
 
         [Benchmark]

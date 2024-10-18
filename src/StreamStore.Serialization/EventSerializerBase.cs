@@ -28,7 +28,7 @@ namespace StreamStore.Serialization
 
             if (compression)
             {
-                envelopeData = Compress(envelopeData);
+                envelopeData = GZipCompressor.Compress(envelopeData);
             }
 
             return envelopeData;
@@ -39,7 +39,7 @@ namespace StreamStore.Serialization
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            var decompressed = compression ? Decompress(data) : data;
+            var decompressed = compression ? GZipCompressor.Decompress(data) : data;
 
             var envelope = DeserializeEnvelope(decompressed);
 
@@ -71,29 +71,6 @@ namespace StreamStore.Serialization
         Type GetTypeByName(string name)
         {
             return typeRegistry.ResolveTypeByName(name);
-        }
-
-        static byte[] Compress(byte[] serialized)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                using (GZipStream gzip = new GZipStream(ms, CompressionMode.Compress, true))
-                {
-                    gzip.Write(serialized, 0, serialized.Length);
-                }
-                return ms.ToArray();
-            }
-        }
-
-        static byte[] Decompress(byte[] compressed)
-        {
-            using (MemoryStream ms = new MemoryStream(compressed))
-            using (GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress))
-            using (MemoryStream outBuffer = new MemoryStream())
-            {
-                gzip.CopyTo(outBuffer);
-                return outBuffer.ToArray();
-            }
         }
     }
 }

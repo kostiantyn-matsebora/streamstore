@@ -28,7 +28,7 @@ namespace StreamStore.Tests.Serialization
         [ProtoMember(2)]
         public int Value { get; set; }
         [ProtoMember(3)]
-        public string NullValue { get; set; }
+        public string? NullValue { get; set; }
     }
 
     [ProtoContract]
@@ -39,7 +39,7 @@ namespace StreamStore.Tests.Serialization
         [ProtoMember(2)]
         public required string Name { get; set; }
         [ProtoMember(3)]
-        public ProtobufLeafEvent[] Leaves { get; set; }
+        public ProtobufLeafEvent[]? Leaves { get; set; }
     }
 
     [ProtoContract]

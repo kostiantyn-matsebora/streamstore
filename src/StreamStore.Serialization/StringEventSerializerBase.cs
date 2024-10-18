@@ -38,9 +38,9 @@ namespace StreamStore.Serialization
             return DeserializeEnvelope(System.Text.Encoding.UTF8.GetString(data));
         }
 
-        protected override object DeserializeEvent(byte[] data, Type type)
+        protected override object DeserializeEvent(byte[] eventData, Type type)
         {
-            return DeserializeEventFromString(System.Text.Encoding.UTF8.GetString(data), type);
+            return DeserializeEventFromString(System.Text.Encoding.UTF8.GetString(eventData), type);
         }
     }
 }

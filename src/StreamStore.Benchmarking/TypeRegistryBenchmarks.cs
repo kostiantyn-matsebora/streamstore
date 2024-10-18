@@ -31,8 +31,6 @@ namespace StreamStore.Benchmarking
         public void ResolveTypeByName()
         {
             var random = new Random();
-            var name = names[random.Next(0, types.Length - 1)];
-
             typeRegistry.ResolveTypeByName(names[random.Next(0, types.Length - 1)]);
         }
     }

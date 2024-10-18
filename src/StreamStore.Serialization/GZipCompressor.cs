@@ -4,10 +4,10 @@ using System.IO.Compression;
 
 namespace StreamStore.Serialization
 {
-    public sealed class GZipCompressor
+    public static class GZipCompressor
     {
 
-        public byte[] Compress(byte[] serialized)
+        public static byte[] Compress(byte[] serialized)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -19,7 +19,7 @@ namespace StreamStore.Serialization
             }
         }
 
-        public byte[] Decompress(byte[] compressed)
+        public static byte[] Decompress(byte[] compressed)
         {
             using (MemoryStream ms = new MemoryStream(compressed))
             using (GZipStream gzip = new GZipStream(ms, CompressionMode.Decompress))

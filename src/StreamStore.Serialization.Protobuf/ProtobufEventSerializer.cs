@@ -20,9 +20,9 @@ namespace StreamStore.Serialization.Protobuf
             };
         }
 
-        protected override object DeserializeEvent(byte[] data, Type type)
+        protected override object DeserializeEvent(byte[] eventData, Type type)
         {
-            using var stream = new MemoryStream(data);
+            using var stream = new MemoryStream(eventData);
             return Serializer.Deserialize(type, stream)!;
         }
 
@@ -35,21 +35,25 @@ namespace StreamStore.Serialization.Protobuf
            };
 
             using var stream = new MemoryStream();
-            {
-                Serializer.Serialize(stream, envelope!);
-                return stream.ToArray();
-            }
+            return SerializeEnvelope(envelope, stream);
+        }
+
+        private static byte[] SerializeEnvelope(ProtobufEventEnvelope envelope, MemoryStream stream)
+        {
+            Serializer.Serialize(stream, envelope!);
+            return stream.ToArray();
         }
 
         protected override byte[] SerializeEvent(object value, Type type)
         {
             using var stream = new MemoryStream();
-            {
-                Serializer.Serialize(stream, value);
-                return stream.ToArray();
-            }
+            return SerializeEvent(value, stream);
         }
 
-
+        private static byte[] SerializeEvent(object value, MemoryStream stream)
+        {
+            Serializer.Serialize(stream, value);
+            return stream.ToArray();
+        }
     }
 }
