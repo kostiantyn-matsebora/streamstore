@@ -15,7 +15,7 @@ namespace StreamStore.S3.Storage
 
         public EventMetadataRecordCollection EventsMetadata => MetadataObject.Events!;
 
-        public bool HasChanges => Events.HasChanges;
+        public bool NotEmpty => Events.NotEmpty;
             
         public S3ObjectState State => MetadataObject.State;
 

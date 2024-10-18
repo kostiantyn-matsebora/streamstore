@@ -15,7 +15,7 @@ namespace StreamStore.S3.Concurrency
 
         public Id TransactionId { get; }
 
-        public bool HasChanges => Transient.HasChanges;
+        public bool NotEmpty => Transient.NotEmpty;
 
         public S3StreamContext(Id streamId, Revision expectedRevision, IS3Storage storage)
         {

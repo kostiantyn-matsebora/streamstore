@@ -25,7 +25,7 @@ namespace StreamStore.S3
 
         protected override async Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
         {
-            if (!streamContext.HasChanges)
+            if (!streamContext.NotEmpty)
                 throw new InvalidOperationException("No events to save.");
 
             ThrowIfStreamAlreadyChanged(await streamContext.GetPersistentMetadataAsync(token));
