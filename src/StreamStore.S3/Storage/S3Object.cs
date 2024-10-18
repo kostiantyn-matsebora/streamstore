@@ -13,10 +13,6 @@ namespace StreamStore.S3.Storage
         readonly S3ContainerPath path;
         readonly IS3ClientFactory clientFactory;
 
-        public byte[] Data { get; protected set; } = new byte[0];
-
-        public Id Id => path.Name;
-
         public S3ObjectState State { get; private set; } = S3ObjectState.Unknown;
 
         public S3Object(S3ContainerPath path, IS3ClientFactory clientFactory)
@@ -47,29 +43,33 @@ namespace StreamStore.S3.Storage
             ResetState();
         }
 
-        public virtual async Task LoadAsync(CancellationToken token)
+        protected async Task<byte[]> LoadDataAsync(CancellationToken token)
         {
             await using var client = clientFactory.CreateClient();
 
             var eventResponse = await client!.FindObjectAsync(path, token);
             if (eventResponse != null)
             {
-                Data = eventResponse.Data!;
+              
                 State = S3ObjectState.Loaded;
+                return eventResponse.Data!;
+   
             } else
             {
                 State = S3ObjectState.NotExists;
+                return null!;
             }
+           
         }
 
-        public virtual async Task UploadAsync(CancellationToken token)
+        protected  async Task UploadDataAsync(byte[] data, CancellationToken token)
         {
             await using var client = clientFactory.CreateClient();
 
             var request = new UploadObjectRequest
             {
                 Key = path,
-                Data = Data
+                Data = data
             };
             await client!.UploadObjectAsync(request, token);
             State = S3ObjectState.Loaded;
@@ -78,7 +78,16 @@ namespace StreamStore.S3.Storage
         public virtual void ResetState()
         {
             State = S3ObjectState.Unknown;
-            Data = Enumerable.Empty<byte>().ToArray();
+        }
+
+        public virtual Task UploadAsync(CancellationToken token)
+        {
+            return Task.CompletedTask;
+        }
+
+        public virtual Task LoadAsync(CancellationToken token)
+        {
+            return Task.CompletedTask;
         }
     }
 }

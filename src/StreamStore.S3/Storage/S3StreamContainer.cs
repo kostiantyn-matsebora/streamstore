@@ -66,7 +66,7 @@ namespace StreamStore.S3.Storage
             }
 
             // Copy metadata
-            await MetadataObject.ReplaceBy(source.MetadataObject).UploadAsync(token);
+            await MetadataObject.ReplaceBy(source.MetadataObject.Events).UploadAsync(token);
         }
 
         protected override S3MetadataObject CreateItem(string name)

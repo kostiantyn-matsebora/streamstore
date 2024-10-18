@@ -18,8 +18,8 @@ namespace StreamStore.S3.Storage
 
         public override async Task LoadAsync(CancellationToken token)
         {
-            await base.LoadAsync(token);
-            if (State == S3ObjectState.Loaded) lockId = Converter.FromByteArray<LockId>(Data)!;
+            var data = await LoadDataAsync(token);
+            if (State == S3ObjectState.Loaded) lockId = Converter.FromByteArray<LockId>(data)!;
         }
 
         public override async Task DeleteAsync(CancellationToken token)
@@ -31,13 +31,17 @@ namespace StreamStore.S3.Storage
         public void ReplaceBy(LockId lockId)
         {
             this.lockId = lockId;
-            Data = Converter.ToByteArray(lockId!);
         }
 
         public override void ResetState()
         {
             base.ResetState();
             lockId = null;
+        }
+
+        public override async Task UploadAsync(CancellationToken token)
+        {
+           await UploadDataAsync(Converter.ToByteArray(lockId!), token);
         }
     }
 }

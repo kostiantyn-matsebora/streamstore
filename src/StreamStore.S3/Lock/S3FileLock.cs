@@ -25,6 +25,7 @@ namespace StreamStore.S3.Lock
         {
             // Trying to figure out if lock already acquired
             await lockObject.LoadAsync(token);
+
             if (lockObject.State == S3ObjectState.Loaded) return null;
 
             lockObject.ReplaceBy(new LockId(transactionId));
@@ -36,7 +37,7 @@ namespace StreamStore.S3.Lock
             if (lockObject.State == S3ObjectState.NotExists) return null;
             
 
-            var existingLockId = Converter.FromByteArray<LockId>(lockObject.Data!);
+            var existingLockId = lockObject.LockId!;
 
             if (existingLockId == null) return null;
 

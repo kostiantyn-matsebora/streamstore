@@ -23,26 +23,26 @@ namespace StreamStore.S3.Storage
         public override async Task DeleteAsync(CancellationToken token)
         {
             await base.DeleteAsync(token);
-            SynchronizeRecords();
+            records.Clear();
         }
 
-        public override  async Task LoadAsync(CancellationToken token)
+        public override async Task LoadAsync(CancellationToken token)
         {
-           await base.LoadAsync(token);
-           if (State == S3ObjectState.Loaded) SynchronizeRecords();
+            var data = await LoadDataAsync(token);
+            if (State == S3ObjectState.Loaded)
+                records = Converter.FromByteArray<EventMetadataRecord[]>(data).ToList();
         }
 
         public S3MetadataObject AppendEventAsync(EventMetadataRecord record, CancellationToken token)
         {
             records.Add(record);
-            SynchronizeData();
             return this;
         }
 
-        public S3MetadataObject ReplaceBy(S3MetadataObject metadata)
+        public S3MetadataObject ReplaceBy(EventMetadataRecordCollection records)
         {
-            Data = metadata.Data;
-            SynchronizeRecords();
+            this.records = records.ToList();
+
             return this;
         }
 
@@ -52,22 +52,9 @@ namespace StreamStore.S3.Storage
             records.Clear();
         }
 
-        void SynchronizeRecords()
+        public override async Task UploadAsync(CancellationToken token)
         {
-            if (Data.Length == 0)
-            {
-                records.Clear();
-                return;
-            }
-            else
-            {
-                records = Converter.FromByteArray<EventMetadataRecord[]>(Data).ToList();
-            }
-        }
-
-        void SynchronizeData()
-        {
-            Data = Converter.ToByteArray(records);
+            await UploadDataAsync(Converter.ToByteArray(records.ToArray()), token);
         }
     }
 }

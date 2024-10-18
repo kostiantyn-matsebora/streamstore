@@ -55,7 +55,7 @@ namespace StreamStore.S3.Concurrency
             if (Persistent.MetadataObject.State == S3ObjectState.Loaded)
             {
                 await Transient.MetadataObject
-                        .ReplaceBy(Persistent.MetadataObject)
+                        .ReplaceBy(Persistent.MetadataObject.Events)
                         .UploadAsync(token);
             }
         }
