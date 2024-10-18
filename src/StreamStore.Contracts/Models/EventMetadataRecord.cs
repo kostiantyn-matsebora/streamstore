@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace StreamStore
 {
     public class EventMetadataRecord: IHasRevision
@@ -16,7 +18,7 @@ namespace StreamStore
         {
         }
 
-        public EventMetadataRecordCollection(System.Collections.Generic.IEnumerable<EventMetadataRecord> records) : base(records)
+        public EventMetadataRecordCollection(IEnumerable<EventMetadataRecord> records) : base(records)
         {
         }
     }
