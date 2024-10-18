@@ -23,6 +23,7 @@ namespace StreamStore.S3.Storage
         public override async Task DeleteAsync(CancellationToken token)
         {
             await base.DeleteAsync(token);
+            SynchronizeRecords();
         }
 
         public override  async Task LoadAsync(CancellationToken token)
@@ -53,7 +54,15 @@ namespace StreamStore.S3.Storage
 
         void SynchronizeRecords()
         {
-            records = Converter.FromByteArray<EventMetadataRecord[]>(Data).ToList();
+            if (Data.Length == 0)
+            {
+                records.Clear();
+                return;
+            }
+            else
+            {
+                records = Converter.FromByteArray<EventMetadataRecord[]>(Data).ToList();
+            }
         }
 
         void SynchronizeData()
