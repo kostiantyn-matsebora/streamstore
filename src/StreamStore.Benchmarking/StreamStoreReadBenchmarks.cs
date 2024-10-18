@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -40,7 +41,7 @@ namespace StreamStore.Benchmarking
         [Benchmark]
         public async Task ReadRandomStreamWith10Events()
         {
-            var streamIdIndex = new Random().Next(0, streamIds.Length);
+            var streamIdIndex = RandomNumberGenerator.GetInt32(0, streamIds.Length);
             await store.GetAsync(streamIds[streamIdIndex], CancellationToken.None);
         }
     }

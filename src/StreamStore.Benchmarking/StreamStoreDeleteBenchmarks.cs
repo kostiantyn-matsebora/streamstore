@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Disassemblers;
 using StreamStore.InMemory;
 using StreamStore.Serialization;
 
@@ -40,7 +42,7 @@ namespace StreamStore.Benchmarking
         [Benchmark]
         public async Task DeleteRandomStreamWith10Events()
         {
-            var streamIdIndex = new Random().Next(0, streamIds.Length);
+            var streamIdIndex = RandomNumberGenerator.GetInt32(0, streamIds.Length);
             await store.DeleteAsync(streamIds[streamIdIndex], CancellationToken.None);
         }
     }

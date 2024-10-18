@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
 using BenchmarkDotNet.Attributes;
 using StreamStore.Serialization;
 
@@ -23,15 +24,13 @@ namespace StreamStore.Benchmarking
         [Benchmark]
         public void ResolveNameByType()
         {
-            var random = new Random();
-            typeRegistry.ResolveNameByType(types[random.Next(0, types.Length - 1)]);
+            typeRegistry.ResolveNameByType(types[RandomNumberGenerator.GetInt32(0, types.Length - 1)]);
         }
 
         [Benchmark]
         public void ResolveTypeByName()
         {
-            var random = new Random();
-            typeRegistry.ResolveTypeByName(names[random.Next(0, types.Length - 1)]);
+            typeRegistry.ResolveTypeByName(names[RandomNumberGenerator.GetInt32(0, types.Length - 1)]);
         }
     }
 }
