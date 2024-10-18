@@ -4,22 +4,35 @@ using System.Collections.Concurrent;
 
 namespace StreamStore.Serialization
 {
-    class TypeRegistry
+    public sealed class TypeRegistry : ITypeRegistry
     {
-        public static readonly TypeRegistry Instance = new TypeRegistry();
-
         readonly ConcurrentDictionary<string, Type> types = new ConcurrentDictionary<string, Type>();
-
-        public string ByType(Type type)
+        readonly ConcurrentDictionary<Type, string> names = new ConcurrentDictionary<Type, string>();
+        private TypeRegistry()
         {
-            var name = ComposeName(type);
-
-            types.GetOrAdd(ComposeName(type), type);
-
-            return name;
         }
 
-        public Type ByName(string name)
+        void Initialize()
+        {
+            // no-op
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies)
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    var name = ComposeName(type);
+                    types.GetOrAdd(name, type);
+                    names.GetOrAdd(type, name);
+                }
+            }
+        }
+
+        public string ResolveNameByType(Type type)
+        {
+            return names.GetOrAdd(type, _ => ComposeName(_));
+        }
+
+        public Type ResolveTypeByName(string name)
         {
             return types.GetOrAdd(name, _ => Type.GetType(_));
         }
@@ -27,6 +40,13 @@ namespace StreamStore.Serialization
         static string ComposeName(Type type)
         {
             return $"{type.FullName}, {type.Assembly.GetName().Name}";
+        }
+
+        public static TypeRegistry CreateAndInitialize()
+        {
+            TypeRegistry registry = new TypeRegistry();
+            registry.Initialize();
+            return registry;
         }
     }
 }

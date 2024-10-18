@@ -14,11 +14,13 @@ namespace StreamStore.Tests
         readonly Mock<IStreamDatabase> mockStreamDatabase;
         readonly IEventSerializer serializer;
         StreamStore streamStore;
+        readonly TypeRegistry registry;
 
         public StreamStoreTests()
         {
+            registry = TypeRegistry.CreateAndInitialize();
             mockStreamDatabase = new Mock<IStreamDatabase>();
-            serializer = new EventSerializer();
+            serializer = new NewtonsoftEventSerializer(registry);
             streamStore = new StreamStore(mockStreamDatabase.Object, serializer);
         }
 
@@ -48,14 +50,14 @@ namespace StreamStore.Tests
             var act = () => streamStore.GetAsync(streamId);
 
             // Assert
-            await act.Should().ThrowAsync<StreamNotFoundException>();
+            await  act.Should().ThrowAsync<StreamNotFoundException>();
         }
 
         [Fact]
         public async Task OpenStreamAsync_ShouldThrowArgumentNullExceptionIfStreamIdIsNull()
         {
             // Arrange
-            Revision expectedRevision = 1;
+            var expectedRevision = 1;
 
             // Act
             var act = () => streamStore.OpenStreamAsync(null!, expectedRevision);
@@ -95,9 +97,9 @@ namespace StreamStore.Tests
         {
             // Arrange
             Fixture fixture = new();
-            var streamRecord = new StreamRecord(fixture.Create<string>(), [.. fixture.CreateEventRecords(count)]);
+            var streamRecord = new StreamRecord( [.. fixture.CreateEventRecords(count)]);
 
-            var streamId = streamRecord.Id;
+            var streamId = fixture.Create<Id>();
             var eventCount = streamRecord.Events.Count();
             var eventIds = streamRecord.Events.Select(e => e.Id).ToArray();
 
@@ -119,35 +121,35 @@ namespace StreamStore.Tests
         public async Task SaveChangesAsync_ShouldSaveChanges()
         {
             // Arrange
-            streamStore = new StreamStore(new InMemoryStreamDatabase());
-
+            streamStore = new StreamStore(new InMemoryStreamDatabase(), new NewtonsoftEventSerializer(registry));
+            
             var eventIds = new List<Id>();
             var fixture = new Fixture() { OmitAutoProperties = false };
             var streamId = fixture.Create<Id>();
 
             var events = fixture.CreateMany<Event>(3).ToArray();
-            eventIds.AddRange(events.Select(e => e.Id));
+            eventIds.AddRange(events.Select(e=> e.Id));
 
             // Act 1
             // First way to append to stream
-            var stream =
+            var stream = 
                 await streamStore.OpenStreamAsync(streamId, CancellationToken.None);
 
-#pragma warning disable S6966 // Awaitable method should be used
             stream
                 .Add(events[0].Id, events[0].Timestamp, events[0].EventObject)
                 .Add(events[1].Id, events[1].Timestamp, events[1].EventObject)
                 .Add(events[2].Id, events[2].Timestamp, events[2].EventObject);
-#pragma warning restore S6966 // Awaitable method should be used
 
             await stream.SaveChangesAsync(CancellationToken.None);
+
 
             // Act 2
             events = fixture.CreateMany<Event>(5).ToArray();
             eventIds.AddRange(events.Select(e => e.Id));
 
             // Second way to append to stream
-            stream = await streamStore.OpenStreamAsync(streamId, 3, CancellationToken.None);
+            stream =
+              await streamStore.OpenStreamAsync(streamId, 3, CancellationToken.None);
 
             stream.AddRange(events);
 
@@ -157,7 +159,7 @@ namespace StreamStore.Tests
             events = fixture.CreateMany<Event>(100).ToArray();
             eventIds.AddRange(events.Select(e => e.Id));
 
-            // Third way to append to stream - the best one
+            // Third way to append to stream
             await streamStore
                 .OpenStreamAsync(streamId, 8, CancellationToken.None)
                 .AddRangeAsync(events)
@@ -184,8 +186,8 @@ namespace StreamStore.Tests
             var fixture = new Fixture();
             var streamId = fixture.Create<string>();
 
-            var records = fixture.CreateEventRecords(3);
-            var streamRecord = new StreamMetadataRecord(streamId, records);
+            var records = fixture.CreateEventRecords(1, 3);
+            var streamRecord = new StreamMetadataRecord(records);
 
             mockStreamDatabase
                 .Setup(db => db.FindMetadataAsync(streamId, It.IsAny<CancellationToken>()))
@@ -211,8 +213,8 @@ namespace StreamStore.Tests
             var fixture = new Fixture();
             var streamId = fixture.Create<string>();
 
-            var records = fixture.CreateEventRecords(3);
-            var streamRecord = new StreamMetadataRecord(streamId, records);
+            var records = fixture.CreateEventRecords(1, 3);
+            var streamRecord = new StreamMetadataRecord(records);
 
             var events = records.Select(r => new Event
             {
@@ -226,13 +228,13 @@ namespace StreamStore.Tests
                 .ReturnsAsync(streamRecord);
 
             mockStreamDatabase
-                .Setup(db => db.BeginAppendAsync(streamId, 3, default))
+                .Setup(db => db.BeginAppendAsync(streamId, 3, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Mock<IStreamUnitOfWork>().Object);
 
             // Act
             // Trying to append existing events mixed with new ones, put existing to the end
             var mixedEvents = fixture.CreateMany<Event>(5).Concat(events);
-
+            
             var act = async () =>
                 await
                     streamStore

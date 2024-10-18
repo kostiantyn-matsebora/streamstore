@@ -22,7 +22,7 @@ namespace StreamStore.S3.Models
 
         public StreamMetadataRecord ToRecord()
         {
-            return new StreamMetadataRecord(StreamId!, this.Select(m => m.ToRecord()));
+            return new StreamMetadataRecord(this.Select(m => m.ToRecord()));
         }
     }
 }

@@ -33,7 +33,7 @@ namespace StreamStore.InMemory
             if (!store.TryGetValue(streamId, out var record))
                 return Task.FromResult<StreamMetadataRecord?>(null);
 
-            return Task.FromResult<StreamMetadataRecord?>(new StreamMetadataRecord(streamId, record.Events));
+            return Task.FromResult<StreamMetadataRecord?>(new StreamMetadataRecord(record.Events));
         }
 
         public Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)

@@ -12,10 +12,6 @@ namespace StreamStore
         readonly IStreamDatabase database;
         readonly EventConverter converter;
 
-        public StreamStore(IStreamDatabase database) : this(database, new EventSerializer())
-        {
-        }
-
         public StreamStore(IStreamDatabase database, IEventSerializer serializer)
         {
             if (database == null) throw new ArgumentNullException(nameof(database));
@@ -56,7 +52,7 @@ namespace StreamStore
             if (streamRecord == null)
                 throw new StreamNotFoundException(streamId);
 
-            return converter.ConvertToEntity(streamRecord);
+            return converter.ConvertToEntity(streamId, streamRecord);
         }
     }
 }

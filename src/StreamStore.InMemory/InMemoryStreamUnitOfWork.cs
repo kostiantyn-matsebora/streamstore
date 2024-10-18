@@ -19,7 +19,7 @@ namespace StreamStore.InMemory
 
         protected override Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
         {
-            var record = new StreamRecord(streamId, uncommited);
+            var record = new StreamRecord(uncommited);
 
             database.store.AddOrUpdate(streamId, record, (key, oldValue) =>
             {

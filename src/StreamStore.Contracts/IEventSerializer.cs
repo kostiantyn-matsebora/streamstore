@@ -2,7 +2,7 @@
 {
     public interface IEventSerializer
     {
-        string Serialize(object @event);
-        object Deserialize(string data);
+        byte[] Serialize(object @event);
+        object Deserialize(byte[] data);
     }
 }
