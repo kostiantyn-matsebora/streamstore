@@ -145,7 +145,6 @@ or from NuGet Package Manager Console:
 
 ```
 
-
 ## Good to know
 
 - _[`Id`][Id]  is a value object (immutable class) that has implicit conversion from and to string_.  

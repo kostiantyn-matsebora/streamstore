@@ -6,7 +6,7 @@ namespace StreamStore.Serialization.Protobuf
 {
     public class ProtobufEventSerializer : EventSerializerBase
     {
-        public ProtobufEventSerializer(TypeRegistry registry, bool compression = false): base(registry, compression) {  }
+        public ProtobufEventSerializer(ITypeRegistry registry, bool compression = false): base(registry, compression) {  }
 
         protected override EventEnvelope DeserializeEnvelope(byte[] data)
         {

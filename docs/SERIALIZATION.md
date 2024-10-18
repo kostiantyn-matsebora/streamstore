@@ -40,12 +40,6 @@ Taking into account that events needs to be deserialized to original type, seria
   services.UseProtobufSerializer(compression: true); // by default compression is disabled
 ```
 
-Then register it in DI container:
-
-```csharp
-  services.AddSingleton<IEventSerializer, MyCustomSerializer>();
-```
-
 ## Customization
 
 To be able to use your own serialization/deserialization implementation you need to implement `IEventSerializer` interface:
