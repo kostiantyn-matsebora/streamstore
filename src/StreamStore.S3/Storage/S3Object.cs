@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
@@ -8,14 +7,14 @@ using StreamStore.S3.Client;
 namespace StreamStore.S3.Storage
 {
 
-    class S3Object : IS3Object
+    abstract class S3Object : IS3Object
     {
         readonly S3ContainerPath path;
         readonly IS3ClientFactory clientFactory;
 
         public S3ObjectState State { get; private set; } = S3ObjectState.Unknown;
 
-        public S3Object(S3ContainerPath path, IS3ClientFactory clientFactory)
+        protected S3Object(S3ContainerPath path, IS3ClientFactory clientFactory)
         {
             this.path = path;
             this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
@@ -33,7 +32,7 @@ namespace StreamStore.S3.Storage
                 {
                     fileId = descriptor!.FileId!;
                     await client.DeleteObjectByFileIdAsync(fileId!, descriptor.FileName!, token);
-                    State = S3ObjectState.NotExists;
+                    State = S3ObjectState.DoesNotExist;
                 } else
                 {
                     fileId = null;
@@ -56,7 +55,7 @@ namespace StreamStore.S3.Storage
    
             } else
             {
-                State = S3ObjectState.NotExists;
+                State = S3ObjectState.DoesNotExist;
                 return null!;
             }
            
@@ -80,14 +79,9 @@ namespace StreamStore.S3.Storage
             State = S3ObjectState.Unknown;
         }
 
-        public virtual Task UploadAsync(CancellationToken token)
-        {
-            return Task.CompletedTask;
-        }
+        public abstract Task UploadAsync(CancellationToken token);
 
-        public virtual Task LoadAsync(CancellationToken token)
-        {
-            return Task.CompletedTask;
-        }
+        public abstract Task LoadAsync(CancellationToken token);
+
     }
 }

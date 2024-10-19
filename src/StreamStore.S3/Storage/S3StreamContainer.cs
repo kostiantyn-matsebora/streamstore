@@ -30,7 +30,7 @@ namespace StreamStore.S3.Storage
         {
             await MetadataObject.LoadAsync(token);
 
-            if (MetadataObject.State == S3ObjectState.NotExists) return;
+            if (MetadataObject.State == S3ObjectState.DoesNotExist) return;
 
             var tasks = MetadataObject.Events.Select(async e =>
             {
@@ -48,11 +48,11 @@ namespace StreamStore.S3.Storage
 
         public async override Task DeleteAsync(CancellationToken token)
         {
-            // Delete all events
-            await Events.DeleteAsync(token);
-
             // Delete metadata
             await MetadataObject.DeleteAsync(token);
+
+            // Delete all events
+            await Events.DeleteAsync(token);
 
             ResetState();
         }

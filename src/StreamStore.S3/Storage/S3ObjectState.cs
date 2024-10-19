@@ -4,6 +4,6 @@
     {
         Unknown,
         Loaded,
-        NotExists
+        DoesNotExist
     }
 }

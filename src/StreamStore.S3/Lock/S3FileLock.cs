@@ -34,7 +34,7 @@ namespace StreamStore.S3.Lock
 
             // Trying to figure out if lock already acquired by someone else
             await lockObject.LoadAsync(token);
-            if (lockObject.State == S3ObjectState.NotExists) return null;
+            if (lockObject.State == S3ObjectState.DoesNotExist) return null;
             
 
             var existingLockId = lockObject.LockId!;

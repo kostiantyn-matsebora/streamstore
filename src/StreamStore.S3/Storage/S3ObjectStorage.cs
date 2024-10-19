@@ -36,19 +36,7 @@ namespace StreamStore.S3.Storage
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new System.NotImplementedException();
-        }
-    }
-
-    internal abstract class S3ObjectStorage<TContainer> : S3ObjectStorage<S3Object, TContainer> where TContainer : S3ObjectContainer
-    {
-        protected S3ObjectStorage(S3ContainerPath parent, IS3ClientFactory clientFactory) : base(parent, clientFactory)
-        {
-        }
-
-        protected override S3Object CreateItem(string name)
-        {
-            return new S3Object(path.Combine(name), clientFactory);
+            return ((IEnumerable<T>)this).GetEnumerator();
         }
 
         public async Task DeleteAsync(Id streamId, CancellationToken token = default)
@@ -64,15 +52,15 @@ namespace StreamStore.S3.Storage
         }
     }
 
-    internal class S3ObjectStorage : S3ObjectStorage<S3ObjectContainer>
+    internal abstract class S3ObjectStorage<TContainer> : S3ObjectStorage<S3BinaryObject, TContainer> where TContainer : S3ObjectContainer
     {
-        public S3ObjectStorage(S3ContainerPath parent, IS3ClientFactory clientFactory) : base(parent, clientFactory)
+        protected S3ObjectStorage(S3ContainerPath parent, IS3ClientFactory clientFactory) : base(parent, clientFactory)
         {
         }
 
-        protected override S3ObjectContainer CreateContainer(string name)
+        protected override S3BinaryObject CreateItem(string name)
         {
-           return new S3ObjectContainer(path.Combine(name), clientFactory);
+            return new S3BinaryObject(path.Combine(name), clientFactory);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace StreamStore.S3
             var storage = storageFactory.CreateStorage();
             var container = await storage.Persistent.LoadAsync(streamId, token);
 
-            if (container.State == S3ObjectState.NotExists) return null;
+            if (container.State == S3ObjectState.DoesNotExist) return null;
 
             return new StreamRecord(container.Events.Select(e => e.Event!));
         }
@@ -48,7 +48,7 @@ namespace StreamStore.S3
 
             var metadata = await storage.Persistent.LoadMetadataAsync(streamId);
 
-            if (metadata!.State == S3ObjectState.NotExists) return null;
+            if (metadata!.State == S3ObjectState.DoesNotExist) return null;
 
             return new StreamMetadataRecord(metadata.Events!);
         }

@@ -12,8 +12,8 @@ namespace StreamStore.S3.Example
 
             builder.Services.AddHostedService<Janitor>();
             builder.Services.AddHostedService<Worker>();
-            //builder.Services.AddHostedService<Worker2>();
-            //builder.Services.AddHostedService<Worker3>();
+            builder.Services.AddHostedService<Worker2>();
+            builder.Services.AddHostedService<Worker3>();
 
             builder
                 .Services

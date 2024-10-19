@@ -8,7 +8,6 @@ namespace StreamStore.S3.Storage
 {
     internal class S3EventStorage : S3ObjectStorage<S3EventObject, S3ObjectContainer>
     {
-
         public bool NotEmpty => objects.Any();
 
         public S3EventStorage(S3ContainerPath path, IS3ClientFactory clientFactory) : base(path, clientFactory)

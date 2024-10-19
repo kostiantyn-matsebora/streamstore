@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +23,7 @@ namespace StreamStore.S3.Storage
 
         protected S3Object GetChildObject(string name)
         {
-            return objects.GetOrAdd(name, _ => new S3Object(path.Combine(_), clientFactory));
+            return objects.GetOrAdd(name, _ => new S3BinaryObject(path.Combine(_), clientFactory));
         }
 
         protected S3ObjectContainer GetChildContainer(string name)
@@ -40,20 +39,18 @@ namespace StreamStore.S3.Storage
                 string? startObjectName = null;
                 do
                 {
-                    var response = await client.ListObjectsAsync(path.Normalize(), startObjectName, token);
-                    if (response == null) return;
+                    if (token.IsCancellationRequested) return;
 
-                    if (response!.Objects!.Length == 0) return;
+                    var childObjects = await GetChildObjects(client, startObjectName);
 
-                    var tasks = response.Objects.Select(async e =>
-                    {
-                        await client.DeleteObjectByFileIdAsync(e.FileId!, e.FileName!, token);
-                        startObjectName = e.FileName;
-                    });
-                    Task.WaitAll(tasks.ToArray());
+                    if (childObjects!.Length == 0) return;
+
+                    startObjectName = DeleteChildObjects(client, startObjectName, childObjects);
+
                 } while (startObjectName != null);
-
             }
+
+            ResetState();
         }
 
         public virtual void ResetState()
@@ -69,6 +66,24 @@ namespace StreamStore.S3.Storage
 
             containers.Clear();
             objects.Clear();
+        }
+
+        static string? DeleteChildObjects(IS3Client client, string? startObjectName, ObjectDescriptor[] childObjects)
+        {
+            var tasks = childObjects.Select(async e =>
+            {
+                await client.DeleteObjectByFileIdAsync(e.FileId!, e.FileName!, CancellationToken.None);
+                startObjectName = e.FileName;
+            });
+            Task.WaitAll(tasks.ToArray());
+            return startObjectName;
+        }
+
+        async Task<ObjectDescriptor[]> GetChildObjects(IS3Client client, string? startObjectName)
+        {
+            var response = await client.ListObjectsAsync(path.Normalize(), startObjectName, CancellationToken.None);
+            if (response == null) return Enumerable.Empty<ObjectDescriptor>().ToArray();
+            return response.Objects!;
         }
     }
 }
