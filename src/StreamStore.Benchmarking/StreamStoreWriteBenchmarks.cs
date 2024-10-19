@@ -2,37 +2,39 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
 using BenchmarkDotNet.Attributes;
-using StreamStore.InMemory;
-using StreamStore.Serialization;
+using Dapper.Extensions.Factory;
 
 
 namespace StreamStore.Benchmarking
 {
-    public class StreamStoreWriteBenchmarks
+    public class StreamStoreWriteBenchmarks: StreamStoreBenchmarksBase
     {
-        readonly Event[] events;
-        readonly StreamStore store;
-
-        public StreamStoreWriteBenchmarks() {
-            var fixture = new Fixture();
-
-            events = fixture.CreateMany<Event>(100).ToArray();
-            store = new StreamStore(new InMemoryStreamDatabase(), new NewtonsoftEventSerializer(TypeRegistry.CreateAndInitialize()));
+        [Benchmark]
+        public async Task InMemoryStore_Save10Events()
+        {
+            await Save10Events(inMemoryStore);
         }
 
         [Benchmark]
-        public async Task Save10Events10Times()
+        public async Task SqliteStore_Save10Events()
+        {
+            await DapperFactory.Step(async dapper =>
+            {
+                var store = CreateSqliteStore(dapper);
+                await Save10Events(store);
+            });
+        }
+
+
+        async Task Save10Events(StreamStore store)
         {
             var streamId = Guid.NewGuid().ToString();
-            for (var i = 0; i < 10; i++)
-            {
-                await store
-                    .OpenStreamAsync(streamId, 10 * i, CancellationToken.None)
-                     .AddRangeAsync(events.Skip(10 * i).Take(10), CancellationToken.None)
-                    .SaveChangesAsync(CancellationToken.None);
-            }
+
+            await store
+                .OpenStreamAsync(streamId,  CancellationToken.None)
+                .AddRangeAsync(events.Take(10), CancellationToken.None)
+                .SaveChangesAsync(CancellationToken.None);
         }
     }
 }

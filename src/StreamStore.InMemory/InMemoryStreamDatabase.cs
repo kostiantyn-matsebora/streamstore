@@ -8,7 +8,7 @@ using StreamStore.Exceptions;
 namespace StreamStore.InMemory
 {
 
-    public class InMemoryStreamDatabase : IStreamDatabase
+    public sealed class InMemoryStreamDatabase : IStreamDatabase
     {
         internal ConcurrentDictionary<string, StreamRecord> store = new ConcurrentDictionary<string, StreamRecord>();
 

@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StreamStore.ExampleBase\StreamStore.ExampleBase.csproj" />
     <ProjectReference Include="..\StreamStore.S3.AWS\StreamStore.S3.AWS.csproj" />
     <ProjectReference Include="..\StreamStore.S3.B2\StreamStore.S3.B2.csproj" />
     <ProjectReference Include="..\StreamStore\StreamStore.csproj" />
