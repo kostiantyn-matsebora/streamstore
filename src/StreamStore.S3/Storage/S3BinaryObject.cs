@@ -22,6 +22,7 @@ namespace StreamStore.S3.Storage
         {
            await UploadDataAsync(Data!, token);
         }
+
         public override void ResetState()
         {
             base.ResetState();
