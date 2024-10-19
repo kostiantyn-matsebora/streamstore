@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using StreamStore.Exceptions;
 using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
-using StreamStore.S3.Models;
-using StreamStore.S3.Operations;
+using StreamStore.S3.Storage;
 
 
 namespace StreamStore.S3
@@ -14,39 +13,30 @@ namespace StreamStore.S3
     internal sealed class S3StreamUnitOfWork : StreamUnitOfWorkBase
     {
       
-        readonly IS3Factory factory;
-        readonly S3TransactionContext ctx;
-        public S3StreamUnitOfWork(Id streamId, Revision expectedRevision, IS3Factory factory): base(streamId, expectedRevision, null)
+        readonly IS3LockFactory factory;
+        readonly S3StreamContext streamContext;
+
+        public S3StreamUnitOfWork(IS3LockFactory factory, S3StreamContext streamContext):
+            base(streamContext.StreamId, streamContext.ExpectedRevision, null)
         {
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            ctx = S3TransactionContext.New(streamId);
-        }
+           this.streamContext = streamContext;
+           this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+         }
 
         protected override async Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
         {
-            if (!ctx.HasChanges)
+            if (!streamContext.NotEmpty)
                 throw new InvalidOperationException("No events to save.");
 
-            await using var client = factory.CreateClient();
-          
-            ThrowIfStreamAlreadyChanged(await GetStreamMetadata(client, token));
+            ThrowIfStreamAlreadyChanged(await streamContext.GetPersistentMetadataAsync(token));
 
-            using var transaction = await S3StreamTransaction.BeginAsync(ctx, factory);
+            using var transaction = await new S3StreamTransaction(streamContext, factory).BeginAsync(token);
             try
             {
                 // Get the current revision
-                var metadata = await GetStreamMetadata(client, token);
+                var metadata = await streamContext.GetPersistentMetadataAsync(token);
+
                 ThrowIfStreamAlreadyChanged(metadata);
-
-                if (metadata == null)
-                    metadata = S3StreamMetadata.New(ctx.StreamId, ctx.UncommitedMetadata);
-                else
-                    metadata.AddRange(ctx.UncommitedMetadata);
-
-                // Update stream
-                await S3StreamUploader
-                    .New(ctx.Transient, client)
-                    .UploadAsync(metadata, ctx.Uncommited, token);
 
                 // Commit transaction
                 await transaction.CommitAsync(token);
@@ -58,26 +48,16 @@ namespace StreamStore.S3
             }
         }
 
-        protected override Task OnEventAdded(EventRecord @event, CancellationToken token)
+        protected override async Task OnEventAdded(EventRecord @event, CancellationToken token)
         {
-            ctx.Add(@event);
-            return Task.CompletedTask;
+            await streamContext.AddTransientEventAsync(@event, token);
         }
 
-        async Task<S3StreamMetadata?> GetStreamMetadata(IS3Client client, CancellationToken token)
-        {
-            var response = await client.FindObjectAsync(ctx.Persistent.MetadataKey, token);
-            if (response == null) return null;
-
-            var record = Converter.FromByteArray<S3StreamMetadataRecord>(response.Data!);
-            return record!.ToMetadata();
-        }
-
-        void ThrowIfStreamAlreadyChanged(S3StreamMetadata? stream)
+        void ThrowIfStreamAlreadyChanged(EventMetadataRecordCollection? stream)
         {
             if (stream == null) return;
-            if (stream!.Revision != expectedRevision)
-                throw new OptimisticConcurrencyException(expectedRevision, stream!.Revision, ctx.StreamId);
+            if (stream!.MaxRevision > expectedRevision)
+                throw new OptimisticConcurrencyException(expectedRevision, stream!.MaxRevision, streamContext.StreamId);
         }
     }
 }

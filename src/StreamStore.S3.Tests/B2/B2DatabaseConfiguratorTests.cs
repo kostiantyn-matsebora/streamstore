@@ -26,7 +26,13 @@ namespace StreamStore.S3.Tests.B2
         {
             serviceCollection.Setup(
                 x => x.Add(It.Is<ServiceDescriptor>(d =>
-                    d.ServiceType == typeof(IS3Factory) &&
+                    d.ServiceType == typeof(IS3ClientFactory) &&
+                    d.ImplementationType == typeof(B2S3Factory) &&
+                    d.Lifetime == ServiceLifetime.Singleton))
+                );
+            serviceCollection.Setup(
+                x => x.Add(It.Is<ServiceDescriptor>(d =>
+                    d.ServiceType == typeof(IS3LockFactory) &&
                     d.ImplementationType == typeof(B2S3Factory) &&
                     d.Lifetime == ServiceLifetime.Singleton))
                 );

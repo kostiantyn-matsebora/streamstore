@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
-using StreamStore.S3.AWS;
+﻿using StreamStore.S3.AWS;
+using StreamStore.S3.Concurrency;
 using StreamStore.S3.Lock;
+using StreamStore.S3.Storage;
 using StreamStore.Testing;
 
 namespace StreamStore.S3.IntegrationTests.AWS
@@ -25,7 +26,7 @@ namespace StreamStore.S3.IntegrationTests.AWS
             if (factory == null)
                 return null;
 
-            return new S3StreamUnitOfWork(streamId, expectedRevision, factory);
+            return new S3StreamUnitOfWork(factory, new S3StreamContext(streamId, expectedRevision, new S3Storage(factory)));
         }
 
         public IStreamDatabase? CreateDatabase()
@@ -34,7 +35,7 @@ namespace StreamStore.S3.IntegrationTests.AWS
             if (factory == null)
                 return null;
 
-            return new S3StreamDatabase(factory);
+            return new S3StreamDatabase(factory, factory);
         }
 
         static AWSS3DatabaseSettings? ConfigureSettings()

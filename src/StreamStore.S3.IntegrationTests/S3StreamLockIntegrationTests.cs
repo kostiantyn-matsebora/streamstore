@@ -4,11 +4,12 @@ using Bytewizer.Backblaze.Extensions;
 using FluentAssertions;
 using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
+using StreamStore.Testing;
 
 
 namespace StreamStore.S3.IntegrationTests
 {
-    public abstract class S3StreamLockIntegrationTests(IS3Factory? factory)
+    public abstract class S3StreamLockIntegrationTests(IS3LockFactory? factory)
     {
         [InlineData(1000)]
         [InlineData(100)]
@@ -21,13 +22,15 @@ namespace StreamStore.S3.IntegrationTests
 
             // Arrange
             var fixture = new Fixture();
-            var ctx = S3TransactionContext.New(fixture.Create<string>());
 
             var acquirances = new ConcurrentBag<IS3LockHandle>();
+            var streamId = GeneratedValues.Id;
+            var transactionId = GeneratedValues.Id;
+
             // Act
             await Enumerable.Range(0, parallelAttempts).ForEachAsync(parallelAttempts, async i =>
             {
-                var @lock = factory!.CreateLock(ctx);
+                var @lock = factory!.CreateLock(streamId, transactionId);
                 var handle = await @lock.AcquireAsync(CancellationToken.None);
 
                 if (handle != null)
@@ -49,14 +52,15 @@ namespace StreamStore.S3.IntegrationTests
 
             // Arrange
             var fixture = new Fixture();
-            var ctx = S3TransactionContext.New(fixture.Create<string>());
+            var streamId = GeneratedValues.Id;
+            var transactionId = GeneratedValues.Id;
 
             // Act & Assert
-            var @lock = factory!.CreateLock(ctx);
+            var @lock = factory!.CreateLock(streamId, transactionId);
             var handle = await @lock.AcquireAsync(CancellationToken.None);
             handle.Should().NotBeNull();
 
-            var lock2 = factory!.CreateLock(ctx);
+            var lock2 = factory!.CreateLock(streamId, transactionId);
             var handle2 = await lock2.AcquireAsync(CancellationToken.None);
             handle2.Should().BeNull();
 
@@ -70,10 +74,11 @@ namespace StreamStore.S3.IntegrationTests
 
             // Arrange
             var fixture = new Fixture();
-            var ctx = S3TransactionContext.New(fixture.Create<string>());
+            var streamId = GeneratedValues.Id;
+            var transactionId = GeneratedValues.Id;
 
             // Act & Assert
-            var @lock = factory!.CreateLock(ctx);
+            var @lock = factory!.CreateLock(streamId, transactionId);
             var handle = await @lock.AcquireAsync(CancellationToken.None);
             handle.Should().NotBeNull();
 
@@ -81,7 +86,7 @@ namespace StreamStore.S3.IntegrationTests
 
             await handle!.ReleaseAsync(CancellationToken.None);
 
-            var lock2 = factory!.CreateLock(ctx);
+            var lock2 = factory!.CreateLock(streamId, transactionId);
             var handle2 = await lock2.AcquireAsync(CancellationToken.None);
             handle2.Should().NotBeNull();
 
