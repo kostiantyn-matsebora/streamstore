@@ -5,7 +5,7 @@ using StreamStore.S3.Client;
 
 namespace StreamStore.S3.Storage
 {
-    internal class S3StreamStorage : S3ObjectStorage<S3StreamContainer>
+    internal class S3StreamStorage : S3ContainerStorage<S3StreamContainer>
     {
         public S3StreamStorage(S3ContainerPath path, IS3ClientFactory clientFactory) : base(path, clientFactory)
         {

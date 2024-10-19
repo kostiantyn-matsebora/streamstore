@@ -21,16 +21,6 @@ namespace StreamStore.S3.Storage
             this.clientFactory = clientFactory ?? throw new System.ArgumentNullException(nameof(clientFactory));
         }
 
-        protected S3Object GetChildObject(string name)
-        {
-            return objects.GetOrAdd(name, _ => new S3BinaryObject(path.Combine(_), clientFactory));
-        }
-
-        protected S3ObjectContainer GetChildContainer(string name)
-        {
-            return containers.GetOrAdd(name, _ => new S3ObjectContainer(path.Combine(_), clientFactory));
-        }
-
         public virtual async Task DeleteAsync(CancellationToken token)
         {
             await using (var client = clientFactory.CreateClient())

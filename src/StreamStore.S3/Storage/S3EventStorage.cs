@@ -6,7 +6,7 @@ using StreamStore.S3.Client;
 
 namespace StreamStore.S3.Storage
 {
-    internal class S3EventStorage : S3ObjectStorage<S3EventObject, S3ObjectContainer>
+    internal class S3EventStorage : S3ObjectStorage<S3EventObject>
     {
         public bool NotEmpty => objects.Any();
 
@@ -26,11 +26,6 @@ namespace StreamStore.S3.Storage
             var @event = GetItem(eventId);
             await @event.LoadAsync(token);
             return @event;
-        }
-
-        protected override S3ObjectContainer CreateContainer(string name)
-        {
-            return base.GetChildContainer(name);
         }
 
         protected override S3EventObject CreateItem(string name)

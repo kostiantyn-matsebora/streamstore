@@ -52,15 +52,27 @@ namespace StreamStore.S3.Storage
         }
     }
 
-    internal abstract class S3ObjectStorage<TContainer> : S3ObjectStorage<S3BinaryObject, TContainer> where TContainer : S3ObjectContainer
+    internal abstract class S3ContainerStorage<TContainer> : S3ObjectStorage<S3BinaryObject, TContainer> where TContainer : S3ObjectContainer
     {
-        protected S3ObjectStorage(S3ContainerPath parent, IS3ClientFactory clientFactory) : base(parent, clientFactory)
+        protected S3ContainerStorage(S3ContainerPath parent, IS3ClientFactory clientFactory) : base(parent, clientFactory)
         {
         }
 
         protected override S3BinaryObject CreateItem(string name)
         {
             return new S3BinaryObject(path.Combine(name), clientFactory);
+        }
+    }
+
+    internal abstract class S3ObjectStorage<TObject> : S3ObjectStorage<TObject, S3ObjectContainer> where TObject : S3Object
+    {
+        protected S3ObjectStorage(S3ContainerPath parent, IS3ClientFactory clientFactory) : base(parent, clientFactory)
+        {
+        }
+
+        protected override S3ObjectContainer CreateContainer(string name)
+        {
+            return new S3ObjectContainer(path.Combine(name), clientFactory);
         }
     }
 }
