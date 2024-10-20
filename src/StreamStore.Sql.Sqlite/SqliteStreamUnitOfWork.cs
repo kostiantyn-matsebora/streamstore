@@ -25,23 +25,22 @@ namespace StreamStore.SQL.Sqlite
         protected override async Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
         {
             var sql = $"INSERT INTO {configuration.FullTableName} (Id, StreamId, Revision, Timestamp, Data) VALUES (@Id, @StreamId, @Revision, @Timestamp, @Data)";
-            try
+            using (var transaction = dapper.BeginTransaction())
             {
-                    using (var transaction = dapper.BeginTransaction())
-                    {
-                       
-                        await dapper.ExecuteAsync(sql, uncommited.ToEntityArray(streamId));
-                        dapper.CommitTransaction();
-                    }
-            }
-            catch (SQLiteException e)
-            {
-                if (e.ErrorCode != 19)
+                try
                 {
-                    throw;
+                    await dapper.ExecuteAsync(sql, uncommited.ToEntityArray(streamId));
+                    dapper.CommitTransaction();
                 }
+                catch (SQLiteException e)
+                {
+                    if (e.ErrorCode != 19)
+                    {
+                        throw;
+                    }
 
-                throw new OptimisticConcurrencyException(expectedRevision, GetActualRevision(), streamId);
+                    throw new OptimisticConcurrencyException(expectedRevision, GetActualRevision(), streamId);
+                }
             }
         }
 
