@@ -17,7 +17,7 @@ namespace StreamStore.S3.Tests.InMemory
             await action(database!);
         }
 
-        IStreamDatabase? CreateDatabase()
+        static S3StreamDatabase? CreateDatabase()
         {
             return new S3StreamDatabase(new S3InMemoryFactory(), new S3StorageFactory(new S3InMemoryFactory()));
         }

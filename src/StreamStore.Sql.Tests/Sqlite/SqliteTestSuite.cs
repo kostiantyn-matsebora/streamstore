@@ -57,7 +57,7 @@ namespace StreamStore.Sql.Tests.Sqlite
                 }).Build();
         }
 
-        SqliteDatabaseConfiguration CreateSqliteConfiguration()
+        static SqliteDatabaseConfiguration CreateSqliteConfiguration()
         {
             return new SqliteDatabaseConfigurationBuilder()
               .WithConnectionString("Data Source=StreamStore.sqlite;Version=3;")

@@ -71,7 +71,7 @@ namespace StreamStore.S3.IntegrationTests.AWS
             return new AWSS3Factory(settings!, new AmazonS3ClientFactory());
         }
 
-        IStreamDatabase? CreateDatabase()
+        S3StreamDatabase? CreateDatabase()
         {
             var factory = CreateFactory();
 

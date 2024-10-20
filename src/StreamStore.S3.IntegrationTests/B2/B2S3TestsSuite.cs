@@ -39,7 +39,7 @@ namespace StreamStore.S3.IntegrationTests.B2
             await action(database!);
         }
 
-        IStreamDatabase? CreateDatabase()
+        S3StreamDatabase? CreateDatabase()
         {
             var factory = CreateFactory();
             if (factory == null)

@@ -43,7 +43,7 @@ namespace StreamStore.Benchmarking
             });
         }
 
-        string[] GenerateStreamIds()
+        static string[] GenerateStreamIds()
         {
             return Enumerable
                 .Range(0, 100)
