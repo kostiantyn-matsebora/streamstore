@@ -10,15 +10,12 @@ using StreamStore.Testing;
 namespace StreamStore.S3.IntegrationTests
 {
 
-    public abstract class S3ClientIntegrationTestsBase
+    public abstract class S3ClientIntegrationTestsBase: IntegrationTestsBase
     {
-        readonly IS3Suite suite;
         readonly IS3Client? client;
 
-        protected S3ClientIntegrationTestsBase(IS3Suite suite)
+        protected S3ClientIntegrationTestsBase(IS3Suite suite): base(suite)
         {
-            this.suite = suite ?? throw new ArgumentNullException(nameof(suite));
-            this.suite.Initialize();
             if (suite.IsReady)
                 client = suite.CreateClientFactory()!.CreateClient();
         }
@@ -26,7 +23,7 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableFact]
         public async Task FindObjectAsync_ShouldNotFindFileDoesNotExist()
         {
-            Skip.IfNot(!suite.IsReady, "Database configuration is missing");
+            Skip.IfNot(suite.IsReady, "Database configuration is missing");
 
             // Arrange
             // Act
@@ -39,7 +36,7 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableFact]
         public async Task UploadObjectAsync_ShouldUploadAndDeleteFileAsync()
         {
-            Skip.IfNot(!suite.IsReady, "Database configuration is missing");
+            Skip.IfNot(suite.IsReady, "Database configuration is missing");
 
             // Arrange
             var data = RandomByteArray;
@@ -67,7 +64,7 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableFact]
         public async Task FindObjectAsync_ShouldFindObject()
         {
-            Skip.IfNot(!suite.IsReady, "Database configuration is missing");
+            Skip.IfNot(suite.IsReady, "Database configuration is missing");
 
             // Arrange
             var data = RandomByteArray;

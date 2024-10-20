@@ -9,11 +9,6 @@ namespace StreamStore.Testing
         {
         }
 
-        protected override void TrySkip()
-        {
-            Skip.If(!suite.IsReady, "Suite is not ready for tests.");
-        }
-
         [SkippableFact]
         public async Task FindAsync_ShouldNotFindIfNotExists()
         {

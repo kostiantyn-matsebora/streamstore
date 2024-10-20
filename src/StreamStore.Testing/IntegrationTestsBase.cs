@@ -14,7 +14,7 @@
 
         protected virtual void TrySkip()
         {
-            Skip.If(!suite.IsReady, "Suite is not ready.");
+            Skip.IfNot(suite.IsReady, "Suite is not ready.");
         }
     }
 }

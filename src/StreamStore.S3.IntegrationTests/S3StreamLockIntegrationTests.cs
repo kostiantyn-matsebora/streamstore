@@ -8,14 +8,13 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.IntegrationTests
 {
-    public abstract class S3StreamLockIntegrationTests
+    public abstract class S3StreamLockIntegrationTests: IntegrationTestsBase
     {
-        private readonly IS3Suite suite;
+        private readonly IS3LockFactory? lockFactory;
 
-        protected S3StreamLockIntegrationTests(IS3Suite suite)
+        protected S3StreamLockIntegrationTests(IS3Suite suite): base(suite)
         {
-            this.suite = suite ?? throw new ArgumentNullException(nameof(suite));
-            this.suite.Initialize();
+            this.lockFactory = suite.IsReady? suite.CreateLockFactory() : null!;
         }
 
         [InlineData(1000)]
@@ -37,7 +36,7 @@ namespace StreamStore.S3.IntegrationTests
             // Act
             await Enumerable.Range(0, parallelAttempts).ForEachAsync(parallelAttempts, async i =>
             {
-                var @lock = suite.CreateLockFactory()!.CreateLock(streamId, transactionId);
+                var @lock = lockFactory!.CreateLock(streamId, transactionId);
                 var handle = await @lock.AcquireAsync(CancellationToken.None);
 
                 if (handle != null)
@@ -63,11 +62,11 @@ namespace StreamStore.S3.IntegrationTests
             var transactionId = GeneratedValues.Id;
 
             // Act & Assert
-            var @lock = suite.CreateLockFactory()!.CreateLock(streamId, transactionId);
+            var @lock = lockFactory!.CreateLock(streamId, transactionId);
             var handle = await @lock.AcquireAsync(CancellationToken.None);
             handle.Should().NotBeNull();
 
-            var lock2 = suite.CreateLockFactory()!.CreateLock(streamId, transactionId);
+            var lock2 = lockFactory.CreateLock(streamId, transactionId);
             var handle2 = await lock2.AcquireAsync(CancellationToken.None);
             handle2.Should().BeNull();
 
@@ -85,7 +84,7 @@ namespace StreamStore.S3.IntegrationTests
             var transactionId = GeneratedValues.Id;
 
             // Act & Assert
-            var @lock = suite.CreateLockFactory()!.CreateLock(streamId, transactionId);
+            var @lock = lockFactory!.CreateLock(streamId, transactionId);
             var handle = await @lock.AcquireAsync(CancellationToken.None);
             handle.Should().NotBeNull();
 
@@ -93,7 +92,7 @@ namespace StreamStore.S3.IntegrationTests
 
             await handle!.ReleaseAsync(CancellationToken.None);
 
-            var lock2 = suite.CreateLockFactory()!.CreateLock(streamId, transactionId);
+            var lock2 = lockFactory.CreateLock(streamId, transactionId);
             var handle2 = await lock2.AcquireAsync(CancellationToken.None);
             handle2.Should().NotBeNull();
 
