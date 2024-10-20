@@ -1,5 +1,5 @@
 ﻿using System.Data.SQLite;
-
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -8,6 +8,7 @@ using StreamStore.SQL.Sqlite;
 
 namespace StreamStore.SQL.Example
 {
+    [ExcludeFromCodeCoverage]
     internal static class Program
     {
         static void Main(string[] args)
