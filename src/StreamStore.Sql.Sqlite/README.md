@@ -93,11 +93,10 @@ How to use [StreamStore] in your application code you can find on StreamStore [p
 
 You can find an example of usage in the [StreamStore.Sql.Example](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Sql.Example) project.
 
-
 ## License
 
 [`MIT License`](../../LICENSE)
 
 [StreamStore]: https://github.com/kostiantyn-matsebora/streamstore/tree/master
-[Usage]: https://github.com/kostiantyn-matsebora/streamstore/tree/master#usage
+[Usage]: https://github.com/kostiantyn-matsebora/streamstore/tree/master#Usage
 [SQLite]: https://www.sqlite.org/index.html
