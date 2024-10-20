@@ -85,6 +85,9 @@ You can define configuration of the library in `appsettings.json` file:
     .Configure();
 ```
 
+### Usage
+
+How to use [StreamStore] you can find on StreamStore [page][Usage].
 ## Example
 
 You can find an example of usage in the [StreamStore.Sql.Example](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Sql.Example) project.
@@ -95,4 +98,5 @@ You can find an example of usage in the [StreamStore.Sql.Example](https://github
 [`MIT License`](../../LICENSE)
 
 [StreamStore]: https://github.com/kostiantyn-matsebora/streamstore/tree/master
+[Usage]: https://github.com/kostiantyn-matsebora/streamstore/tree/master#usage
 [SQLite]: https://www.sqlite.org/index.html
