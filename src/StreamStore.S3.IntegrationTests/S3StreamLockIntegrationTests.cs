@@ -3,14 +3,20 @@ using AutoFixture;
 using Bytewizer.Backblaze.Extensions;
 using FluentAssertions;
 using StreamStore.S3.Client;
-using StreamStore.S3.Concurrency;
 using StreamStore.Testing;
 
 
 namespace StreamStore.S3.IntegrationTests
 {
-    public abstract class S3StreamLockIntegrationTests(IS3LockFactory? factory)
+    public abstract class S3StreamLockIntegrationTests: IntegrationTestsBase
     {
+        private readonly IS3LockFactory? lockFactory;
+
+        protected S3StreamLockIntegrationTests(IS3Suite suite): base(suite)
+        {
+            this.lockFactory = suite.IsReady? suite.CreateLockFactory() : null!;
+        }
+
         [InlineData(1000)]
         [InlineData(100)]
         [InlineData(10)]
@@ -18,7 +24,7 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableTheory]
         public async Task AcquireAsync_ShouldAcquireLockOnlyOnce(int parallelAttempts)
         {
-            Skip.IfNot(factory != null, "Configuration is missing");
+            Skip.IfNot(suite.IsReady, "Configuration is missing");
 
             // Arrange
             var fixture = new Fixture();
@@ -30,7 +36,7 @@ namespace StreamStore.S3.IntegrationTests
             // Act
             await Enumerable.Range(0, parallelAttempts).ForEachAsync(parallelAttempts, async i =>
             {
-                var @lock = factory!.CreateLock(streamId, transactionId);
+                var @lock = lockFactory!.CreateLock(streamId, transactionId);
                 var handle = await @lock.AcquireAsync(CancellationToken.None);
 
                 if (handle != null)
@@ -48,7 +54,7 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableFact]
         public async Task AcquireAsync_ShouldNotAllowToAcquireLockIfAlreadyExists()
         {
-            Skip.IfNot(factory != null, "Configuration is missing");
+            Skip.IfNot(suite.IsReady, "Configuration is missing");
 
             // Arrange
             var fixture = new Fixture();
@@ -56,11 +62,11 @@ namespace StreamStore.S3.IntegrationTests
             var transactionId = GeneratedValues.Id;
 
             // Act & Assert
-            var @lock = factory!.CreateLock(streamId, transactionId);
+            var @lock = lockFactory!.CreateLock(streamId, transactionId);
             var handle = await @lock.AcquireAsync(CancellationToken.None);
             handle.Should().NotBeNull();
 
-            var lock2 = factory!.CreateLock(streamId, transactionId);
+            var lock2 = lockFactory.CreateLock(streamId, transactionId);
             var handle2 = await lock2.AcquireAsync(CancellationToken.None);
             handle2.Should().BeNull();
 
@@ -70,7 +76,7 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableFact]
         public async Task AcquireAsync_ShouldAcquireLockIfReleased()
         {
-            Skip.IfNot(factory != null, "Configuration is missing");
+            Skip.IfNot(suite.IsReady, "Configuration is missing");
 
             // Arrange
             var fixture = new Fixture();
@@ -78,7 +84,7 @@ namespace StreamStore.S3.IntegrationTests
             var transactionId = GeneratedValues.Id;
 
             // Act & Assert
-            var @lock = factory!.CreateLock(streamId, transactionId);
+            var @lock = lockFactory!.CreateLock(streamId, transactionId);
             var handle = await @lock.AcquireAsync(CancellationToken.None);
             handle.Should().NotBeNull();
 
@@ -86,7 +92,7 @@ namespace StreamStore.S3.IntegrationTests
 
             await handle!.ReleaseAsync(CancellationToken.None);
 
-            var lock2 = factory!.CreateLock(streamId, transactionId);
+            var lock2 = lockFactory.CreateLock(streamId, transactionId);
             var handle2 = await lock2.AcquireAsync(CancellationToken.None);
             handle2.Should().NotBeNull();
 

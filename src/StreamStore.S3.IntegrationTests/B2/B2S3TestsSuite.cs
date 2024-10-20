@@ -1,35 +1,45 @@
 ﻿using Microsoft.Extensions.Configuration;
 using StreamStore.S3.B2;
+using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
 using StreamStore.S3.Lock;
-using StreamStore.Testing;
+
 
 namespace StreamStore.S3.IntegrationTests.B2
 {
-    class B2S3TestsSuite : ITestSuite
+    class B2S3TestsSuite : IS3Suite
     {
-        public static B2S3Factory? CreateFactory()
+        public bool IsReady { get; private set; }
+
+        B2StreamDatabaseSettings? settings;
+
+        public B2S3TestsSuite()
         {
-            var settings = ConfigureSettings();
-
-            if (settings == null)
-                return null;
-
-            var storage = CreateLockStorage(settings);
-
-            return new B2S3Factory(settings, new BackblazeClientFactory());
         }
 
-        public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, Revision expectedRevision)
+        public void Initialize()
         {
-            var factory = CreateFactory();
-            if (factory == null)
-                return null;
-
-            return new S3StreamUnitOfWork(factory, new S3StreamContext(streamId, expectedRevision,factory.CreateStorage()));
+            settings = ConfigureSettings();
+            IsReady = settings != null;
         }
 
-        public IStreamDatabase? CreateDatabase()
+        public IS3LockFactory? CreateLockFactory()
+        {
+            return CreateFactory();
+        }
+
+        public IS3ClientFactory? CreateClientFactory()
+        {
+            return CreateFactory();
+        }
+
+        public async Task WithDatabase(Func<IStreamDatabase, Task> action)
+        {
+            var database = CreateDatabase();
+            await action(database!);
+        }
+
+        S3StreamDatabase? CreateDatabase()
         {
             var factory = CreateFactory();
             if (factory == null)
@@ -65,6 +75,14 @@ namespace StreamStore.S3.IntegrationTests.B2
         static S3InMemoryStreamLockStorage CreateLockStorage(B2StreamDatabaseSettings settings)
         {
             return new S3InMemoryStreamLockStorage(settings.InMemoryLockTTL);
+        }
+
+
+        B2S3Factory? CreateFactory()
+        {
+            var storage = CreateLockStorage(settings!);
+
+            return new B2S3Factory(settings!, new BackblazeClientFactory());
         }
     }
 }
