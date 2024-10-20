@@ -5,25 +5,25 @@ using Bytewizer.Backblaze.Models;
 using FluentAssertions;
 using StreamStore.S3.Client;
 using StreamStore.Serialization;
+using StreamStore.Testing;
 
 namespace StreamStore.S3.IntegrationTests
 {
 
-    public abstract class S3ClientIntegrationTestsBase
+    public abstract class S3ClientIntegrationTestsBase: IntegrationTestsBase
     {
-        readonly IS3ClientFactory? factory;
         readonly IS3Client? client;
 
-        protected S3ClientIntegrationTestsBase(IS3ClientFactory? factory)
+        protected S3ClientIntegrationTestsBase(IS3Suite suite): base(suite)
         {
-            this.factory = factory;
-            client = this.factory?.CreateClient();
+            if (suite.IsReady)
+                client = suite.CreateClientFactory()!.CreateClient();
         }
 
         [SkippableFact]
         public async Task FindObjectAsync_ShouldNotFindFileDoesNotExist()
         {
-            Skip.IfNot(factory != null, "Database configuration is missing");
+            Skip.IfNot(suite.IsReady, "Database configuration is missing");
 
             // Arrange
             // Act
@@ -36,7 +36,7 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableFact]
         public async Task UploadObjectAsync_ShouldUploadAndDeleteFileAsync()
         {
-            Skip.IfNot(factory != null, "Database configuration is missing");
+            Skip.IfNot(suite.IsReady, "Database configuration is missing");
 
             // Arrange
             var data = RandomByteArray;
@@ -64,7 +64,7 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableFact]
         public async Task FindObjectAsync_ShouldFindObject()
         {
-            Skip.IfNot(factory != null, "Database configuration is missing");
+            Skip.IfNot(suite.IsReady, "Database configuration is missing");
 
             // Arrange
             var data = RandomByteArray;
@@ -111,6 +111,7 @@ namespace StreamStore.S3.IntegrationTests
                 file.FileId.Should().BeEquivalentTo(response.FileId);
             file!.Data.Should().BeEquivalentTo(data);
         }
+
 
         static string RandomString => new Fixture().Create<string>();
 

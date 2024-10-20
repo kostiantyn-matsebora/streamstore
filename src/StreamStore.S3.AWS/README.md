@@ -46,11 +46,11 @@ or you can provide the configuration in code, see section below.
    services.ConfigureStreamStore();
 
    // Adding AWS S3 database 
-   services.ConfigureS3AmazonStreamStoreDatabase();
+   services.UseS3AmazonStreamStoreDatabase();
 
   // Or configuring it manually
   services
-    .UseS3AmazonStreamStoreDatabase()
+    .ConfigureS3AmazonStreamStoreDatabase()
       .WithBucketName("your-bucket-name")
     .Configure();
 

@@ -2,7 +2,7 @@
 {
     public class AWSS3ClientIntegrationTests : S3ClientIntegrationTestsBase
     {
-        public AWSS3ClientIntegrationTests() : base(AWSS3TestsSuite.CreateFactory())
+        public AWSS3ClientIntegrationTests() : base(new AWSS3TestsSuite())
         {
         }
 

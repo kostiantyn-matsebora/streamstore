@@ -3,7 +3,7 @@ using FluentAssertions;
 using StreamStore.Serialization;
 
 
-namespace StreamStore.Testing
+namespace StreamStore.Testing.Serialization
 {
     public abstract class EventSerializerTestsBase
     {
