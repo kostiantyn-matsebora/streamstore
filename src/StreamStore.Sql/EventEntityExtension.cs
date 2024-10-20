@@ -8,7 +8,7 @@ namespace StreamStore.SQL
         {
             return new EventRecord
             {
-                Id = entity.Id,
+                Id = entity.Id!,
                 Revision = entity.Revision,
                 Timestamp = entity.Timestamp,
                 Data = entity.Data

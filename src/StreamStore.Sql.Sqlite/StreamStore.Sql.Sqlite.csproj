@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
-    <ProjectReference Include="..\StreamStore.SQL\StreamStore.SQL.csproj" />
+    <ProjectReference Include="..\StreamStore.Sql\StreamStore.Sql.csproj" />
   </ItemGroup>
 
 </Project>

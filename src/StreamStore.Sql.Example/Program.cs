@@ -8,7 +8,7 @@ using StreamStore.SQL.Sqlite;
 
 namespace StreamStore.SQL.Example
 {
-    internal class Program
+    internal static class Program
     {
         static void Main(string[] args)
         {

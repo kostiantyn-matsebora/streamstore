@@ -25,7 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.ExampleBase\StreamStore.ExampleBase.csproj" />
-    <ProjectReference Include="..\StreamStore.SQL.Sqlite\StreamStore.Sql.Sqlite.csproj" />
+    <ProjectReference Include="..\StreamStore.Sql.Sqlite\StreamStore.Sql.Sqlite.csproj" />
   </ItemGroup>
 
 </Project>
