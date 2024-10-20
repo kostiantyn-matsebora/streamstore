@@ -3,6 +3,11 @@ namespace StreamStore.Testing
 {
     public interface ITestSuite
     {
-        IStreamDatabase? CreateDatabase();
+
+        void Initialize();
+
+        Task WithDatabase(Func<IStreamDatabase, Task> action);
+
+        bool IsReady { get; }
     }
 }

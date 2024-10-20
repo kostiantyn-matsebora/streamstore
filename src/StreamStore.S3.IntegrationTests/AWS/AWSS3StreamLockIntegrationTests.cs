@@ -2,7 +2,7 @@
 {
     public class AWSS3StreamLockIntegrationTests : S3StreamLockIntegrationTests
     {
-        public AWSS3StreamLockIntegrationTests() : base(AWSS3TestsSuite.CreateFactory())
+        public AWSS3StreamLockIntegrationTests() : base(new AWSS3TestsSuite())
         {
         }
     }

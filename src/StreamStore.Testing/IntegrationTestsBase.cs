@@ -9,11 +9,12 @@
         {
             ArgumentNullException.ThrowIfNull(suite, nameof(suite));
             this.suite = suite;
+            this.suite.Initialize();
         }
 
         protected virtual void TrySkip()
         {
-            Skip.If(suite.CreateDatabase() == null, "Database is not set.");
+            Skip.If(!suite.IsReady, "Suite is not ready.");
         }
     }
 }

@@ -38,7 +38,7 @@ namespace StreamStore.SQL.Sqlite
             var sql = $"SELECT * FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
             EventEntity[] entities = await GetStreamEntities(streamId.Value, sql);
 
-            if (entities == null)
+            if (entities == null || !entities.Any())
             {
                 return null;
             }
@@ -51,7 +51,7 @@ namespace StreamStore.SQL.Sqlite
             var sql = $"SELECT Id, Revision, Timestamp FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
             EventEntity[] entities = await GetStreamEntities(streamId.Value, sql);
 
-            if (entities == null)
+            if (entities == null || !entities.Any())
             {
                 return null;
             }

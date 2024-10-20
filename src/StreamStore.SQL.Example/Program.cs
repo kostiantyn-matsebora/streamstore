@@ -2,6 +2,8 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using StreamStore.SQL.Sqlite;
 
 namespace StreamStore.SQL.Example
@@ -13,6 +15,13 @@ namespace StreamStore.SQL.Example
             SQLiteConnection.CreateFile("StreamStore.sqlite");
 
             var builder = Host.CreateApplicationBuilder(args);
+            builder.Logging.AddSimpleConsole(configure =>
+            {
+                configure.SingleLine = true;
+                configure.ColorBehavior = LoggerColorBehavior.Enabled;
+                configure.IncludeScopes = true;
+            });
+             
 
             builder
                 .Services
@@ -21,6 +30,8 @@ namespace StreamStore.SQL.Example
                     .WithConnectionString("Data Source=StreamStore.sqlite;Version=3;")
                     .WithProfiling()
                 .Configure();
+
+
 
             builder.Services.AddHostedService<Worker1>();
             builder.Services.AddHostedService<Worker2>();

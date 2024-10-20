@@ -29,7 +29,7 @@ namespace StreamStore.SQL.Sqlite
                     Revision INTEGER NOT NULL,
                     Data BLOB NOT NULL,
                     PRIMARY KEY (Id, StreamId)
-                ) WITHOUT ROWID;
+                );
 
                 CREATE INDEX IF NOT EXISTS {configuration.SchemaName}.ix_streams_stream_id ON {configuration.TableName}(StreamId);
                 CREATE INDEX IF NOT EXISTS {configuration.SchemaName}.ix_streams_stream_revision ON {configuration.TableName}(Revision);

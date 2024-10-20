@@ -1,4 +1,5 @@
 ﻿using StreamStore.S3.AWS;
+using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
 using StreamStore.S3.Lock;
 using StreamStore.S3.Storage;
@@ -6,21 +7,32 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.IntegrationTests.AWS
 {
-    class AWSS3TestsSuite : ITestSuite
+    class AWSS3TestsSuite : IS3Suite
     {
-        public static AWSS3Factory? CreateFactory()
+        public bool IsReady { get; private set;}
+
+        AWSS3DatabaseSettings? settings;
+
+        public AWSS3TestsSuite()
         {
-            var settings = ConfigureSettings();
-
-            if (settings == null)
-                return null;
-
-            var storage = CreateLockStorage(settings);
-
-            return new AWSS3Factory(settings, new AmazonS3ClientFactory());
+        }
+        public void Initialize()
+        {
+            settings = ConfigureSettings();
+            IsReady = settings != null;
         }
 
-        public static IStreamUnitOfWork? CreateUnitOfWork(Id streamId, Revision expectedRevision)
+        public IS3LockFactory? CreateLockFactory()
+        {
+            return CreateFactory();
+        }
+
+        public IS3ClientFactory? CreateClientFactory()
+        {
+            return CreateFactory();
+        }
+
+        public IStreamUnitOfWork? CreateUnitOfWork(Id streamId, Revision expectedRevision)
         {
             var factory = CreateFactory();
             if (factory == null)
@@ -29,13 +41,10 @@ namespace StreamStore.S3.IntegrationTests.AWS
             return new S3StreamUnitOfWork(factory, new S3StreamContext(streamId, expectedRevision, new S3Storage(factory)));
         }
 
-        public IStreamDatabase? CreateDatabase()
+        public async Task WithDatabase(Func<IStreamDatabase, Task> action)
         {
-            var factory = CreateFactory();
-            if (factory == null)
-                return null;
-
-            return new S3StreamDatabase(factory, factory);
+            var database = CreateDatabase();
+            await action(database!);
         }
 
         static AWSS3DatabaseSettings? ConfigureSettings()
@@ -53,6 +62,20 @@ namespace StreamStore.S3.IntegrationTests.AWS
         static S3InMemoryStreamLockStorage CreateLockStorage(AWSS3DatabaseSettings settings)
         {
             return new S3InMemoryStreamLockStorage(settings.InMemoryLockTTL);
+        }
+
+
+        AWSS3Factory? CreateFactory()
+        {
+            var storage = CreateLockStorage(settings!);
+            return new AWSS3Factory(settings!, new AmazonS3ClientFactory());
+        }
+
+        IStreamDatabase? CreateDatabase()
+        {
+            var factory = CreateFactory();
+
+            return new S3StreamDatabase(factory!, factory!);
         }
     }
 }

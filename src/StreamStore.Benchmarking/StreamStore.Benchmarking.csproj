@@ -22,6 +22,7 @@
     <ProjectReference Include="..\StreamStore.Serialization.Protobuf\StreamStore.Serialization.Protobuf.csproj" />
     <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" />
     <ProjectReference Include="..\StreamStore.SQL.Sqlite\StreamStore.SQL.Sqlite.csproj" />
+    <ProjectReference Include="..\StreamStore.Sql.Tests\StreamStore.Sql.Tests.csproj" />
     <ProjectReference Include="..\StreamStore\StreamStore.csproj" />
   </ItemGroup>
   <ItemGroup>

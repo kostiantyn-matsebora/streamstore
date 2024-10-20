@@ -1,11 +1,11 @@
 ﻿using StreamStore.S3.Client;
+using StreamStore.Testing;
 
 namespace StreamStore.S3.IntegrationTests
 {
-    internal interface IS3Suite
+    public interface IS3Suite : ITestSuite
     {
-        IS3LockFactory? CreateFactory();
-        IStreamUnitOfWork CreateUnitOfWork();
-        IStreamDatabase CreateDatabase();
+        IS3LockFactory? CreateLockFactory();
+        IS3ClientFactory? CreateClientFactory();
     }
 }

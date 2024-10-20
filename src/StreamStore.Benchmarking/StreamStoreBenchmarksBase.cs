@@ -1,16 +1,14 @@
 ﻿using AutoFixture;
 using Dapper.Extensions;
 using Dapper.Extensions.Factory;
-using Dapper.Extensions.SQLite;
-using Microsoft.Extensions.DependencyInjection;
 using StreamStore.InMemory;
 using StreamStore.Serialization;
+using StreamStore.Sql.Tests.Sqlite;
 using StreamStore.SQL.Sqlite;
 using System;
-using System.Data.SQLite;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
+
 
 namespace StreamStore.Benchmarking
 {
@@ -20,28 +18,26 @@ namespace StreamStore.Benchmarking
         protected readonly string[] streamIds;
         protected readonly StreamStore inMemoryStore;
         readonly NewtonsoftEventSerializer serializer;
-        readonly SqliteDatabaseConfiguration configuration;
+        readonly SqliteTestSuite suite;
 
         public StreamStoreBenchmarksBase()
         {
             var fixture = new Fixture();
             fixture.Customize<Event>(composer => composer.Do(e => e.Id = Guid.NewGuid().ToString()));
             events = fixture.CreateMany<Event>(100).ToArray();
-            
-            serializer = CreateSerializer();
-            
-            configuration = CreateSqliteConfiguration();
-            ConfigureDapperFactory();
-            ProvisionSqliteSchema();
 
+            serializer = CreateSerializer();
+            suite = new SqliteTestSuite();
             inMemoryStore = CreateInMemoryStore();
+
             streamIds = GenerateStreamIds();
         }
 
         protected void FillDatabase()
         {
             InsertStreamsToStore(inMemoryStore);
-            DapperFactory.Step(dapper => {
+            DapperFactory.Step(dapper =>
+            {
                 var store = CreateSqliteStore(dapper);
                 InsertStreamsToStore(store);
             });
@@ -69,35 +65,7 @@ namespace StreamStore.Benchmarking
 
         protected StreamStore CreateSqliteStore(IDapper dapper)
         {
-              return new StreamStore(new SqliteStreamDatabase(dapper, configuration), serializer);
-        }
-
-        void ConfigureDapperFactory()
-        {
-            DapperFactory.CreateInstance()
-                .ConfigureServices(service =>
-                {
-                    service.AddDapperForSQLite();
-                    service.AddDapperConnectionStringProvider<SqliteDapperConnectionStringProvider>();
-                    service.AddSingleton(configuration);
-                }).Build();
-        }
-
-         SqliteDatabaseConfiguration CreateSqliteConfiguration()
-        {
-            return new SqliteDatabaseConfigurationBuilder()
-              .WithConnectionString("Data Source=StreamStore.sqlite;Version=3;")
-              .Build();
-        }
-
-         void ProvisionSqliteSchema()
-        {
-            SQLiteConnection.CreateFile("StreamStore.sqlite");
-            DapperFactory.Step(dapper =>
-            {
-                var provisioner = new SqliteSchemaProvisioner(configuration, dapper);
-                provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
-            });
+            return new StreamStore(new SqliteStreamDatabase(dapper, suite.Configuration), serializer);
         }
 
         void InsertStreamsToStore(StreamStore store)
@@ -109,6 +77,6 @@ namespace StreamStore.Benchmarking
                   .AddRangeAsync(events, CancellationToken.None)
                   .SaveChangesAsync(CancellationToken.None).Wait();
             }
-           }
+        }
     }
 }

@@ -5,7 +5,19 @@ namespace StreamStore.S3.Tests.InMemory
 {
     internal class S3InMemorySuite : ITestSuite
     {
-        public IStreamDatabase? CreateDatabase()
+        public bool IsReady => true;
+
+        public void Initialize()
+        {
+        }
+
+        public async Task WithDatabase(Func<IStreamDatabase, Task> action)
+        {
+            var database = CreateDatabase();
+            await action(database!);
+        }
+
+        IStreamDatabase? CreateDatabase()
         {
             return new S3StreamDatabase(new S3InMemoryFactory(), new S3StorageFactory(new S3InMemoryFactory()));
         }
