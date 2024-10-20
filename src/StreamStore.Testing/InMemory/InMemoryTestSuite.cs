@@ -1,11 +1,11 @@
 ﻿using StreamStore.InMemory;
 
-namespace StreamStore.Testing
+namespace StreamStore.Testing.InMemory
 {
     internal class InMemoryTestSuite : ITestSuite
     {
         public bool IsReady => true;
-      
+
         public void Initialize()
         {
         }
@@ -15,7 +15,7 @@ namespace StreamStore.Testing
             await action(CreateDatabase()!);
         }
 
-        static IStreamDatabase? CreateDatabase()
+        static InMemoryStreamDatabase? CreateDatabase()
         {
             return new InMemoryStreamDatabase();
         }
