@@ -34,6 +34,7 @@ namespace StreamStore.SQL.Sqlite
                 throw new InvalidOperationException("Connection string 'StreamStore' not found in configuration");
             }
             
+            WithConnectionString(connectionString);
             var section = configuration.GetSection("StreamStore:Sqlite");
             if (section.Exists())
             {
@@ -46,8 +47,7 @@ namespace StreamStore.SQL.Sqlite
                 }
             }
 
-            var config = Build();
-            Configure(configuration);
+            Configure(Build());
 
             return services;
         }
