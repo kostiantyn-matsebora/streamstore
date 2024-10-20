@@ -2,8 +2,7 @@
 using Moq;
 using StackExchange.Profiling.Data;
 using StreamStore.SQL;
-using System;
-using Xunit;
+
 
 namespace StreamStore.Sql.Tests
 {

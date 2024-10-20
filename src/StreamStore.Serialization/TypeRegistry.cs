@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 
 namespace StreamStore.Serialization
@@ -11,20 +14,11 @@ namespace StreamStore.Serialization
         private TypeRegistry()
         {
         }
-
-        void Initialize()
+        public static TypeRegistry CreateAndInitialize()
         {
-            // no-op
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies)
-            {
-                foreach (var type in assembly.GetTypes())
-                {
-                    var name = ComposeName(type);
-                    types.GetOrAdd(name, type);
-                    names.GetOrAdd(type, name);
-                }
-            }
+            TypeRegistry registry = new TypeRegistry();
+            registry.Initialize();
+            return registry;
         }
 
         public string ResolveNameByType(Type type)
@@ -37,16 +31,36 @@ namespace StreamStore.Serialization
             return types.GetOrAdd(name, _ => Type.GetType(_));
         }
 
+        void Initialize()
+        {
+            // no-op
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies)
+            {
+                foreach (var type in GetLoadableTypes(assembly))
+                {
+                    var name = ComposeName(type);
+                    types.GetOrAdd(name, type);
+                    names.GetOrAdd(type, name);
+                }
+            }
+        }
+
         static string ComposeName(Type type)
         {
             return $"{type.FullName}, {type.Assembly.GetName().Name}";
         }
 
-        public static TypeRegistry CreateAndInitialize()
+        IEnumerable<Type> GetLoadableTypes(Assembly assembly)
         {
-            TypeRegistry registry = new TypeRegistry();
-            registry.Initialize();
-            return registry;
+            try
+            {
+                return assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                return e.Types.Where(t => t != null);
+            }
         }
     }
 }
