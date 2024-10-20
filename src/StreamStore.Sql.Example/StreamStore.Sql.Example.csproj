@@ -5,14 +5,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.1.0</Version>
-    <Company>kostiantyn-matsebora</Company>
-    <Description>SQLite backend  for StreamStore event stream library.</Description>
-    <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
-    <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
-    <PackageTags>event sourcing; streams; stream store; stream; SQL; SQLite</PackageTags>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
