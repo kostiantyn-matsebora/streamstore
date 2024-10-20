@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace StreamStore.SQL.Sqlite
@@ -6,14 +7,11 @@ namespace StreamStore.SQL.Sqlite
     public static class ServiceCollectionExtension
     {
 
-        public static IServiceCollection UseSqliteStreamDatabase(this IServiceCollection services, string connectionString, bool provisionSchema = true)
+        public static IServiceCollection UseSqliteStreamDatabase(this IServiceCollection services, IConfiguration configuration)
         {
 
             var configurator = new SqliteDatabaseConfigurator(services);
-            configurator
-                .WithConnectionString(connectionString)
-                .WithSchemaProvisioning(provisionSchema);
-            configurator.Configure();
+            configurator.Configure(configuration);
             return services;
         }
 

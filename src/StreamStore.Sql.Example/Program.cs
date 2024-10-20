@@ -28,7 +28,7 @@ namespace StreamStore.SQL.Example
                 .ConfigureStreamStore()
                 .ConfigureSqliteStreamDatabase()
                     .WithConnectionString("Data Source=StreamStore.sqlite;Version=3;")
-                    .WithProfiling()
+                    .EnableProfiling()
                 .Configure();
 
             builder.Services.AddHostedService<Worker1>();

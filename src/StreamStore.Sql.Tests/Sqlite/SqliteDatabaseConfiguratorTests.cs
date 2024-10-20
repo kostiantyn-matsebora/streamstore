@@ -33,8 +33,8 @@ namespace StreamStore.Sql.Tests.Sqlite
             configurator
                 .WithTable("tableName")
                 .WithConnectionString("connectionString")
-                .WithSchemaProvisioning(true)
-                .WithProfiling()
+                .ProvisionSchema(true)
+                .EnableProfiling()
                 .Build();
 
             // Act 

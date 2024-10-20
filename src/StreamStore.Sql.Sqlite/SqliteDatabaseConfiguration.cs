@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -47,13 +48,13 @@ namespace StreamStore.SQL.Sqlite
             return this;
         }
 
-        public SqliteDatabaseConfigurationBuilder WithSchemaProvisioning(bool provisionSchema)
+        public SqliteDatabaseConfigurationBuilder ProvisionSchema(bool provisionSchema)
         {
             this.provisionSchema = provisionSchema;
             return this;
         }
 
-        public SqliteDatabaseConfigurationBuilder WithProfiling()
+        public SqliteDatabaseConfigurationBuilder EnableProfiling()
         {
             this.enableProfiling = true;
             return this;
@@ -76,6 +77,11 @@ namespace StreamStore.SQL.Sqlite
         }
 
         public virtual IServiceCollection Configure()
+        {
+            return new ServiceCollection();
+        }
+
+        public virtual IServiceCollection Configure(IConfiguration configuration)
         {
             return new ServiceCollection();
         }
