@@ -42,13 +42,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Serialization.P
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sql", "Sql", "{002945CF-F758-43CE-A5B3-E43A27D550CA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Sql", "StreamStore.SQL\StreamStore.Sql.csproj", "{1991097B-D38E-4741-8366-B0A945CB8955}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Sql", "StreamStore.Sql\StreamStore.Sql.csproj", "{1991097B-D38E-4741-8366-B0A945CB8955}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Sql.Example", "StreamStore.SQL.Example\StreamStore.Sql.Example.csproj", "{C38E50D4-8B90-43EC-8298-B911AC1F0CCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Sql.Example", "StreamStore.Sql.Example\StreamStore.Sql.Example.csproj", "{C38E50D4-8B90-43EC-8298-B911AC1F0CCE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.ExampleBase", "StreamStore.ExampleBase\StreamStore.ExampleBase.csproj", "{D2280E8F-34D6-47E0-BB07-6AA77C4D0D0B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Sql.Sqlite", "StreamStore.SQL.Sqlite\StreamStore.Sql.Sqlite.csproj", "{AD05AFA0-3288-40BA-B50B-5C32C9B3FFAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Sql.Sqlite", "StreamStore.Sql.Sqlite\StreamStore.Sql.Sqlite.csproj", "{AD05AFA0-3288-40BA-B50B-5C32C9B3FFAA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.Sql.Tests", "StreamStore.Sql.Tests\StreamStore.Sql.Tests.csproj", "{3F715189-A188-40D7-9BF3-F3CBA53DD2D9}"
 EndProject
