@@ -135,10 +135,12 @@ namespace StreamStore.Tests
             var stream = 
                 await streamStore.OpenStreamAsync(streamId, CancellationToken.None);
 
+#pragma warning disable S6966 // Awaitable method should be used
             stream
                 .Add(events[0].Id, events[0].Timestamp, events[0].EventObject)
                 .Add(events[1].Id, events[1].Timestamp, events[1].EventObject)
                 .Add(events[2].Id, events[2].Timestamp, events[2].EventObject);
+#pragma warning restore S6966 // Awaitable method should be used
 
             await stream.SaveChangesAsync(CancellationToken.None);
 
