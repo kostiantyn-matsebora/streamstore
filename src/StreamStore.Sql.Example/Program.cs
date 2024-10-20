@@ -21,7 +21,6 @@ namespace StreamStore.SQL.Example
                 configure.ColorBehavior = LoggerColorBehavior.Enabled;
                 configure.IncludeScopes = true;
             });
-             
 
             builder
                 .Services
@@ -31,15 +30,11 @@ namespace StreamStore.SQL.Example
                     .WithProfiling()
                 .Configure();
 
-
-
             builder.Services.AddHostedService<Worker1>();
             builder.Services.AddHostedService<Worker2>();
             builder.Services.AddHostedService<Worker3>();
             var host = builder.Build();
             host.Run();
-
         }
-
     }
 }
