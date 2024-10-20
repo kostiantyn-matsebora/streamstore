@@ -51,7 +51,7 @@ namespace StreamStore.Serialization
             return $"{type.FullName}, {type.Assembly.GetName().Name}";
         }
 
-        IEnumerable<Type> GetLoadableTypes(Assembly assembly)
+        static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
         {
             try
             {

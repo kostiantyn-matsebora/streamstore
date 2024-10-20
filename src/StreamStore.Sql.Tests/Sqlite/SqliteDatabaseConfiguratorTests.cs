@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using Dapper.Extensions.Monitor;
+using Dapper.Extensions.SQLite;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore.SQL.Sqlite;
@@ -13,29 +15,31 @@ namespace StreamStore.Sql.Tests.Sqlite
 
         public SqliteDatabaseConfiguratorTests()
         {
-            mockRepository = new MockRepository(MockBehavior.Strict);
+            mockRepository = new MockRepository(MockBehavior.Default);
 
             mockServiceCollection = mockRepository.Create<IServiceCollection>();
         }
 
         SqliteDatabaseConfigurator CreateSqliteDatabaseConfigurator()
         {
-            return new SqliteDatabaseConfigurator(
-                mockServiceCollection.Object);
+            return new SqliteDatabaseConfigurator(mockServiceCollection.Object);
         }
 
         [Fact]
         public void Configure_Should_CreateFullConfiguration()
         {
-            // Arrange and Act
-            var configuration = CreateSqliteDatabaseConfigurator()
+            // Arrange
+            var configurator = CreateSqliteDatabaseConfigurator();
+            configurator
                 .WithTable("tableName")
                 .WithConnectionString("connectionString")
                 .WithSchemaProvisioning(true)
                 .WithProfiling()
                 .Build();
 
-            
+            // Act 
+            var configuration = configurator.Build();
+            configurator.Configure();
 
             // Assert
             configuration.EnableProfiling.Should().BeTrue();
