@@ -21,7 +21,6 @@ namespace StreamStore
 
             this.database = database;
             converter = new EventConverter(serializer);
-            producer = new StreamEventProducer(database, converter);
         }
 
         public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken = default)
@@ -42,7 +41,7 @@ namespace StreamStore
 
             var parameters = new StreamReadingParameters(streamId, startFrom, pageSize);
 
-            return new EventStreamReader(parameters, producer);
+            return new EventStreamReader(parameters, database, converter);
         }
 
         public async Task<IEventStreamWriter> BeginWriteAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
