@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -48,7 +50,7 @@ namespace StreamStore
             {
                 if (token.IsCancellationRequested) break;
 
-                records = await ReadPageAsync(parameters, cursor, token);
+                records = await database.ReadAsync(parameters.StreamId, cursor, parameters.PageSize, token);
 
                 if (records.Length == 0) break;
 
@@ -65,17 +67,12 @@ namespace StreamStore
             {
                 if (token.IsCancellationRequested) return cursor;
 
-                await writer.WriteAsync(converter.ConvertToEntity(record));
+                await writer.WriteAsync(converter.ConvertToEntity(record), token);
 
                 cursor = record.Revision;
             }
 
             return cursor;
-        }
-
-        async Task<EventRecord[]> ReadPageAsync(StreamReadingParameters parameters, Revision cursor, CancellationToken token)
-        {
-            return await database.ReadAsync(parameters.StreamId, cursor, parameters.PageSize, token);
         }
     }
 }
