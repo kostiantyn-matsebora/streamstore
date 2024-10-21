@@ -59,6 +59,11 @@ namespace StreamStore.SQL.Sqlite
             return new StreamMetadataRecord(entities.ToCollection());
         }
 
+        public Task<EventRecord[]> ReadAsync(Id streamId, Revision start, int count, CancellationToken token = default)
+        {
+            throw new NotImplementedException();
+        }
+
         async Task<EventEntity[]> GetStreamEntities(string streamId, string sql)
         {
             IEnumerable<EventEntity> entities;

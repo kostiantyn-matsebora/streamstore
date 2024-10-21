@@ -46,5 +46,10 @@ namespace StreamStore.InMemory
 
             return Task.FromResult((IStreamUnitOfWork)new InMemoryStreamUnitOfWork(streamId, expectedStreamVersion, this, existing));
         }
+
+        public Task<EventRecord[]> ReadAsync(Id streamId, Revision start, int count, CancellationToken token = default)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

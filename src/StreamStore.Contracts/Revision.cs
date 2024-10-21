@@ -23,6 +23,8 @@ namespace StreamStore
 
         public Revision Increment() => New(Value + 1);
 
+        public Revision Decrement() => New(Value - 1);
+
         public bool Equals(Revision other)
         {
             return Value == other.Value;

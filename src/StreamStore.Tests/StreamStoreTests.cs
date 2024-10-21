@@ -151,7 +151,7 @@ namespace StreamStore.Tests
 
             // Second way to append to stream
             stream =
-              await streamStore.OpenStreamAsync(streamId, 3, CancellationToken.None);
+              await streamStore.OpenStreamAsync(streamId, 3, CancellationToken.None).B;
 
             stream.AddRange(events);
 

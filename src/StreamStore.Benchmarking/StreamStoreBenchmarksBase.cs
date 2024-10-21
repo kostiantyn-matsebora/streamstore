@@ -5,6 +5,7 @@ using StreamStore.InMemory;
 using StreamStore.Serialization;
 using StreamStore.Sql.Tests.Sqlite;
 using StreamStore.SQL.Sqlite;
+using StreamStore.Stream;
 using System;
 using System.Linq;
 using System.Threading;

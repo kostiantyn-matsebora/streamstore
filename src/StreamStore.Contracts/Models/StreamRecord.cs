@@ -31,6 +31,11 @@ namespace StreamStore
 
     public sealed class StreamMetadataRecord : StreamRecord<EventMetadataRecord>
     {
+        public StreamMetadataRecord(): this(new EventMetadataRecord[0])
+        {
+
+        }
+
         public StreamMetadataRecord(IEnumerable<EventMetadataRecord> records) : base(records)
         {
         }

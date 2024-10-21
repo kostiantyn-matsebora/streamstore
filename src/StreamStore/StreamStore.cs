@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamStore.Exceptions;
-using StreamStore.Serialization;
+
 
 
 namespace StreamStore
@@ -21,16 +20,13 @@ namespace StreamStore
             converter = new EventConverter(serializer);
         }
 
-        public Task<IStream> OpenStreamAsync(Id streamId, CancellationToken cancellationToken = default)
-        {            
-            return OpenStreamAsync(streamId, Revision.Zero, cancellationToken);
-        }
-
-        public async Task<IStream> OpenStreamAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
+        public async Task<IStream> OpenStreamAsync(Id streamId, CancellationToken cancellationToken = default)
         {
-            var stream = new Stream(database, converter);
-            await stream.OpenAsync(streamId, expectedRevision, cancellationToken);
-            return stream;
+            var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
+            if (metadata == null)
+              metadata = new StreamMetadataRecord();
+
+            return new Stream(streamId, metadata, database, converter);
         }
 
         public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken = default)
@@ -39,20 +35,6 @@ namespace StreamStore
                 throw new ArgumentNullException(nameof(streamId), "streamId is required.");
 
             await database.DeleteAsync(streamId, cancellationToken);
-        }
-
-        public async Task<StreamEntity> GetAsync(Id streamId, CancellationToken cancellationToken = default)
-        {
-            if (streamId == Id.None)
-                throw new ArgumentNullException(nameof(streamId), "streamId is required.");
-
-            var streamRecord =
-                await database.FindAsync(streamId, cancellationToken);
-
-            if (streamRecord == null)
-                throw new StreamNotFoundException(streamId);
-
-            return converter.ConvertToEntity(streamId, streamRecord);
         }
     }
 }

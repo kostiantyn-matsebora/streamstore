@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StackExchange.Profiling;
 using StreamStore.Exceptions;
+using StreamStore.Stream;
 
 namespace StreamStore.S3.Example
 {
