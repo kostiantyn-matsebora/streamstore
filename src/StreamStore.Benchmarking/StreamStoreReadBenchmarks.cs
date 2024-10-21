@@ -2,8 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
-using Dapper.Extensions.Factory;
-
 
 
 namespace StreamStore.Benchmarking
@@ -19,14 +17,11 @@ namespace StreamStore.Benchmarking
         [Benchmark]
         public async Task Sqllite_ReadRandomStreamWith10Events()
         {
-            await DapperFactory.Step(async dapper =>
-            {
-                var store = CreateSqliteStore(dapper);
-                await ReadRandomStreamWith10Events(store);
-            });
+            var store = GetSqliteStore();
+            await ReadRandomStreamWith10Events(store);
         }
 
-        async Task ReadRandomStreamWith10Events(StreamStore store)
+        async Task ReadRandomStreamWith10Events(IStreamStore store)
         {
             var streamIdIndex = RandomNumberGenerator.GetInt32(0, streamIds.Length);
             await store.OpenAsync(streamIds[streamIdIndex]).ReadToEnd(CancellationToken.None);

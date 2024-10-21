@@ -1,54 +1,47 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using StreamStore.S3.B2;
 using StreamStore.S3.Client;
-using StreamStore.S3.Concurrency;
-using StreamStore.S3.Lock;
+using StreamStore.Testing.Framework;
 
 
 namespace StreamStore.S3.IntegrationTests.B2
 {
-    class B2S3TestsSuite : IS3Suite
+    public  class B2S3TestsSuite : TestSuiteBase, IS3Suite
     {
-        public bool IsReady { get; private set; }
-
-        B2StreamDatabaseSettings? settings;
-
         public B2S3TestsSuite()
         {
         }
 
-        public void Initialize()
-        {
-            settings = ConfigureSettings();
-            IsReady = settings != null;
-        }
-
         public IS3LockFactory? CreateLockFactory()
         {
-            return CreateFactory();
+            return Services.GetRequiredService<IS3LockFactory>();
         }
 
         public IS3ClientFactory? CreateClientFactory()
         {
-            return CreateFactory();
+            return Services.GetRequiredService<IS3ClientFactory>();
         }
 
         public async Task WithDatabase(Func<IStreamDatabase, Task> action)
         {
-            var database = CreateDatabase();
+            var database = Services.GetRequiredService<IStreamDatabase>();
             await action(database!);
         }
 
-        S3StreamDatabase? CreateDatabase()
+        protected override bool CheckPrerequisities()
         {
-            var factory = CreateFactory();
-            if (factory == null)
-                return null;
-
-            return new S3StreamDatabase(factory, factory);
+            var config = GetConfiguration();
+            if (config == null) return false;
+            return config.GetSection("b2").Exists();
         }
 
-        static B2StreamDatabaseSettings? ConfigureSettings()
+        protected override void RegisterServices(IServiceCollection services)
+        {
+            services.UseB2StreamStoreDatabase(GetConfiguration()!);
+        }
+
+        static IConfiguration? GetConfiguration()
         {
 
             if (!File.Exists(
@@ -60,29 +53,9 @@ namespace StreamStore.S3.IntegrationTests.B2
                 .AddJsonFile($"appsettings.Development.json", true)
                 .Build();
 
-            var b2Section = config.GetSection("b2");
-
-            return
-                 new B2StreamDatabaseSettingsBuilder()
-                 .WithCredentials(
-                     b2Section.GetSection("applicationKeyId").Value!,
-                     b2Section.GetSection("applicationKey").Value!)
-                 .WithBucketId(b2Section.GetSection("bucketId").Value!)
-                 .WithBucketName(b2Section.GetSection("bucketName").Value!)
-             .Build();
+            return config;
         }
 
-        static S3InMemoryStreamLockStorage CreateLockStorage(B2StreamDatabaseSettings settings)
-        {
-            return new S3InMemoryStreamLockStorage(settings.InMemoryLockTTL);
-        }
-
-
-        B2S3Factory? CreateFactory()
-        {
-            var storage = CreateLockStorage(settings!);
-
-            return new B2S3Factory(settings!, new BackblazeClientFactory());
-        }
+     
     }
 }

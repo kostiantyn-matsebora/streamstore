@@ -1,33 +1,29 @@
-﻿using System.Collections.Concurrent;
-using AutoFixture;
-using Bytewizer.Backblaze.Extensions;
-using Bytewizer.Backblaze.Models;
-using FluentAssertions;
+﻿using FluentAssertions;
 using StreamStore.S3.Client;
-using StreamStore.Serialization;
 using StreamStore.Testing;
+using StreamStore.Testing.Framework;
 
 namespace StreamStore.S3.IntegrationTests
 {
 
-    public abstract class S3ClientIntegrationTestsBase: IntegrationTestsBase
+    public abstract class S3ClientIntegrationTestsBase<TSuite>: TestsBase<TSuite> where TSuite : IS3Suite
     {
         readonly IS3Client? client;
 
-        protected S3ClientIntegrationTestsBase(IS3Suite suite): base(suite)
+        protected S3ClientIntegrationTestsBase(TSuite suite): base(suite)
         {
-            if (suite.IsReady)
+            if (suite.ArePrerequisitiesMet)
                 client = suite.CreateClientFactory()!.CreateClient();
         }
 
         [SkippableFact]
         public async Task FindObjectAsync_ShouldNotFindFileDoesNotExist()
         {
-            Skip.IfNot(suite.IsReady, "Database configuration is missing");
+            TrySkip();
 
             // Arrange
             // Act
-            var file = await client!.FindObjectAsync(RandomString, CancellationToken.None);
+            var file = await client!.FindObjectAsync(GeneratedValues.String, CancellationToken.None);
 
             // Assert
             file.Should().BeNull();
@@ -36,11 +32,11 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableFact]
         public async Task UploadObjectAsync_ShouldUploadAndDeleteFileAsync()
         {
-            Skip.IfNot(suite.IsReady, "Database configuration is missing");
+            TrySkip();
 
             // Arrange
-            var data = RandomByteArray;
-            var objectName = RandomString;
+            var data = GeneratedValues.ByteArray;
+            var objectName = GeneratedValues.String;
             UploadObjectResponse? response = null;
 
             try
@@ -55,7 +51,7 @@ namespace StreamStore.S3.IntegrationTests
             }
             finally
             {
-                //// Cleanup && Assert
+                // Cleanup && Assert
                 if (response != null)
                     await DeleteObjectAndAssert(objectName, response.FileId!);
             }
@@ -64,11 +60,11 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableFact]
         public async Task FindObjectAsync_ShouldFindObject()
         {
-            Skip.IfNot(suite.IsReady, "Database configuration is missing");
+            TrySkip();
 
             // Arrange
-            var data = RandomByteArray;
-            var objectName = RandomString;
+            var data = GeneratedValues.ByteArray;
+            var objectName = GeneratedValues.String;
             UploadObjectResponse? response = null;
 
             try
@@ -111,10 +107,5 @@ namespace StreamStore.S3.IntegrationTests
                 file.FileId.Should().BeEquivalentTo(response.FileId);
             file!.Data.Should().BeEquivalentTo(data);
         }
-
-
-        static string RandomString => new Fixture().Create<string>();
-
-        static byte[] RandomByteArray => Converter.ToByteArray(RandomString);
     }
 }

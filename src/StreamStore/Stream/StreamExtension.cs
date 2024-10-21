@@ -7,38 +7,38 @@ namespace StreamStore
 {
     public static class StreamExtension
     {
-        public static async Task<IWriteOnlyStream> BeginWriteAsync(this Task<IStream> stream, CancellationToken cancellationToken = default)
+        public static async Task<IEventStreamWriter> BeginWriteAsync(this Task<IStream> stream, CancellationToken cancellationToken = default)
         {
             return await stream.Result.BeginWriteAsync(Revision.Zero, cancellationToken);
         }
 
-        public static async Task<IWriteOnlyStream> BeginWriteAsync(this IStream stream, CancellationToken cancellationToken = default)
+        public static async Task<IEventStreamWriter> BeginWriteAsync(this IStream stream, CancellationToken cancellationToken = default)
         {
             return await stream.BeginWriteAsync(Revision.Zero, cancellationToken);
         }
 
-        public static async Task<IWriteOnlyStream> BeginWriteAsync(this Task<IStream> stream, Revision expectedRevision, CancellationToken cancellationToken = default)
+        public static async Task<IEventStreamWriter> BeginWriteAsync(this Task<IStream> stream, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
             return await stream.Result.BeginWriteAsync(expectedRevision, cancellationToken);
         }
 
-        public static async Task<IWriteOnlyStream> BeginWriteAsync(this IStream stream, Revision expectedRevision, CancellationToken cancellationToken = default)
+        public static async Task<IEventStreamWriter> BeginWriteAsync(this IStream stream, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
             return await stream.BeginWriteAsync(expectedRevision, cancellationToken);
         }
 
-        public static IReadOnlyStream BeginRead(this IStream stream, CancellationToken cancellationToken = default)
+        public static IEventStreamReader BeginRead(this IStream stream, CancellationToken cancellationToken = default)
         {
             return stream.BeginRead(Revision.Zero, cancellationToken);
         }
 
 
-        public static IReadOnlyStream BeginRead(this Task<IStream> stream, CancellationToken cancellationToken = default)
+        public static IEventStreamReader BeginRead(this Task<IStream> stream, CancellationToken cancellationToken = default)
         {
             return stream.BeginRead(Revision.Zero, cancellationToken);
         }
 
-        public static IReadOnlyStream BeginRead(this Task<IStream> stream, Revision startFrom, CancellationToken cancellationToken = default)
+        public static IEventStreamReader BeginRead(this Task<IStream> stream, Revision startFrom, CancellationToken cancellationToken = default)
         {
             return stream.Result.BeginRead(startFrom, cancellationToken);
         }

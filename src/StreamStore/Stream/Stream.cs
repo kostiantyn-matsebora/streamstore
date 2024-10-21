@@ -22,7 +22,7 @@ namespace StreamStore
             this.producerFactory = producerFactory ?? throw new ArgumentNullException(nameof(producerFactory));
         }
 
-        public async Task<IWriteOnlyStream> BeginWriteAsync(Revision expectedRevision, CancellationToken cancellationToken = default)
+        public async Task<IEventStreamWriter> BeginWriteAsync(Revision expectedRevision, CancellationToken cancellationToken = default)
         {
             if (expectedRevision != ctx.CurrentRevision)
                 throw new OptimisticConcurrencyException(expectedRevision, ctx.CurrentRevision, ctx.StreamId);
@@ -32,12 +32,12 @@ namespace StreamStore
             if (uow == null)
                 throw new InvalidOperationException("Failed to open stream, either stream does not exist or revision is incorrect.");
 
-            return new WriteOnlyStream(uow, converter);
+            return new EventStreamWriter(uow, converter);
 
         }
 
   
-        public IReadOnlyStream BeginRead(Revision startFrom, CancellationToken cancellationToken = default)
+        public IEventStreamReader BeginRead(Revision startFrom, CancellationToken cancellationToken = default)
         {
             if (ctx.CurrentRevision < startFrom)
                 throw new InvalidOperationException("Cannot start reading from a revision greater than the current revision.");
@@ -46,7 +46,7 @@ namespace StreamStore
            
             var queue = new StreamEventQueue(ctx.PageSize);
            
-            return new ReadOnlyStream(parameters, producerFactory, queue).BeginRead(cancellationToken);
+            return new EventStreamReader(parameters, producerFactory, queue).BeginRead(cancellationToken);
         }
     }
 }

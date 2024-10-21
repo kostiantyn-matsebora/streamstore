@@ -1,6 +1,5 @@
 ﻿using StreamStore.Serialization;
-using StreamStore.Testing.Serialization;
-
+using StreamStore.Testing.Framework;
 
 namespace StreamStore.Tests.Serialization
 {

@@ -1,10 +1,11 @@
 ﻿using FluentAssertions;
 using StreamStore.Exceptions;
 using StreamStore.Testing;
+using StreamStore.Testing.Framework;
 
 namespace StreamStore.Sql.Tests.Sqlite
 {
-    public class SqliteStreamUnitOfWorkTests : StreamUnitOfWorkTestsBase
+    public class SqliteStreamUnitOfWorkTests : StreamUnitOfWorkTestsBase<SqliteTestSuite>
     {
         public SqliteStreamUnitOfWorkTests() : base(new SqliteTestSuite())
         {
@@ -18,25 +19,23 @@ namespace StreamStore.Sql.Tests.Sqlite
             // Arrange
             var streamId = GeneratedValues.String;
 
-            await suite.WithDatabase(async database =>
-            {
-                // Act
-                var act = () =>
-                        database!
-                        .BeginAppendAsync(streamId)
-                        .AddRangeAsync(GeneratedValues.CreateEventItems(3))
-                        .SaveChangesAsync(CancellationToken.None);
+            // Act
+            var act = () =>
+                    database!
+                    .BeginAppendAsync(streamId)
+                    .AddRangeAsync(GeneratedValues.CreateEventItems(3))
+                    .SaveChangesAsync(CancellationToken.None);
 
-                // Assert
-                await act.Should().NotThrowAsync();
+            // Assert
+            await act.Should().NotThrowAsync();
 
-                act = () =>
-                        database!
-                        .BeginAppendAsync(streamId)
-                        .AddRangeAsync(GeneratedValues.CreateEventItems(3))
-                        .SaveChangesAsync(CancellationToken.None);
-                await act.Should().ThrowAsync<OptimisticConcurrencyException>();
-            });
+            act = () =>
+                    database!
+                    .BeginAppendAsync(streamId)
+                    .AddRangeAsync(GeneratedValues.CreateEventItems(3))
+                    .SaveChangesAsync(CancellationToken.None);
+
+            await act.Should().ThrowAsync<OptimisticConcurrencyException>();
         }
     }
 }

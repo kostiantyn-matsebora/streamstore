@@ -65,6 +65,5 @@ namespace StreamStore.Tests.InMemory
 
             stream!.Events.Should().HaveCount(100);
         }
-
     }
 }

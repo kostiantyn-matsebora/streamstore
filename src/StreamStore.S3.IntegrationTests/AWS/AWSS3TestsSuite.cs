@@ -1,81 +1,43 @@
-﻿using StreamStore.S3.AWS;
+﻿using Microsoft.Extensions.DependencyInjection;
+using StreamStore.S3.AWS;
 using StreamStore.S3.Client;
-using StreamStore.S3.Concurrency;
-using StreamStore.S3.Lock;
-using StreamStore.S3.Storage;
-using StreamStore.Testing;
+using StreamStore.Testing.Framework;
 
 namespace StreamStore.S3.IntegrationTests.AWS
 {
-    class AWSS3TestsSuite : IS3Suite
+    public class AWSS3TestsSuite : TestSuiteBase, IS3Suite
     {
-        public bool IsReady { get; private set;}
-
-        AWSS3DatabaseSettings? settings;
-
         public AWSS3TestsSuite()
+        { }
+
+        public IS3LockFactory? LockFactory => Services.GetRequiredService<IS3LockFactory>();
+        public IS3ClientFactory? ClientFactory => Services.GetRequiredService<IS3ClientFactory>();
+        
+        public async Task WithDatabase(Func<IStreamDatabase, Task> action)
         {
-        }
-        public void Initialize()
-        {
-            settings = ConfigureSettings();
-            IsReady = settings != null;
+            var database = Services.GetRequiredService<IStreamDatabase>();
+            await action(database!);
         }
 
         public IS3LockFactory? CreateLockFactory()
         {
-            return CreateFactory();
+            return Services.GetRequiredService<IS3LockFactory>();
         }
 
         public IS3ClientFactory? CreateClientFactory()
         {
-            return CreateFactory();
+            return Services.GetRequiredService<IS3ClientFactory>();
         }
 
-        public IStreamUnitOfWork? CreateUnitOfWork(Id streamId, Revision expectedRevision)
+        protected override bool CheckPrerequisities()
         {
-            var factory = CreateFactory();
-            if (factory == null)
-                return null;
-
-            return new S3StreamUnitOfWork(factory, new S3StreamContext(streamId, expectedRevision, new S3Storage(factory)));
+            return File.Exists(Path.Combine(AppContext.BaseDirectory, "appsettings.Development.json"));
         }
 
-        public async Task WithDatabase(Func<IStreamDatabase, Task> action)
+        protected override void RegisterServices(IServiceCollection services)
         {
-            var database = CreateDatabase();
-            await action(database!);
-        }
+            services.UseS3AmazonStreamStoreDatabase();
 
-        static AWSS3DatabaseSettings? ConfigureSettings()
-        {
-
-            if (!File.Exists(
-                    Path.Combine(AppContext.BaseDirectory, "appsettings.Development.json")))
-                return null;
-
-            return
-                 new AWSS3DatabaseSettingsBuilder()
-             .Build();
-        }
-
-        static S3InMemoryStreamLockStorage CreateLockStorage(AWSS3DatabaseSettings settings)
-        {
-            return new S3InMemoryStreamLockStorage(settings.InMemoryLockTTL);
-        }
-
-
-        AWSS3Factory? CreateFactory()
-        {
-            var storage = CreateLockStorage(settings!);
-            return new AWSS3Factory(settings!, new AmazonS3ClientFactory());
-        }
-
-        S3StreamDatabase? CreateDatabase()
-        {
-            var factory = CreateFactory();
-
-            return new S3StreamDatabase(factory!, factory!);
         }
     }
 }

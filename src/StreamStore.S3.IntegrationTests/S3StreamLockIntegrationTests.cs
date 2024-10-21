@@ -4,17 +4,18 @@ using Bytewizer.Backblaze.Extensions;
 using FluentAssertions;
 using StreamStore.S3.Client;
 using StreamStore.Testing;
+using StreamStore.Testing.Framework;
 
 
 namespace StreamStore.S3.IntegrationTests
 {
-    public abstract class S3StreamLockIntegrationTests: IntegrationTestsBase
+    public abstract class S3StreamLockIntegrationTests<TSuite>: TestsBase<TSuite> where TSuite: IS3Suite
     {
         private readonly IS3LockFactory? lockFactory;
 
-        protected S3StreamLockIntegrationTests(IS3Suite suite): base(suite)
+        protected S3StreamLockIntegrationTests(TSuite suite): base(suite)
         {
-            this.lockFactory = suite.IsReady? suite.CreateLockFactory() : null!;
+            this.lockFactory = suite.ArePrerequisitiesMet? suite.CreateLockFactory() : null!;
         }
 
         [InlineData(1000)]
@@ -24,7 +25,7 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableTheory]
         public async Task AcquireAsync_ShouldAcquireLockOnlyOnce(int parallelAttempts)
         {
-            Skip.IfNot(suite.IsReady, "Configuration is missing");
+            TrySkip();
 
             // Arrange
             var fixture = new Fixture();
@@ -54,7 +55,7 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableFact]
         public async Task AcquireAsync_ShouldNotAllowToAcquireLockIfAlreadyExists()
         {
-            Skip.IfNot(suite.IsReady, "Configuration is missing");
+            TrySkip();
 
             // Arrange
             var fixture = new Fixture();
@@ -76,7 +77,7 @@ namespace StreamStore.S3.IntegrationTests
         [SkippableFact]
         public async Task AcquireAsync_ShouldAcquireLockIfReleased()
         {
-            Skip.IfNot(suite.IsReady, "Configuration is missing");
+            TrySkip();
 
             // Arrange
             var fixture = new Fixture();

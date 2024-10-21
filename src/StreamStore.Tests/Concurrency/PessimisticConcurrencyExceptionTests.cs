@@ -2,7 +2,7 @@
 using StreamStore.Exceptions;
 using StreamStore.Testing;
 
-namespace StreamStore.Tests
+namespace StreamStore.Tests.Concurrency
 {
     public class PessimisticConcurrencyExceptionTests
     {

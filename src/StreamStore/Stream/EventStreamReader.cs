@@ -6,21 +6,21 @@ using System;
 
 namespace StreamStore
 {
-    sealed class ReadOnlyStream : IReadOnlyStream
+    sealed class EventStreamReader : IEventStreamReader
     {
         readonly StreamReadingParameters parameters;
         readonly StreamEventProducerFactory producerFactory;
         readonly StreamEventQueue queue;
         Task? producerTask;
 
-        public ReadOnlyStream(StreamReadingParameters parameters, StreamEventProducerFactory producerFactory, StreamEventQueue queue)
+        public EventStreamReader(StreamReadingParameters parameters, StreamEventProducerFactory producerFactory, StreamEventQueue queue)
         {
             this.parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
             this.producerFactory = producerFactory ?? throw new ArgumentNullException(nameof(producerFactory));
             this.queue = queue ?? throw new ArgumentNullException(nameof(queue));
         }
 
-        public IReadOnlyStream BeginRead(CancellationToken token)
+        public IEventStreamReader BeginRead(CancellationToken token)
         {
             if (producerTask != null)
             {
@@ -32,7 +32,7 @@ namespace StreamStore
 
         public IAsyncEnumerator<EventEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return queue.ReadAsync(cancellationToken).GetAsyncEnumerator();
+            return queue.ReadAsync(cancellationToken).GetAsyncEnumerator(cancellationToken);
         }
 
         public async Task<EventEntityCollection> ReadToEndAsync(CancellationToken cancellationToken = default)
@@ -43,6 +43,11 @@ namespace StreamStore
                 results.Add(item);
             }
             return new EventEntityCollection(results);
+        }
+
+        public IAsyncEnumerable<EventEntity> ReadAsync(CancellationToken cancellationToken = default)
+        {
+            return queue.ReadAsync(cancellationToken);
         }
 
         public void Dispose()

@@ -1,60 +1,34 @@
 ﻿using System.Data.SQLite;
 using Dapper.Extensions;
-using Dapper.Extensions.Factory;
 using Dapper.Extensions.SQLite;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.SQL.Sqlite;
-using StreamStore.Testing;
+using StreamStore.Testing.Framework;
+
 
 namespace StreamStore.Sql.Tests.Sqlite
 {
-    public class SqliteTestSuite : ITestSuite
+    public class SqliteTestSuite : TestSuiteBase
     {
-        SqliteDatabaseConfiguration? configuration;
-        readonly static object locker = new object();
-        static bool databaseConfigured = false;
-
-        public SqliteDatabaseConfiguration? Configuration => configuration;
-
-        public bool IsReady => true;
-
-        public async Task WithDatabase(Func<IStreamDatabase, Task> action)
+        protected override void RegisterServices(IServiceCollection services)
         {
-            await DapperFactory.StepAsync(async dapper =>
-            {
-                var database = new SqliteStreamDatabase(dapper, configuration!);
-                await action(database);
-            });
+            services.AddDapperForSQLite();
+            services.AddSingleton(CreateSqliteConfiguration());
         }
 
-        public void Initialize()
+        protected override async Task SetUp()
         {
-            configuration = CreateSqliteConfiguration();
+            SQLiteConnection.CreateFile("StreamStore.sqlite");
+            await ProvisionSchema();
+        }
 
-            if (!databaseConfigured)
+        private async Task ProvisionSchema()
+        {
+            using (var dapper = Services.GetRequiredService<IDapper>())
             {
-                lock (locker)
-                {
-                    if (!databaseConfigured)
-                    {
-                        ConfigureDapperFactory();
-                        ProvisionSqliteSchema();
-                        databaseConfigured = true;
-                    }
-                }
-
+                var provisioner = new SqliteSchemaProvisioner(CreateSqliteConfiguration(), dapper);
+                await provisioner.ProvisionSchemaAsync(CancellationToken.None);
             }
-        }
-
-        void ConfigureDapperFactory()
-        {
-            DapperFactory.CreateInstance()
-                .ConfigureServices(service =>
-                {
-                    service.AddDapperForSQLite();
-                    service.AddDapperConnectionStringProvider<SqliteDapperConnectionStringProvider>();
-                    service.AddSingleton(configuration!);
-                }).Build();
         }
 
         static SqliteDatabaseConfiguration CreateSqliteConfiguration()
@@ -63,17 +37,5 @@ namespace StreamStore.Sql.Tests.Sqlite
               .WithConnectionString("Data Source=StreamStore.sqlite;Version=3;")
               .Build();
         }
-
-        void ProvisionSqliteSchema()
-        {
-            SQLiteConnection.CreateFile("StreamStore.sqlite");
-            DapperFactory.Step(dapper =>
-            {
-                var provisioner = new SqliteSchemaProvisioner(configuration!, dapper);
-                provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
-            });
-        }
-
-      
     }
 }

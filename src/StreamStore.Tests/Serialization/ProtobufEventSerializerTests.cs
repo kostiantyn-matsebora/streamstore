@@ -1,8 +1,7 @@
 ﻿using AutoFixture;
 using ProtoBuf;
 using StreamStore.Serialization.Protobuf;
-using StreamStore.Testing.Serialization;
-
+using StreamStore.Testing.Framework;
 
 namespace StreamStore.Tests.Serialization
 {

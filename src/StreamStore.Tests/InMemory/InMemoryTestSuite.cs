@@ -2,9 +2,9 @@
 using StreamStore.InMemory;
 using StreamStore.Testing.Framework;
 
-namespace StreamStore.S3.Tests.InMemory
+namespace StreamStore.Tests.InMemory
 {
-    public class S3InMemorySuite : TestSuiteBase
+    public class InMemoryTestSuite : TestSuiteBase
     {
         protected override void RegisterServices(IServiceCollection services)
         {

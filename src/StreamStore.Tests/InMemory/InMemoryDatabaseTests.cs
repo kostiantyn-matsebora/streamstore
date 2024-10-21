@@ -5,11 +5,16 @@ using StreamStore.Testing;
 using AutoFixture;
 using FluentAssertions;
 using StreamStore;
+using StreamStore.Testing.Framework;
 
 namespace StreamStore.Tests.InMemory;
 
-public class InMemoryDatabaseTests
+public class InMemoryDatabaseTests: StreamDatabaseTestsBase<InMemoryTestSuite>
 {
+    public InMemoryDatabaseTests() : base(new InMemoryTestSuite())
+    {
+    }
+
     [Fact]
     public async Task DeleteAsync_ShouldDeleteStream()
     {

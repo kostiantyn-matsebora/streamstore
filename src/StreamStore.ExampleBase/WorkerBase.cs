@@ -30,7 +30,7 @@ namespace StreamStore.S3.Example
             while (!stoppingToken.IsCancellationRequested)
             {
                 var profiler = MiniProfiler.StartNew("Example");
-                IWriteOnlyStream stream;
+                IEventStreamWriter stream;
                 using (profiler.Step("Main Work"))
                 {
                     try
@@ -69,7 +69,7 @@ namespace StreamStore.S3.Example
             return await store.OpenAsync(StreamId, stoppingToken);
         }
 
-        async Task AddEventsToStreamAsync(IWriteOnlyStream stream, CancellationToken stoppingToken)
+        async Task AddEventsToStreamAsync(IEventStreamWriter stream, CancellationToken stoppingToken)
         {
             logger.LogDebug("Adding events to stream");
 
@@ -79,11 +79,11 @@ namespace StreamStore.S3.Example
                 .AddAsync(CreateEvent(), stoppingToken);
         }
 
-        async Task SaveStreamChangesAsync(IWriteOnlyStream stream, CancellationToken stoppingToken)
+        async Task SaveStreamChangesAsync(IEventStreamWriter stream, CancellationToken stoppingToken)
         {
             logger.LogDebug("Saving changes");
 
-            actualRevision = await stream.SaveChangesAsync(stoppingToken);
+            actualRevision = await stream.CommitAsync(stoppingToken);
 
             logger.LogInformation("New version of stream: {actualRevision}", actualRevision);
             logger.LogInformation("Congratulations! You have successfully written and read from the stream.");

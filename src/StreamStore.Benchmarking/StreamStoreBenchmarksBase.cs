@@ -1,11 +1,9 @@
 ﻿using AutoFixture;
 using Dapper.Extensions;
 using Dapper.Extensions.Factory;
-using StreamStore.InMemory;
-using StreamStore.Serialization;
+using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Sql.Tests.Sqlite;
-using StreamStore.SQL.Sqlite;
-
+using StreamStore.Tests.InMemory;
 using System;
 using System.Linq;
 using System.Threading;
@@ -17,9 +15,9 @@ namespace StreamStore.Benchmarking
     {
         protected readonly Event[] events;
         protected readonly string[] streamIds;
-        protected readonly StreamStore inMemoryStore;
-        readonly NewtonsoftEventSerializer serializer;
-        readonly SqliteTestSuite suite;
+        protected readonly IStreamStore inMemoryStore;
+        readonly SqliteTestSuite sqliteSuite;
+        readonly InMemoryTestSuite inMemorySuite;
 
         public StreamStoreBenchmarksBase()
         {
@@ -27,21 +25,21 @@ namespace StreamStore.Benchmarking
             fixture.Customize<Event>(composer => composer.Do(e => e.Id = Guid.NewGuid().ToString()));
             events = fixture.CreateMany<Event>(100).ToArray();
 
-            serializer = CreateSerializer();
-            suite = new SqliteTestSuite();
-            inMemoryStore = CreateInMemoryStore();
+            sqliteSuite = new SqliteTestSuite();
+            sqliteSuite.SetUpSuite().Wait();
 
+            inMemorySuite = new InMemoryTestSuite();
+            inMemorySuite.SetUpSuite().Wait();
+
+            inMemoryStore = GetInMemoryStore();
             streamIds = GenerateStreamIds();
         }
 
         protected void FillDatabase()
         {
             InsertStreamsToStore(inMemoryStore);
-            DapperFactory.Step(dapper =>
-            {
-                var store = CreateSqliteStore(dapper);
-                InsertStreamsToStore(store);
-            });
+            var store = GetSqliteStore();
+            InsertStreamsToStore(store);
         }
 
         static string[] GenerateStreamIds()
@@ -52,24 +50,17 @@ namespace StreamStore.Benchmarking
                 .ToArray();
         }
 
-        static NewtonsoftEventSerializer CreateSerializer()
+        IStreamStore GetInMemoryStore()
         {
-            var typeRegistry = TypeRegistry.CreateAndInitialize();
-            var serializer = new NewtonsoftEventSerializer(typeRegistry);
-            return serializer;
+            return inMemorySuite.Services.GetRequiredService<IStreamStore>();
         }
 
-        StreamStore CreateInMemoryStore()
+        protected IStreamStore GetSqliteStore()
         {
-            return new StreamStore(new InMemoryStreamDatabase(), serializer);
+           return sqliteSuite.Services.GetRequiredService<IStreamStore>();
         }
 
-        protected StreamStore CreateSqliteStore(IDapper dapper)
-        {
-            return new StreamStore(new SqliteStreamDatabase(dapper, suite.Configuration), serializer);
-        }
-
-        void InsertStreamsToStore(StreamStore store)
+        void InsertStreamsToStore(IStreamStore store)
         {
             foreach (var streamId in streamIds)
             {
