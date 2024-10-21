@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StackExchange.Profiling;
 using StreamStore.Exceptions;
-using StreamStore.Stream;
+
 
 namespace StreamStore.S3.Example
 {
@@ -30,12 +30,12 @@ namespace StreamStore.S3.Example
             while (!stoppingToken.IsCancellationRequested)
             {
                 var profiler = MiniProfiler.StartNew("Example");
-                IStream stream;
+                IWriteOnlyStream stream;
                 using (profiler.Step("Main Work"))
                 {
                     try
                     {
-                        stream = await OpenStreamAsync(stoppingToken);
+                        stream = await OpenStreamAsync(stoppingToken).BeginWriteAsync(stoppingToken);
                         if (stoppingToken.IsCancellationRequested) break;
 
                         await AddEventsToStreamAsync(stream, stoppingToken);
@@ -66,10 +66,10 @@ namespace StreamStore.S3.Example
         async Task<IStream> OpenStreamAsync(CancellationToken stoppingToken)
         {
             logger.LogDebug("Opening stream of revision {actualRevision}", actualRevision);
-            return await store.OpenStreamAsync(StreamId, actualRevision, stoppingToken);
+            return await store.OpenAsync(StreamId, stoppingToken);
         }
 
-        async Task AddEventsToStreamAsync(IStream stream, CancellationToken stoppingToken)
+        async Task AddEventsToStreamAsync(IWriteOnlyStream stream, CancellationToken stoppingToken)
         {
             logger.LogDebug("Adding events to stream");
 
@@ -79,7 +79,7 @@ namespace StreamStore.S3.Example
                 .AddAsync(CreateEvent(), stoppingToken);
         }
 
-        async Task SaveStreamChangesAsync(IStream stream, CancellationToken stoppingToken)
+        async Task SaveStreamChangesAsync(IWriteOnlyStream stream, CancellationToken stoppingToken)
         {
             logger.LogDebug("Saving changes");
 

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
+using System;
 
 namespace StreamStore
 {
-    public interface IReadOnlyStream : IAsyncEnumerable<EventEntity>
+    public interface IReadOnlyStream : IAsyncEnumerable<EventEntity>, IDisposable
     {
-        Task<EventEntity[]> ReadToEnd(Revision startFrom, CancellationToken cancellationToken = default);
+        Task<EventEntityCollection> ReadToEndAsync(CancellationToken cancellationToken = default);
     }
 }

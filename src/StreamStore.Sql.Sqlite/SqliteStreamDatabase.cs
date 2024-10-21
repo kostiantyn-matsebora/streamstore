@@ -43,7 +43,7 @@ namespace StreamStore.SQL.Sqlite
                 return null;
             }
 
-            return new StreamRecord(entities.ToCollection());
+            return new StreamRecord(entities.ToRecords());
         }
 
         public async Task<StreamMetadataRecord?> FindMetadataAsync(Id streamId, CancellationToken token = default)
@@ -56,12 +56,14 @@ namespace StreamStore.SQL.Sqlite
                 return null;
             }
 
-            return new StreamMetadataRecord(entities.ToCollection());
+            return new StreamMetadataRecord(entities.ToRecords());
         }
 
-        public Task<EventRecord[]> ReadAsync(Id streamId, Revision start, int count, CancellationToken token = default)
+        public async Task<EventRecord[]> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            var sql = $"SELECT Id, Revision, Timestamp FROM {configuration.FullTableName} WHERE StreamId = @StreamId and Revision >= @Revision ORDER BY Revision ASC LIMIT @Count";
+            var entities = await dapper.QueryAsync<EventEntity>(sql, new { StreamId = streamId, Revision = startFrom, Count = count });
+            return entities.ToArray().ToRecords();
         }
 
         async Task<EventEntity[]> GetStreamEntities(string streamId, string sql)

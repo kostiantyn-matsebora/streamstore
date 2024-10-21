@@ -15,10 +15,8 @@ namespace StreamStore.S3.Lock
 
         public S3FileLock(S3LockObject lockObject, Id transactionId)
         {
-            this.lockObject = lockObject ?? throw new ArgumentNullException(nameof(lockObject)); 
-            if (!transactionId.HasValue()) throw new ArgumentException("Transaction id is not set.", nameof(transactionId));
-
-            this.transactionId = transactionId;
+            this.lockObject = lockObject ?? throw new ArgumentNullException(nameof(lockObject));
+            this.transactionId = transactionId.ThrowIfHasNoValue(nameof(transactionId));
         }
 
         public async Task<IS3LockHandle?> AcquireAsync(CancellationToken token)

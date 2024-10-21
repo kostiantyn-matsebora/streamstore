@@ -10,7 +10,7 @@ namespace StreamStore
     {
         readonly IStreamDatabase database;
         readonly EventConverter converter;
-
+        readonly StreamEventProducerFactory producerFactory;
         public StreamStore(IStreamDatabase database, IEventSerializer serializer)
         {
             if (database == null) throw new ArgumentNullException(nameof(database));
@@ -18,15 +18,17 @@ namespace StreamStore
 
             this.database = database;
             converter = new EventConverter(serializer);
+            producerFactory = new StreamEventProducerFactory(database, converter);
         }
 
-        public async Task<IStream> OpenStreamAsync(Id streamId, CancellationToken cancellationToken = default)
+        public async Task<IStream> OpenAsync(Id streamId, CancellationToken cancellationToken = default)
         {
             var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
-            if (metadata == null)
-              metadata = new StreamMetadataRecord();
+            if (metadata == null) metadata = new StreamMetadataRecord();
 
-            return new Stream(streamId, metadata, database, converter);
+            var ctx = new StreamContext(streamId, metadata);
+
+            return new Stream(ctx, database, converter, producerFactory);
         }
 
         public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken = default)

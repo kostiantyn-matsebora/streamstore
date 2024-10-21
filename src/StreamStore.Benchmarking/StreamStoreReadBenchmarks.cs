@@ -29,7 +29,7 @@ namespace StreamStore.Benchmarking
         async Task ReadRandomStreamWith10Events(StreamStore store)
         {
             var streamIdIndex = RandomNumberGenerator.GetInt32(0, streamIds.Length);
-            await store.GetAsync(streamIds[streamIdIndex], CancellationToken.None);
+            await store.OpenAsync(streamIds[streamIdIndex]).ReadToEnd(CancellationToken.None);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using Dapper.Extensions.Factory;
-using StreamStore.Stream;
+
 
 
 namespace StreamStore.Benchmarking
@@ -33,9 +33,8 @@ namespace StreamStore.Benchmarking
             var streamId = Guid.NewGuid().ToString();
 
             await store
-                .OpenStreamAsync(streamId,  CancellationToken.None)
-                .AddRangeAsync(events.Take(10), CancellationToken.None)
-                .SaveChangesAsync(CancellationToken.None);
+                .OpenAsync(streamId, CancellationToken.None)
+                .WriteAsync(events.Take(10), CancellationToken.None);
         }
     }
 }

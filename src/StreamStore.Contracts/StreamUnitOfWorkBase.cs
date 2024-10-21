@@ -18,9 +18,7 @@ namespace StreamStore
 
         protected StreamUnitOfWorkBase(Id streamId, Revision expectedRevision, StreamRecord? existing)
         {
-            streamId.ThrowIfHasNoValue();
-
-            this.streamId = streamId;
+            this.streamId = streamId.ThrowIfHasNoValue(nameof(streamId));
 
             if (existing != null && !existing.IsEmpty)
             {

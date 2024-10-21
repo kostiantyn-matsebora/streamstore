@@ -1,74 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Threading.Tasks;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System;
 
 namespace StreamStore
 {
     public static class StreamExtension
     {
-        public static Task<Revision> SaveChangesAsync(this Task<IWriteOnlyStream> stream, CancellationToken token)
+        public static async Task<IWriteOnlyStream> BeginWriteAsync(this Task<IStream> stream, CancellationToken cancellationToken = default)
         {
-            return stream.Result!.SaveChangesAsync(token);
+            return await stream.Result.BeginWriteAsync(Revision.Zero, cancellationToken);
         }
 
-        public static async Task<IWriteOnlyStream> AddAsync(this IWriteOnlyStream stream, Event @event, CancellationToken token = default)
+        public static async Task<IWriteOnlyStream> BeginWriteAsync(this IStream stream, CancellationToken cancellationToken = default)
         {
-            await stream.AddAsync(@event.Id, @event.Timestamp, @event.EventObject, token);
-            return stream;
+            return await stream.BeginWriteAsync(Revision.Zero, cancellationToken);
         }
 
-        public static async Task<IWriteOnlyStream> AddAsync(this Task<IWriteOnlyStream> stream, Event @event, CancellationToken token = default)
+        public static async Task<IWriteOnlyStream> BeginWriteAsync(this Task<IStream> stream, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
-            await stream.ContinueWith(async t =>
-            {
-                await t.Result.AddAsync(@event);
-            }, token);
-
-            return stream.Result;
+            return await stream.Result.BeginWriteAsync(expectedRevision, cancellationToken);
         }
 
-        public static async Task<IWriteOnlyStream> AddAsync(this Task<IWriteOnlyStream> stream, Id eventId, DateTime timestamp, object @event, CancellationToken token = default)
+        public static async Task<IWriteOnlyStream> BeginWriteAsync(this IStream stream, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
-
-            await stream.ContinueWith(async t =>
-            {
-                await t.AddAsync(eventId, timestamp, @event, token);
-            });
-
-            return stream.Result;
+            return await stream.BeginWriteAsync(expectedRevision, cancellationToken);
         }
 
-        public static async Task<IWriteOnlyStream> AddRangeAsync(this Task<IWriteOnlyStream> stream, IEnumerable<Event> events, CancellationToken token = default)
+        public static IReadOnlyStream BeginRead(this IStream stream, CancellationToken cancellationToken = default)
         {
-            var result = await stream.ContinueWith(async t =>
-             {
-                 foreach (var @event in events)
-                 {
-                     await t.Result.AddAsync(@event);
-                 }
-                 return t.Result;
-             }, token);
-
-            return result.Result;
+            return stream.BeginRead(Revision.Zero, cancellationToken);
         }
 
-        public static IWriteOnlyStream AddRange(this IWriteOnlyStream stream, IEnumerable<Event> events)
+
+        public static IReadOnlyStream BeginRead(this Task<IStream> stream, CancellationToken cancellationToken = default)
         {
-
-            IWriteOnlyStream result = stream;
-            foreach (var @event in events)
-            {
-                result = stream.AddAsync(@event).GetAwaiter().GetResult();
-            }
-
-            return result;
+            return stream.BeginRead(Revision.Zero, cancellationToken);
         }
 
-        public static IWriteOnlyStream Add(this IWriteOnlyStream stream, Id eventId, DateTime timestamp, object @event)
+        public static IReadOnlyStream BeginRead(this Task<IStream> stream, Revision startFrom, CancellationToken cancellationToken = default)
         {
-            return stream.AddAsync(eventId, timestamp, @event).GetAwaiter().GetResult();
+            return stream.Result.BeginRead(startFrom, cancellationToken);
         }
 
+        public async static Task<Revision> WriteAsync(this Task<IStream> stream, IEnumerable<Event> events, CancellationToken token)
+        {
+            return await stream.BeginWriteAsync(token).WriteAsync(events, token);
+        }
+
+        public async static Task<Revision> WriteAsync(this Task<IStream> stream, Id eventId, DateTime timestamp, object @event, CancellationToken token)
+        {
+            return await stream.BeginWriteAsync(token).WriteAsync(eventId, timestamp, @event, token);
+        }
+
+        public async static Task<Revision> WriteAsync(this Task<IStream> stream, Revision expectedRevision, IEnumerable<Event> events, CancellationToken token)
+        {
+            return await stream.BeginWriteAsync(expectedRevision, token).WriteAsync(events, token);
+        }
+
+        public async static Task<Revision> WriteAsync(this Task<IStream> stream, Revision expectedRevision, Id eventId, DateTime timestamp, object @event, CancellationToken token)
+        {
+            return await stream.BeginWriteAsync(expectedRevision, token).WriteAsync(eventId, timestamp, @event, token);
+        }
+
+        public static async Task<EventEntityCollection> ReadToEnd(this Task<IStream> stream, Revision startFrom, CancellationToken cancellationToken = default)
+        {
+            return await stream.Result.BeginRead(startFrom, cancellationToken).ReadToEndAsync(cancellationToken);
+        }
+        public static async Task<EventEntityCollection> ReadToEnd(this Task<IStream> stream, CancellationToken cancellationToken = default)
+        {
+            return await stream.Result.BeginRead(Revision.One, cancellationToken).ReadToEndAsync(cancellationToken);
+        }
     }
 }

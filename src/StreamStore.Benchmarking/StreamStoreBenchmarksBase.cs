@@ -5,7 +5,7 @@ using StreamStore.InMemory;
 using StreamStore.Serialization;
 using StreamStore.Sql.Tests.Sqlite;
 using StreamStore.SQL.Sqlite;
-using StreamStore.Stream;
+
 using System;
 using System.Linq;
 using System.Threading;
@@ -73,10 +73,10 @@ namespace StreamStore.Benchmarking
         {
             foreach (var streamId in streamIds)
             {
-                store
-                  .OpenStreamAsync(streamId, CancellationToken.None)
-                  .AddRangeAsync(events, CancellationToken.None)
-                  .SaveChangesAsync(CancellationToken.None).Wait();
+                var stream = store
+                  .OpenAsync(streamId, CancellationToken.None)
+                  .BeginWriteAsync(CancellationToken.None);
+                  
             }
         }
     }
