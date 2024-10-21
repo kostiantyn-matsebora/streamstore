@@ -8,55 +8,55 @@ namespace StreamStore
     public static class EventStreamWriterExtension
     {
 
-        public static Task<Revision> WriteAsync(this Task<IEventStreamWriter> stream,IEnumerable<Event> events, CancellationToken token)
+        public static Task<Revision> WriteAsync(this Task<IEventStreamWriter> writer, IEnumerable<Event> events, CancellationToken token = default)
         {
-            return stream.AddRangeAsync(events, token).SaveChangesAsync(token);
+            return writer.AddRangeAsync(events, token).CommitAsync(token);
         }
 
-        public static Task<Revision> WriteAsync(this Task<IEventStreamWriter> stream, Id eventId, DateTime timestamp, object @event, CancellationToken token)
+        public static Task<Revision> WriteAsync(this Task<IEventStreamWriter> writer, Id eventId, DateTime timestamp, object @event, CancellationToken token = default)
         {
-            return stream.AddAsync(eventId, timestamp, @event).SaveChangesAsync(token);
+            return writer.AppendAsync(eventId, timestamp, @event).CommitAsync(token);
         }
 
-        public static Task<Revision> SaveChangesAsync(this Task<IEventStreamWriter> stream, CancellationToken token)
+        public static Task<Revision> CommitAsync(this Task<IEventStreamWriter> writer, CancellationToken token = default)
         {
-            return stream.Result!.CommitAsync(token);
+            return writer.Result!.CommitAsync(token);
         }
 
-        public static async Task<IEventStreamWriter> AddAsync(this IEventStreamWriter stream, Event @event, CancellationToken token = default)
+        public static async Task<IEventStreamWriter> AppendAsync(this IEventStreamWriter writer, Event @event, CancellationToken token = default)
         {
-            await stream.AppendAsync(@event.Id, @event.Timestamp, @event.EventObject, token);
-            return stream;
+            await writer.AppendAsync(@event.Id, @event.Timestamp, @event.EventObject, token);
+            return writer;
         }
 
-        public static async Task<IEventStreamWriter> AddAsync(this Task<IEventStreamWriter> stream, Event @event, CancellationToken token = default)
+        public static async Task<IEventStreamWriter> AppendAsync(this Task<IEventStreamWriter> writer, Event @event, CancellationToken token = default)
         {
-            await stream.ContinueWith(async t =>
+            await writer.ContinueWith(async t =>
             {
-                await t.Result.AddAsync(@event);
+                await t.Result.AppendAsync(@event);
             }, token);
 
-            return stream.Result;
+            return writer.Result;
         }
 
-        public static async Task<IEventStreamWriter> AddAsync(this Task<IEventStreamWriter> stream, Id eventId, DateTime timestamp, object @event, CancellationToken token = default)
+        public static async Task<IEventStreamWriter> AppendAsync(this Task<IEventStreamWriter> writer, Id eventId, DateTime timestamp, object @event, CancellationToken token = default)
         {
 
-            await stream.ContinueWith(async t =>
+            await writer.ContinueWith(async t =>
             {
-                await t.AddAsync(eventId, timestamp, @event, token);
+                await t.AppendAsync(eventId, timestamp, @event, token);
             });
 
-            return stream.Result;
+            return writer.Result;
         }
 
-        public static async Task<IEventStreamWriter> AddRangeAsync(this Task<IEventStreamWriter> stream, IEnumerable<Event> events, CancellationToken token = default)
+        public static async Task<IEventStreamWriter> AddRangeAsync(this Task<IEventStreamWriter> writer, IEnumerable<Event> events, CancellationToken token = default)
         {
-            var result = await stream.ContinueWith(async t =>
+            var result = await writer.ContinueWith(async t =>
              {
                  foreach (var @event in events)
                  {
-                     await t.Result.AddAsync(@event);
+                     await t.Result.AppendAsync(@event);
                  }
                  return t.Result;
              }, token);

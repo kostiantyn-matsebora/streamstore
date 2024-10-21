@@ -1,12 +1,11 @@
 ﻿using AutoFixture;
-using Dapper.Extensions;
-using Dapper.Extensions.Factory;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Sql.Tests.Sqlite;
 using StreamStore.Tests.InMemory;
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace StreamStore.Benchmarking
@@ -23,6 +22,7 @@ namespace StreamStore.Benchmarking
         {
             var fixture = new Fixture();
             fixture.Customize<Event>(composer => composer.Do(e => e.Id = Guid.NewGuid().ToString()));
+
             events = fixture.CreateMany<Event>(100).ToArray();
 
             sqliteSuite = new SqliteTestSuite();
@@ -35,11 +35,11 @@ namespace StreamStore.Benchmarking
             streamIds = GenerateStreamIds();
         }
 
-        protected void FillDatabase()
+        protected async Task FillDatabaseAsync()
         {
-            InsertStreamsToStore(inMemoryStore);
+            await InsertStreamsToStore(inMemoryStore);
             var store = GetSqliteStore();
-            InsertStreamsToStore(store);
+            await InsertStreamsToStore(store);
         }
 
         static string[] GenerateStreamIds()
@@ -60,14 +60,13 @@ namespace StreamStore.Benchmarking
            return sqliteSuite.Services.GetRequiredService<IStreamStore>();
         }
 
-        void InsertStreamsToStore(IStreamStore store)
+        async Task InsertStreamsToStore(IStreamStore store)
         {
             foreach (var streamId in streamIds)
             {
-                var stream = store
-                  .OpenAsync(streamId, CancellationToken.None)
-                  .BeginWriteAsync(CancellationToken.None);
-                  
+                await store
+                  .BeginWriteAsync(streamId, CancellationToken.None)
+                  .AddRangeAsync(events);
             }
         }
     }

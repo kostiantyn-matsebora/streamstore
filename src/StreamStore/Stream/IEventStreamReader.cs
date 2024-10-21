@@ -6,9 +6,9 @@ using System;
 
 namespace StreamStore
 {
-    public interface IEventStreamReader: IDisposable
+    public interface IEventStreamReader: IAsyncEnumerable<EventEntity>, IDisposable
     {
-        IAsyncEnumerable<EventEntity> ReadAsync(CancellationToken cancellationToken = default);
+
         Task<EventEntityCollection> ReadToEndAsync(CancellationToken cancellationToken = default);
     }
 }

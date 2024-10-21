@@ -35,7 +35,7 @@ namespace StreamStore.S3.Example
                 {
                     try
                     {
-                        stream = await OpenStreamAsync(stoppingToken).BeginWriteAsync(stoppingToken);
+                        stream = await OpenStreamAsync(stoppingToken);
                         if (stoppingToken.IsCancellationRequested) break;
 
                         await AddEventsToStreamAsync(stream, stoppingToken);
@@ -63,10 +63,10 @@ namespace StreamStore.S3.Example
             }
         }
 
-        async Task<IStream> OpenStreamAsync(CancellationToken stoppingToken)
+        async Task<IEventStreamWriter> OpenStreamAsync(CancellationToken stoppingToken)
         {
             logger.LogDebug("Opening stream of revision {actualRevision}", actualRevision);
-            return await store.OpenAsync(StreamId, stoppingToken);
+            return await store.BeginWriteAsync(StreamId, stoppingToken);
         }
 
         async Task AddEventsToStreamAsync(IEventStreamWriter stream, CancellationToken stoppingToken)
@@ -74,9 +74,9 @@ namespace StreamStore.S3.Example
             logger.LogDebug("Adding events to stream");
 
             await stream
-                .AddAsync(CreateEvent(), stoppingToken)
-                .AddAsync(CreateEvent(), stoppingToken)
-                .AddAsync(CreateEvent(), stoppingToken);
+                .AppendAsync(CreateEvent(), stoppingToken)
+                .AppendAsync(CreateEvent(), stoppingToken)
+                .AppendAsync(CreateEvent(), stoppingToken);
         }
 
         async Task SaveStreamChangesAsync(IEventStreamWriter stream, CancellationToken stoppingToken)

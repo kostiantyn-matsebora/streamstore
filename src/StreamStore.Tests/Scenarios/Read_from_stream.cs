@@ -9,7 +9,7 @@ namespace StreamStore.Tests.Scenarios
         [Fact]
         public async Task When_revision_is_greater_than_current_version_of_stream()
         {
-            Func<Task> act = async () =>  await store.OpenAsync(RandomStreamId, CancellationToken.None); 
+            Func<Task> act = async () =>  await store.BeginReadAsync(RandomStreamId, CancellationToken.None); 
             await act.Should().ThrowAsync<StreamNotFoundException>();
         }
     }

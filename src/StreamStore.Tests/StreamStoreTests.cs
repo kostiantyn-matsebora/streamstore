@@ -39,7 +39,7 @@ namespace StreamStore.Tests
         }
 
         [Fact]
-        public async Task GetAsync_ShouldThrowExceptionIfStreamNotFound()
+        public async Task BeginReadAsync_ShouldThrowExceptionIfStreamNotFound()
         {
             // Arrange
             var fixture = new Fixture();
@@ -47,17 +47,17 @@ namespace StreamStore.Tests
             mockStreamDatabase.Setup(db => db.FindAsync(streamId, It.IsAny<CancellationToken>())).ReturnsAsync((StreamRecord?)null);
 
             // Act
-            var act = async () => await streamStore.OpenAsync(streamId, CancellationToken.None);
+            var act = async () => await streamStore.BeginReadAsync(streamId, CancellationToken.None);
 
             // Assert
             await  act.Should().ThrowAsync<StreamNotFoundException>();
         }
 
         [Fact]
-        public async Task OpenStreamAsync_ShouldThrowArgumentNullExceptionIfStreamIdIsNull()
+        public async Task BeginWriteAsync_ShouldThrowArgumentNullExceptionIfStreamIdIsNull()
         {
             // Act
-            var act = () => streamStore.OpenAsync(null!, CancellationToken.None);
+            var act = () => streamStore.BeginWriteAsync(null!, CancellationToken.None);
 
             // & Assert
             await act.Should().ThrowAsync<ArgumentNullException>();
@@ -74,15 +74,15 @@ namespace StreamStore.Tests
         }
 
         [Fact]
-        public async Task GetAsync_ShouldThrowArgumentNullExceptionIfStreamIdIsNull()
+        public async Task BeginReadAsync_ShouldThrowArgumentNullExceptionIfStreamIdIsNull()
         {
             // Act
-            var act = () => streamStore.OpenAsync(null!);
+            var act = () => streamStore.BeginReadAsync(null!);
 
             // Assert
             await act.Should().ThrowAsync<ArgumentNullException>();
         }
-
+  
         [Theory]
         [InlineData(1)]
         [InlineData(3)]
@@ -103,7 +103,7 @@ namespace StreamStore.Tests
             mockStreamDatabase.Setup(db => db.FindAsync(streamId, It.IsAny<CancellationToken>())).ReturnsAsync(streamRecord);
 
             // Act
-            var result = await streamStore.OpenAsync(streamId).ReadToEnd();
+            var result = await streamStore.ReadToEndAsync(streamId);
 
             // Assert
             result.Should().NotBeNull();
@@ -129,12 +129,11 @@ namespace StreamStore.Tests
             // Act 1
             // First way to append to stream
             await streamStore
-                    .OpenAsync(streamId, CancellationToken.None)
-                    .BeginWriteAsync(CancellationToken.None)
-                        .AddAsync(events[0].Id, events[0].Timestamp, events[0].EventObject)
-                        .AddAsync(events[1].Id, events[1].Timestamp, events[1].EventObject)
-                        .AddAsync(events[2].Id, events[2].Timestamp, events[2].EventObject)
-                    .SaveChangesAsync(CancellationToken.None);
+                    .BeginWriteAsync(streamId, CancellationToken.None)
+                        .AppendAsync(events[0].Id, events[0].Timestamp, events[0].EventObject)
+                        .AppendAsync(events[1].Id, events[1].Timestamp, events[1].EventObject)
+                        .AppendAsync(events[2].Id, events[2].Timestamp, events[2].EventObject)
+                    .CommitAsync(CancellationToken.None);
 
 
             // Act 2
@@ -143,12 +142,11 @@ namespace StreamStore.Tests
 
             // Second way to append to stream
             await streamStore
-                    .OpenAsync(streamId, CancellationToken.None)
-                    .BeginWriteAsync(3, CancellationToken.None)
-                        .AddAsync(events[0].Id, events[0].Timestamp, events[0].EventObject)
-                        .AddAsync(events[1].Id, events[1].Timestamp, events[1].EventObject)
-                        .AddAsync(events[2].Id, events[2].Timestamp, events[2].EventObject)
-                    .SaveChangesAsync(CancellationToken.None);
+                    .BeginWriteAsync(streamId, 3, CancellationToken.None)
+                        .AppendAsync(events[0].Id, events[0].Timestamp, events[0].EventObject)
+                        .AppendAsync(events[1].Id, events[1].Timestamp, events[1].EventObject)
+                        .AppendAsync(events[2].Id, events[2].Timestamp, events[2].EventObject)
+                    .CommitAsync(CancellationToken.None);
 
          
             // Act 3
@@ -157,11 +155,10 @@ namespace StreamStore.Tests
 
             // Third way to append to stream
             await streamStore
-                    .OpenAsync(streamId, CancellationToken.None)
-                    .WriteAsync(8, events, CancellationToken.None);
+                    .WriteAsync(streamId, 8, events, CancellationToken.None);
 
             // Getting stream
-            var collection = await streamStore.OpenAsync(streamId, CancellationToken.None).ReadToEnd(CancellationToken.None);
+            var collection = await streamStore.ReadToEndAsync(streamId, CancellationToken.None);
 
             // Assert
             collection.Should().NotBeNull();
@@ -190,11 +187,9 @@ namespace StreamStore.Tests
             var act = async () =>
                 await
                     streamStore
-                        
-                        .OpenAsync(streamId, CancellationToken.None)
-                        .BeginWriteAsync(CancellationToken.None)
+                        .BeginWriteAsync(streamId, CancellationToken.None)
                         .AddRangeAsync(fixture.CreateMany<Event>(3))
-                        .SaveChangesAsync(CancellationToken.None);
+                        .CommitAsync(CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
@@ -232,10 +227,9 @@ namespace StreamStore.Tests
             var act = async () =>
                 await
                     streamStore
-                        .OpenAsync(streamId, CancellationToken.None)
-                        .BeginWriteAsync(3, CancellationToken.None)
+                        .BeginWriteAsync(streamId, 3, CancellationToken.None)
                         .AddRangeAsync(mixedEvents)
-                        .SaveChangesAsync(CancellationToken.None);
+                        .CommitAsync(CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<DuplicateEventException>();

@@ -4,9 +4,9 @@
     {
         public StreamReadingParameters(Id streamId, Revision startFrom, int pageSize)
         {
-            this.StreamId = streamId;
-            this.StartFrom = startFrom;
-            this.PageSize = pageSize;
+            StreamId = streamId;
+            StartFrom = startFrom;
+            PageSize = pageSize;
         }
 
         public Id StreamId { get; }

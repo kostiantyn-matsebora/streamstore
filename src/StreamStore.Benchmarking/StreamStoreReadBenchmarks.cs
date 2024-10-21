@@ -24,7 +24,7 @@ namespace StreamStore.Benchmarking
         async Task ReadRandomStreamWith10Events(IStreamStore store)
         {
             var streamIdIndex = RandomNumberGenerator.GetInt32(0, streamIds.Length);
-            await store.OpenAsync(streamIds[streamIdIndex]).ReadToEnd(CancellationToken.None);
+            await store.BeginReadAsync(streamIds[streamIdIndex]).ReadToEndAsync();
         }
     }
 }

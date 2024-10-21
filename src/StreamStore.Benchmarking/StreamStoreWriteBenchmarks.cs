@@ -28,8 +28,7 @@ namespace StreamStore.Benchmarking
             var streamId = Guid.NewGuid().ToString();
 
             await store
-                .OpenAsync(streamId, CancellationToken.None)
-                .WriteAsync(events.Take(10), CancellationToken.None);
+                .WriteAsync(streamId, events.Take(10), CancellationToken.None);
         }
     }
 }
