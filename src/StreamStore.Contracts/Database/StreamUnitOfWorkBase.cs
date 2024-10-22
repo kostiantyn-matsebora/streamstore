@@ -40,6 +40,11 @@ namespace StreamStore
 
         public async Task<IStreamUnitOfWork> AddAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default)
         {
+            eventId.ThrowIfHasNoValue(nameof(eventId));
+            timestamp.ThrowIfMinValue(nameof(timestamp));
+            data.ThrowIfNull(nameof(data));
+
+
             ThrowIfDuplicateEventId(eventId);
 
             // Since revision is immutable, we need to assign the new value to revision

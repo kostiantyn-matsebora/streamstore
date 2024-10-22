@@ -123,6 +123,8 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
             // Assert
             events.Should().NotBeNull();
             events.Should().NotBeEmpty();
+            events!.First().Revision.Should().Be(startFrom);
+            events!.Last().Revision.Should().Be(stream.Length);
             events.Should().HaveCount(expectedCount);
         }
     }

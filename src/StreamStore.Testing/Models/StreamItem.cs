@@ -11,5 +11,7 @@
         }
 
         public int Length => Events.Length;
+
+        public int NextRevision => Length + 1;
     }
 }

@@ -15,4 +15,18 @@ namespace StreamStore.InMemory.Tests
         {
         }
     }
+
+    public class Deleting_from_database : Deleting_from_database<InMemoryTestSuite>
+    {
+        public Deleting_from_database() : base(new InMemoryTestSuite())
+        {
+        }
+    }
+
+    public class Writing_to_database : Writing_to_database<InMemoryTestSuite>
+    {
+        public Writing_to_database() : base(new InMemoryTestSuite())
+        {
+        }
+    }
 }
