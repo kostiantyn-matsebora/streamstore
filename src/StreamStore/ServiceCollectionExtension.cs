@@ -6,21 +6,12 @@ namespace StreamStore
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection ConfigureStreamStore(this IServiceCollection services, bool compression = true)
+        public static IServiceCollection ConfigureStreamStore(this IServiceCollection services, Action<StreamStoreConfigurator>? configure = default)
         {
-            return services
-                        .AddSingleton<IStreamStore, StreamStore>()
-                        .AddSingleton<ITypeRegistry>(services => TypeRegistry.CreateAndInitialize())
-                        .UserNewtonsoftJsonSerializer(compression);
+            var configurator = new StreamStoreConfigurator(services);
+            configure?.Invoke(configurator);
+            configurator.Configure();
+            return services;
         }
-
-    public static IServiceCollection ConfigureStreamStore(this IServiceCollection services, Action<StreamStoreConfigurator> configure)
-    {
-
-        var configurator = new StreamStoreConfigurator();
-        configure(configurator);
-        configurator.Configure(services);
-        return services;
     }
-  }
 }

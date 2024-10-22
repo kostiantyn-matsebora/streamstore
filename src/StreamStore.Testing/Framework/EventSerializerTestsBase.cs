@@ -7,7 +7,7 @@ namespace StreamStore.Testing.Framework
 {
     public abstract class EventSerializerTestsBase
     {
-        protected static readonly TypeRegistry registry = TypeRegistry.CreateAndInitialize();
+        protected static readonly TypeRegistry registry = new TypeRegistry();
 
         protected abstract IEventSerializer CreateEventSerializer(bool compression);
         protected virtual object CreateEvent()

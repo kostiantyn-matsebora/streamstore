@@ -18,7 +18,7 @@ namespace StreamStore.Tests
 
         public StreamStoreTests()
         {
-            registry = TypeRegistry.CreateAndInitialize();
+            registry = new TypeRegistry();
             mockStreamDatabase = new Mock<IStreamDatabase>();
             serializer = new NewtonsoftEventSerializer(registry);
             streamStore = new StreamStore(mockStreamDatabase.Object, serializer);

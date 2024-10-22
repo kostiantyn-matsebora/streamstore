@@ -13,9 +13,8 @@ namespace StreamStore.Tests
 
         public TypeRegistryTests()
         {
-            registry = TypeRegistry.CreateAndInitialize();
+            registry = new TypeRegistry();
         }
-
 
         [Fact]
         public void ByType_ShouldResolveIfTypeLoadedToDomain()

@@ -6,7 +6,7 @@ namespace StreamStore.Testing
 {
     public static class FixtureExtension
     {
-        readonly static TypeRegistry registry = TypeRegistry.CreateAndInitialize();
+        readonly static TypeRegistry registry  = new TypeRegistry();
 
         public static EventItem[] CreateEventItems(this Fixture fixture, int count)
         {

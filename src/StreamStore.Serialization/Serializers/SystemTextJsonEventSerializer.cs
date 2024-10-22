@@ -1,11 +1,16 @@
 ﻿using System;
-using System.Text;
+
 
 namespace StreamStore.Serialization
 {
-    public sealed  class SystemTextJsonEventSerializer: StringEventSerializerBase
+    public sealed class SystemTextJsonEventSerializer : StringEventSerializerBase
     {
-        public SystemTextJsonEventSerializer(ITypeRegistry registry, bool compress = false) : base(registry, compress)
+        public SystemTextJsonEventSerializer(ITypeRegistry registry, bool compression = false) : base(registry, compression)
+        {
+
+        }
+
+        public SystemTextJsonEventSerializer(ITypeRegistry registry, StreamStoreConfiguration configuration) : base(registry, configuration.Compression)
         {
 
         }

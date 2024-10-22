@@ -4,17 +4,16 @@ namespace StreamStore.Serialization
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection UseSystemTextJsonSerializer(this IServiceCollection services, bool compression = true)
+        public static IStreamStoreConfigurator UseSystemTextJsonSerializer(this IStreamStoreConfigurator configurator, bool compression = true)
         {
-            return services
-                .AddSingleton<IEventSerializer>(services => new SystemTextJsonEventSerializer(services.GetRequiredService<ITypeRegistry>(), compression));
-            
+            configurator.WithEventSerializer<SystemTextJsonEventSerializer>();
+            return configurator;
         }
 
-        public static IServiceCollection UserNewtonsoftJsonSerializer(this IServiceCollection services, bool compression = true)
+        public static IStreamStoreConfigurator UserNewtonsoftJsonSerializer(this IStreamStoreConfigurator configurator, bool compression = true)
         {
-            return services
-                .AddSingleton<IEventSerializer>(services => new NewtonsoftEventSerializer(services.GetRequiredService<ITypeRegistry>(), compression));
+            configurator.WithEventSerializer<NewtonsoftEventSerializer>();
+            return configurator;
         }
     }
 }

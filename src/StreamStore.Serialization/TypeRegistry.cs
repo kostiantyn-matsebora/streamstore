@@ -11,14 +11,10 @@ namespace StreamStore.Serialization
     {
         readonly ConcurrentDictionary<string, Type> types = new ConcurrentDictionary<string, Type>();
         readonly ConcurrentDictionary<Type, string> names = new ConcurrentDictionary<Type, string>();
-        private TypeRegistry()
+
+        public TypeRegistry()
         {
-        }
-        public static TypeRegistry CreateAndInitialize()
-        {
-            TypeRegistry registry = new TypeRegistry();
-            registry.Initialize();
-            return registry;
+            Initialize();
         }
 
         public string ResolveNameByType(Type type)

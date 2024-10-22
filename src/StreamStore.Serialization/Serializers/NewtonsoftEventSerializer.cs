@@ -5,9 +5,14 @@ namespace StreamStore.Serialization
 {
     public sealed class NewtonsoftEventSerializer : StringEventSerializerBase
     {
-        public NewtonsoftEventSerializer(ITypeRegistry registry,bool compress = false) : base(registry, compress)
+        public NewtonsoftEventSerializer(ITypeRegistry registry, StreamStoreConfiguration configuration) : base(registry, configuration.Compression)
         {
         }
+
+        public NewtonsoftEventSerializer(ITypeRegistry registry, bool compression = false) : base(registry, compression)
+        {
+        }
+
 
         protected override string SerializeEventAsString(object value, Type type)
         {
