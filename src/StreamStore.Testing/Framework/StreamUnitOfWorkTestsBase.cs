@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace StreamStore.Testing.Framework
 {
-    public abstract class StreamUnitOfWorkTestsBase<TSuite> : TestsBase<TSuite> where TSuite : ITestSuite
+    public abstract class StreamUnitOfWorkTestsBase<TSuite> : TestBase<TSuite> where TSuite : ITestSuite
     {
         protected StreamUnitOfWorkTestsBase(TSuite suite) : base(suite)
         {

@@ -1,7 +1,7 @@
 ﻿using StreamStore.InMemory;
 using StreamStore.Testing.Scenarios.StreamDatabase;
 
-namespace StreamStore.Tests.InMemory
+namespace StreamStore.InMemory.Tests
 {
     public class InMemoryTestSuite : DatabaseSuiteBase
     {

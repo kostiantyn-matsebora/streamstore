@@ -12,20 +12,21 @@ namespace StreamStore.Testing.Framework
 
         public bool ArePrerequisitiesMet => prerequisitesAreMet;
 
-        protected TestSuiteBase()
-        {
-        }
-
         public async Task SetUpSuite()
         {
             prerequisitesAreMet = CheckPrerequisities();
             if (!prerequisitesAreMet) return;
 
             var services = new ServiceCollection();
-            
+
             RegisterServices(services);
             BuildProvider(services);
             await SetUp();
+        }
+
+
+        protected TestSuiteBase()
+        {
         }
 
         protected virtual bool CheckPrerequisities()

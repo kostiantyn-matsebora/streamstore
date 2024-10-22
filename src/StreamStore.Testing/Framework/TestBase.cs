@@ -1,14 +1,14 @@
 ﻿namespace StreamStore.Testing.Framework
 {
-    public abstract class TestsBase<TSuite> where TSuite: ITestSuite
+    public abstract class TestBase<TSuite> where TSuite: ITestSuite
     {
         protected readonly TSuite Suite;
 
-        protected TestsBase(TSuite suite)
+        protected TestBase(TSuite suite)
         {
             ArgumentNullException.ThrowIfNull(suite, nameof(suite));
-            this.Suite = suite;
-            this.Suite.SetUpSuite().Wait();
+            Suite = suite;
+            Suite.SetUpSuite().Wait();
         }
 
         protected virtual void TrySkip()

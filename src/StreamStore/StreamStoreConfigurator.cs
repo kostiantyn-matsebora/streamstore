@@ -16,15 +16,13 @@ namespace StreamStore
         Type typeRegistryType = typeof(TypeRegistry);
         ITypeRegistry? typeRegistry;
 
+        Type? databaseType;
+
         bool compression = false;
         int pageSize = 10;
         
-        readonly IServiceCollection services;
-        public IServiceCollection Services => services;
-
-        public StreamStoreConfigurator(IServiceCollection services)
+        public StreamStoreConfigurator()
         {
-            this.services = services?? throw new ArgumentNullException(nameof(services));
         }
 
         public IStreamStoreConfigurator WithReadingMode(StreamReadingMode mode) {
@@ -63,7 +61,12 @@ namespace StreamStore
             return this;
         }
 
-        internal void Configure() {
+        public IServiceCollection Configure(IServiceCollection services) {
+
+            if (databaseType == null)
+            {
+                throw new InvalidOperationException("Database backend is not set");
+            }
 
             var configuration = new StreamStoreConfiguration 
             {
@@ -86,8 +89,16 @@ namespace StreamStore
 
             services
                 .AddSingleton(configuration)
+                .AddSingleton(typeof(IStreamDatabase), databaseType)
                 .AddSingleton<IStreamStore, StreamStore>();
+
+            return services;
         }
 
+        public IStreamStoreConfigurator WithDatabase<T>() where T : IStreamDatabase
+        {
+            databaseType = typeof(T);
+            return this;
+        }
     }
 }

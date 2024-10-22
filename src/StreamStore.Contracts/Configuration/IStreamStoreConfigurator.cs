@@ -6,8 +6,6 @@ namespace StreamStore
 {
     public interface IStreamStoreConfigurator
     {
-        public IServiceCollection Services { get; }
-
         public IStreamStoreConfigurator WithReadingMode(StreamReadingMode mode);
 
 
@@ -22,5 +20,7 @@ namespace StreamStore
         public IStreamStoreConfigurator WithEventSerializer(IEventSerializer eventSerializer);
 
         public IStreamStoreConfigurator WithEventSerializer<TSerialzier>() where TSerialzier : IEventSerializer;
+
+        public IStreamStoreConfigurator WithDatabase<T>() where T : IStreamDatabase;
     }
 }

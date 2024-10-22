@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Serialization;
 
 namespace StreamStore
 {
@@ -8,10 +7,9 @@ namespace StreamStore
     {
         public static IServiceCollection ConfigureStreamStore(this IServiceCollection services, Action<StreamStoreConfigurator>? configure = default)
         {
-            var configurator = new StreamStoreConfigurator(services);
+            var configurator = new StreamStoreConfigurator();
             configure?.Invoke(configurator);
-            configurator.Configure();
-            return services;
+            return configurator.Configure(services);
         }
     }
 }

@@ -6,7 +6,7 @@ using StreamStore.Testing.Framework;
 namespace StreamStore.S3.IntegrationTests
 {
 
-    public abstract class S3ClientIntegrationTestsBase<TSuite>: TestsBase<TSuite> where TSuite : IS3Suite
+    public abstract class S3ClientIntegrationTestsBase<TSuite>: TestBase<TSuite> where TSuite : IS3Suite
     {
         readonly IS3Client? client;
 

@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Concurrent;
 using StreamStore.Exceptions;
+using System;
+using System.Linq;
 
 
 namespace StreamStore.InMemory
@@ -47,9 +49,26 @@ namespace StreamStore.InMemory
             return Task.FromResult((IStreamUnitOfWork)new InMemoryStreamUnitOfWork(streamId, expectedStreamVersion, this, existing));
         }
 
-        public Task<EventRecord[]> ReadAsync(Id streamId, Revision start, int count, CancellationToken token = default)
+        public async Task<EventRecord[]> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-            throw new System.NotImplementedException();
+            if (startFrom < Revision.One)
+                throw new ArgumentOutOfRangeException(nameof(startFrom), "Start from should be greater than zero.");
+
+            if (count <= 0)
+                throw new ArgumentOutOfRangeException(nameof(count), "Count should be greater than zero.");
+
+            var stream = await FindAsync(streamId, token);
+
+            if (stream == null)
+                throw new StreamNotFoundException(streamId);
+
+            if (startFrom > stream.Revision)
+                return Array.Empty<EventRecord>();
+
+            return 
+                stream.Events.Where(e => e.Revision >= startFrom)
+                .Take(count)
+                .ToArray();
         }
     }
 }
