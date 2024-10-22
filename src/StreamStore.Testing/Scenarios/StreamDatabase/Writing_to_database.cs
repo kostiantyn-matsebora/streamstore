@@ -9,7 +9,7 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
         }
 
         [Fact]
-        public async Task When_event_id_is_nothing()
+        public async Task When_parameters_are_absent_or_incorrect()
         {
             // Arrange
             var eventId = Id.None;
@@ -23,6 +23,17 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
             //Assert
             await act.Should().ThrowAsync<ArgumentNullException>();
 
+            // Act
+            act = async () => await uow.AddAsync(GeneratedValues.Id, DateTime.MinValue, GeneratedValues.ByteArray);
+
+            //Assert
+            await act.Should().ThrowAsync<ArgumentOutOfRangeException>();
+
+            // Act
+            act = async () => await uow.AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, null!);
+
+            //Assert
+            await act.Should().ThrowAsync<ArgumentNullException>();
         }
     }
 }
