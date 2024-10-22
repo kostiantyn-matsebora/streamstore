@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StreamStore.Stream
 {
-    class StreamEventEnumerator : IAsyncEnumerator<EventEntity>
+    class EventStreamEnumerator : IAsyncEnumerator<EventEntity>
     {
         readonly IStreamDatabase database;
         private readonly EventConverter converter;
@@ -17,7 +17,7 @@ namespace StreamStore.Stream
 
         readonly Queue<EventRecord> queue = new Queue<EventRecord>();
 
-        public StreamEventEnumerator(StreamReadingParameters parameters, IStreamDatabase database, EventConverter converter)
+        public EventStreamEnumerator(StreamReadingParameters parameters, IStreamDatabase database, EventConverter converter)
         {
             this.database = database ?? throw new ArgumentNullException(nameof(database));
             this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
@@ -70,13 +70,13 @@ namespace StreamStore.Stream
         }
     }
 
-    class StreamEventEnumerable: IAsyncEnumerable<EventEntity>
+    class EventStreamEnumerable: IAsyncEnumerable<EventEntity>
     {
         readonly IStreamDatabase database;
         readonly StreamReadingParameters parameters;
         readonly EventConverter converter;
 
-        public StreamEventEnumerable(StreamReadingParameters parameters, IStreamDatabase database, EventConverter converter)
+        public EventStreamEnumerable(StreamReadingParameters parameters, IStreamDatabase database, EventConverter converter)
         {
             this.database = database ?? throw new ArgumentNullException(nameof(database));
             this.parameters = parameters ?? throw new ArgumentNullException(nameof(database));
@@ -85,7 +85,7 @@ namespace StreamStore.Stream
 
         public IAsyncEnumerator<EventEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new StreamEventEnumerator(parameters, database, converter);
+            return new EventStreamEnumerator(parameters, database, converter);
         }
     }
 }

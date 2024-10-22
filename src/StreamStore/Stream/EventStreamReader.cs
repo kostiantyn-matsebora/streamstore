@@ -22,7 +22,7 @@ namespace StreamStore
 
         public IAsyncEnumerator<EventEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            var enumerable = new StreamEventEnumerable(parameters, database, converter);
+            var enumerable = new EventStreamEnumerable(parameters, database, converter);
 
             return enumerable.GetAsyncEnumerator(cancellationToken);
         }
@@ -32,7 +32,7 @@ namespace StreamStore
 
             var results = new List<EventEntity>();
 
-            await foreach (var item in new StreamEventEnumerable(parameters, database, converter))
+            await foreach (var item in new EventStreamEnumerable(parameters, database, converter))
             {
                 results.Add(item);
             }
