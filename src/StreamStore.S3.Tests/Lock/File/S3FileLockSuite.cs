@@ -22,6 +22,11 @@ namespace StreamStore.S3.Tests.Lock.File
             return new S3FileLock(LockObject, TransactionId);
         }
 
+        internal S3FileLockHandle CreateS3FileLockHandle()
+        {
+            return new S3FileLockHandle(LockObject);
+        }
+
         public S3FileLockSuite()
         {
             var fixture = new Fixture();
@@ -30,6 +35,9 @@ namespace StreamStore.S3.Tests.Lock.File
             TransactionId = Generated.Id;
             Factory = MockRepository.Create<IS3ClientFactory>();
             LockObject = new S3LockObject(Path, Factory.Object);
+
+            var client = new Mock<IS3Client>();
+            Factory.Setup(x => x.CreateClient()).Returns(client.Object);
         }
     }
 }

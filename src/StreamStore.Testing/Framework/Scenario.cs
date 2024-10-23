@@ -1,7 +1,4 @@
-﻿
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using StreamStore.Testing.Framework;
+﻿using StreamStore.Testing.Framework;
 
 namespace StreamStore.Testing
 {
@@ -28,6 +25,4 @@ namespace StreamStore.Testing
         {
         }
     }
-
-
 }

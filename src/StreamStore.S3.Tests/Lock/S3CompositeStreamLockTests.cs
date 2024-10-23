@@ -29,9 +29,12 @@ namespace StreamStore.S3.Tests.Lock
             // Arrange
             var s3CompositeStreamLock = CreateS3CompositeStreamLock();
             CancellationToken token = default;
-            lock1.Setup(m => m.AcquireAsync(It.IsAny<CancellationToken>()))
+
+            lock1.Setup(m => 
+               m.AcquireAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Mock<IS3LockHandle>().Object);
-            lock2.Setup(m => m.AcquireAsync(It.IsAny<CancellationToken>()))
+            lock2.Setup(m => 
+               m.AcquireAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Mock<IS3LockHandle>().Object);
 
             // Act
@@ -43,14 +46,20 @@ namespace StreamStore.S3.Tests.Lock
         [Fact]
         public async Task AcquireAsync_ShoudReleaseLockIfNextIsNotAcquired()
         {
+
             // Arrange
             var s3CompositeStreamLock = CreateS3CompositeStreamLock();
             CancellationToken token = default;
             var handle1 = new Mock<IS3LockHandle>();
-            lock1.Setup(m => m.AcquireAsync(It.IsAny<CancellationToken>()))
+            
+            lock1.Setup(m => 
+               m.AcquireAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(handle1.Object);
-            lock2.Setup(m => m.AcquireAsync(It.IsAny<CancellationToken>()))
+            
+            lock2.Setup(m => 
+               m.AcquireAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IS3LockHandle?)null);
+
             handle1.Setup(m => m.ReleaseAsync(It.IsAny<CancellationToken>()));
                
             // Act

@@ -52,6 +52,8 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
         [InlineData(100)]
         public async Task When_start_from_is_less_than_or_equal_zero(int count)
         {
+            TrySkip();
+
             // Arrange
             var stream = Container.GetExistingStream();
 

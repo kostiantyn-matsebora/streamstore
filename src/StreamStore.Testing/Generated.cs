@@ -36,7 +36,5 @@ namespace StreamStore.Testing
         {
             return new Fixture().CreateEventItems(count);
         }
-
-      
     }
 }
