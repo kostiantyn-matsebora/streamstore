@@ -5,11 +5,11 @@ using Moq;
 using StreamStore.SQL.Sqlite;
 using StreamStore.Testing;
 
-namespace StreamStore.Sql.Tests.Sqlite.Configurator.Scenarios
+namespace StreamStore.Sql.Tests.Sqlite.Configurator
 {
-    public class BuildingConfiguration : Scenario<SqliteDatabaseConfiguratorTestSuite>
+    public class Building_configuration : Scenario<SqliteDatabaseConfiguratorTestSuite>
     {
-        public BuildingConfiguration() : base(new SqliteDatabaseConfiguratorTestSuite())
+        public Building_configuration() : base(new SqliteDatabaseConfiguratorTestSuite())
         {
         }
 

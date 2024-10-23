@@ -2,11 +2,11 @@
 using StackExchange.Profiling.Data;
 using StreamStore.Testing;
 
-namespace StreamStore.Sql.Tests.MiniProfiler.Scenarios
+namespace StreamStore.Sql.Tests.MiniProfiler
 {
-    public class GetConnection : Scenario<MiniProfilerTestSuite>
+    public class Getting_connection : Scenario<MiniProfilerTestSuite>
     {
-        public GetConnection() : base(new MiniProfilerTestSuite())
+        public Getting_connection() : base(new MiniProfilerTestSuite())
         {
         }
 
