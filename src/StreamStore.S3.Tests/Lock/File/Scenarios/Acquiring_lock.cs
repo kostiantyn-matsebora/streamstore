@@ -1,70 +1,54 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
+﻿using Moq;
 using StreamStore.S3.Client;
 using StreamStore.S3.Lock;
-using StreamStore.S3.Storage;
-using StreamStore.Serialization;
 using StreamStore.Testing;
+using StreamStore.Serialization;
+using FluentAssertions;
 
 
-namespace StreamStore.S3.Tests.Lock
+namespace StreamStore.S3.Tests.Lock.File.Scenarios
 {
-    public class S3FileLockTests
+    public class Acquiring_lock : Scenario<S3FileLockSuite>
     {
-        readonly MockRepository mockRepository;
-        readonly S3LockObject lockObject;
-        readonly Mock<IS3ClientFactory> factory;
-        readonly Id transactionId;
-        readonly S3ContainerPath path;
 
-        public S3FileLockTests()
+        public Acquiring_lock() : base(new S3FileLockSuite())
         {
-            var fixture = new Fixture();
-            path = fixture.Create<S3ContainerPath>();
-            mockRepository = new MockRepository(MockBehavior.Strict);
-            transactionId = Generated.Id;
-            factory = this.mockRepository.Create<IS3ClientFactory>();
-            lockObject = new S3LockObject(path, factory.Object);
-        }
-
-        S3FileLock CreateS3FileLock()
-        {
-            return new S3FileLock(lockObject, transactionId);
         }
 
         [Fact]
-        public async Task AcquireAsync_Should_AcquireLock()
+        public async Task When_lock_is_acquired()
         {
             // Arrange
-            var s3FileLock = this.CreateS3FileLock();
+            var s3FileLock = Suite.CreateS3FileLock();
             CancellationToken token = default;
-            var lockId = new LockId(transactionId);
+            var lockId = new LockId(Suite.TransactionId);
             var lockKey = Generated.String;
+
             var client = new Mock<IS3Client>();
-            factory.Setup(x => x.CreateClient()).Returns(client.Object);
+
+            Suite.Factory.Setup(x => x.CreateClient()).Returns(client.Object);
 
 
             var uploadResponse = new UploadObjectResponse
             {
-                Name = path
+                Name = Suite.Path
             };
 
             var response = new FindObjectResponse
             {
                 Data = Converter.ToByteArray(lockId),
-                Name = path,
+                Name = Suite.Path,
             };
 
             client.
-                SetupSequence(x => x.FindObjectAsync(path, token))
+                SetupSequence(x => x.FindObjectAsync(Suite.Path, token))
                 .ReturnsAsync((FindObjectResponse?)null)
                 .ReturnsAsync(response);
 
             client
                 .Setup(x =>
                     x.UploadObjectAsync(
-                        It.Is<UploadObjectRequest>(r => r.Key == path),
+                        It.Is<UploadObjectRequest>(r => r.Key == Suite.Path),
                         token)
                 ).ReturnsAsync(uploadResponse);
 
@@ -75,31 +59,31 @@ namespace StreamStore.S3.Tests.Lock
             result.Should().NotBeNull();
             result!.Should().BeOfType<S3FileLockHandle>();
             client.VerifyAll();
-            mockRepository.VerifyAll();
+            Suite.MockRepository.VerifyAll();
         }
 
         [Fact]
-        public async Task AcquireAsync_Should_NotAcquireLockIfExists()
+        public async Task When_lock_already_exists()
         {
             // Arrange
-            var s3FileLock = this.CreateS3FileLock();
+            var s3FileLock = Suite.CreateS3FileLock();
             CancellationToken token = default;
 
             var lockKey = Generated.String;
             var client = new Mock<IS3Client>();
 
-            factory.Setup(x => x.CreateClient()).Returns(client.Object);
-           
+            Suite.Factory.Setup(x => x.CreateClient()).Returns(client.Object);
+
 
 
             var response = new FindObjectResponse
             {
                 Data = Converter.ToByteArray(new LockId(Generated.String)),
-                Name = path,
+                Name = Suite.Path,
             };
 
             client.
-                Setup(x => x.FindObjectAsync(path, token))
+                Setup(x => x.FindObjectAsync(Suite.Path, token))
                 .ReturnsAsync(response);
 
             // Act
@@ -108,29 +92,29 @@ namespace StreamStore.S3.Tests.Lock
             // Assert
             result.Should().BeNull();
             client.VerifyAll();
-            mockRepository.VerifyAll();
+            Suite.MockRepository.VerifyAll();
         }
 
         [Fact]
-        public async Task AcquireAsync_Should_NotAcquireLockIfUploadFailed()
+        public async Task When_lock_file_upload_failed()
         {
             // Arrange
-            var s3FileLock = this.CreateS3FileLock();
+            var s3FileLock = Suite.CreateS3FileLock();
             CancellationToken token = default;
 
             var lockKey = Generated.String;
             var client = new Mock<IS3Client>();
 
-            factory.Setup(x => x.CreateClient()).Returns(client.Object);
+            Suite.Factory.Setup(x => x.CreateClient()).Returns(client.Object);
 
             client.
-                 Setup(x => x.FindObjectAsync(path, token))
+                 Setup(x => x.FindObjectAsync(Suite.Path, token))
                 .ReturnsAsync((FindObjectResponse?)null);
 
             client
                  .Setup(x =>
                      x.UploadObjectAsync(
-                         It.Is<UploadObjectRequest>(r => r.Key == path),
+                         It.Is<UploadObjectRequest>(r => r.Key == Suite.Path),
                          token)
                  ).ReturnsAsync((UploadObjectResponse?)null);
 
@@ -140,41 +124,40 @@ namespace StreamStore.S3.Tests.Lock
             // Assert
             result.Should().BeNull();
             client.VerifyAll();
-            mockRepository.VerifyAll();
+            Suite.MockRepository.VerifyAll();
         }
 
         [Fact]
-        public async Task AcquireAsync_Should_NotAcquireLockIfLockedByAnotherTransaction()
+        public async Task When_stream_locked_by_another_transaction()
         {
             // Arrange
-            var s3FileLock = this.CreateS3FileLock();
+            var s3FileLock = Suite.CreateS3FileLock();
             CancellationToken token = default;
 
             var lockKey = Generated.String;
             var client = new Mock<IS3Client>();
 
-            factory.Setup(x => x.CreateClient()).Returns(client.Object);
+            Suite.Factory.Setup(x => x.CreateClient()).Returns(client.Object);
 
             var uploadResponse = new UploadObjectResponse
             {
-                Name = path,
+                Name = Suite.Path,
             };
 
             var response = new FindObjectResponse
             {
                 Data = Converter.ToByteArray(new LockId(Generated.String)),
-                Name = path,
+                Name = Suite.Path,
             };
-
             client.
-                 SetupSequence(x => x.FindObjectAsync(path, token))
+                 SetupSequence(x => x.FindObjectAsync(Suite.Path, token))
                 .ReturnsAsync((FindObjectResponse?)null)
                 .ReturnsAsync(response);
 
             client
                  .Setup(x =>
                      x.UploadObjectAsync(
-                         It.Is<UploadObjectRequest>(r => r.Key ==path),
+                         It.Is<UploadObjectRequest>(r => r.Key == Suite.Path),
                          token)
                  ).ReturnsAsync((UploadObjectResponse?)uploadResponse);
 
@@ -184,7 +167,7 @@ namespace StreamStore.S3.Tests.Lock
             // Assert
             result.Should().BeNull();
             client.VerifyAll();
-            mockRepository.VerifyAll();
+            Suite.MockRepository.VerifyAll();
         }
     }
 }

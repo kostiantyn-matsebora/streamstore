@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
+using StreamStore.Sql.Sqlite;
 using StreamStore.SQL.Sqlite;
 
 namespace StreamStore.SQL.Example
@@ -25,11 +26,8 @@ namespace StreamStore.SQL.Example
 
             builder
                 .Services
-                .ConfigureStreamStore()
-                .ConfigureSqliteStreamDatabase()
-                    .WithConnectionString("Data Source=StreamStore.sqlite;Version=3;")
-                    .EnableProfiling()
-                .Configure();
+                .ConfigureStreamStore(x =>
+                    x.UseSqliteDatabase(builder.Configuration));
 
             builder.Services.AddHostedService<Worker1>();
             builder.Services.AddHostedService<Worker2>();

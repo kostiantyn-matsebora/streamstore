@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using StreamStore.SQL.Sqlite;
 
 namespace StreamStore.Sql.Sqlite
@@ -7,9 +8,21 @@ namespace StreamStore.Sql.Sqlite
     {
         public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-            configurator.WithDatabase(services => {
+            configurator.WithDatabase(services => 
+            {
+                new SqliteDatabaseConfigurator(services).Configure(configuration);
+            });
+
+            return configurator;
+        }
+
+        public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, Action<SqliteDatabaseConfigurator> dbConfigurator)
+        {
+            configurator.WithDatabase(services =>
+            {
                 var configurator = new SqliteDatabaseConfigurator(services);
-                configurator.Configure(configuration);
+                dbConfigurator(configurator);
+                configurator.Configure();
             });
 
             return configurator;

@@ -24,8 +24,6 @@ namespace StreamStore.SQL.Sqlite
             return services;
         }
 
-     
-
         public override IServiceCollection Configure(IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("StreamStore");
@@ -77,6 +75,5 @@ namespace StreamStore.SQL.Sqlite
     {
         IServiceCollection Configure();
         IServiceCollection Configure(IConfiguration configuration);
-
     }
 }

@@ -1,4 +1,9 @@
-﻿namespace StreamStore.Testing
+﻿
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using StreamStore.Testing.Framework;
+
+namespace StreamStore.Testing
 {
     public abstract class Scenario<TSuite> where TSuite: ITestSuite
     {
@@ -16,4 +21,13 @@
             Skip.IfNot(Suite.ArePrerequisitiesMet, "Suite is not ready.");
         }
     }
+
+    public class Scenario: Scenario<TestSuite>
+    {
+        public Scenario() : base(new TestSuite())
+        {
+        }
+    }
+
+
 }

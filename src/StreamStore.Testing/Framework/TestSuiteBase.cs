@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 
 namespace StreamStore.Testing.Framework
 {
@@ -47,6 +48,15 @@ namespace StreamStore.Testing.Framework
         void BuildProvider(IServiceCollection services)
         {
             serviceProvider = services.BuildServiceProvider();
+        }
+    }
+
+    public class TestSuite : TestSuiteBase
+    {
+        public MockRepository MockRepository { get; }
+        public TestSuite()
+        {
+            MockRepository = new MockRepository(MockBehavior.Strict);
         }
     }
 }

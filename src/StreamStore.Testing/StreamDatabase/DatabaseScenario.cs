@@ -1,6 +1,4 @@
-﻿using StreamStore.Testing.Framework;
-
-namespace StreamStore.Testing.StreamDatabase
+﻿namespace StreamStore.Testing.StreamDatabase
 {
     public abstract class DatabaseScenario<TSuite> : Scenario<TSuite> where TSuite : DatabaseSuiteBase
     {
