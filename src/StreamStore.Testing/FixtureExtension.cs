@@ -32,11 +32,16 @@ namespace StreamStore.Testing
                     fixture
                     .Build<EventRecord>()
                     .With(x => x.Revision, () => revision++)
-                    .With(x => x.Data, serializer.Serialize(fixture.Create<RootEvent>()))
+                    .With(x => x.Data, serializer.Serialize(CreateEvents(fixture, 1).First()))
                     .CreateMany(count)
                     .ToArray();
 
             return records;
+        }
+
+        public static RootEvent[] CreateEvents(this Fixture fixture, int count)
+        {
+            return fixture.CreateMany<RootEvent>().ToArray();
         }
 
         public static EventRecord[] CreateEventRecords(this Fixture fixture,  int count)

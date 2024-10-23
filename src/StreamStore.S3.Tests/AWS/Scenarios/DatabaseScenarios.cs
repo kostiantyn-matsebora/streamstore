@@ -1,4 +1,4 @@
-﻿using StreamStore.Testing.Scenarios.StreamDatabase;
+﻿using StreamStore.Testing.StreamDatabase.Scenarios;
 using Xunit.Abstractions;
 
 namespace StreamStore.S3.Tests.AWS.Scenarios

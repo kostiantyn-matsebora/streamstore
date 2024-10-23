@@ -1,5 +1,5 @@
 ﻿using StreamStore.InMemory;
-using StreamStore.Testing.Scenarios.StreamStore;
+using StreamStore.Testing.StreamStore;
 
 namespace StreamStore.Tests.Scenarios
 {

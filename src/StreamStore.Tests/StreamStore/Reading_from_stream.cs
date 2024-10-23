@@ -1,4 +1,4 @@
-﻿using StreamStore.Testing.Scenarios.StreamStore;
+﻿using StreamStore.Testing.StreamStore.Scenarios;
 
 namespace StreamStore.Tests.Scenarios
 {

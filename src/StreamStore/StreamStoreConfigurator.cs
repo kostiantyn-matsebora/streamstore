@@ -17,10 +17,12 @@ namespace StreamStore
         ITypeRegistry? typeRegistry;
 
         Type? databaseType;
+        Action<IServiceCollection>? databaseRegistrator;
 
         bool compression = false;
         int pageSize = 10;
         
+
         public StreamStoreConfigurator()
         {
         }
@@ -63,7 +65,7 @@ namespace StreamStore
 
         public IServiceCollection Configure(IServiceCollection services) {
 
-            if (databaseType == null)
+            if (databaseType == null && databaseRegistrator == null)
             {
                 throw new InvalidOperationException("Database backend is not set");
             }
@@ -87,9 +89,16 @@ namespace StreamStore
                 services.AddSingleton(typeof(ITypeRegistry), typeRegistry);
             }
 
+            if (databaseRegistrator != null)
+            {
+                databaseRegistrator(services);
+            } else
+            {
+                services.AddSingleton(typeof(IStreamDatabase), databaseType!);
+            }
+
             services
                 .AddSingleton(configuration)
-                .AddSingleton(typeof(IStreamDatabase), databaseType)
                 .AddSingleton<IStreamStore, StreamStore>();
 
             return services;
@@ -98,6 +107,12 @@ namespace StreamStore
         public IStreamStoreConfigurator WithDatabase<T>() where T : IStreamDatabase
         {
             databaseType = typeof(T);
+            return this;
+        }
+
+        public IStreamStoreConfigurator WithDatabase(Action<IServiceCollection> registrator)
+        {
+            databaseRegistrator = registrator;
             return this;
         }
     }

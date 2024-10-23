@@ -54,6 +54,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.InMemory.Tests"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InMemory", "InMemory", "{A3C953F8-4070-4638-B51F-88A613ED602C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.Serialization.Tests", "StreamStore.Serialization.Tests\StreamStore.Serialization.Tests.csproj", "{47EC6059-929B-451B-9AC5-46AFEC1499F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -136,6 +138,10 @@ Global
 		{E8607110-04DA-4425-86C3-C9E79922F098}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8607110-04DA-4425-86C3-C9E79922F098}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8607110-04DA-4425-86C3-C9E79922F098}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47EC6059-929B-451B-9AC5-46AFEC1499F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47EC6059-929B-451B-9AC5-46AFEC1499F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47EC6059-929B-451B-9AC5-46AFEC1499F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47EC6059-929B-451B-9AC5-46AFEC1499F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +161,7 @@ Global
 		{AD05AFA0-3288-40BA-B50B-5C32C9B3FFAA} = {002945CF-F758-43CE-A5B3-E43A27D550CA}
 		{3F715189-A188-40D7-9BF3-F3CBA53DD2D9} = {002945CF-F758-43CE-A5B3-E43A27D550CA}
 		{E8607110-04DA-4425-86C3-C9E79922F098} = {A3C953F8-4070-4638-B51F-88A613ED602C}
+		{47EC6059-929B-451B-9AC5-46AFEC1499F3} = {DFEC3388-4A7D-402C-9CAA-3F1B8FFBB6CC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B91B9475-41C6-4A0C-8FA4-2894665CE39D}

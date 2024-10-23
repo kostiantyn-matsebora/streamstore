@@ -1,4 +1,4 @@
-﻿using StreamStore.Testing.Scenarios.StreamDatabase;
+﻿using StreamStore.Testing.StreamDatabase;
 
 namespace StreamStore.S3.Tests.AWS.Scenarios
 {
