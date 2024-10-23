@@ -9,7 +9,7 @@ using StreamStore.Testing.Framework;
 
 namespace StreamStore.S3.IntegrationTests
 {
-    public abstract class S3StreamLockIntegrationTests<TSuite>: TestBase<TSuite> where TSuite: IS3Suite
+    public abstract class S3StreamLockIntegrationTests<TSuite>: Scenario<TSuite> where TSuite: IS3Suite
     {
         private readonly IS3LockFactory? lockFactory;
 

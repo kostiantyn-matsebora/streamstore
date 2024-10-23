@@ -28,9 +28,13 @@ namespace StreamStore.Testing
 
         public static byte[] ByteArray => Converter.ToByteArray(String);
 
+        public static EventItem Event => new Fixture().CreateEventItems(1).First();
+
         public static EventItem[] CreateEventItems(int count)
         {
             return new Fixture().CreateEventItems(count);
         }
+
+      
     }
 }

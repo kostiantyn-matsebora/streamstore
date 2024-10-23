@@ -2,7 +2,7 @@
 
 namespace StreamStore.Testing.Scenarios.StreamDatabase
 {
-    public abstract class DatabaseScenario<TSuite> : TestBase<TSuite> where TSuite : DatabaseSuiteBase
+    public abstract class DatabaseScenario<TSuite> : Scenario<TSuite> where TSuite : DatabaseSuiteBase
     {
         protected IStreamDatabase Database => Suite.StreamDatabase;
 

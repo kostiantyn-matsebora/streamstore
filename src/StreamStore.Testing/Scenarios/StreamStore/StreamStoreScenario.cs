@@ -5,7 +5,7 @@ using StreamStore.Testing.Models;
 
 namespace StreamStore.Testing.Scenarios.StreamStore
 {
-    public abstract class StreamStoreScenario<TSuite> : TestBase<TSuite> where TSuite : StreamStoreSuiteBase
+    public abstract class StreamStoreScenario<TSuite> : Scenario<TSuite> where TSuite : StreamStoreSuiteBase
     {
         protected StreamStoreScenario(TSuite suite) : base(suite)
         {

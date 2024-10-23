@@ -34,8 +34,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.S3.AWS", "Strea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.S3.IntegrationTests", "StreamStore.S3.IntegrationTests\StreamStore.S3.IntegrationTests.csproj", "{F873CD6B-9C4C-4B50-B735-BB910857E1EA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Benchmarking", "StreamStore.Benchmarking\StreamStore.Benchmarking.csproj", "{34127E22-E92D-425F-85D3-A63ECBA910DC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Serialization", "Serialization", "{DFEC3388-4A7D-402C-9CAA-3F1B8FFBB6CC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Serialization.Protobuf", "StreamStore.Serialization.Protobuf\StreamStore.Serialization.Protobuf.csproj", "{5BAACA75-9DFC-4FA6-B7A3-5F8E226B25ED}"
@@ -52,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Sql.Sqlite", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Sql.Tests", "StreamStore.Sql.Tests\StreamStore.Sql.Tests.csproj", "{3F715189-A188-40D7-9BF3-F3CBA53DD2D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.InMemory.Tests", "StreamStore.InMemory.Tests\StreamStore.InMemory.Tests.csproj", "{E8607110-04DA-4425-86C3-C9E79922F098}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.InMemory.Tests", "StreamStore.InMemory.Tests\StreamStore.InMemory.Tests.csproj", "{E8607110-04DA-4425-86C3-C9E79922F098}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InMemory", "InMemory", "{A3C953F8-4070-4638-B51F-88A613ED602C}"
 EndProject
@@ -110,10 +108,6 @@ Global
 		{F873CD6B-9C4C-4B50-B735-BB910857E1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F873CD6B-9C4C-4B50-B735-BB910857E1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F873CD6B-9C4C-4B50-B735-BB910857E1EA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{34127E22-E92D-425F-85D3-A63ECBA910DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34127E22-E92D-425F-85D3-A63ECBA910DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34127E22-E92D-425F-85D3-A63ECBA910DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34127E22-E92D-425F-85D3-A63ECBA910DC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5BAACA75-9DFC-4FA6-B7A3-5F8E226B25ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5BAACA75-9DFC-4FA6-B7A3-5F8E226B25ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BAACA75-9DFC-4FA6-B7A3-5F8E226B25ED}.Release|Any CPU.ActiveCfg = Release|Any CPU

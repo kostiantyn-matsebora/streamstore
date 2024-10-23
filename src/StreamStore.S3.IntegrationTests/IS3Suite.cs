@@ -1,5 +1,6 @@
 ﻿using StreamStore.S3.Client;
-using StreamStore.Testing.Framework;
+using StreamStore.Testing;
+
 
 namespace StreamStore.S3.IntegrationTests
 {

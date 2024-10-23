@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using AutoFixture;
 using StreamStore.Testing.Models;
 
-namespace StreamStore.Testing.Framework
+namespace StreamStore.Testing
 {
     public class MemoryDatabase
     {

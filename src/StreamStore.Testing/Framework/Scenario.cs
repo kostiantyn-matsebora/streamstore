@@ -1,10 +1,10 @@
-﻿namespace StreamStore.Testing.Framework
+﻿namespace StreamStore.Testing
 {
-    public abstract class TestBase<TSuite> where TSuite: ITestSuite
+    public abstract class Scenario<TSuite> where TSuite: ITestSuite
     {
         protected readonly TSuite Suite;
 
-        protected TestBase(TSuite suite)
+        protected Scenario(TSuite suite)
         {
             ArgumentNullException.ThrowIfNull(suite, nameof(suite));
             Suite = suite;

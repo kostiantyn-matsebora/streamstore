@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace StreamStore.Testing.Framework
+﻿
+namespace StreamStore.Testing
 {
     public interface ITestSuite
     {
