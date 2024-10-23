@@ -4,7 +4,7 @@ using StreamStore.Serialization;
 
 namespace StreamStore.Testing
 {
-    public static class GeneratedValues
+    public static class Generated
     {
         public static string String => new Fixture().Create<string>();
 

@@ -46,7 +46,7 @@ namespace StreamStore.Testing.Framework
         void Fill(int count = 100)
         {
             var fixture = new Fixture();
-            var ids = Enumerable.Range(0, count).Select(i => GeneratedValues.Id).ToArray();
+            var ids = Enumerable.Range(0, count).Select(i => Generated.Id).ToArray();
             Parallel.ForEach(ids, id => store.TryAdd(id, GenerateStream(fixture, id)));
         }
 

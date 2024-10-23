@@ -31,8 +31,8 @@ namespace StreamStore.S3.IntegrationTests
             var fixture = new Fixture();
 
             var acquirances = new ConcurrentBag<IS3LockHandle>();
-            var streamId = GeneratedValues.Id;
-            var transactionId = GeneratedValues.Id;
+            var streamId = Generated.Id;
+            var transactionId = Generated.Id;
 
             // Act
             await Enumerable.Range(0, parallelAttempts).ForEachAsync(parallelAttempts, async i =>
@@ -59,8 +59,8 @@ namespace StreamStore.S3.IntegrationTests
 
             // Arrange
             var fixture = new Fixture();
-            var streamId = GeneratedValues.Id;
-            var transactionId = GeneratedValues.Id;
+            var streamId = Generated.Id;
+            var transactionId = Generated.Id;
 
             // Act & Assert
             var @lock = lockFactory!.CreateLock(streamId, transactionId);
@@ -81,8 +81,8 @@ namespace StreamStore.S3.IntegrationTests
 
             // Arrange
             var fixture = new Fixture();
-            var streamId = GeneratedValues.Id;
-            var transactionId = GeneratedValues.Id;
+            var streamId = Generated.Id;
+            var transactionId = Generated.Id;
 
             // Act & Assert
             var @lock = lockFactory!.CreateLock(streamId, transactionId);

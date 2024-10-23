@@ -75,7 +75,7 @@ namespace StreamStore.Testing.Framework
             var serializer = CreateEventSerializer(compression);
 
             // Act
-            Action act = () => serializer.Deserialize(GeneratedValues.ByteArray);
+            Action act = () => serializer.Deserialize(Generated.ByteArray);
 
             // Assert
             act.Should().Throw<Exception>();

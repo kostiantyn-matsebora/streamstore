@@ -26,7 +26,7 @@ namespace StreamStore.S3.Tests.Lock
 
             var client = new Mock<IS3Client>();
             mockClientFactory.Setup(x => x.CreateClient()).Returns(client.Object);
-            lockObject = new S3LockObject(new S3ContainerPath(GeneratedValues.String), mockClientFactory.Object);
+            lockObject = new S3LockObject(new S3ContainerPath(Generated.String), mockClientFactory.Object);
             this.s3FileLockHandle = this.CreateS3FileLockHandle();
         }
 

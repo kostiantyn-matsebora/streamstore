@@ -21,19 +21,19 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
             var uow = await Database.BeginAppendAsync(stream.Id, stream.Length);
 
             // Act
-            var act = async() => await uow.AddAsync(eventId, GeneratedValues.DateTime, GeneratedValues.ByteArray);
+            var act = async() => await uow.AddAsync(eventId, Generated.DateTime, Generated.ByteArray);
 
             //Assert
             await act.Should().ThrowAsync<ArgumentNullException>();
 
             // Act
-            act = async () => await uow.AddAsync(GeneratedValues.Id, DateTime.MinValue, GeneratedValues.ByteArray);
+            act = async () => await uow.AddAsync(Generated.Id, DateTime.MinValue, Generated.ByteArray);
 
             //Assert
             await act.Should().ThrowAsync<ArgumentOutOfRangeException>();
 
             // Act
-            act = async () => await uow.AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, null!);
+            act = async () => await uow.AddAsync(Generated.Id, Generated.DateTime, null!);
 
             //Assert
             await act.Should().ThrowAsync<ArgumentNullException>();
@@ -63,11 +63,11 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
             var uow = await Database.BeginAppendAsync(stream.Id, stream.Length);
 
             await Database.BeginAppendAsync(stream.Id, stream.Length)
-                .AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, GeneratedValues.ByteArray)
+                .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
                 .SaveChangesAsync();
 
             // Act
-            act = () => uow.AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, GeneratedValues.ByteArray).SaveChangesAsync();
+            act = () => uow.AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray).SaveChangesAsync();
 
             //Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
@@ -81,7 +81,7 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
             TrySkip();
 
             // Arrange
-            Id streamId = GeneratedValues.Id;
+            Id streamId = Generated.Id;
             Revision revision = Revision.Zero;
             if (!isNew)
             {
@@ -93,8 +93,8 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
             // Act
             
             await Database.BeginAppendAsync(streamId, revision)
-                  .AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, GeneratedValues.ByteArray)
-                  .AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, GeneratedValues.ByteArray)
+                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
+                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
                   .SaveChangesAsync();
 
             // Assert
@@ -104,7 +104,7 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
 
             // Act
             await Database.BeginAppendAsync(streamId, revision + 2)
-                  .AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, GeneratedValues.ByteArray)
+                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
                    .SaveChangesAsync();
 
             // Assert
@@ -114,11 +114,11 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
 
             // Act
             await Database.BeginAppendAsync(streamId, revision + 2 + 1)
-                  .AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, GeneratedValues.ByteArray)
-                  .AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, GeneratedValues.ByteArray)
-                  .AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, GeneratedValues.ByteArray)
-                  .AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, GeneratedValues.ByteArray)
-                  .AddAsync(GeneratedValues.Id, GeneratedValues.DateTime, GeneratedValues.ByteArray)
+                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
+                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
+                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
+                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
+                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
                   .SaveChangesAsync();
 
             // Assert

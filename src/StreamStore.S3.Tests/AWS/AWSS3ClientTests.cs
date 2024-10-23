@@ -39,9 +39,9 @@ namespace StreamStore.S3.Tests.AWS
         {
             // Arrange
             var client = CreateAWSS3Client();
-            string sourceFileId = GeneratedValues.String; // Provide a non-null value
-            string sourceName = GeneratedValues.String; // Provide a non-null value
-            string destinationName = GeneratedValues.String; // Provide a non-null value
+            string sourceFileId = Generated.String; // Provide a non-null value
+            string sourceName = Generated.String; // Provide a non-null value
+            string destinationName = Generated.String; // Provide a non-null value
 
 
             CancellationToken token = default;
@@ -75,9 +75,9 @@ namespace StreamStore.S3.Tests.AWS
             // Arrange
             // Arrange
             var client = CreateAWSS3Client();
-            string fileId = GeneratedValues.String; // Provide a non-null value
-            string key = GeneratedValues.String; // Provide a non-null value
-            string destinationName = GeneratedValues.String; // Provide a non-null value
+            string fileId = Generated.String; // Provide a non-null value
+            string key = Generated.String; // Provide a non-null value
+            string destinationName = Generated.String; // Provide a non-null value
 
 
             CancellationToken token = default;
@@ -103,10 +103,10 @@ namespace StreamStore.S3.Tests.AWS
         {
             // Arrange
             var client = CreateAWSS3Client();
-            string key = GeneratedValues.String;
+            string key = Generated.String;
             CancellationToken token = default;
-            var content = GeneratedValues.ByteArray;
-            var name = GeneratedValues.String;
+            var content = Generated.ByteArray;
+            var name = Generated.String;
             var response = new ListVersionsResponse
             {
                 HttpStatusCode = System.Net.HttpStatusCode.OK,
@@ -138,13 +138,13 @@ namespace StreamStore.S3.Tests.AWS
         {
             // Arrange
             var client = CreateAWSS3Client();
-            string key = GeneratedValues.String;
+            string key = Generated.String;
             CancellationToken token = default;
-            var content = GeneratedValues.ByteArray;
+            var content = Generated.ByteArray;
             var response = new GetObjectResponse
             {
                 HttpStatusCode = System.Net.HttpStatusCode.OK,
-                VersionId = GeneratedValues.String,
+                VersionId = Generated.String,
                 ResponseStream = new MemoryStream(content)
             };
 
@@ -172,8 +172,8 @@ namespace StreamStore.S3.Tests.AWS
         {
             // Arrange
             var client = CreateAWSS3Client();
-            string sourcePrefix = GeneratedValues.String;
-            string? startObjectName = GeneratedValues.String;
+            string sourcePrefix = Generated.String;
+            string? startObjectName = Generated.String;
             CancellationToken token = default;
 
             var response = new ListVersionsResponse
@@ -210,9 +210,9 @@ namespace StreamStore.S3.Tests.AWS
         {
             // Arrange
             var aWSS3Client = CreateAWSS3Client();
-            string key = GeneratedValues.String;
+            string key = Generated.String;
             CancellationToken token = default;
-            var content = GeneratedValues.ByteArray;
+            var content = Generated.ByteArray;
             var request = new UploadObjectRequest
             {
                 Key = key,

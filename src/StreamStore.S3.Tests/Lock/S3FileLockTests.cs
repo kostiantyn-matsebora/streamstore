@@ -23,7 +23,7 @@ namespace StreamStore.S3.Tests.Lock
             var fixture = new Fixture();
             path = fixture.Create<S3ContainerPath>();
             mockRepository = new MockRepository(MockBehavior.Strict);
-            transactionId = GeneratedValues.Id;
+            transactionId = Generated.Id;
             factory = this.mockRepository.Create<IS3ClientFactory>();
             lockObject = new S3LockObject(path, factory.Object);
         }
@@ -40,7 +40,7 @@ namespace StreamStore.S3.Tests.Lock
             var s3FileLock = this.CreateS3FileLock();
             CancellationToken token = default;
             var lockId = new LockId(transactionId);
-            var lockKey = GeneratedValues.String;
+            var lockKey = Generated.String;
             var client = new Mock<IS3Client>();
             factory.Setup(x => x.CreateClient()).Returns(client.Object);
 
@@ -85,7 +85,7 @@ namespace StreamStore.S3.Tests.Lock
             var s3FileLock = this.CreateS3FileLock();
             CancellationToken token = default;
 
-            var lockKey = GeneratedValues.String;
+            var lockKey = Generated.String;
             var client = new Mock<IS3Client>();
 
             factory.Setup(x => x.CreateClient()).Returns(client.Object);
@@ -94,7 +94,7 @@ namespace StreamStore.S3.Tests.Lock
 
             var response = new FindObjectResponse
             {
-                Data = Converter.ToByteArray(new LockId(GeneratedValues.String)),
+                Data = Converter.ToByteArray(new LockId(Generated.String)),
                 Name = path,
             };
 
@@ -118,7 +118,7 @@ namespace StreamStore.S3.Tests.Lock
             var s3FileLock = this.CreateS3FileLock();
             CancellationToken token = default;
 
-            var lockKey = GeneratedValues.String;
+            var lockKey = Generated.String;
             var client = new Mock<IS3Client>();
 
             factory.Setup(x => x.CreateClient()).Returns(client.Object);
@@ -150,7 +150,7 @@ namespace StreamStore.S3.Tests.Lock
             var s3FileLock = this.CreateS3FileLock();
             CancellationToken token = default;
 
-            var lockKey = GeneratedValues.String;
+            var lockKey = Generated.String;
             var client = new Mock<IS3Client>();
 
             factory.Setup(x => x.CreateClient()).Returns(client.Object);
@@ -162,7 +162,7 @@ namespace StreamStore.S3.Tests.Lock
 
             var response = new FindObjectResponse
             {
-                Data = Converter.ToByteArray(new LockId(GeneratedValues.String)),
+                Data = Converter.ToByteArray(new LockId(Generated.String)),
                 Name = path,
             };
 

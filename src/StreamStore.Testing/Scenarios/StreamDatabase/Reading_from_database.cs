@@ -22,7 +22,7 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
             TrySkip();
 
             // Act
-            var act = async () => await Database.ReadAsync(GeneratedValues.Id, Revision.One, count);
+            var act = async () => await Database.ReadAsync(Generated.Id, Revision.One, count);
 
             // Assert
             await act.Should().ThrowAsync<StreamNotFoundException>();

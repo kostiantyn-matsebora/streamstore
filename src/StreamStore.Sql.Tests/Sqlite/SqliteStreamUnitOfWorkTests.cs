@@ -17,13 +17,13 @@ namespace StreamStore.Sql.Tests.Sqlite
             TrySkip();
 
             // Arrange
-            var streamId = GeneratedValues.String;
+            var streamId = Generated.String;
 
             // Act
             var act = () =>
                     database!
                     .BeginAppendAsync(streamId)
-                    .AddRangeAsync(GeneratedValues.CreateEventItems(3))
+                    .AddRangeAsync(Generated.CreateEventItems(3))
                     .SaveChangesAsync(CancellationToken.None);
 
             // Assert
@@ -32,7 +32,7 @@ namespace StreamStore.Sql.Tests.Sqlite
             act = () =>
                     database!
                     .BeginAppendAsync(streamId)
-                    .AddRangeAsync(GeneratedValues.CreateEventItems(3))
+                    .AddRangeAsync(Generated.CreateEventItems(3))
                     .SaveChangesAsync(CancellationToken.None);
 
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();

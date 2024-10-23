@@ -14,7 +14,7 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
         {
             TrySkip();
 
-            var metadata = await Database.FindMetadataAsync(GeneratedValues.Id);
+            var metadata = await Database.FindMetadataAsync(Generated.Id);
             metadata.Should().BeNull();
         }
 

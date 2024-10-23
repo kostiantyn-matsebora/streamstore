@@ -13,8 +13,8 @@ namespace StreamStore.S3.Tests.B2
         readonly MockRepository mockRepository;
         readonly B2StreamDatabaseSettings settings;
         readonly Mock<IStorageClientFactory> factoryMock;
-        readonly Id streamId = GeneratedValues.Id;
-        readonly Id transactionId = GeneratedValues.Id;
+        readonly Id streamId = Generated.Id;
+        readonly Id transactionId = Generated.Id;
 
         public B2S3FactoryTests()
         {

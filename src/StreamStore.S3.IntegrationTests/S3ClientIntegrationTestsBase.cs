@@ -23,7 +23,7 @@ namespace StreamStore.S3.IntegrationTests
 
             // Arrange
             // Act
-            var file = await client!.FindObjectAsync(GeneratedValues.String, CancellationToken.None);
+            var file = await client!.FindObjectAsync(Generated.String, CancellationToken.None);
 
             // Assert
             file.Should().BeNull();
@@ -35,8 +35,8 @@ namespace StreamStore.S3.IntegrationTests
             TrySkip();
 
             // Arrange
-            var data = GeneratedValues.ByteArray;
-            var objectName = GeneratedValues.String;
+            var data = Generated.ByteArray;
+            var objectName = Generated.String;
             UploadObjectResponse? response = null;
 
             try
@@ -63,8 +63,8 @@ namespace StreamStore.S3.IntegrationTests
             TrySkip();
 
             // Arrange
-            var data = GeneratedValues.ByteArray;
-            var objectName = GeneratedValues.String;
+            var data = Generated.ByteArray;
+            var objectName = Generated.String;
             UploadObjectResponse? response = null;
 
             try

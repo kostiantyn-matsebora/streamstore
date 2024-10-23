@@ -18,7 +18,7 @@ namespace StreamStore.S3.Tests.Storage
             this.mockRepository = new MockRepository(MockBehavior.Strict);
             this.mockS3Client = new Mock<IS3Client>(MockBehavior.Strict);
             this.mockS3ClientFactory = this.mockRepository.Create<IS3ClientFactory>();
-            this.path = new S3ContainerPath(GeneratedValues.String);
+            this.path = new S3ContainerPath(Generated.String);
 
             mockS3ClientFactory
                 .Setup(x => x.CreateClient())

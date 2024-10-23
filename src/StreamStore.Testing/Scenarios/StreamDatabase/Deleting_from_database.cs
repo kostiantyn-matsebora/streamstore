@@ -14,7 +14,7 @@ namespace StreamStore.Testing.Scenarios.StreamDatabase
             TrySkip();
 
             // Arrange
-            var streamId = GeneratedValues.Id;
+            var streamId = Generated.Id;
 
             // Act
             var act = async() => await Database.DeleteAsync(streamId);

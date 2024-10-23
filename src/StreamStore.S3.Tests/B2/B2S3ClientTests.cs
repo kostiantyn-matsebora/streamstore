@@ -28,9 +28,9 @@ namespace StreamStore.S3.Tests.B2
                 new B2DatabaseConfigurator(new ServiceCollection());
 
             settings = configurator
-                .WithBucketId(GeneratedValues.String)
-                .WithBucketName(GeneratedValues.String)
-                .WithCredentials(GeneratedValues.String, GeneratedValues.String)
+                .WithBucketId(Generated.String)
+                .WithBucketName(Generated.String)
+                .WithCredentials(Generated.String, Generated.String)
                 .Build();
         }
 
@@ -46,9 +46,9 @@ namespace StreamStore.S3.Tests.B2
         {
             // Arrange
             var client = CreateB2S3Client();
-            string sourceFileId = GeneratedValues.String;
-            string sourceName = GeneratedValues.String;
-            string destinationName = GeneratedValues.String;
+            string sourceFileId = Generated.String;
+            string sourceName = Generated.String;
+            string destinationName = Generated.String;
             var files = new Mock<IStorageFiles>();
             b2Client.SetupGet(m => m.Files).Returns(files.Object);
 
@@ -74,9 +74,9 @@ namespace StreamStore.S3.Tests.B2
         {
             // Arrange
             var client = CreateB2S3Client();
-            string fileId = GeneratedValues.String;
-            string key = GeneratedValues.String;
-            string destinationName = GeneratedValues.String;
+            string fileId = Generated.String;
+            string key = Generated.String;
+            string destinationName = Generated.String;
             var files = new Mock<IStorageFiles>();
             b2Client.SetupGet(m => m.Files).Returns(files.Object);
 
@@ -97,10 +97,10 @@ namespace StreamStore.S3.Tests.B2
         {
             // Arrange
             var client = CreateB2S3Client();
-            string key = GeneratedValues.String;
+            string key = Generated.String;
             CancellationToken token = default;
-            var content = GeneratedValues.ByteArray;
-            var name = GeneratedValues.String;
+            var content = Generated.ByteArray;
+            var name = Generated.String;
             var files = new Mock<IStorageFiles>();
             b2Client.SetupGet(m => m.Files).Returns(files.Object);
 
@@ -113,7 +113,7 @@ namespace StreamStore.S3.Tests.B2
                     new FileItem
                     {
                         FileName = key,
-                        FileId = GeneratedValues.String
+                        FileId = Generated.String
                     }
                 }
             });
@@ -140,9 +140,9 @@ namespace StreamStore.S3.Tests.B2
         {
             // Arrange
             var client = CreateB2S3Client();
-            string key = GeneratedValues.String;
+            string key = Generated.String;
             CancellationToken token = default;
-            var content = GeneratedValues.ByteArray;
+            var content = Generated.ByteArray;
 
             var apiResults = mockRepository.Create<IApiResults<DownloadFileResponse>>();
             apiResults.SetupGet(m => m.Response).Returns(new DownloadFileResponse());
@@ -166,8 +166,8 @@ namespace StreamStore.S3.Tests.B2
         {
             // Arrange
             var client = CreateB2S3Client();
-            string sourcePrefix = GeneratedValues.String;
-            string? startObjectName = GeneratedValues.String;
+            string sourcePrefix = Generated.String;
+            string? startObjectName = Generated.String;
             CancellationToken token = default;
             var files = new Mock<IStorageFiles>();
             b2Client.SetupGet(m => m.Files).Returns(files.Object);
@@ -181,7 +181,7 @@ namespace StreamStore.S3.Tests.B2
                     new FileItem
                     {
                         FileName = startObjectName,
-                        FileId = GeneratedValues.String
+                        FileId = Generated.String
                     }
                 }
             });
@@ -214,10 +214,10 @@ namespace StreamStore.S3.Tests.B2
         {
             // Arrange
             var aWSS3Client = CreateB2S3Client();
-            string key = GeneratedValues.String;
-            string fileId = GeneratedValues.String;
+            string key = Generated.String;
+            string fileId = Generated.String;
             CancellationToken token = default;
-            var content = GeneratedValues.ByteArray;
+            var content = Generated.ByteArray;
             var request = new UploadObjectRequest
             {
                 Key = key,
