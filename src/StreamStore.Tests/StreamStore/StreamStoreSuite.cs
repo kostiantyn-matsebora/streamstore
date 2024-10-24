@@ -1,13 +1,25 @@
-﻿using StreamStore.InMemory;
-using StreamStore.Testing.StreamStore;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using StreamStore.Testing.Framework;
 
-namespace StreamStore.Tests.Scenarios
+
+namespace StreamStore.Tests
 {
-    public class StreamStoreSuite : StreamStoreSuiteBase
+    public class StreamStoreSuite : TestSuiteBase
     {
-        protected override void ConfigureStreamStore(IStreamStoreConfigurator configurator)
+        public StreamStoreSuite()
         {
-            configurator.UseMemoryStreamDatabase();
+            MockDatabase = new Mock<IStreamDatabase>();
+        }
+
+        public Mock<IStreamDatabase> MockDatabase { get; }
+
+        public IStreamStore Store => Services.GetRequiredService<IStreamStore>();
+
+        protected override void RegisterServices(IServiceCollection services)
+        {
+            services.ConfigureStreamStore(configurator => 
+                configurator.WithDatabase(services => services.AddSingleton<IStreamDatabase>(MockDatabase.Object)));
         }
     }
 }

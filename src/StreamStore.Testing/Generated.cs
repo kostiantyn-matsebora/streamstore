@@ -32,9 +32,26 @@ namespace StreamStore.Testing
 
         public static RootEvent Event => new Fixture().CreateEvents(1).First();
 
-        public static EventItem[] CreateEventItems(int count)
+        public static EventItem[] EventItems(int count)
         {
             return new Fixture().CreateEventItems(count);
         }
+
+        public static EventRecord[] EventRecords(int initialRevision, int count)
+        {
+            return new Fixture().CreateEventRecords(initialRevision, count);
+        }
+
+        public static EventRecord[] EventRecords(int count)
+        {
+            return new Fixture().CreateEventRecords(count);
+        }
+
+        public static Event[] Events(int count)
+        {
+            return new Fixture().CreateMany<Event>(count).ToArray();
+        }
+
+        public static T Object<T>() => new Fixture().Create<T>();
     }
 }

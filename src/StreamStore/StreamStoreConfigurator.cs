@@ -110,6 +110,7 @@ namespace StreamStore
             return this;
         }
 
+
         public IStreamStoreConfigurator WithDatabase(Action<IServiceCollection> registrator)
         {
             databaseRegistrator = registrator;
