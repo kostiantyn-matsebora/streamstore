@@ -4,7 +4,7 @@ using StreamStore;
 using StreamStore.InMemory;
 using StreamStore.Serialization;
 using StreamStore.Testing;
-using StreamStore.Tests.ServiceCollection;
+
 
 namespace StreamStore.Tests.ServiceCollection
 {
@@ -46,7 +46,7 @@ namespace StreamStore.Tests.ServiceCollection
 
 
             // Act
-            StreamStore.ServiceCollectionExtension.ConfigureStreamStore(Suite.MockServices.Object);
+            ServiceCollectionExtension.ConfigureStreamStore(Suite.MockServices.Object);
             Suite.MockRepository.VerifyAll();
         }
     }
