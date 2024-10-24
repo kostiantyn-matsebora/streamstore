@@ -11,7 +11,6 @@ namespace StreamStore
     {
         readonly IStreamDatabase database;
         readonly EventConverter converter;
-        readonly StreamEventProducer producer;
         readonly int pageSize = 10;
 
         public StreamStore(IStreamDatabase database, IEventSerializer serializer)
