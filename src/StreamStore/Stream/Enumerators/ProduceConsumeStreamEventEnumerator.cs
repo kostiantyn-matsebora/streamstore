@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace StreamStore.Stream
 {
-    internal sealed class ProduceConsumeStreamEventEnumerator : IAsyncEnumerator<EventEntity>
+    internal sealed class ProduceConsumeStreamEventEnumerator : IAsyncEnumerator<StreamEvent>
     {
         readonly IStreamReader reader;
         readonly EventConverter converter;
         readonly StreamReadingParameters parameters;
         readonly CancellationToken token;
-        readonly Channel<EventEntity> channel;
+        readonly Channel<StreamEvent> channel;
         readonly Task producer;
 
         public ProduceConsumeStreamEventEnumerator(
@@ -51,7 +51,7 @@ namespace StreamStore.Stream
             Current = entity;
             return true;
         }
-        public EventEntity Current { get; private set; }
+        public StreamEvent Current { get; private set; }
 
         Task DisposeAsync(bool disposing)
         {
@@ -64,9 +64,9 @@ namespace StreamStore.Stream
             return Task.CompletedTask;
         }
 
-        Channel<EventEntity> CreateChannel(int pageSize)
+        Channel<StreamEvent> CreateChannel(int pageSize)
         {
-            return Channel.CreateBounded<EventEntity>(
+            return Channel.CreateBounded<StreamEvent>(
                 new BoundedChannelOptions(pageSize)
                 {
                     FullMode = BoundedChannelFullMode.Wait,
@@ -101,7 +101,7 @@ namespace StreamStore.Stream
             {
                 if (token.IsCancellationRequested) return cursor;
 
-                await channel.Writer.WriteAsync(converter.ConvertToEntity(record), token);
+                await channel.Writer.WriteAsync(converter.ConvertToEvent(record), token);
 
                 cursor = record.Revision;
             }

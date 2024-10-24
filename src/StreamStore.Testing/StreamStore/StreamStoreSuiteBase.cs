@@ -8,8 +8,9 @@ namespace StreamStore.Testing.StreamStore
     {
         readonly MemoryDatabase database = new MemoryDatabase();
 
-
         public MemoryDatabase Container => database;
+
+        public IStreamDatabase Database => Services.GetRequiredService<IStreamDatabase>();
 
         public IStreamStore Store => Services.GetRequiredService<IStreamStore>();
 
@@ -20,7 +21,7 @@ namespace StreamStore.Testing.StreamStore
 
         protected override async Task SetUp()
         {
-            await database.CopyTo(Services.GetRequiredService<IStreamDatabase>());
+            await database.CopyTo(Database);
         }
 
         protected abstract void ConfigureStreamStore(IStreamStoreConfigurator configurator);

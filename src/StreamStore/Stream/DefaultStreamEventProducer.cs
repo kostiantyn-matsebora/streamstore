@@ -19,7 +19,7 @@ namespace StreamStore
             this.database = database ?? throw new ArgumentNullException(nameof(database));
         }
 
-        public IAsyncEnumerable<EventEntity> StartProducing(StreamReadingParameters parameters, CancellationToken token)
+        public IAsyncEnumerable<StreamEvent> StartProducing(StreamReadingParameters parameters, CancellationToken token)
         {
             var channel = CreateChannel(parameters.PageSize);
 
@@ -28,9 +28,9 @@ namespace StreamStore
             return channel.Reader.ReadAllAsync(token);
         }
 
-        Channel<EventEntity> CreateChannel(int pageSize)
+        Channel<StreamEvent> CreateChannel(int pageSize)
         {
-            return Channel.CreateBounded<EventEntity>(
+            return Channel.CreateBounded<StreamEvent>(
                 new BoundedChannelOptions(pageSize)
                 {
                     FullMode = BoundedChannelFullMode.Wait,
@@ -39,7 +39,7 @@ namespace StreamStore
                 });
         }
 
-        async Task ProduceAsync(StreamReadingParameters parameters, ChannelWriter<EventEntity> writer, CancellationToken token)
+        async Task ProduceAsync(StreamReadingParameters parameters, ChannelWriter<StreamEvent> writer, CancellationToken token)
         {
             int cursor = parameters.StartFrom;
             EventRecord[] records;
@@ -59,13 +59,13 @@ namespace StreamStore
             writer.Complete();
         }
 
-        async Task<int> WritePageAsync(EventRecord[] records, ChannelWriter<EventEntity> writer, int cursor, CancellationToken token)
+        async Task<int> WritePageAsync(EventRecord[] records, ChannelWriter<StreamEvent> writer, int cursor, CancellationToken token)
         {
             foreach (var record in records)
             {
                 if (token.IsCancellationRequested) return cursor;
 
-                await writer.WriteAsync(converter.ConvertToEntity(record), token);
+                await writer.WriteAsync(converter.ConvertToEvent(record), token);
 
                 cursor = record.Revision;
             }

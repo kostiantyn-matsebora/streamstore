@@ -18,7 +18,7 @@ namespace StreamStore
             this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
 
         }
-        public IAsyncEnumerator<EventEntity> CreateEnumerator(StreamReadingParameters parameters, CancellationToken token)
+        public IAsyncEnumerator<StreamEvent> CreateEnumerator(StreamReadingParameters parameters, CancellationToken token)
         {
             if (configuration.ReadingMode == StreamReadingMode.ProduceConsume)
             {

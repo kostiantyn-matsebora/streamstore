@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
+using StreamStore.Models;
 
 namespace StreamStore
 {
@@ -12,17 +13,17 @@ namespace StreamStore
             return await store.BeginWriteAsync(streamId, Revision.Zero, cancellationToken);
         }
 
-        public static async Task<IAsyncEnumerable<EventEntity>> BeginReadAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
+        public static async Task<IAsyncEnumerable<StreamEvent>> BeginReadAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
         {
             return await store.BeginReadAsync(streamId, Revision.One, cancellationToken);
         }
 
-        public static async Task<EventEntityCollection> ReadToEndAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
+        public static async Task<StreamEventCollection> ReadToEndAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
         {
             return await store.BeginReadAsync(streamId, cancellationToken).ReadToEndAsync(cancellationToken);
         }
 
-        public static async Task<EventEntityCollection> ReadToEndAsync(this IStreamStore store, Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
+        public static async Task<StreamEventCollection> ReadToEndAsync(this IStreamStore store, Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
             return await store.BeginReadAsync(streamId, expectedRevision, cancellationToken).ReadToEndAsync(cancellationToken);
         }

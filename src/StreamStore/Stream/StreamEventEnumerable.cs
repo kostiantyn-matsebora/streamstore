@@ -6,7 +6,7 @@ using System.Threading;
 namespace StreamStore.Stream
 {
 
-    class StreamEventEnumerable: IAsyncEnumerable<EventEntity>
+    class StreamEventEnumerable: IAsyncEnumerable<StreamEvent>
     {
         readonly StreamReadingParameters parameters;
         readonly StreamEventEnumeratorFactory enumeratorFactory;
@@ -17,7 +17,7 @@ namespace StreamStore.Stream
             this.enumeratorFactory = enumeratorFactory ?? throw new ArgumentNullException(nameof(enumeratorFactory));
         }
 
-        public IAsyncEnumerator<EventEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        public IAsyncEnumerator<StreamEvent> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             return enumeratorFactory.CreateEnumerator(parameters, cancellationToken);
         }

@@ -3,13 +3,13 @@
 
 namespace StreamStore
 {
-    public sealed class EventEntity: IHasRevision {
+    public sealed class StreamEvent: IHasRevision {
         public Id EventId { get; }
         public DateTime Timestamp { get; }
         public int Revision { get; }
-        public object Event { get; internal set; }
+        public object Event { get;  }
 
-        public EventEntity(Id id, Revision revision, DateTime timestamp, object @event)
+        public StreamEvent(Id id, Revision revision, DateTime timestamp, object @event)
         {
             if (id == Id.None)
                 throw new ArgumentOutOfRangeException(nameof(id), "Id cannot be empty.");

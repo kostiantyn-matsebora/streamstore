@@ -33,7 +33,7 @@ namespace StreamStore
             await database.DeleteAsync(streamId, cancellationToken);
         }
 
-        public  async Task<IAsyncEnumerable<EventEntity>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
+        public  async Task<IAsyncEnumerable<StreamEvent>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
         {
             var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
             if (metadata == null) throw new StreamNotFoundException(streamId);

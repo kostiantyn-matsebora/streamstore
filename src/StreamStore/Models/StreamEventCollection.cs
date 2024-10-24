@@ -6,19 +6,19 @@ using System.Linq;
 
 namespace StreamStore.Models
 {
-    public class EventEntityCollection : IEnumerable<EventEntity>
+    public class StreamEventCollection : IEnumerable<StreamEvent>
     {
-        readonly EventEntity[] events;
-        public EventEntityCollection(IEnumerable<EventEntity> events)
+        readonly StreamEvent[] events;
+        public StreamEventCollection(IEnumerable<StreamEvent> events)
         {
             this.events = events != null ? events.OrderBy(e => e.Revision).ToArray() : throw new ArgumentNullException(nameof(events));
         }
 
         public Revision MaxRevision => events.Max(x => x.Revision);
 
-        public IEnumerator<EventEntity> GetEnumerator()
+        public IEnumerator<StreamEvent> GetEnumerator()
         {
-            return (IEnumerator<EventEntity>)events.GetEnumerator();
+            return (IEnumerator<StreamEvent>)events.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
