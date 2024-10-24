@@ -1,11 +1,9 @@
-﻿
-using System.Text;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Xunit.Abstractions;
 
 namespace StreamStore.Testing.Serializer.Scenarios
 {
-    public abstract class Serializing<TSuite> : SerializerScenario<TSuite> where TSuite : SerializerSuiteBase
+    public abstract class Serializing<TSuite> : SerializerScenario<TSuite> where TSuite : SerializerSuiteBase, new()
     {
         readonly ITestOutputHelper output;
 

@@ -1,6 +1,6 @@
 ﻿namespace StreamStore.Testing.Serializer
 {
-    public abstract class SerializerScenario<TSuite> : Scenario<TSuite> where TSuite : SerializerSuiteBase
+    public abstract class SerializerScenario<TSuite> : Scenario<TSuite> where TSuite : SerializerSuiteBase, new()
     {
         protected IEventSerializer Serializer => Suite.Serializer;
 

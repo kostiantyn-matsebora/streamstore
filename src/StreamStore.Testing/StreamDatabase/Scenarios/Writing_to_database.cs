@@ -3,7 +3,7 @@ using StreamStore.Exceptions;
 
 namespace StreamStore.Testing.StreamDatabase.Scenarios
 {
-    public abstract class Writing_to_database<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase
+    public abstract class Writing_to_database<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase, new()
     {
         protected Writing_to_database(TSuite suite) : base(suite)
         {

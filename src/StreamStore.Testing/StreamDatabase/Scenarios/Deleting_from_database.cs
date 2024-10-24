@@ -2,7 +2,7 @@
 
 namespace StreamStore.Testing.StreamDatabase.Scenarios
 {
-    public class Deleting_from_database<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase
+    public class Deleting_from_database<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase, new()
     {
         public Deleting_from_database(TSuite suite) : base(suite)
         {

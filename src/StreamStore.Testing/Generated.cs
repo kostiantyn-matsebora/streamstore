@@ -22,7 +22,7 @@ namespace StreamStore.Testing
         {
             get
             {
-                return Revision.New(new Random().Next(0, Int32.MaxValue));
+                return new Revision(new Random().Next(0, Int32.MaxValue));
             }
         }
 

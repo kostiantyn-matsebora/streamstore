@@ -3,7 +3,7 @@ using StreamStore.Exceptions;
 
 namespace StreamStore.Testing.StreamStore.Scenarios
 {
-    public abstract class Reading_from_stream<TSuite> : StreamStoreScenario<TSuite> where TSuite : StreamStoreSuiteBase
+    public abstract class Reading_from_stream<TSuite> : StreamStoreScenario<TSuite> where TSuite : StreamStoreSuiteBase, new()
     {
         protected Reading_from_stream(TSuite suite) : base(suite)
         {

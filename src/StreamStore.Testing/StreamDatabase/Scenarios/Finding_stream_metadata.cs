@@ -2,7 +2,7 @@
 
 namespace StreamStore.Testing.StreamDatabase.Scenarios
 {
-    public abstract class Find_stream_data<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase
+    public abstract class Find_stream_data<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase, new()
     {
         protected Find_stream_data(TSuite suite) : base(suite)
         {

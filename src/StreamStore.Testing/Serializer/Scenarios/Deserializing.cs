@@ -2,7 +2,7 @@
 
 namespace StreamStore.Testing.Serializer.Scenarios
 {
-    public abstract class Deserializing<TSuite> : SerializerScenario<TSuite> where TSuite : SerializerSuiteBase
+    public abstract class Deserializing<TSuite> : SerializerScenario<TSuite> where TSuite : SerializerSuiteBase, new()
     {
         protected Deserializing(TSuite suite) : base(suite)
         {

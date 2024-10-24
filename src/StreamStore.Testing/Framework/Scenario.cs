@@ -2,9 +2,13 @@
 
 namespace StreamStore.Testing
 {
-    public abstract class Scenario<TSuite> where TSuite: ITestSuite
+    public abstract class Scenario<TSuite> where TSuite : ITestSuite, new()
     {
         protected readonly TSuite Suite;
+
+        protected Scenario() : this(new TSuite())
+        {
+        }
 
         protected Scenario(TSuite suite)
         {
