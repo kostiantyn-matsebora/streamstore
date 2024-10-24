@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
+using StreamStore.Stream;
 
 
 
@@ -12,14 +14,15 @@ namespace StreamStore
         readonly IStreamDatabase database;
         readonly EventConverter converter;
         readonly int pageSize = 10;
-
-        public StreamStore(IStreamDatabase database, IEventSerializer serializer)
+        readonly StreamEventEnumeratorFactory enumeratorFactory;
+        public StreamStore(StreamStoreConfiguration configuration, IStreamDatabase database, IEventSerializer serializer)
         {
             if (database == null) throw new ArgumentNullException(nameof(database));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             this.database = database;
             converter = new EventConverter(serializer);
+            enumeratorFactory = new StreamEventEnumeratorFactory(configuration, database, converter);
         }
 
         public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken = default)
@@ -30,7 +33,7 @@ namespace StreamStore
             await database.DeleteAsync(streamId, cancellationToken);
         }
 
-        public  async Task<IEventStreamReader> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
+        public  async Task<IAsyncEnumerable<EventEntity>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
         {
             var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
             if (metadata == null) throw new StreamNotFoundException(streamId);
@@ -40,10 +43,10 @@ namespace StreamStore
 
             var parameters = new StreamReadingParameters(streamId, startFrom, pageSize);
 
-            return new EventStreamReader(parameters, database, converter);
+            return new StreamEventEnumerable(parameters, enumeratorFactory);
         }
 
-        public async Task<IEventStreamWriter> BeginWriteAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
+        public async Task<IStreamWriter> BeginWriteAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
             var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
             if (metadata == null) metadata = new StreamMetadataRecord();
@@ -57,8 +60,7 @@ namespace StreamStore
             if (uow == null)
                 throw new InvalidOperationException("Failed to open stream, either stream does not exist or revision is incorrect.");
 
-            return new EventStreamWriter(uow, converter);
-
+            return new StreamWriter(uow, converter);
         }
     }
 }

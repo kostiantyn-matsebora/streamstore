@@ -72,7 +72,7 @@ namespace StreamStore
 
             var configuration = new StreamStoreConfiguration 
             {
-                Mode = mode,
+                ReadingMode = mode,
                 ReadingPageSize = pageSize,
                 Compression = compression
             };

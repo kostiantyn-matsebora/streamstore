@@ -7,20 +7,22 @@ using System.Threading.Tasks;
 
 namespace StreamStore.Stream
 {
-    class EventStreamEnumerator : IAsyncEnumerator<EventEntity>
+    class DefaultStreamEventEnumerator : IAsyncEnumerator<EventEntity>
     {
-        readonly IStreamDatabase database;
+        readonly IStreamReader reader;
         private readonly EventConverter converter;
+        private readonly CancellationToken token;
         readonly Id streamId;
         readonly int pageSize;
         Revision nextRevision;
 
         readonly Queue<EventRecord> queue = new Queue<EventRecord>();
 
-        public EventStreamEnumerator(StreamReadingParameters parameters, IStreamDatabase database, EventConverter converter)
+        public DefaultStreamEventEnumerator(StreamReadingParameters parameters, IStreamReader reader, EventConverter converter, CancellationToken token)
         {
-            this.database = database ?? throw new ArgumentNullException(nameof(database));
+            this.reader = reader ?? throw new ArgumentNullException(nameof(reader));
             this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
+            this.token = token;
             if (parameters == null) throw new ArgumentNullException(nameof(converter));
             streamId = parameters.StreamId;
             pageSize = parameters.PageSize;
@@ -34,6 +36,8 @@ namespace StreamStore.Stream
         {
             if (MoveNext()) return true;
 
+            if (token.IsCancellationRequested) return false;
+
             var records = await ReadNextPage();
 
             if (!records.Any())
@@ -42,14 +46,19 @@ namespace StreamStore.Stream
                 return false;
             }
 
-            foreach (var r in records) queue.Enqueue(r);
+            foreach (var r in records)
+            {
+                if (token.IsCancellationRequested) return false;
+                queue.Enqueue(r);
+            }
 
+            if (token.IsCancellationRequested) return false;
             return MoveNext();
         }
 
         async Task<EventRecordCollection> ReadNextPage()
         {
-            return new EventRecordCollection(await database.ReadAsync(streamId, nextRevision, pageSize));
+            return new EventRecordCollection(await reader.ReadAsync(streamId, nextRevision, pageSize));
         }
 
         bool MoveNext()
@@ -67,25 +76,6 @@ namespace StreamStore.Stream
         public async ValueTask DisposeAsync()
         {
             await Task.CompletedTask;
-        }
-    }
-
-    class EventStreamEnumerable: IAsyncEnumerable<EventEntity>
-    {
-        readonly IStreamDatabase database;
-        readonly StreamReadingParameters parameters;
-        readonly EventConverter converter;
-
-        public EventStreamEnumerable(StreamReadingParameters parameters, IStreamDatabase database, EventConverter converter)
-        {
-            this.database = database ?? throw new ArgumentNullException(nameof(database));
-            this.parameters = parameters ?? throw new ArgumentNullException(nameof(database));
-            this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
-        }
-
-        public IAsyncEnumerator<EventEntity> GetAsyncEnumerator(CancellationToken cancellationToken = default)
-        {
-            return new EventStreamEnumerator(parameters, database, converter);
         }
     }
 }

@@ -1,5 +1,9 @@
+namespace StreamStore
+{
+	public enum StreamReadingMode
+	{
+		Default,
+		ProduceConsume
+	}
 
-public enum StreamReadingMode {
-	Default,
-	ProduceConsume
 }

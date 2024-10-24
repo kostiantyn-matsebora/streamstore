@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -10,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace StreamStore
 {
-    internal class StreamEventProducer
+    internal class DefaultStreamEventProducer
     {
         readonly EventConverter converter;
         readonly IStreamDatabase database;
 
-        public StreamEventProducer(IStreamDatabase database, EventConverter converter)
+        public DefaultStreamEventProducer(IStreamDatabase database, EventConverter converter)
         {
             this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
             this.database = database ?? throw new ArgumentNullException(nameof(database));
