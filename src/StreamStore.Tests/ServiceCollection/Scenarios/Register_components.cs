@@ -6,7 +6,7 @@ using StreamStore.Serialization;
 using StreamStore.Testing;
 using StreamStore.Tests.ServiceCollection;
 
-namespace StreamStore1.Tests.ServiceCollection
+namespace StreamStore.Tests.ServiceCollection
 {
     public class Register_components : Scenario<ServiceCollectionSuite>
     {
