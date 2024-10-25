@@ -6,11 +6,15 @@ using StreamStore.Stream;
 
 namespace StreamStore.Tests.Enumerator
 {
-    public class StreamEventEnumeratorTestSuite : StreamStoreSuiteBase
+    public class EnumerableTestSuite : StreamStoreSuiteBase
     {
         readonly StreamReadingMode mode;
 
-        public StreamEventEnumeratorTestSuite(StreamReadingMode mode)
+        public EnumerableTestSuite(): this(StreamReadingMode.Default)
+        {
+        }
+
+        public EnumerableTestSuite(StreamReadingMode mode)
         {
             this.mode = mode;
         }

@@ -63,45 +63,44 @@ namespace StreamStore
             return this;
         }
 
-        public IServiceCollection Configure(IServiceCollection services) {
+        public IServiceCollection Configure(IServiceCollection services)
+        {
 
             if (databaseType == null && databaseRegistrator == null)
             {
                 throw new InvalidOperationException("Database backend is not set");
             }
 
-            var configuration = new StreamStoreConfiguration 
+            var configuration = new StreamStoreConfiguration
             {
                 ReadingMode = mode,
                 ReadingPageSize = pageSize,
                 Compression = compression
             };
 
-            if (eventSerializer == null) {
-                services.AddSingleton(typeof(IEventSerializer), eventSerializerType);
-            } else {
-                services.AddSingleton(typeof(IEventSerializer), eventSerializer);
-            }
-
-            if (typeRegistry == null) {
-                services.AddSingleton(typeof(ITypeRegistry), typeRegistryType);
-            } else {
-                services.AddSingleton(typeof(ITypeRegistry), typeRegistry);
-            }
-
-            if (databaseRegistrator != null)
-            {
-                databaseRegistrator(services);
-            } else
-            {
-                services.AddSingleton(typeof(IStreamDatabase), databaseType!);
-            }
+            RegisterEventSerializer(services);
+            RegisterTypeRegistry(services);
+            RegisterDatabase(services);
 
             services
                 .AddSingleton(configuration)
+                .AddSingleton<StreamEventEnumeratorFactory>()
+                .AddSingleton<EventConverter>()
                 .AddSingleton<IStreamStore, StreamStore>();
 
             return services;
+        }
+
+        private void RegisterEventSerializer(IServiceCollection services)
+        {
+            if (eventSerializer == null)
+            {
+                services.AddSingleton(typeof(IEventSerializer), eventSerializerType);
+            }
+            else
+            {
+                services.AddSingleton(typeof(IEventSerializer), eventSerializer);
+            }
         }
 
         public IStreamStoreConfigurator WithDatabase<T>() where T : IStreamDatabase
@@ -116,5 +115,31 @@ namespace StreamStore
             databaseRegistrator = registrator;
             return this;
         }
+
+        void RegisterTypeRegistry(IServiceCollection services)
+        {
+            if (typeRegistry == null)
+            {
+                services.AddSingleton(typeof(ITypeRegistry), typeRegistryType);
+            }
+            else
+            {
+                services.AddSingleton(typeof(ITypeRegistry), typeRegistry);
+            }
+        }
+
+        void RegisterDatabase(IServiceCollection services)
+        {
+            if (databaseRegistrator != null)
+            {
+                databaseRegistrator(services);
+            }
+            else
+            {
+                services.AddSingleton(typeof(IStreamDatabase), databaseType!);
+                services.AddSingleton(typeof(IStreamReader), services => services.GetRequiredService<IStreamDatabase>());
+            }
+        }
+
     }
 }

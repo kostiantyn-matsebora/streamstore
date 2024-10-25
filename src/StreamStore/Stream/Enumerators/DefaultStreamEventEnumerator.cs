@@ -67,6 +67,7 @@ namespace StreamStore.Stream
             {
                 Current = converter.ConvertToEvent(record);
                 nextRevision = Current.Revision + 1;
+                return true;
             }
 
             Current = null!;

@@ -45,14 +45,13 @@ namespace StreamStore.Testing
 
         void Fill(int count = 100)
         {
-            var fixture = new Fixture();
             var ids = Enumerable.Range(0, count).Select(i => Generated.Id).ToArray();
-            Parallel.ForEach(ids, id => store.TryAdd(id, GenerateStream(fixture, id)));
+            Parallel.ForEach(ids, id => store.TryAdd(id, GenerateStream(id)));
         }
 
-        static StreamItem GenerateStream(Fixture fixture, Id id)
+        static StreamItem GenerateStream(Id id)
         {
-            return new StreamItem(id, fixture.CreateMany<EventItem>(100).ToArray());
+            return new StreamItem(id, Generated.EventItems(100));
         }
 
         int RandomStreamIndex()

@@ -5,7 +5,7 @@ namespace StreamStore.Serialization
 {
     public sealed class SystemTextJsonEventSerializer : StringEventSerializerBase
     {
-        public SystemTextJsonEventSerializer(ITypeRegistry registry, bool compression = false) : base(registry, compression)
+        public SystemTextJsonEventSerializer(ITypeRegistry registry, bool compression) : base(registry, compression)
         {
 
         }

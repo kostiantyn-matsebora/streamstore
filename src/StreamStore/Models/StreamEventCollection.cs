@@ -8,17 +8,17 @@ namespace StreamStore.Models
 {
     public class StreamEventCollection : IEnumerable<StreamEvent>
     {
-        readonly StreamEvent[] events;
+        readonly List<StreamEvent> events;
         public StreamEventCollection(IEnumerable<StreamEvent> events)
         {
-            this.events = events != null ? events.OrderBy(e => e.Revision).ToArray() : throw new ArgumentNullException(nameof(events));
+            this.events = events != null ? events.OrderBy(e => e.Revision).ToList() : throw new ArgumentNullException(nameof(events));
         }
 
         public Revision MaxRevision => events.Max(x => x.Revision);
 
         public IEnumerator<StreamEvent> GetEnumerator()
         {
-            return (IEnumerator<StreamEvent>)events.GetEnumerator();
+            return events.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

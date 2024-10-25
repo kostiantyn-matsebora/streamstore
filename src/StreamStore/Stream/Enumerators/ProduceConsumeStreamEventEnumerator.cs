@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using StreamStore.Exceptions;
 
 
 namespace StreamStore.Stream
@@ -41,14 +42,23 @@ namespace StreamStore.Stream
 
         public async ValueTask<bool> MoveNextAsync()
         {
-            var entity = await channel.Reader.ReadAsync();
-            if (entity == null)
+            StreamEvent streamEvent = null!;
+            try
+            {
+                streamEvent = await channel.Reader.ReadAsync();
+            }
+            catch (ChannelClosedException)
+            {
+                // Channel is closed when there is nothing more to read.
+            }
+
+            if (streamEvent == null)
             {
                 Current = null!;
                 return false;
             }
 
-            Current = entity;
+            Current = streamEvent;
             return true;
         }
         public StreamEvent Current { get; private set; }
@@ -56,8 +66,12 @@ namespace StreamStore.Stream
         Task DisposeAsync(bool disposing)
         {
             if (disposing)
-            {
-                channel.Writer.Complete();
+            {             
+                if (producer.Status == TaskStatus.Running)
+                {
+                    channel.Writer.Complete();
+                }
+                producer.Wait();
                 producer.Dispose();
             }
 
@@ -83,8 +97,15 @@ namespace StreamStore.Stream
             do
             {
                 if (token.IsCancellationRequested) break;
-
-                records = await reader.ReadAsync(parameters.StreamId, cursor, parameters.PageSize, token);
+                try
+                {
+                    records = await reader.ReadAsync(parameters.StreamId, cursor, parameters.PageSize, token);
+                }
+                catch (StreamNotFoundException)
+                {
+                    channel.Writer.Complete();
+                    throw;
+                }
 
                 if (records.Length == 0) break;
 
@@ -103,7 +124,7 @@ namespace StreamStore.Stream
 
                 await channel.Writer.WriteAsync(converter.ConvertToEvent(record), token);
 
-                cursor = record.Revision;
+                cursor = record.Revision + 1;
             }
 
             return cursor;

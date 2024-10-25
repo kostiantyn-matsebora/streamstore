@@ -10,7 +10,7 @@ namespace StreamStore.Testing
 
         public static EventItem[] CreateEventItems(this Fixture fixture, int count)
         {
-            var serializer = new NewtonsoftEventSerializer(registry);
+            var serializer = new NewtonsoftEventSerializer(registry, false);
 
             var records =
                     fixture
@@ -24,7 +24,7 @@ namespace StreamStore.Testing
 
         public static EventRecord[] CreateEventRecords(this Fixture fixture, int initialRevision, int count)
         {
-            var serializer = new NewtonsoftEventSerializer(registry);
+            var serializer = new NewtonsoftEventSerializer(registry, false);
 
             var revision = initialRevision;
 

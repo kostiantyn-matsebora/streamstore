@@ -8,7 +8,7 @@ namespace StreamStore.Serialization.Tests.SystemTextJson
     {
         protected override IEventSerializer CreateSerializer(IServiceProvider services)
         {
-            return new SystemTextJsonEventSerializer(services.GetRequiredService<ITypeRegistry>());
+            return new SystemTextJsonEventSerializer(services.GetRequiredService<ITypeRegistry>(), true);
         }
     }
 }

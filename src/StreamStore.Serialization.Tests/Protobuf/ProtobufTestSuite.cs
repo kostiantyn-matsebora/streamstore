@@ -9,7 +9,7 @@ namespace StreamStore.Serialization.Tests.Protobuf
     {
         protected override IEventSerializer CreateSerializer(IServiceProvider services)
         {
-            return new ProtobufEventSerializer(services.GetRequiredService<ITypeRegistry>());
+            return new ProtobufEventSerializer(services.GetRequiredService<ITypeRegistry>(), true);
         }
     }
 }

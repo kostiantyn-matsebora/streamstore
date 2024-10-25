@@ -9,7 +9,7 @@ namespace StreamStore.Serialization
         {
         }
 
-        public NewtonsoftEventSerializer(ITypeRegistry registry, bool compression = false) : base(registry, compression)
+        public NewtonsoftEventSerializer(ITypeRegistry registry, bool compression) : base(registry, compression)
         {
         }
 
