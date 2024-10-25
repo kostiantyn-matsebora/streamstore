@@ -1,9 +1,9 @@
-﻿using System.Data.SQLite;
-using Dapper.Extensions;
+﻿using AutoFixture;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using StreamStore.Sql.Sqlite;
-using StreamStore.SQL.Sqlite;
+using StreamStore.Testing;
 using StreamStore.Testing.StreamDatabase;
 
 
@@ -11,32 +11,40 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
 {
     public class SqliteTestSuite : DatabaseSuiteBase
     {
-        protected override async Task SetUp()
+        readonly SqliteDatabaseFixture fixture;
+
+        public SqliteTestSuite(): this(new SqliteDatabaseFixture())
         {
-            SQLiteConnection.CreateFile("StreamStore.sqlite");
-            await ProvisionSchema();
         }
 
-        private async Task ProvisionSchema()
+        public SqliteTestSuite(SqliteDatabaseFixture fixture)
         {
-            using (var dapper = Services.GetRequiredService<IDapper>())
-            {
-                var provisioner = new SqliteSchemaProvisioner(Services.GetRequiredService<SqliteDatabaseConfiguration>(), dapper);
-                await provisioner.ProvisionSchemaAsync(CancellationToken.None);
-            }
+            this.fixture = fixture.ThrowIfNull(nameof(fixture));
         }
+
+        public override MemoryDatabase Container => fixture.Container;
 
         protected override void ConfigureDatabase(IStreamStoreConfigurator configurator)
         {
             configurator.UseSqliteDatabase(CreateConfiguration());
         }
 
-        static IConfiguration CreateConfiguration()
+        IConfiguration CreateConfiguration()
         {
-            return new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
-                {
-                    { "connectionStrings:StreamStore", "Data Source=StreamStore.sqlite;Version=3;" }
-                }).Build();
+            return ConfigureConfiguration(new ConfigurationBuilder()).Build();
+        }
+
+        IConfigurationBuilder ConfigureConfiguration(IConfigurationBuilder builder)
+        {
+            return builder.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                { $"connectionStrings:StreamStore", $"Data Source={fixture.DatabaseName};Version=3;" },
+            });
+        }
+
+        protected override Task SetUp()
+        {
+            return Task.CompletedTask;
         }
     }
 }

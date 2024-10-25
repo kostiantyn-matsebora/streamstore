@@ -74,6 +74,40 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
         }
 
         [SkippableTheory]
+        [InlineData(1)]
+        [InlineData(5)]
+        [InlineData(10)]
+        [InlineData(55)]
+        [InlineData(99)]
+        public async Task When_expected_revision_less_than_actual(int increment)
+        {
+            TrySkip();
+
+            // Arrange
+            var eventId = Id.None;
+            var stream = Container.GetExistingStream();
+
+            // Act
+            var act = async () => await Database.BeginAppendAsync(stream.Id, stream.Length - increment);
+
+            // Assert
+            await act.Should().ThrowAsync<OptimisticConcurrencyException>();
+
+            // Arrange
+            var uow = await Database.BeginAppendAsync(stream.Id, stream.Length);
+
+            await Database.BeginAppendAsync(stream.Id, stream.Length)
+                .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
+                .SaveChangesAsync();
+
+            // Act
+            act = () => uow.AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray).SaveChangesAsync();
+
+            //Assert
+            await act.Should().ThrowAsync<OptimisticConcurrencyException>();
+        }
+
+        [SkippableTheory]
         [InlineData(true)]
         [InlineData(false)]
         public async Task When_writing_many_times(bool isNew)

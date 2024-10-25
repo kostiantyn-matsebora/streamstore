@@ -44,9 +44,36 @@ namespace StreamStore.Tests.ServiceCollection
                    s.Lifetime == ServiceLifetime.Singleton)
            ));
 
+            Suite.MockServices.Setup(m => m.Add(It.Is<ServiceDescriptor>(
+                 s => s.ServiceType == typeof(IStreamDatabase) &&
+                 s.Lifetime == ServiceLifetime.Singleton)
+            ));
+
+            Suite.MockServices.Setup(m => m.Add(It.Is<ServiceDescriptor>(
+                 s => s.ServiceType == typeof(IStreamReader) &&
+                 s.Lifetime == ServiceLifetime.Singleton)
+            ));
+
+
+            Suite.MockServices.Setup(m => m.Add(It.Is<ServiceDescriptor>(
+                 s => s.ServiceType == typeof(StreamStoreConfiguration) &&
+                 s.Lifetime == ServiceLifetime.Singleton)
+            ));
+
+            Suite.MockServices.Setup(m => m.Add(It.Is<ServiceDescriptor>(
+                 s => s.ServiceType == typeof(StreamEventEnumeratorFactory) &&
+                 s.Lifetime == ServiceLifetime.Singleton)
+            ));
+
+
+            Suite.MockServices.Setup(m => m.Add(It.Is<ServiceDescriptor>(
+                 s => s.ServiceType == typeof(EventConverter) &&
+                 s.Lifetime == ServiceLifetime.Singleton)
+            ));
+
 
             // Act
-            ServiceCollectionExtension.ConfigureStreamStore(Suite.MockServices.Object);
+            Suite.MockServices.Object.ConfigureStreamStore(x => x.UseMemoryStreamDatabase());
             Suite.MockRepository.VerifyAll();
         }
     }

@@ -1,7 +1,4 @@
 ﻿using System;
-using Dapper.Extensions;
-using Dapper.Extensions.MiniProfiler;
-using Dapper.Extensions.SQLite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -52,9 +49,8 @@ namespace StreamStore.SQL.Sqlite
 
         void Configure(SqliteDatabaseConfiguration configuration)
         {
-            services.AddDapperForSQLite();
-            services.AddDapperConnectionStringProvider<SqliteDapperConnectionStringProvider>();
-
+            services.AddSingleton<IDbConnectionFactory, SqliteDapperConnectionFactory>();
+            
             services.AddSingleton(configuration);
             services.AddSingleton<IStreamDatabase, SqliteStreamDatabase>();
 
@@ -64,10 +60,6 @@ namespace StreamStore.SQL.Sqlite
                 services.AddHostedService<SqliteSchemaProvisioningService>();
             }
 
-            if (configuration.EnableProfiling)
-            {
-                services.AddMiniProfilerForDapper();
-            }
         }
     }
 

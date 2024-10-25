@@ -1,7 +1,6 @@
-﻿using StreamStore.InMemory;
-using StreamStore.Testing.StreamDatabase;
+﻿using StreamStore.Testing.StreamDatabase;
 
-namespace StreamStore.InMemory.Tests
+namespace StreamStore.InMemory.Tests.StreamDatabase
 {
     public class InMemoryTestSuite : DatabaseSuiteBase
     {

@@ -22,7 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper.Extensions.SQLite" Version="5.1.4" />
+    <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
   </ItemGroup>
 
   <ItemGroup>

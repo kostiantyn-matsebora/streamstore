@@ -12,10 +12,11 @@ namespace StreamStore.Testing.StreamDatabase
 
         public IStreamDatabase StreamDatabase => Services.GetRequiredService<IStreamDatabase>();
 
-        public MemoryDatabase Container => database;
+        public virtual MemoryDatabase Container => database;
 
-        protected override void RegisterServices(IServiceCollection services)
+        protected override sealed void RegisterServices(IServiceCollection services)
         {
+            RegisterDependencies(services);
             var configurator = new StreamStoreConfigurator();
             ConfigureDatabase(configurator);
             configurator.Configure(services);

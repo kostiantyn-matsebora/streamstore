@@ -10,9 +10,13 @@ namespace StreamStore.Testing
 
         readonly ConcurrentDictionary<Id, StreamItem> store = new ConcurrentDictionary<Id, StreamItem>();
 
-        public MemoryDatabase()
+        public MemoryDatabase(IEnumerable<Id> ids)
         {
-            Fill();
+            Fill(ids);
+        }
+
+        public MemoryDatabase(): this(GenerateIds(100))
+        {
         }
 
         public Id GetExistingStreamId()
@@ -43,10 +47,14 @@ namespace StreamStore.Testing
 
         }
 
-        void Fill(int count = 100)
+        void Fill(IEnumerable<Id> ids)
         {
-            var ids = Enumerable.Range(0, count).Select(i => Generated.Id).ToArray();
             Parallel.ForEach(ids, id => store.TryAdd(id, GenerateStream(id)));
+        }
+
+        private static Id[] GenerateIds(int count)
+        {
+            return Enumerable.Range(0, count).Select(i => Generated.Id).ToArray();
         }
 
         static StreamItem GenerateStream(Id id)

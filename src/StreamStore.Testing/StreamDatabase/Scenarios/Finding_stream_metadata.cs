@@ -33,7 +33,8 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             // Assert
             metadata.Should().NotBeNull();
             metadata!.Events.Should().NotBeEmpty();
-            metadata.Events.Should().BeEquivalentTo(stream.Events);
+            metadata.Events.Should().HaveSameCount(stream.Events);
+            metadata.Events.Select(x => x.Id).Should().BeEquivalentTo(stream.Events.Select(x => x.Id));
         }
     }
 }

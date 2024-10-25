@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper.Extensions.MiniProfiler" Version="5.1.4" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
   </ItemGroup>
 

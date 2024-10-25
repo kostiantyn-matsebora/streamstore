@@ -1,7 +1,7 @@
 ﻿using StreamStore.Testing.StreamDatabase.Scenarios;
 using Xunit.Abstractions;
 
-namespace StreamStore.InMemory.Tests
+namespace StreamStore.InMemory.Tests.StreamDatabase
 {
     public class Finding_stream_metadata : Find_stream_data<InMemoryTestSuite>
     {

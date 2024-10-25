@@ -7,16 +7,20 @@ namespace StreamStore.SQL.Sqlite
 {
     internal class SqliteDbConnectionFactory: IDbConnectionFactory
     {
-        readonly SqliteDatabaseConfiguration configuration;
+        readonly string connectionString;
 
-        public SqliteDbConnectionFactory(SqliteDatabaseConfiguration configuration)
+        public SqliteDbConnectionFactory(SqliteDatabaseConfiguration configuration): this(configuration.ConnectionString)
         {
-          this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        }
+        
+        public SqliteDbConnectionFactory(string connectionString)
+        {
+            this.connectionString = connectionString.ThrowIfNull(nameof(connectionString));
         }
 
         public DbConnection GetConnection()
         {
-            return new SQLiteConnection(configuration.ConnectionString);
+            return new SQLiteConnection(connectionString);
         }
     }
 }

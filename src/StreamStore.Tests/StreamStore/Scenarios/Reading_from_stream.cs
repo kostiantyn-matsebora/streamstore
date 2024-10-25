@@ -18,7 +18,7 @@ namespace StreamStore.Tests.StreamStore
         {
             // Arrange
             var streamId = Generated.Id;
-            Suite.MockDatabase.Setup(db => db.FindAsync(streamId, It.IsAny<CancellationToken>())).ReturnsAsync((StreamRecord?)null);
+            Suite.MockDatabase.Setup(db => db.FindMetadataAsync(streamId, It.IsAny<CancellationToken>())).ReturnsAsync((StreamMetadataRecord?)null);
 
             // Act
             var act = async () => await Suite.Store.BeginReadAsync(streamId, CancellationToken.None);
@@ -47,13 +47,13 @@ namespace StreamStore.Tests.StreamStore
         public async Task When_stream_exists(int count)
         {
             // Arrange
-            var streamRecord = new StreamRecord([.. Generated.EventRecords(count)]);
+            var streamRecord = new StreamMetadataRecord([.. Generated.EventRecords(count)]);
 
             var streamId = Generated.Id;
             var eventCount = streamRecord.Events.Count();
             var eventIds = streamRecord.Events.Select(e => e.Id).ToArray();
 
-            Suite.MockDatabase.Setup(db => db.FindAsync(streamId, It.IsAny<CancellationToken>())).ReturnsAsync(streamRecord);
+            Suite.MockDatabase.Setup(db => db.FindMetadataAsync(streamId, It.IsAny<CancellationToken>())).ReturnsAsync(streamRecord);
 
             // Act
             var result = await Suite.Store.ReadToEndAsync(streamId);

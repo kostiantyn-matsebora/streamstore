@@ -28,6 +28,27 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             await act.Should().ThrowAsync<StreamNotFoundException>();
         }
 
+        [SkippableFact]
+        public async Task When_reading_stream_fully()
+        {
+            TrySkip();
+
+            // Arrange
+            var stream = Container.GetExistingStream();
+
+            // Act
+            var result =  await Database.ReadAsync(stream.Id, Revision.One, stream.Length);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(stream.Length);
+            result.Should().BeInAscendingOrder(e => e.Revision);
+            result.First().Revision.Should().Be(Revision.One);
+            result.Last().Revision.Should().Be(stream.Length);
+            result.First().Id.Should().Be(stream.Events.First().Id);
+            result.Last().Id.Should().Be(stream.Events.Last().Id);
+        }
+
 
         [SkippableTheory]
         [InlineData(1)]

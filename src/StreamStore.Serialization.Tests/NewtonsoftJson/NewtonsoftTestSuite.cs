@@ -7,7 +7,7 @@ namespace StreamStore.Serialization.Tests.NewtonsoftJson
     {
         protected override IEventSerializer CreateSerializer(IServiceProvider services)
         {
-            return new NewtonsoftEventSerializer(services.GetRequiredService<ITypeRegistry>(), true);
+            return new NewtonsoftEventSerializer(services.GetRequiredService<ITypeRegistry>(), false);
         }
     }
 }

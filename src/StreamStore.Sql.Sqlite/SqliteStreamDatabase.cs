@@ -1,76 +1,104 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapper.Extensions;
+using Dapper;
+using StreamStore.Database;
+using StreamStore.Exceptions;
 
 namespace StreamStore.SQL.Sqlite
 {
-    public sealed class SqliteStreamDatabase : IStreamDatabase
+    public sealed class SqliteStreamDatabase : StreamDatabaseBase
     {
-        private readonly IDapper dapper;
+        readonly IDbConnectionFactory connectionFactory;
         readonly SqliteDatabaseConfiguration configuration;
 
-        public SqliteStreamDatabase(IDapper dapper, SqliteDatabaseConfiguration configuration)
+        public SqliteStreamDatabase(IDbConnectionFactory connectionFactory, SqliteDatabaseConfiguration configuration)
         {
-            this.dapper = dapper ?? throw new ArgumentNullException(nameof(dapper));
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.connectionFactory = connectionFactory.ThrowIfNull(nameof(connectionFactory));
+            this.configuration = configuration.ThrowIfNull(nameof(configuration));
         }
 
-        public Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
+        protected override Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
-            return Task.FromResult((IStreamUnitOfWork)new SqliteStreamUnitOfWork(streamId, expectedStreamVersion, null, configuration, dapper));
+            using (var connection = connectionFactory.GetConnection())
+            {
+                var actualRevision = GetActualRevision(streamId, connection);
+
+                if (expectedStreamVersion != actualRevision)
+                    throw new OptimisticConcurrencyException(expectedStreamVersion, actualRevision, streamId);
+            }
+            return Task.FromResult((IStreamUnitOfWork)
+                new SqliteStreamUnitOfWork(streamId, expectedStreamVersion, null, configuration, connectionFactory));
         }
 
-        public async Task DeleteAsync(Id streamId, CancellationToken token = default)
+        protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
         {
             var sql = $"DELETE FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
-            using (var transaction = dapper.BeginTransaction())
+            using (var connection = connectionFactory.GetConnection())
             {
-                await dapper.ExecuteAsync(sql, new { StreamId = streamId.Value });
-                dapper.CommitTransaction();
+                await connection.OpenAsync(token);
+                using (var transaction = await connection.BeginTransactionAsync(token))
+                {
+                    await connection.ExecuteAsync(sql, new { StreamId = streamId.Value });
+                    await transaction.CommitAsync(token);
+                }
+            }
+
+        }
+
+        protected override async Task<StreamMetadataRecord?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default)
+        {
+            using (var connection = connectionFactory.GetConnection())
+            {
+                await connection.OpenAsync(token);
+                var sql = $"SELECT Id, Revision, Timestamp FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
+                EventEntity[] entities = await GetStreamEntities(new { StreamId = (string)streamId }, sql, connection);
+
+                if (entities == null || !entities.Any())
+                {
+                    return null;
+                }
+
+                return new StreamMetadataRecord(entities.ToRecords());
             }
         }
 
-        public async Task<StreamRecord?> FindAsync(Id streamId, CancellationToken token = default)
+        protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-            var sql = $"SELECT * FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
-            EventEntity[] entities = await GetStreamEntities(streamId.Value, sql);
+            var sql = $"SELECT COUNT(Id)  FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
 
-            if (entities == null || !entities.Any())
+            using (var connection = connectionFactory.GetConnection())
             {
-                return null;
+                await connection.OpenAsync(token);
+                var number = await connection.ExecuteScalarAsync<int>(sql, new { StreamId = streamId.Value });
+
+                if (number == 0)
+                    throw new StreamNotFoundException(streamId);
+
+                sql = $"SELECT Id, Revision, Timestamp, Data FROM {configuration.FullTableName} WHERE StreamId = @StreamId and Revision >= @Revision ORDER BY Revision ASC LIMIT @Count";
+
+                var entities = await GetStreamEntities(
+                    new { StreamId = (string)streamId, Revision = (int)startFrom, Count = count }, sql, connection);
+
+
+                return entities.ToArray().ToRecords();
             }
-
-            return new StreamRecord(entities.ToRecords());
         }
 
-        public async Task<StreamMetadataRecord?> FindMetadataAsync(Id streamId, CancellationToken token = default)
+        async Task<EventEntity[]> GetStreamEntities(object parameters, string sql, DbConnection connection)
         {
-            var sql = $"SELECT Id, Revision, Timestamp FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
-            EventEntity[] entities = await GetStreamEntities(streamId.Value, sql);
 
-            if (entities == null || !entities.Any())
-            {
-                return null;
-            }
-
-            return new StreamMetadataRecord(entities.ToRecords());
-        }
-
-        public async Task<EventRecord[]> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
-        {
-            var sql = $"SELECT Id, Revision, Timestamp FROM {configuration.FullTableName} WHERE StreamId = @StreamId and Revision >= @Revision ORDER BY Revision ASC LIMIT @Count";
-            var entities = await dapper.QueryAsync<EventEntity>(sql, new { StreamId = streamId, Revision = startFrom, Count = count });
-            return entities.ToArray().ToRecords();
-        }
-
-        async Task<EventEntity[]> GetStreamEntities(string streamId, string sql)
-        {
             IEnumerable<EventEntity> entities;
-            entities = await dapper.QueryAsync<EventEntity>(sql, new { StreamId = streamId });
+            entities = await connection.QueryAsync<EventEntity>(sql, parameters);
             return entities.ToArray();
+        }
+
+        int GetActualRevision(Id streamId, DbConnection connection)
+        {
+            var sql = $"SELECT MAX(Revision) FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
+            return connection.ExecuteScalar<int>(sql, new { StreamId = (string)streamId });
         }
     }
 }
