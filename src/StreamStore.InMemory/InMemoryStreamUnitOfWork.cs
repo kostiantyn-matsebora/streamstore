@@ -12,19 +12,19 @@ namespace StreamStore.InMemory
     {
         readonly InMemoryStreamDatabase database;
 
-        public InMemoryStreamUnitOfWork(Id streamId, Revision expectedRevision, InMemoryStreamDatabase database, StreamRecord? existing): base(streamId, expectedRevision, existing)
+        public InMemoryStreamUnitOfWork(Id streamId, Revision expectedRevision, InMemoryStreamDatabase database, EventRecordCollection? existing): base(streamId, expectedRevision, existing)
         {
             this.database = database ?? throw new ArgumentNullException(nameof(database));
         }
 
         protected override Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
         {
-            var record = new StreamRecord(uncommited);
+            var record = new EventRecordCollection(uncommited);
 
             database.store.AddOrUpdate(streamId, record, (key, oldValue) =>
             {
-                if (oldValue.Revision != expectedRevision)
-                    throw new OptimisticConcurrencyException(expectedRevision, oldValue.Revision, key);
+                if (oldValue.MaxRevision != expectedRevision)
+                    throw new OptimisticConcurrencyException(expectedRevision, oldValue.MaxRevision, key);
 
                 oldValue.AddRange(uncommited);
                 return oldValue;

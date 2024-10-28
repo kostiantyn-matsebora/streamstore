@@ -16,13 +16,13 @@ namespace StreamStore
 
         Revision revision;
 
-        protected StreamUnitOfWorkBase(Id streamId, Revision expectedRevision, StreamRecord? existing)
+        protected StreamUnitOfWorkBase(Id streamId, Revision expectedRevision, EventRecordCollection? existing)
         {
             this.streamId = streamId.ThrowIfHasNoValue(nameof(streamId));
 
-            if (existing != null && !existing.IsEmpty)
+            if (existing != null && existing.Any())
             {
-                events.AddRange(existing.Events);
+                events.AddRange(existing);
             }
 
             this.expectedRevision = expectedRevision;

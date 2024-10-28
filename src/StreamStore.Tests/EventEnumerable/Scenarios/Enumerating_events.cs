@@ -37,7 +37,7 @@ namespace StreamStore.Tests.EventEnumerable {
         public async Task When_reading_stream_to_end(int startFrom, int pageSize)
         {
             // Arrange
-            var stream = Suite.Container.GetExistingStream();
+            var stream = Suite.Container.RandomStream;
             var parameters = new StreamReadingParameters(stream.Id, startFrom, pageSize);
 
             var enumerable = Suite.CreateEnumerable(parameters);
@@ -47,7 +47,7 @@ namespace StreamStore.Tests.EventEnumerable {
 
             // Assert
             events.Should().NotBeEmpty();
-            events.Count().Should().Be(stream.Length - startFrom + 1);
+            events.Count().Should().Be(stream.Revision - startFrom + 1);
             events.First().EventId.Should().Be(stream.Events.Skip(startFrom - 1).First().Id);
             events.Last().EventId.Should().Be(stream.Events.Last().Id);
         }
@@ -60,7 +60,7 @@ namespace StreamStore.Tests.EventEnumerable {
         public async Task When_iterating_stream_to_end(int startFrom, int pageSize)
         {
             // Arrange
-            var stream = Suite.Container.GetExistingStream();
+            var stream = Suite.Container.RandomStream;
 
             var parameters = new StreamReadingParameters(stream.Id, startFrom, pageSize);
 
@@ -74,7 +74,7 @@ namespace StreamStore.Tests.EventEnumerable {
 
             // Assert
             events.Should().NotBeEmpty();
-            events.Count.Should().Be(stream.Length - startFrom + 1);
+            events.Count.Should().Be(stream.Revision - startFrom + 1);
             events.First().EventId.Should().Be(stream.Events.Skip(startFrom - 1).First().Id);
             events.Last().EventId.Should().Be(stream.Events.Last().Id);
         }
@@ -85,8 +85,8 @@ namespace StreamStore.Tests.EventEnumerable {
         [InlineData(10)]
         public async Task When_page_size_greater_than_stream_length(int increment)
         {
-            var stream = Suite.Container.GetExistingStream();
-            var pageSize = stream.Length + increment;
+            var stream = Suite.Container.RandomStream;
+            var pageSize = stream.Revision + increment;
 
             var parameters = new StreamReadingParameters(stream.Id, Revision.One, pageSize);
 
@@ -100,7 +100,7 @@ namespace StreamStore.Tests.EventEnumerable {
 
             // Assert
             events.Should().NotBeEmpty();
-            events.Count.Should().Be(stream.Length);
+            events.Count.Should().Be(stream.Revision);
             events.First().EventId.Should().Be(stream.Events.First().Id);
             events.Last().EventId.Should().Be(stream.Events.Last().Id);
         }
@@ -122,8 +122,8 @@ namespace StreamStore.Tests.EventEnumerable {
         [InlineData(10, 10)]
         public async Task When_leftover_less_than_page_size(int startFrom, int pageSizeIncrement)
         {
-            var stream = Suite.Container.GetExistingStream();
-            var leftover = stream.Length - startFrom + 1;
+            var stream = Suite.Container.RandomStream;
+            var leftover = stream.Revision - startFrom + 1;
             var pageSize = leftover + pageSizeIncrement;
 
             var parameters = new StreamReadingParameters(stream.Id, startFrom, pageSize);

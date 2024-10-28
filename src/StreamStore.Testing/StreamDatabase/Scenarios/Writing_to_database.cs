@@ -16,9 +16,9 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
 
             // Arrange
             var eventId = Id.None;
-            var stream = Container.GetExistingStream();
+            var stream = Container.RandomStream;
 
-            var uow = await Database.BeginAppendAsync(stream.Id, stream.Length);
+            var uow = await Database.BeginAppendAsync(stream.Id, stream.Revision);
 
             // Act
             var act = async () => await uow.AddAsync(eventId, Generated.DateTime, Generated.ByteArray);
@@ -51,18 +51,18 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
 
             // Arrange
             var eventId = Id.None;
-            var stream = Container.GetExistingStream();
+            var stream = Container.RandomStream;
 
             // Act
-            var act = async () => await Database.BeginAppendAsync(stream.Id, stream.Length + increment);
+            var act = async () => await Database.BeginAppendAsync(stream.Id, stream.Revision + increment);
 
             // Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
 
             // Arrange
-            var uow = await Database.BeginAppendAsync(stream.Id, stream.Length);
+            var uow = await Database.BeginAppendAsync(stream.Id, stream.Revision);
 
-            await Database.BeginAppendAsync(stream.Id, stream.Length)
+            await Database.BeginAppendAsync(stream.Id, stream.Revision)
                 .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
                 .SaveChangesAsync();
 
@@ -85,18 +85,18 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
 
             // Arrange
             var eventId = Id.None;
-            var stream = Container.GetExistingStream();
+            var stream = Container.RandomStream;
 
             // Act
-            var act = async () => await Database.BeginAppendAsync(stream.Id, stream.Length - increment);
+            var act = async () => await Database.BeginAppendAsync(stream.Id, stream.Revision - increment);
 
             // Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
 
             // Arrange
-            var uow = await Database.BeginAppendAsync(stream.Id, stream.Length);
+            var uow = await Database.BeginAppendAsync(stream.Id, stream.Revision);
 
-            await Database.BeginAppendAsync(stream.Id, stream.Length)
+            await Database.BeginAppendAsync(stream.Id, stream.Revision)
                 .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
                 .SaveChangesAsync();
 
@@ -119,9 +119,9 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             Revision revision = Revision.Zero;
             if (!isNew)
             {
-                var stream = Container.GetExistingStream();
+                var stream = Container.RandomStream;
                 streamId = stream.Id;
-                revision = stream.Length;
+                revision = stream.Revision;
             }
 
             // Act
@@ -134,7 +134,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             // Assert
             var metadata = await Database.FindMetadataAsync(streamId);
             metadata.Should().NotBeNull();
-            metadata!.Revision.Should().Be(revision + 2);
+            metadata!.MaxRevision.Should().Be(revision + 2);
 
             // Act
             await Database.BeginAppendAsync(streamId, revision + 2)
@@ -144,7 +144,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             // Assert
             metadata = await Database.FindMetadataAsync(streamId);
             metadata.Should().NotBeNull();
-            metadata!.Revision.Should().Be(revision + 2 + 1);
+            metadata!.MaxRevision.Should().Be(revision + 2 + 1);
 
             // Act
             await Database.BeginAppendAsync(streamId, revision + 2 + 1)
@@ -158,7 +158,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             // Assert
             metadata = await Database.FindMetadataAsync(streamId);
             metadata.Should().NotBeNull();
-            metadata!.Revision.Should().Be(revision + 2 + 1 + 5);
+            metadata!.MaxRevision.Should().Be(revision + 2 + 1 + 5);
         }
     }
 }

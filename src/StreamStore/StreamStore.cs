@@ -27,19 +27,23 @@ namespace StreamStore
 
         public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken = default)
         {
-            if (streamId == Id.None)
-                throw new ArgumentNullException(nameof(streamId), "streamId is required.");
+            streamId.ThrowIfHasNoValue(nameof(streamId));
 
             await database.DeleteAsync(streamId, cancellationToken);
         }
 
         public  async Task<IAsyncEnumerable<StreamEvent>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
         {
+            streamId.ThrowIfHasNoValue(nameof(streamId));
+
+            if (startFrom < Revision.One)
+                throw new ArgumentOutOfRangeException(nameof(startFrom), "startFrom must be greater than or equal to 1.");
+
             var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
             if (metadata == null) throw new StreamNotFoundException(streamId);
 
-            if (metadata.Revision < startFrom)
-                throw new InvalidOperationException("Cannot start reading from a revision greater than the current revision.");
+            if (metadata.MaxRevision < startFrom)
+                throw new InvalidStartFromException(streamId, startFrom, metadata.MaxRevision);
 
             var parameters = new StreamReadingParameters(streamId, startFrom, pageSize);
 
@@ -48,12 +52,18 @@ namespace StreamStore
 
         public async Task<IStreamWriter> BeginWriteAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
+            streamId.ThrowIfHasNoValue(nameof(streamId));
+
+            if (expectedRevision < Revision.Zero)
+                throw new ArgumentOutOfRangeException(nameof(expectedRevision), "expectedRevision must be greater than or equal to 0.");
+
             var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
-            if (metadata == null) metadata = new StreamMetadataRecord();
+            
+            if (metadata == null) metadata = new EventMetadataRecordCollection();
 
 
-            if (expectedRevision != metadata.Revision)
-                throw new OptimisticConcurrencyException(expectedRevision, metadata.Revision, streamId);
+            if (expectedRevision != metadata.MaxRevision)
+                throw new OptimisticConcurrencyException(expectedRevision, metadata.MaxRevision, streamId);
 
             var uow = await database.BeginAppendAsync(streamId, expectedRevision);
 

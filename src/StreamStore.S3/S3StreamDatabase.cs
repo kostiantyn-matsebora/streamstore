@@ -32,17 +32,7 @@ namespace StreamStore.S3
             await TryDeleteAsync(streamId, token);
         }
 
-        public async Task<StreamRecord?> FindAsync(Id streamId, CancellationToken token = default)
-        {
-            var storage = storageFactory.CreateStorage();
-            var container = await storage.Persistent.LoadAsync(streamId, token);
-
-            if (container.State == S3ObjectState.DoesNotExist) return null;
-
-            return new StreamRecord(container.Events.Select(e => e.Event!));
-        }
-
-        public async Task<StreamMetadataRecord?> FindMetadataAsync(Id streamId, CancellationToken token = default)
+        public async Task<EventMetadataRecordCollection?> FindMetadataAsync(Id streamId, CancellationToken token = default)
         {
             var storage = storageFactory.CreateStorage();
 
@@ -50,7 +40,7 @@ namespace StreamStore.S3
 
             if (metadata!.State == S3ObjectState.DoesNotExist) return null;
 
-            return new StreamMetadataRecord(metadata.Events!);
+            return metadata.Events;
         }
 
         async Task TryDeleteAsync(Id streamId, CancellationToken token)

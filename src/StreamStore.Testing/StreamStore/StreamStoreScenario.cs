@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-namespace StreamStore.Testing.StreamStore
+﻿namespace StreamStore.Testing.StreamStore
 {
     public abstract class StreamStoreScenario<TSuite> : Scenario<TSuite> where TSuite : StreamStoreSuiteBase, new()
     {

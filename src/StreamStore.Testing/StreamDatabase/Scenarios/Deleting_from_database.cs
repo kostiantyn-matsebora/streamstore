@@ -2,9 +2,9 @@
 
 namespace StreamStore.Testing.StreamDatabase.Scenarios
 {
-    public class Deleting_from_database<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase, new()
+    public abstract class Deleting_from_database<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase, new()
     {
-        public Deleting_from_database(TSuite suite) : base(suite)
+        protected Deleting_from_database(TSuite suite) : base(suite)
         {
         }
 
@@ -32,7 +32,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             TrySkip();
 
             // Arrange
-            var stream = Container.GetExistingStream();
+            var stream = Container.PeekStream();
 
             var existingStream = await Database.FindMetadataAsync(stream.Id);
             existingStream.Should().NotBeNull();
@@ -51,7 +51,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             TrySkip();
 
             // Arrange
-            var stream = Container.GetExistingStream();
+            var stream = Container.PeekStream();
 
             var existingStream = await Database.FindMetadataAsync(stream.Id);
             existingStream.Should().NotBeNull();

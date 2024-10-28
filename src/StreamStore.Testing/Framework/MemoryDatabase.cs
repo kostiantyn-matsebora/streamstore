@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Security.Cryptography;
-using AutoFixture;
 using StreamStore.Testing.Models;
 
 namespace StreamStore.Testing
@@ -8,7 +7,7 @@ namespace StreamStore.Testing
     public class MemoryDatabase
     {
 
-        readonly ConcurrentDictionary<Id, StreamItem> store = new ConcurrentDictionary<Id, StreamItem>();
+        readonly ConcurrentDictionary<Id, StreamRecord> store = new ConcurrentDictionary<Id, StreamRecord>();
 
         public MemoryDatabase(IEnumerable<Id> ids)
         {
@@ -19,20 +18,18 @@ namespace StreamStore.Testing
         {
         }
 
-        public Id GetExistingStreamId()
-        {
-            return store.Keys.Skip(RandomStreamIndex()).First();
-        }
+        public Id RandomId => store.Keys.Skip(RandomStreamIndex()).First();
 
-        public StreamItem GetExistingStream()
-        {
-            return store[GetExistingStreamId()];
-        }
+        public StreamRecord RandomStream =>  store[RandomId];
+     
 
-        public StreamItem? Get(Id id)
+        public StreamRecord PeekStream()
         {
-            store.TryGetValue(id, out var stream);
-            return stream;
+            lock (store)
+            {
+                store.Remove(RandomId, out var stream);
+                return stream!;
+            }
         }
 
         public async Task CopyTo(IStreamDatabase database)
@@ -57,9 +54,9 @@ namespace StreamStore.Testing
             return Enumerable.Range(0, count).Select(i => Generated.Id).ToArray();
         }
 
-        static StreamItem GenerateStream(Id id)
+        static StreamRecord GenerateStream(Id id)
         {
-            return new StreamItem(id, Generated.EventItems(100));
+            return new StreamRecord(id, Generated.EventRecords(100));
         }
 
         int RandomStreamIndex()

@@ -13,7 +13,7 @@ namespace StreamStore.SQL.Sqlite
         readonly SqliteDatabaseConfiguration configuration;
         readonly IDbConnectionFactory connectionFactory;
 
-        public SqliteStreamUnitOfWork(Id streamId, Revision expectedRevision, StreamRecord? existing, SqliteDatabaseConfiguration configuration, IDbConnectionFactory connectionFactory) :
+        public SqliteStreamUnitOfWork(Id streamId, Revision expectedRevision, EventRecordCollection? existing, SqliteDatabaseConfiguration configuration, IDbConnectionFactory connectionFactory) :
             base(streamId, expectedRevision, existing)
         {
             this.connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));

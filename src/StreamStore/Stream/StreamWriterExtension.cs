@@ -31,37 +31,22 @@ namespace StreamStore
 
         public static async Task<IStreamWriter> AppendAsync(this Task<IStreamWriter> writer, Event @event, CancellationToken token = default)
         {
-            await writer.ContinueWith(async t =>
-            {
-                await t.Result.AppendAsync(@event);
-            }, token);
-
-            return writer.Result;
+            return await writer.Result.AppendAsync(@event);
+            
         }
 
         public static async Task<IStreamWriter> AppendAsync(this Task<IStreamWriter> writer, Id eventId, DateTime timestamp, object @event, CancellationToken token = default)
         {
-
-            await writer.ContinueWith(async t =>
-            {
-                await t.AppendAsync(eventId, timestamp, @event, token);
-            });
-
-            return writer.Result;
+           return await  writer.Result.AppendAsync(eventId, timestamp, @event, token);
         }
 
         public static async Task<IStreamWriter> AddRangeAsync(this Task<IStreamWriter> writer, IEnumerable<Event> events, CancellationToken token = default)
         {
-            var result = await writer.ContinueWith(async t =>
-             {
-                 foreach (var @event in events)
-                 {
-                     await t.Result.AppendAsync(@event);
-                 }
-                 return t.Result;
-             }, token);
-
-            return result.Result;
+            foreach (var @event in events)
+            {
+                await writer.Result.AppendAsync(@event);
+            }
+            return writer.Result;
         }
     }
 }

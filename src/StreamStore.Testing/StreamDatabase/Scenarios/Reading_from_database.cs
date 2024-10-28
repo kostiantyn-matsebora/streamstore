@@ -34,17 +34,17 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             TrySkip();
 
             // Arrange
-            var stream = Container.GetExistingStream();
+            var stream = Container.RandomStream;
 
             // Act
-            var result =  await Database.ReadAsync(stream.Id, Revision.One, stream.Length);
+            var result =  await Database.ReadAsync(stream.Id, Revision.One, stream.Events.Count());
 
             // Assert
             result.Should().NotBeNull();
-            result.Should().HaveCount(stream.Length);
+            result.Should().HaveSameCount(stream.Events);
             result.Should().BeInAscendingOrder(e => e.Revision);
             result.First().Revision.Should().Be(Revision.One);
-            result.Last().Revision.Should().Be(stream.Length);
+            result.Last().Revision.Should().Be(stream.Events.MaxRevision);
             result.First().Id.Should().Be(stream.Events.First().Id);
             result.Last().Id.Should().Be(stream.Events.Last().Id);
         }
@@ -58,10 +58,10 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
         {
             TrySkip();
             // Arrange
-            var stream = Container.GetExistingStream();
+            var stream = Container.RandomStream;
 
             // Act
-            var events = await Database.ReadAsync(stream.Id, stream.Length + increment, 1);
+            var events = await Database.ReadAsync(stream.Id, stream.Revision + increment, 1);
 
             // Assert
             events.Should().BeEmpty();
@@ -76,7 +76,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             TrySkip();
 
             // Arrange
-            var stream = Container.GetExistingStream();
+            var stream = Container.RandomStream;
 
             // Act
             var act = async () => await Database.ReadAsync(stream.Id, Revision.Zero, count);
@@ -93,8 +93,8 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             TrySkip();
 
             // Arrange
-            var stream = Container.GetExistingStream();
-            int page = stream.Length / 3;
+            var stream = Container.RandomStream;
+            int page = stream.Revision / 3;
 
             // Act
             var events = await Database.ReadAsync(stream.Id, Revision.One, page);
@@ -129,12 +129,12 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             TrySkip();
 
             // Arrange
-            var stream = Container.GetExistingStream();
-            int count = stream.Length / 3;
+            var stream = Container.RandomStream;
+            int count = stream.Revision / 3;
             var startFrom = count * 2 + count / 2 + 1;
-            var expectedCount = stream.Length - count * 2 - count / 2;
+            var expectedCount = stream.Revision - count * 2 - count / 2;
 
-            output.WriteLine($"Length: {stream.Length}");
+            output.WriteLine($"Revision: {stream.Revision}");
             output.WriteLine($"Start from: {startFrom}");
             output.WriteLine($"count: {count}");
             output.WriteLine($"Expected number of events: {expectedCount}");
@@ -147,7 +147,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             events.Should().NotBeNull();
             events.Should().NotBeEmpty();
             events!.First().Revision.Should().Be(startFrom);
-            events!.Last().Revision.Should().Be(stream.Length);
+            events!.Last().Revision.Should().Be(stream.Revision);
             events.Should().HaveCount(expectedCount);
         }
     }

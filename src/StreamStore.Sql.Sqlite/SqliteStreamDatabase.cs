@@ -48,7 +48,7 @@ namespace StreamStore.SQL.Sqlite
 
         }
 
-        protected override async Task<StreamMetadataRecord?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default)
+        protected override async Task<EventMetadataRecordCollection?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default)
         {
             using (var connection = connectionFactory.GetConnection())
             {
@@ -61,7 +61,7 @@ namespace StreamStore.SQL.Sqlite
                     return null;
                 }
 
-                return new StreamMetadataRecord(entities.ToRecords());
+                return new EventMetadataRecordCollection(entities.ToRecords());
             }
         }
 

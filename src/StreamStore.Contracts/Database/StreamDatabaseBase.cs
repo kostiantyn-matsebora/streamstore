@@ -22,7 +22,7 @@ namespace StreamStore.Database
             return DeleteAsyncInternal(streamId, token);
         }
 
-        public Task<StreamMetadataRecord?> FindMetadataAsync(Id streamId, CancellationToken token = default)
+        public Task<EventMetadataRecordCollection?> FindMetadataAsync(Id streamId, CancellationToken token = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
             return FindMetadataAsyncInternal(streamId, token);
@@ -39,6 +39,6 @@ namespace StreamStore.Database
         protected abstract Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default);
         protected abstract Task DeleteAsyncInternal(Id streamId, CancellationToken token = default);
         protected abstract Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default);
-        protected abstract Task<StreamMetadataRecord?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default);
+        protected abstract Task<EventMetadataRecordCollection?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default);
     }
 }

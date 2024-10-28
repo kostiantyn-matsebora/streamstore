@@ -17,8 +17,6 @@ namespace StreamStore.Testing.Serializer.Scenarios
         {
             TrySkip();
 
-            // Arrange
-
             // Act && Assert
             var act = () => Serializer.Serialize(null!);
 
@@ -29,9 +27,6 @@ namespace StreamStore.Testing.Serializer.Scenarios
         public void When_event_is_valid()
         {
             TrySkip();
-
-            // Arrange
-            var @event = Generated.EventItem;
 
             // Act
             var serialized = Serializer.Serialize(DeserializedEvent);

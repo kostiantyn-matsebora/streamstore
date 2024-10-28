@@ -25,16 +25,16 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             TrySkip();
 
             // Arrange
-            var stream = Container.GetExistingStream();
+            var stream = Container.RandomStream;
 
             // Act
             var metadata = await Database.FindMetadataAsync(stream.Id);
 
             // Assert
             metadata.Should().NotBeNull();
-            metadata!.Events.Should().NotBeEmpty();
-            metadata.Events.Should().HaveSameCount(stream.Events);
-            metadata.Events.Select(x => x.Id).Should().BeEquivalentTo(stream.Events.Select(x => x.Id));
+            metadata!.Should().NotBeEmpty();
+            metadata.Should().HaveSameCount(stream.Events);
+            metadata!.Select(x => x.Id).Should().BeEquivalentTo(stream.Events.Select(x => x.Id));
         }
     }
 }
