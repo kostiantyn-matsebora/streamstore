@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Text;
 using StreamStore.S3.Client;
 
 namespace StreamStore.S3.Tests.InMemory
