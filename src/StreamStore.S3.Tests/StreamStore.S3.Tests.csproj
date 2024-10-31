@@ -49,8 +49,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Lock\Composite\" />
-  </ItemGroup>
-
 </Project>

@@ -1,13 +1,13 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using StreamStore.Testing;
 
 namespace StreamStore.Tests.Models
 {
-    public class EventMetadataRecordCollectionTests
+    public class Creating: Scenario
     {
-
         [Fact]
-        public void Should_BeCreateFromCollectionOfRecords()
+        public void When_created_with_collection_of_records()
         {
             // Arrange
             var fixture = new Fixture();

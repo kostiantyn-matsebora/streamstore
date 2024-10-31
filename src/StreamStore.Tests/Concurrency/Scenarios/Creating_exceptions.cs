@@ -4,10 +4,10 @@ using StreamStore.Testing;
 
 namespace StreamStore.Tests.Concurrency
 {
-    public class PessimisticConcurrencyExceptionTests
+    public class Creating_exceptions: Scenario
     {
         [Fact]
-        public void Should_SetStreamId()
+        public void When_creating_stream_locked_exception()
         {
 
             // Arrange
