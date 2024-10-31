@@ -22,7 +22,7 @@ namespace StreamStore.S3.Example
 
         private void OnStopped() {
             logger.LogInformation("Cleaning up...");
-            store.DeleteAsync(Worker.StreamId, CancellationToken.None).Wait();
+            store.DeleteAsync(WriterBase.StreamId, CancellationToken.None).Wait();
         }
     }
 }

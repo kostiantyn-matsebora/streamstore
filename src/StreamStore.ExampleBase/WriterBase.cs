@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StackExchange.Profiling;
@@ -11,14 +12,14 @@ using StreamStore.Exceptions;
 namespace StreamStore.S3.Example
 {
     [ExcludeFromCodeCoverage]
-    public class WorkerBase : BackgroundService
+    public abstract class WriterBase : BackgroundService
     {
-        private readonly ILogger<WorkerBase> logger;
-        private readonly IStreamStore store;
+        readonly ILogger<WriterBase> logger;
+        readonly IStreamStore store;
         public const string StreamId = "stream-1";
         Revision actualRevision = Revision.Zero;
 
-        public WorkerBase(ILogger<WorkerBase> logger, IStreamStore store)
+        protected WriterBase(ILogger<WriterBase> logger, IStreamStore store)
         {
             this.logger = logger;
             this.store = store;
@@ -31,7 +32,7 @@ namespace StreamStore.S3.Example
             {
                 var profiler = MiniProfiler.StartNew("Example");
                 IStreamWriter stream;
-                using (profiler.Step("Main Work"))
+                using (profiler.Step("Writing to stream"))
                 {
                     try
                     {
@@ -66,7 +67,7 @@ namespace StreamStore.S3.Example
         async Task<IStreamWriter> OpenStreamAsync(CancellationToken stoppingToken)
         {
             logger.LogDebug("Opening stream of revision {actualRevision}", actualRevision);
-            return await store.BeginWriteAsync(StreamId, stoppingToken);
+            return await store.BeginWriteAsync(StreamId, actualRevision, stoppingToken);
         }
 
         async Task AddEventsToStreamAsync(IStreamWriter stream, CancellationToken stoppingToken)
@@ -110,16 +111,17 @@ namespace StreamStore.S3.Example
 
         static Event CreateEvent()
         {
+            var fixture = new Fixture();
             return new Event
             {
-                Id = Guid.NewGuid().ToString(),
-                Timestamp = DateTime.Now,
+                Id = fixture.Create<Id>(),
+                Timestamp = fixture.Create<DateTime>(),
                 EventObject = new EventExample
                 {
-                    InvoiceId = Guid.NewGuid(),
-                    Name = Guid.NewGuid().ToString(),
-                    Number = 1,
-                    Date = DateTime.Now
+                    InvoiceId = fixture.Create<Guid>(),
+                    Name = fixture.Create<string>(),
+                    Number = fixture.Create<int>(),
+                    Date = fixture.Create<DateTime>()
                 }
             };
         }
