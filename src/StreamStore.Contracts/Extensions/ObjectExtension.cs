@@ -7,7 +7,7 @@ namespace StreamStore
 
         public static T ThrowIfNull<T>(this T obj, string name)
         {
-            if (obj == null)
+            if (obj is null)
             {
                 throw new ArgumentNullException(name);
             }

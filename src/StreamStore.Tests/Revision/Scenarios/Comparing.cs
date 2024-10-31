@@ -11,7 +11,7 @@ namespace StreamStore.Tests.RevisionObject
         public void When_comparing_using_operator()
         {
             // Arrange
-            var revision = Suite.CreateRevision(14);
+            var revision = RevisionTestSuite.CreateRevision(14);
             // Assert
             (revision > 13).Should().BeTrue();
             (revision >= 13).Should().BeTrue();
@@ -40,7 +40,7 @@ namespace StreamStore.Tests.RevisionObject
         public void When_comparing_using_equals()
         {
             // Arrange
-            var revision = Suite.CreateRevision(10);
+            var revision = RevisionTestSuite.CreateRevision(10);
             // Assert
             revision.Equals(10).Should().BeTrue();
 
@@ -71,7 +71,7 @@ namespace StreamStore.Tests.RevisionObject
         public void When_comparing_using_compareto()
         {
             // Arrange
-            var revision = Suite.CreateRevision(13);
+            var revision = RevisionTestSuite.CreateRevision(13);
 
             // Assert
             revision.Should<Revision>().BeGreaterThan(new Revision(12));
@@ -85,7 +85,7 @@ namespace StreamStore.Tests.RevisionObject
         public void When_getting_has_code()
         {
             // Arrange
-            var revision = Suite.CreateRevision(11);
+            var revision = RevisionTestSuite.CreateRevision(11);
 
             // Act
             var result = revision.GetHashCode();
@@ -99,7 +99,7 @@ namespace StreamStore.Tests.RevisionObject
         public void When_converting_to_string()
         {
             // Arrange
-            var revision = Suite.CreateRevision(12);
+            var revision = RevisionTestSuite.CreateRevision(12);
 
             // Act
             var result = revision.ToString();

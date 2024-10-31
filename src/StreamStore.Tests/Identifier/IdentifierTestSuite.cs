@@ -5,7 +5,7 @@ namespace StreamStore.Tests.Identifier
 {
     public class IdentifierTestSuite: TestSuiteBase
     {
-        public Id CreateId(string? id = null)
+        public static Id CreateId(string? id = null)
         {
             return new Id(id ?? Generated.String);
         }

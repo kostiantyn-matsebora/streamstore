@@ -14,7 +14,7 @@ namespace StreamStore.Tests.Identifier
         {
             // Arrange
             var expected = Generated.String;
-            var id = Suite.CreateId(expected);
+            var id = IdentifierTestSuite.CreateId(expected);
 
             // Act
             var result = id.GetHashCode();
@@ -28,7 +28,7 @@ namespace StreamStore.Tests.Identifier
         {
             // Arrange
             var expected = Generated.String;
-            var id = Suite.CreateId(expected);
+            var id = IdentifierTestSuite.CreateId(expected);
 
             // Act
             var result = id.ToString();

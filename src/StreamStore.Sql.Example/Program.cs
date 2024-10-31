@@ -5,7 +5,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using StreamStore.Sql.Sqlite;
-using StreamStore.SQL.Sqlite;
 
 namespace StreamStore.SQL.Example
 {

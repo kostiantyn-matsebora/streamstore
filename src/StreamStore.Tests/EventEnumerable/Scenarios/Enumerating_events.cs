@@ -47,7 +47,7 @@ namespace StreamStore.Tests.EventEnumerable {
 
             // Assert
             events.Should().NotBeEmpty();
-            events.Count().Should().Be(stream.Revision - startFrom + 1);
+            events.Length.Should().Be(stream.Revision - startFrom + 1);
             events.First().EventId.Should().Be(stream.Events.Skip(startFrom - 1).First().Id);
             events.Last().EventId.Should().Be(stream.Events.Last().Id);
         }

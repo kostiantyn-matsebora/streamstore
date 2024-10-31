@@ -11,7 +11,7 @@ namespace StreamStore.Tests.RevisionObject
         public void When_revision_is_incremented()
         {
             // Arrange
-            var revision = Suite.CreateRevision();
+            var revision = RevisionTestSuite.CreateRevision();
 
             // Act
             var result = revision.Increment();

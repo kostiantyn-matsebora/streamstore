@@ -87,7 +87,7 @@ namespace StreamStore.SQL.Sqlite
             }
         }
 
-        async Task<EventEntity[]> GetStreamEntities(object parameters, string sql, DbConnection connection)
+        static async Task<EventEntity[]> GetStreamEntities(object parameters, string sql, DbConnection connection)
         {
 
             IEnumerable<EventEntity> entities;
