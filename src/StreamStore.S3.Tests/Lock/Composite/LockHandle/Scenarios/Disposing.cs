@@ -3,7 +3,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.Lock.Composite.LockHandle
 {
-    public class Disposing: Scenario<S3CompositeLockTestSuite>
+    public class Disposing: Scenario<S3CompositeLockHandleTestSuite>
     {
 
 
