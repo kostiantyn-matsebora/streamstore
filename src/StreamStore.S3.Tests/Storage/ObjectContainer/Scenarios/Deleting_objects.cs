@@ -3,7 +3,7 @@ using Moq;
 using StreamStore.S3.Client;
 using StreamStore.Testing;
 
-namespace StreamStore.S3.Tests.Storage.ObjectContainer.Scenarios
+namespace StreamStore.S3.Tests.Storage.ObjectContainer
 {
     public class Deleting_objects: Scenario<S3StorageTestSuite>
     {
