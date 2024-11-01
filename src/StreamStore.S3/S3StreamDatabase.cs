@@ -50,9 +50,12 @@ namespace StreamStore.S3
             await storage.Persistent.DeleteContainerAsync(streamId, token);
         }
 
-        public Task<EventRecord[]> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        public async Task<EventRecord[]> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+          var storage = storageFactory.CreateStorage();
+          var container = await storage.Persistent.LoadAsync(streamId,  startFrom, count, token);
+          if (container.State == S3ObjectState.DoesNotExist) return null;
+          return container.Events!.Select(e => e.Event!).ToArray();
         }
     }
 }

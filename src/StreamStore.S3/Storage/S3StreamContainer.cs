@@ -26,15 +26,27 @@ namespace StreamStore.S3.Storage
             MetadataObject = GetItem("__metadata");
         }
 
-        public async Task LoadAsync(CancellationToken token = default)
+        public async Task LoadAsync(Revision startFrom, int count, CancellationToken token = default)
         {
             await MetadataObject.LoadAsync(token);
 
             if (MetadataObject.State == S3ObjectState.DoesNotExist) return;
 
-            var tasks = MetadataObject.Events.Select(async e =>
+            if (startFrom > MetadataObject.Events.MaxRevision)
             {
-                await Events.LoadEventAsync(e.Id, token);
+                return;
+            }
+
+            var ids = 
+                MetadataObject.Events
+                .Where(e => e.Revision >= startFrom)
+                .Take(count)
+                .Select(e => e.Id)
+                .ToList();
+
+            var tasks = ids.Select(async id =>
+            {
+                await Events.LoadEventAsync(id, token);
             });
 
             await Task.WhenAll(tasks);
