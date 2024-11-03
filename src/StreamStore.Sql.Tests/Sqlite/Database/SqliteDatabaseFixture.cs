@@ -1,8 +1,7 @@
 ﻿using System.Data.SQLite;
-using AutoFixture;
 using StreamStore.SQL.Sqlite;
 using StreamStore.Testing;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace StreamStore.Sql.Tests.Sqlite.Database
 {
@@ -47,6 +46,4 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
         {
         }
     }
-
-
 }

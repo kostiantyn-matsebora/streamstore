@@ -8,11 +8,9 @@ namespace StreamStore.Testing.StreamDatabase
 {
     public abstract class DatabaseSuiteBase : TestSuiteBase
     {
-        readonly MemoryDatabase database = new MemoryDatabase();
-
         public IStreamDatabase StreamDatabase => Services.GetRequiredService<IStreamDatabase>();
 
-        public virtual MemoryDatabase Container => database;
+        public virtual MemoryDatabase Container => new MemoryDatabase();
 
         protected override sealed void RegisterServices(IServiceCollection services)
         {
@@ -30,7 +28,7 @@ namespace StreamStore.Testing.StreamDatabase
 
         protected override async Task SetUp()
         {
-            await database.CopyTo(StreamDatabase);
+            await Container.CopyTo(StreamDatabase);
         }
     }
 }
