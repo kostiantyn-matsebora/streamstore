@@ -41,7 +41,7 @@ namespace StreamStore.S3.Tests.Integration
         {
             if (!disposedValue)
             {
-                if (disposing)
+                if (disposing && database != null)
                 {
                     foreach (var stream in Container)
                     {
