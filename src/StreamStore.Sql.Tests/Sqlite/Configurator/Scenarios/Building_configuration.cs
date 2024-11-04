@@ -1,7 +1,9 @@
 ﻿
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using StreamStore.Sql.Sqlite;
 using StreamStore.SQL.Sqlite;
 using StreamStore.Testing;
 
@@ -86,6 +88,29 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
             config.TableName.Should().Be("tableName");
             config.SchemaName.Should().Be("SchemaName");
             config.ProvisionSchema.Should().BeTrue();
+        }
+
+        [Fact]
+        public void When_configuring_manually()
+        {   
+            var streamStoreConfigurator = new StreamStoreConfigurator();
+            var collection = new ServiceCollection();
+
+            streamStoreConfigurator.UseSqliteDatabase(c => c
+                .WithConnectionString("connectionString")
+                .WithTable("tableName")
+                .WithSchema("schemaName")
+                .ProvisionSchema(true));
+
+            streamStoreConfigurator.Configure(collection);
+            var provider = collection.BuildServiceProvider();
+            var config = provider.GetRequiredService<SqliteDatabaseConfiguration>();
+            
+            config.TableName.Should().Be("tableName");
+            config.ConnectionString.Should().Be("connectionString");
+            config.SchemaName.Should().Be("schemaName");
+            config.ProvisionSchema.Should().BeTrue();
+
         }
     }
 }
