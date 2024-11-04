@@ -1,8 +1,5 @@
 ﻿
 using Microsoft.Extensions.Logging;
-using StackExchange.Profiling;
-using StreamStore.Exceptions;
-using StreamStore.S3.Example;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.Extensions.Hosting;
