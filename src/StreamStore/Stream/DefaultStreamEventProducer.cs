@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -42,7 +43,7 @@ namespace StreamStore
         async Task ProduceAsync(StreamReadingParameters parameters, ChannelWriter<StreamEvent> writer, CancellationToken token)
         {
             int cursor = parameters.StartFrom;
-            EventRecord[] records;
+            EventRecordCollection records;
 
             do
             {
@@ -50,16 +51,16 @@ namespace StreamStore
 
                 records = await database.ReadAsync(parameters.StreamId, cursor, parameters.PageSize, token);
 
-                if (records.Length == 0) break;
+                if (records.Count() == 0) break;
 
                 cursor = await WritePageAsync(records, writer, cursor, token);
 
-            } while (records.Length > 0);
+            } while (records.Count() > 0);
 
             writer.Complete();
         }
 
-        async Task<int> WritePageAsync(EventRecord[] records, ChannelWriter<StreamEvent> writer, int cursor, CancellationToken token)
+        async Task<int> WritePageAsync(EventRecordCollection records, ChannelWriter<StreamEvent> writer, int cursor, CancellationToken token)
         {
             foreach (var record in records)
             {

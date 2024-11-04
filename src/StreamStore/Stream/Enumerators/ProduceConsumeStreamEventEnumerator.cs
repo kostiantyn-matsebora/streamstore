@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -92,7 +93,7 @@ namespace StreamStore.Stream
         async Task ProduceAsync()
         {
             int cursor = parameters.StartFrom;
-            EventRecord[] records;
+            EventRecordCollection records;
 
             do
             {
@@ -107,16 +108,16 @@ namespace StreamStore.Stream
                     throw;
                 }
 
-                if (records.Length == 0) break;
+                if (records.Count() == 0) break;
 
                 cursor = await WritePageAsync(records, cursor);
 
-            } while (records.Length > 0);
+            } while (records.Count() > 0);
 
             channel.Writer.Complete();
         }
 
-        async Task<int> WritePageAsync(EventRecord[] records, int cursor)
+        async Task<int> WritePageAsync(EventRecordCollection records, int cursor)
         {
             foreach (var record in records)
             {

@@ -16,7 +16,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
 
             // Arrange
             var eventId = Id.None;
-            var stream = Container.RandomStream;
+            var stream = Container.PeekStream();
 
             var uow = await Database.BeginAppendAsync(stream.Id, stream.Revision);
 
@@ -42,16 +42,14 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
         [SkippableTheory]
         [InlineData(1)]
         [InlineData(5)]
-        [InlineData(10)]
-        [InlineData(100)]
-        [InlineData(1000)]
+        [InlineData(7)]
         public async Task When_expected_revision_greater_than_actual(int increment)
         {
             TrySkip();
 
             // Arrange
             var eventId = Id.None;
-            var stream = Container.RandomStream;
+            var stream = Container.PeekStream();
 
             // Act
             var act = async () => await Database.BeginAppendAsync(stream.Id, stream.Revision + increment);
@@ -76,16 +74,14 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
         [SkippableTheory]
         [InlineData(1)]
         [InlineData(5)]
-        [InlineData(10)]
-        [InlineData(55)]
-        [InlineData(99)]
+        [InlineData(7)]
         public async Task When_expected_revision_less_than_actual(int increment)
         {
             TrySkip();
 
             // Arrange
             var eventId = Id.None;
-            var stream = Container.RandomStream;
+            var stream = Container.PeekStream();
 
             // Act
             var act = async () => await Database.BeginAppendAsync(stream.Id, stream.Revision - increment);

@@ -5,6 +5,5 @@
         public AWSS3ClientIntegrationTests() : base(new AWSS3TestsSuite())
         {
         }
-
     }
 }

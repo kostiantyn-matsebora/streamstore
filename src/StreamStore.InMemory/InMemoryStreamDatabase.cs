@@ -49,7 +49,7 @@ namespace StreamStore.InMemory
             return Task.FromResult((IStreamUnitOfWork)new InMemoryStreamUnitOfWork(streamId, expectedStreamVersion, this, existing));
         }
 
-        public async Task<EventRecord[]> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        public async Task<EventRecordCollection> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
             if (startFrom < Revision.One)
                 throw new ArgumentOutOfRangeException(nameof(startFrom), "Start from should be greater than zero.");
@@ -63,12 +63,14 @@ namespace StreamStore.InMemory
                 throw new StreamNotFoundException(streamId);
 
             if (startFrom > stream.MaxRevision)
-                return Array.Empty<EventRecord>();
+                return new EventRecordCollection();
 
             return
-                stream.Where(e => e.Revision >= startFrom)
-                .Take(count)
-                .ToArray();
+                new EventRecordCollection(
+                    stream
+                        .Where(e => e.Revision >= startFrom)
+                        .Take(count)
+                        .ToArray());
         }
     }
 }

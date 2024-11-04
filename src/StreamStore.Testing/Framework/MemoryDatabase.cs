@@ -35,7 +35,7 @@ namespace StreamStore.Testing
         {
             lock (store)
             {
-                store.Remove(RandomId, out var stream);
+                store.Remove(store.First().Key, out var stream);
                 return stream!;
             }
         }

@@ -1,12 +1,10 @@
-﻿
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace StreamStore.SQL.Sqlite
 {
     public static class ServiceCollectionExtension
     {
-
         public static IServiceCollection UseSqliteStreamDatabase(this IServiceCollection services, IConfiguration configuration)
         {
 

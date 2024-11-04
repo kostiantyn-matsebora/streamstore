@@ -141,7 +141,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
 
             // Act
             var events = await Database.ReadAsync(stream.Id, startFrom, count);
-            output.WriteLine($"Actual number of events: {events?.Length}");
+            output.WriteLine($"Actual number of events: {events?.Count()}");
 
             // Assert
             events.Should().NotBeNull();

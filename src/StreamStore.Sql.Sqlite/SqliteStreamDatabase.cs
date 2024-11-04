@@ -22,13 +22,6 @@ namespace StreamStore.SQL.Sqlite
 
         protected override Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
-            using (var connection = connectionFactory.GetConnection())
-            {
-                var actualRevision = GetActualRevision(streamId, connection);
-
-                if (expectedStreamVersion != actualRevision)
-                    throw new OptimisticConcurrencyException(expectedStreamVersion, actualRevision, streamId);
-            }
             return Task.FromResult((IStreamUnitOfWork)
                 new SqliteStreamUnitOfWork(streamId, expectedStreamVersion, null, configuration, connectionFactory));
         }
@@ -87,6 +80,16 @@ namespace StreamStore.SQL.Sqlite
             }
         }
 
+        protected override async Task<int> GetActualRevision(Id streamId, CancellationToken token = default)
+        {
+            using (var connection = connectionFactory.GetConnection())
+            {
+                await connection.OpenAsync(token);
+                var sql = $"SELECT MAX(Revision) FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
+                return await connection.ExecuteScalarAsync<int>(sql, new { StreamId = (string)streamId });
+            }
+        }
+
         static async Task<EventEntity[]> GetStreamEntities(object parameters, string sql, DbConnection connection)
         {
 
@@ -95,10 +98,6 @@ namespace StreamStore.SQL.Sqlite
             return entities.ToArray();
         }
 
-        int GetActualRevision(Id streamId, DbConnection connection)
-        {
-            var sql = $"SELECT MAX(Revision) FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
-            return connection.ExecuteScalar<int>(sql, new { StreamId = (string)streamId });
-        }
+
     }
 }

@@ -11,76 +11,82 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         {
         }
 
-        [Fact]
-        public async Task When_saving_changes()
+        [Theory]
+        [InlineData(3, 5, 7)]
+        [InlineData(5, 7, 11)]
+        [InlineData(7, 11, 13)]
+        public async Task When_saving_changes(int firstBatchCount, int secondBatchCount, int thirdBatchCount)
         {
             // Arrange
-
+            var streamStore = Suite.Store;
             var eventIds = new List<Id>();
             var streamId = Generated.Id;
+            var events = Generated.Events(firstBatchCount);
+            eventIds.AddRange(events.Select(e => e.Id));
+            Revision actualRevision;
 
-            var events = Generated.Events(3).ToArray();
+            // Act 1: First way to append to stream
+            var writer = await streamStore.BeginWriteAsync(streamId, CancellationToken.None);
 
+            foreach (var @event in events)
+            {
+                await writer.AppendAsync(@event.Id, @event.Timestamp, @event.EventObject);
+            }
+
+            actualRevision = await writer.CommitAsync(CancellationToken.None);
+
+            // Assert 1
+            actualRevision.Should().Be(firstBatchCount);
+
+            // Arrange 2
+            events = Generated.Events(secondBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
 
-            // Act 1
-            // First way to append to stream
-            await Suite.Store
-                    .BeginWriteAsync(streamId, CancellationToken.None)
-                        .AppendAsync(events[0].Id, events[0].Timestamp, events[0].EventObject)
-                        .AppendAsync(events[1].Id, events[1].Timestamp, events[1].EventObject)
-                        .AppendAsync(events[2].Id, events[2].Timestamp, events[2].EventObject)
-                    .CommitAsync(CancellationToken.None);
-
-
-            // Act 2
-            events = Generated.Events(5).ToArray();
-            eventIds.AddRange(events.Select(e => e.Id));
-
-            // Second way to append to stream
-            await Suite.Store
-                    .BeginWriteAsync(streamId, 3, CancellationToken.None)
+            // Act 2: Second way to append to stream
+            actualRevision =
+                await streamStore
+                    .BeginWriteAsync(streamId, actualRevision, CancellationToken.None)
                         .AddRangeAsync(events)
                     .CommitAsync(CancellationToken.None);
 
+            // Assert 2
+            actualRevision.Should().Be(firstBatchCount + secondBatchCount);
 
-            // Act 3
-            events = Generated.Events(100).ToArray();
+            // Arrange 3
+            events = Generated.Events(thirdBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
 
-            // Third way to append to stream
-            await Suite.Store
-                    .WriteAsync(streamId, 8, events, CancellationToken.None);
+            // Act 3: Third way to append to stream
+            await streamStore.WriteAsync(streamId, actualRevision, events, CancellationToken.None);
 
             // Getting stream
-            var collection = await Suite.Store.ReadToEndAsync(streamId, CancellationToken.None);
+            var collection = await streamStore.ReadToEndAsync(streamId, CancellationToken.None);
 
-            // Assert
+            // Assert 3
             collection.Should().NotBeNull();
-            collection.MaxRevision.Should().Be(3 + 5 + 100);
+            collection.MaxRevision.Should().Be(firstBatchCount + secondBatchCount + thirdBatchCount);
 
             collection.Should().HaveCount(eventIds.Count);
             eventIds.Should().BeEquivalentTo(collection.Select(e => e.EventId));
         }
 
-        [Fact]
-        public async Task When_stream_was_already_updated()
+        [Theory]
+        [InlineData(3)]
+        [InlineData(10)]
+        [InlineData(100)]
+        public async Task When_stream_was_already_updated(int count)
         {
             // Arrange
-            var fixture = new Fixture();
             var stream = Suite.Container.RandomStream;
-
-            var records = fixture.CreateEventRecords(1, 3);
-            var streamRecord = new StreamRecord(stream.Id, records);
 
             // Act
 
-            // Trying to append events with wrong expected revision
+            // Trying to append events with wrong expected revision = 0
             var act = async () =>
                 await
                     Suite.Store
                         .BeginWriteAsync(stream.Id, CancellationToken.None)
-                        .AddRangeAsync(Generated.Events(3))
+                        .AddRangeAsync(Generated.Events(count))
                         .CommitAsync(CancellationToken.None);
 
             // Assert
@@ -93,8 +99,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             // Arrange
             var stream = Suite.Container.RandomStream;
 
-
-            var existingEvents = stream.Events.Take(1).Select(e => new Event { Id = e.Id, EventObject = new { }, Timestamp = e.Timestamp });
+            var existingEvents = stream.Events.Take(1).ToEvents();
 
             // Act
             // Trying to append existing events mixed with new ones, put existing to the end

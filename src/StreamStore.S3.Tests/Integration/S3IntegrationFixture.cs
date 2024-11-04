@@ -15,7 +15,7 @@ namespace StreamStore.S3.Tests.Integration
 
         public S3IntegrationFixture()
         {
-            Container = new MemoryDatabase(new MemoryDatabaseOptions { Capacity = 5, EventPerStream = 10 });
+            Container = new MemoryDatabase(new MemoryDatabaseOptions { Capacity = 10, EventPerStream = 10 });
         }
 
         public void CopyTo(IStreamDatabase database)
