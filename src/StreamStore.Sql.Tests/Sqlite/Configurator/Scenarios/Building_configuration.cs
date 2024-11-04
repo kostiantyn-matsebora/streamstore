@@ -30,7 +30,6 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
                 .WithTable("tableName")
                 .WithConnectionString("connectionString")
                 .ProvisionSchema(true)
-                .EnableProfiling()
                 .Build();
 
             // Act 
@@ -38,7 +37,6 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
             configurator.Configure();
 
             // Assert
-            configuration.EnableProfiling.Should().BeTrue();
             configuration.ProvisionSchema.Should().BeTrue();
             configuration.ConnectionString.Should().Be("connectionString");
             configuration.TableName.Should().Be("tableName");
@@ -65,9 +63,6 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
             var provisionSchema = Suite.MockRepository.Create<IConfigurationSection>();
             provisionSchema.SetupGet(x => x.Value).Returns("true");
 
-            var profilingEnabled = Suite.MockRepository.Create<IConfigurationSection>();
-            profilingEnabled.SetupGet(x => x.Value).Returns("true");
-
             configuration.Setup(x => x.GetSection("ConnectionStrings")).Returns(connectionStrings.Object);
             configuration.Setup(x => x.GetSection("StreamStore:Sqlite")).Returns(section.Object);
             connectionStrings.SetupGet(x => x["StreamStore"]).Returns("connectionString");
@@ -75,7 +70,6 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
             section.Setup(x => x.GetSection("TableName")).Returns(tableName.Object);
             section.Setup(x => x.GetSection("SchemaName")).Returns(schemaName.Object);
             section.Setup(x => x.GetSection("ProvisionSchema")).Returns(provisionSchema.Object);
-            section.Setup(x => x.GetSection("ProfilingEnabled")).Returns(profilingEnabled.Object);
 
 
             // Act
@@ -92,7 +86,6 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
             config.TableName.Should().Be("tableName");
             config.SchemaName.Should().Be("SchemaName");
             config.ProvisionSchema.Should().BeTrue();
-            config.EnableProfiling.Should().BeTrue();
         }
     }
 }

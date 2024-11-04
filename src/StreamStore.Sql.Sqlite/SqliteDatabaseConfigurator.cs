@@ -36,10 +36,6 @@ namespace StreamStore.SQL.Sqlite
                 WithTable(section.GetValue("TableName", "Events")!);
                 WithSchema(section.GetValue("SchemaName", "main")!);
                 ProvisionSchema(section.GetValue("ProvisionSchema", true));
-                if (section.GetValue("ProfilingEnabled", false))
-                {
-                    EnableProfiling();
-                }
             }
 
             Configure(Build());
@@ -53,6 +49,7 @@ namespace StreamStore.SQL.Sqlite
             
             services.AddSingleton(configuration);
             services.AddSingleton<IStreamDatabase, SqliteStreamDatabase>();
+            services.AddSingleton<IStreamReader, SqliteStreamDatabase>();
 
             if (configuration.ProvisionSchema)
             {

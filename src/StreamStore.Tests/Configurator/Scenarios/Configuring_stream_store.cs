@@ -120,7 +120,6 @@ namespace StreamStore.Tests.Configurator
             configuration.Should().NotBeNull();
         }
 
-
         [Fact]
         public void When_database_backend_is_not_configured_manually()
         {
@@ -147,6 +146,5 @@ namespace StreamStore.Tests.Configurator
             //Assert
             act.Should().Throw<InvalidOperationException>().WithMessage("Database backend (IStreamReader) is not registered");
         }
-
     }
 }
