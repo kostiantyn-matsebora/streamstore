@@ -1,5 +1,8 @@
-﻿using System.Threading;
+﻿using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using StreamStore.S3.Client;
 using StreamStore.Serialization;
 
@@ -28,11 +31,20 @@ namespace StreamStore.S3.Storage
             record = null;
         }
 
-        public S3EventObject ReplaceBy(EventRecord record)
+        public S3EventObject SetRecord(EventRecord record)
         {
             this.record = record;
+
             return this;
         }
+
+        public async Task<S3EventObject> ReplaceByAsync(S3EventObject eventObject, CancellationToken token)
+        {
+            await CopyFromAsync(eventObject, token);
+            this.record = eventObject.record;
+            return this;
+        }
+
 
         public override void ResetState()
         {
@@ -42,8 +54,7 @@ namespace StreamStore.S3.Storage
 
         public override async Task UploadAsync(CancellationToken token)
         {
-            if (record != null)
-                await UploadDataAsync(Converter.ToByteArray(record!), token);
+            if (record != null) await UploadDataAsync(Converter.ToByteArray(record!), token);
         }
     }
 }

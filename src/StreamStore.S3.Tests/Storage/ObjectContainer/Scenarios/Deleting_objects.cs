@@ -21,12 +21,12 @@ namespace StreamStore.S3.Tests.Storage.ObjectContainer
             nextResponse.Objects = Enumerable.Empty<ObjectDescriptor>().ToArray();
 
             Suite.MockS3Client.SetupSequence(x => x.ListObjectsAsync(Suite.Path.Normalize(), null, token)).ReturnsAsync(response);
-            Suite.MockS3Client.Setup(x => x.ListObjectsAsync(Suite.Path.Normalize(), lastObject.FileName, token)).ReturnsAsync(nextResponse);
+            Suite.MockS3Client.Setup(x => x.ListObjectsAsync(Suite.Path.Normalize(), lastObject.Key, token)).ReturnsAsync(nextResponse);
             Suite.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
 
             foreach (var obj in response.Objects!)
             {
-                Suite.MockS3Client.Setup(x => x.DeleteObjectByFileIdAsync(obj.FileId!, obj.FileName!, token)).Returns(Task.CompletedTask);
+                Suite.MockS3Client.Setup(x => x.DeleteObjectByVersionIdAsync(obj.VersionId!, obj.Key!, token)).Returns(Task.CompletedTask);
             }
 
             // Act

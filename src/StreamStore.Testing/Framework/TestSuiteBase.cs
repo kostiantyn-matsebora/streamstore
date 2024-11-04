@@ -13,7 +13,7 @@ namespace StreamStore.Testing.Framework
 
         public bool ArePrerequisitiesMet => prerequisitesAreMet;
 
-        public async Task SetUpSuite()
+        public void SetUpSuite()
         {
             prerequisitesAreMet = CheckPrerequisities();
             if (!prerequisitesAreMet) return;
@@ -22,7 +22,7 @@ namespace StreamStore.Testing.Framework
 
             RegisterServices(services);
             BuildProvider(services);
-            await SetUp();
+            SetUp();
         }
 
 
@@ -39,9 +39,8 @@ namespace StreamStore.Testing.Framework
         {
         }
 
-        protected virtual Task SetUp()
+        protected virtual void SetUp()
         {
-            return Task.CompletedTask;
         }
 
 

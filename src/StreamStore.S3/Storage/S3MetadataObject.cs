@@ -39,10 +39,10 @@ namespace StreamStore.S3.Storage
             return this;
         }
 
-        public S3MetadataObject ReplaceBy(EventMetadataRecordCollection records)
+        public async Task<S3MetadataObject> ReplaceByAsync(S3MetadataObject metadataObject, CancellationToken token)
         {
-            this.records = records.ToList();
-
+            await CopyFromAsync(metadataObject, token);
+            this.records = metadataObject.records;
             return this;
         }
 

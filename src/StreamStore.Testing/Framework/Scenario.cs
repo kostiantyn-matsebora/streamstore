@@ -14,7 +14,7 @@ namespace StreamStore.Testing
         {
             ArgumentNullException.ThrowIfNull(suite, nameof(suite));
             Suite = suite;
-            Suite.SetUpSuite().Wait();
+            Suite.SetUpSuite();
         }
 
         protected virtual void TrySkip()

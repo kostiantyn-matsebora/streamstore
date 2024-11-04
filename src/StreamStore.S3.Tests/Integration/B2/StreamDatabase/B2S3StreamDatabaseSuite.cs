@@ -31,10 +31,9 @@ namespace StreamStore.S3.Tests.Integration.B2.StreamDatabase
             return config.GetSection("b2").Exists();
         }
 
-        protected override Task SetUp()
+        protected override void SetUp()
         {
             fixture!.CopyTo(StreamDatabase);
-            return Task.CompletedTask;
         }
 
         static IConfiguration? GetConfiguration()

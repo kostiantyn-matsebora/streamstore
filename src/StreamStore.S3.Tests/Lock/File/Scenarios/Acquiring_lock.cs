@@ -31,13 +31,13 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
 
             var uploadResponse = new UploadObjectResponse
             {
-                Name = Suite.Path
+                Key = Suite.Path
             };
 
             var response = new FindObjectResponse
             {
                 Data = Converter.ToByteArray(lockId),
-                Name = Suite.Path,
+                Key = Suite.Path,
             };
 
             client.
@@ -79,7 +79,7 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
             var response = new FindObjectResponse
             {
                 Data = Converter.ToByteArray(new LockId(Generated.String)),
-                Name = Suite.Path,
+                Key = Suite.Path,
             };
 
             client.
@@ -141,13 +141,13 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
 
             var uploadResponse = new UploadObjectResponse
             {
-                Name = Suite.Path,
+                Key = Suite.Path,
             };
 
             var response = new FindObjectResponse
             {
                 Data = Converter.ToByteArray(new LockId(Generated.String)),
-                Name = Suite.Path,
+                Key = Suite.Path,
             };
             client.
                  SetupSequence(x => x.FindObjectAsync(Suite.Path, token))

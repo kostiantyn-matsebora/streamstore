@@ -33,7 +33,9 @@ namespace StreamStore.S3.Storage
             {
                 return this;
             }
-            return $"{Value}{Delimiter}{name}";
+            var delimiter = !string.IsNullOrEmpty(Value) ? Delimiter : string.Empty;
+
+            return $"{Value}{delimiter}{name}";
         }
 
         public bool Equals(string other)

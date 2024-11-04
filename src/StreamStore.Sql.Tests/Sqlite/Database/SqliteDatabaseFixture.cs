@@ -30,7 +30,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
             await provisioner.ProvisionSchemaAsync(CancellationToken.None);
 
             var database = new SqliteStreamDatabase(connectionFactory, configuration);
-            await Container.CopyTo(database);
+            Container.CopyTo(database);
         }
 
 

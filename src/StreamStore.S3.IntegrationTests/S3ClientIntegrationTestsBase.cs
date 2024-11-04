@@ -53,7 +53,7 @@ namespace StreamStore.S3.IntegrationTests
             {
                 // Cleanup && Assert
                 if (response != null)
-                    await DeleteObjectAndAssert(objectName, response.FileId!);
+                    await DeleteObjectAndAssert(objectName, response.VersionId!);
             }
         }
 
@@ -79,13 +79,13 @@ namespace StreamStore.S3.IntegrationTests
             {
                 // Cleanup && Assert
                 if (response != null)
-                    await DeleteObjectAndAssert(objectName, response.FileId!);
+                    await DeleteObjectAndAssert(objectName, response.VersionId!);
             }
         }
 
         async Task DeleteObjectAndAssert(string objectName, string fileId)
         {
-            var act = () => client!.DeleteObjectByFileIdAsync(fileId, objectName, CancellationToken.None);
+            var act = () => client!.DeleteObjectByVersionIdAsync(fileId, objectName, CancellationToken.None);
             await act.Should().NotThrowAsync();
         }
 
@@ -100,11 +100,11 @@ namespace StreamStore.S3.IntegrationTests
 
         async Task AssertObjectIsFoundAndValid(UploadObjectResponse response, byte[] data)
         {
-            var file = await client!.FindObjectAsync(response.Name!, CancellationToken.None);
+            var file = await client!.FindObjectAsync(response.Key!, CancellationToken.None);
             file.Should().NotBeNull();
-            file!.Name.Should().BeEquivalentTo(response.Name);
-            if (file!.FileId is not null)
-                file.FileId.Should().BeEquivalentTo(response.FileId);
+            file!.Key.Should().BeEquivalentTo(response.Key);
+            if (file!.VersionId is not null)
+                file.VersionId.Should().BeEquivalentTo(response.VersionId);
             file!.Data.Should().BeEquivalentTo(data);
         }
     }

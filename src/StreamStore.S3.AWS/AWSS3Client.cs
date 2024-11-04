@@ -21,27 +21,27 @@ namespace StreamStore.S3.AWS
             this.client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task CopyByFileIdAsync(string sourceFileId, string sourceName, string destinationName, CancellationToken token)
+        public async Task CopyByVersionIdAsync(string sourceVersionId, string sourceKey, string destinationKey, CancellationToken token)
         {
             var request = new CopyObjectRequest
             {
+                SourceVersionId = sourceVersionId,
                 SourceBucket = settings.BucketName,
-                SourceVersionId = sourceFileId,
-                SourceKey = sourceName,
+                SourceKey = sourceKey,
                 DestinationBucket = settings.BucketName,
-                DestinationKey = destinationName,
+                DestinationKey = destinationKey,
             };
 
             await client.CopyObjectAsync(request);
         }
 
-        public async Task DeleteObjectByFileIdAsync(string fileId, string key, CancellationToken token)
+        public async Task DeleteObjectByVersionIdAsync(string versionId, string key, CancellationToken token)
         {
             var deleteObjectRequest = new DeleteObjectRequest
             {
                 BucketName = settings.BucketName,
                 Key = key,
-                VersionId = fileId
+                VersionId = versionId
             };
 
             await client.DeleteObjectAsync(deleteObjectRequest, token);
@@ -66,8 +66,8 @@ namespace StreamStore.S3.AWS
                 return new FindObjectResponse
                 {
                     Data = stream.ToArray(),
-                    Name = key,
-                    FileId = response.VersionId != "null" ? response.VersionId: null // Weird behavior of S3 SDK
+                    Key = key,
+                    VersionId = response.VersionId != "null" ? response.VersionId: null // Weird behavior of S3 SDK
                 };
             }
             catch (AmazonS3Exception ex) {
@@ -93,18 +93,18 @@ namespace StreamStore.S3.AWS
 
             return new ObjectDescriptor
             {
-                FileName = response.Versions[0].Key,
-                FileId = response.Versions[0].VersionId
+                Key = response.Versions[0].Key,
+                VersionId = response.Versions[0].VersionId
             };
         }
 
-        public async Task<ListS3ObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token)
+        public async Task<ListS3ObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectKey, CancellationToken token)
         {
             var request = new ListVersionsRequest()
             {
                 Prefix = !string.IsNullOrEmpty(sourcePrefix) ? sourcePrefix : null,
                 MaxKeys = maxKeyCount,
-                KeyMarker = !string.IsNullOrEmpty(startObjectName) ? startObjectName : null,
+                KeyMarker = !string.IsNullOrEmpty(startObjectKey) ? startObjectKey : null,
                 Delimiter = !string.IsNullOrEmpty(sourcePrefix) ? settings.Delimiter : null,
                 BucketName = settings.BucketName
             };
@@ -117,10 +117,10 @@ namespace StreamStore.S3.AWS
             {
                 Objects = response.Versions.Select(v => new ObjectDescriptor
                 {
-                    FileName = v.Key,
-                    FileId = v.VersionId
+                    Key = v.Key,
+                    VersionId = v.VersionId
                 }).ToArray(),
-                NextFileName = response.NextKeyMarker
+                NextObjectKey = response.NextKeyMarker
             };
         }
 
@@ -142,8 +142,8 @@ namespace StreamStore.S3.AWS
 
             return new UploadObjectResponse
             {
-                Name = request.Key,
-                FileId = response.VersionId
+                Key = request.Key,
+                VersionId = response.VersionId
             };
         }
 

@@ -32,7 +32,7 @@ namespace StreamStore.S3.Tests.Integration
                     return;
                 }
                 this.database = database;
-                Container.CopyTo(database).Wait();
+                Container.CopyTo(database);
                 alreadyCopied = true;
             }
         }

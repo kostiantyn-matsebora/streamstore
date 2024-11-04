@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using StreamStore.S3.Client;
 
 
@@ -9,6 +10,8 @@ namespace StreamStore.S3.Storage
 {
     internal class S3StreamContainer : S3ObjectStorage<S3MetadataObject, S3EventStorage>
     {
+        readonly IS3ClientFactory factory;
+
         public S3EventStorage Events { get; }
 
         public S3MetadataObject MetadataObject { get; }
@@ -24,6 +27,7 @@ namespace StreamStore.S3.Storage
 
             Events = GetContainer("events");
             MetadataObject = GetItem("__metadata");
+            factory = clientFactory.ThrowIfNull(nameof(clientFactory));
         }
 
         public async Task LoadAsync(Revision startFrom, int count, CancellationToken token = default)
@@ -37,8 +41,7 @@ namespace StreamStore.S3.Storage
                 return;
             }
 
-            var ids = 
-                MetadataObject.Events
+            var ids = MetadataObject.Events
                 .Where(e => e.Revision >= startFrom)
                 .Take(count)
                 .Select(e => e.Id)
@@ -71,14 +74,18 @@ namespace StreamStore.S3.Storage
 
         public async Task CopyFrom(S3StreamContainer source, CancellationToken token)
         {
-            // Copy events
-            foreach (var @event in source.Events)
-            {
-                await Events.AppendAsync(@event.Event!, token);
-            }
 
-            // Copy metadata
-            await MetadataObject.ReplaceBy(source.MetadataObject.Events).UploadAsync(token);
+            // Copying events from source
+            var tasks = source.Events.Select(async @event =>
+            {
+                var item = Events.GetItem(@event.Event!.Id);
+                await item.ReplaceByAsync(@event, token);
+            });
+
+            Task.WaitAll(tasks.ToArray());
+
+            // Replacing metadata
+            await MetadataObject.ReplaceByAsync(source.MetadataObject, token);
         }
 
         protected override S3MetadataObject CreateItem(string name)

@@ -48,7 +48,7 @@ namespace StreamStore.S3.Tests.B2.Client
 
             // Assert
             result.Should().NotBeNull();
-            result!.FileName.Should().Be(key);
+            result!.Key.Should().Be(key);
             Suite.MockRepository.VerifyAll();
         }
 
@@ -122,7 +122,7 @@ namespace StreamStore.S3.Tests.B2.Client
             result.Should().NotBeNull();
             result!.Objects.Should().NotBeNull();
             result!.Objects!.Should().HaveCount(1);
-            result!.Objects![0].FileName.Should().Be(startObjectName);
+            result!.Objects![0].Key.Should().Be(startObjectName);
             Suite.MockRepository.VerifyAll();
         }
     }

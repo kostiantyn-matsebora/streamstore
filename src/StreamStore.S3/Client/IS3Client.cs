@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,18 +8,18 @@ namespace StreamStore.S3.Client
     {
         Task<FindObjectResponse?> FindObjectAsync(string key, CancellationToken token);
         Task<UploadObjectResponse?> UploadObjectAsync(UploadObjectRequest request, CancellationToken token);
-        Task DeleteObjectByFileIdAsync(string fileId, string key, CancellationToken token);
-        Task<ListS3ObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token);
+        Task DeleteObjectByVersionIdAsync(string versionId, string key, CancellationToken token);
+        Task<ListS3ObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectKey, CancellationToken token);
         Task<ObjectDescriptor?> FindObjectDescriptorAsync(string key, CancellationToken token);
-        Task CopyByFileIdAsync(string sourceFileId, string sourceName, string destinationName, CancellationToken token);
+        Task CopyByVersionIdAsync(string sourceVersionId, string sourceKey, string destinationKey, CancellationToken token);
     }
 
 
     public class FindObjectResponse
     {
         public byte[]? Data { get; set; }
-        public string? Name { get; set; }
-        public string? FileId { get; set; }
+        public string? Key { get; set; }
+        public string? VersionId { get; set; }
     }
 
 
@@ -31,20 +30,20 @@ namespace StreamStore.S3.Client
 
     public class UploadObjectResponse
     {
-        public string? Name { get; set; }
-        public string? FileId { get; set; }
+        public string? Key { get; set; }
+        public string? VersionId { get; set; }
     }
 
     public class ListS3ObjectsResponse
     {
         public ObjectDescriptor[]? Objects { get; set; }
-        public string? NextFileName { get; set; }
+        public string? NextObjectKey { get; set; }
     }
 
     public class ObjectDescriptor
     {
-        public string? FileName { get; set; }
-        public string? FileId { get; set; }
+        public string? Key { get; set; }
+        public string? VersionId { get; set; }
     }
 }
 

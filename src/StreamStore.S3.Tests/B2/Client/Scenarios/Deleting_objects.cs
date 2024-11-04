@@ -24,7 +24,7 @@ namespace StreamStore.S3.Tests.B2.Client
             files.Setup(m => m.DeleteAsync(fileId, key));
 
             // Act
-            await client.DeleteObjectByFileIdAsync(fileId, key, token);
+            await client.DeleteObjectByVersionIdAsync(fileId, key, token);
 
             // Assert
             Suite.MockRepository.VerifyAll();

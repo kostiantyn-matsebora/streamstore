@@ -42,9 +42,8 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
             });
         }
 
-        protected override Task SetUp()
+        protected override void SetUp()
         {
-            return Task.CompletedTask;
         }
     }
 }

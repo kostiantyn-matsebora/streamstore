@@ -20,8 +20,8 @@ namespace StreamStore.S3.Tests.Storage.EventStorage
             var record = fixture.Create<EventRecord>();
             var response = new FindObjectResponse
             {
-                FileId = Generated.String,
-                Name = Generated.String,
+                VersionId = Generated.String,
+                Key = Generated.String,
                 Data = Converter.ToByteArray(record)
             };
 

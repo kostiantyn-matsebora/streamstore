@@ -24,7 +24,7 @@ namespace StreamStore.S3.Tests.B2.Client
             files.Setup(m => m.CopyAsync(It.IsAny<CopyFileRequest>()));
 
             // Act
-            await client.CopyByFileIdAsync(
+            await client.CopyByVersionIdAsync(
                 sourceFileId,
                 sourceName,
                 destinationName,

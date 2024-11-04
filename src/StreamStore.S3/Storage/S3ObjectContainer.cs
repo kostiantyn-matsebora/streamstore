@@ -62,8 +62,8 @@ namespace StreamStore.S3.Storage
         {
             var tasks = childObjects.Select(async e =>
             {
-                await client.DeleteObjectByFileIdAsync(e.FileId!, e.FileName!, CancellationToken.None);
-                startObjectName = e.FileName;
+                await client.DeleteObjectByVersionIdAsync(e.VersionId!, e.Key!, CancellationToken.None);
+                startObjectName = e.Key;
             });
             Task.WaitAll(tasks.ToArray());
             return startObjectName;

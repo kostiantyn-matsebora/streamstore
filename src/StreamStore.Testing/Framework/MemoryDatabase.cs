@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
+using Newtonsoft.Json.Linq;
 using StreamStore.Testing.Models;
 
 namespace StreamStore.Testing
@@ -40,16 +41,18 @@ namespace StreamStore.Testing
             }
         }
 
-        public async Task CopyTo(IStreamDatabase database)
+        public void CopyTo(IStreamDatabase database)
         {
-            foreach (var pair in store)
+            // Copying events from source
+            var tasks = store.Select(async pair =>
             {
                 await database
-                    .BeginAppendAsync(pair.Key)
-                    .AddRangeAsync(pair.Value.Events)
-                    .SaveChangesAsync();
-            }
+                 .BeginAppendAsync(pair.Key)
+                 .AddRangeAsync(pair.Value.Events)
+                 .SaveChangesAsync();
+            });
 
+            Task.WaitAll(tasks.ToArray());
         }
 
         void Fill(IEnumerable<Id> ids, int eventPerStream)

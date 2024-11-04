@@ -35,7 +35,7 @@ namespace StreamStore.S3.Tests.AWS.Client
 
             // Assert
             result.Should().NotBeNull();
-            result!.FileName.Should().Be(key);
+            result!.Key.Should().Be(key);
             Suite.MockRepository.VerifyAll();
         }
 
@@ -68,7 +68,7 @@ namespace StreamStore.S3.Tests.AWS.Client
             // Assert
             result.Should().NotBeNull();
             result!.Data.Should().BeEquivalentTo(content);
-            result!.FileId.Should().Be(response.VersionId);
+            result!.VersionId.Should().Be(response.VersionId);
 
             Suite.MockRepository.VerifyAll();
         }
@@ -108,7 +108,7 @@ namespace StreamStore.S3.Tests.AWS.Client
             result.Should().NotBeNull();
             result!.Objects.Should().NotBeNull();
             result!.Objects!.Should().HaveCount(1);
-            result!.Objects![0].FileName.Should().Be(startObjectName);
+            result!.Objects![0].Key.Should().Be(startObjectName);
             Suite.MockRepository.VerifyAll();
         }
     }

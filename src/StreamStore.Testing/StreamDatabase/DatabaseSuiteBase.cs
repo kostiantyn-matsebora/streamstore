@@ -26,9 +26,9 @@ namespace StreamStore.Testing.StreamDatabase
 
         protected abstract void ConfigureDatabase(IStreamStoreConfigurator configurator);
 
-        protected override async Task SetUp()
+        protected override void SetUp()
         {
-            await Container.CopyTo(StreamDatabase);
+            Container.CopyTo(StreamDatabase);
         }
     }
 }

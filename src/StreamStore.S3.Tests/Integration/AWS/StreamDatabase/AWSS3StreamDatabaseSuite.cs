@@ -29,10 +29,9 @@ namespace StreamStore.S3.Tests.Integration.AWS.StreamDatabase
             return File.Exists(Path.Combine(AppContext.BaseDirectory, "appsettings.Development.json"));
         }
 
-        protected override Task SetUp()
+        protected override void SetUp()
         {
             fixture!.CopyTo(StreamDatabase);
-            return Task.CompletedTask;
         }
     }
 }
