@@ -8,9 +8,11 @@ namespace StreamStore.Testing.StreamDatabase
 {
     public abstract class DatabaseSuiteBase : TestSuiteBase
     {
+        readonly MemoryDatabase container = new MemoryDatabase();
+
         public IStreamDatabase StreamDatabase => Services.GetRequiredService<IStreamDatabase>();
 
-        public virtual MemoryDatabase Container => new MemoryDatabase();
+        public virtual MemoryDatabase Container => container;
 
         protected override sealed void RegisterServices(IServiceCollection services)
         {
