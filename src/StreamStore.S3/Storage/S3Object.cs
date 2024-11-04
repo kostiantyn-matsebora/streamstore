@@ -25,20 +25,21 @@ namespace StreamStore.S3.Storage
         {
             await using var client = clientFactory.CreateClient();
 
-            string? fileId = null;
+            string? versionId = null;
             do
             {
                 var descriptor = await client.FindObjectDescriptorAsync(path, token);
+
                 if (descriptor != null)
                 {
-                    fileId = descriptor!.VersionId!;
-                    await client.DeleteObjectByVersionIdAsync(fileId!, descriptor.Key!, token);
+                    versionId = descriptor!.VersionId!;
+                    await client.DeleteObjectByVersionIdAsync(versionId!, descriptor.Key!, token);
                     State = S3ObjectState.DoesNotExist;
                 } else
                 {
-                    fileId = null;
+                    versionId = null;
                 }
-            } while (fileId != null);
+            } while (versionId != null);
 
             ResetState();
         }
@@ -59,7 +60,6 @@ namespace StreamStore.S3.Storage
                 State = S3ObjectState.DoesNotExist;
                 return null!;
             }
-           
         }
 
         protected  async Task UploadDataAsync(byte[] data, CancellationToken token)

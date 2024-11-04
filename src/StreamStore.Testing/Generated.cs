@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Moq;
 using StreamStore.Serialization;
 
 
@@ -44,6 +45,11 @@ namespace StreamStore.Testing
         public static Event[] Events(int count)
         {
             return new Fixture().CreateMany<Event>(count).ToArray();
+        }
+
+        public static Mock<T> MockOf<T>() where T : class
+        {
+            return new Mock<T>();
         }
 
         public static T Object<T>() => new Fixture().Create<T>();

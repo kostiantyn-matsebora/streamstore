@@ -1,5 +1,6 @@
 
 using System;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Serialization;
 
@@ -21,7 +22,6 @@ namespace StreamStore
 
         bool compression = false;
         int pageSize = 10;
-        
 
         public StreamStoreConfigurator()
         {
@@ -133,6 +133,17 @@ namespace StreamStore
             if (databaseRegistrator != null)
             {
                 databaseRegistrator(services);
+
+                if (services.Count(s => s.ServiceType == typeof(IStreamDatabase)) == 0)
+                {
+                    throw new InvalidOperationException("Database backend (IStreamDatabase) is not registered");
+                }
+
+                if (services.Count(s => s.ServiceType == typeof(IStreamReader)) == 0)
+                {
+                    throw new InvalidOperationException("Database backend (IStreamReader) is not registered");
+                }
+
             }
             else
             {
