@@ -7,9 +7,9 @@ namespace StreamStore.Tests.Configurator
     {
 
 
-        public StreamStoreConfigurator CreateConfigurator() => new StreamStoreConfigurator();
+        public static StreamStoreConfigurator CreateConfigurator() => new StreamStoreConfigurator();
         
 
-        public IServiceCollection CreateServiceCollection() => new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+        public static IServiceCollection CreateServiceCollection() => new Microsoft.Extensions.DependencyInjection.ServiceCollection();
     }
 }

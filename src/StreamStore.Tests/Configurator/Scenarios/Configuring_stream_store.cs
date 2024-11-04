@@ -14,10 +14,10 @@ namespace StreamStore.Tests.Configurator
         public void When_database_is_not_configured()
         {
             // Arrange
-            var configurator = Suite.CreateConfigurator();
+            var configurator = StreamStoreConfiguratorSuite.CreateConfigurator();
 
             // Act
-            var act = () => configurator.Configure(Suite.CreateServiceCollection());
+            var act = () => configurator.Configure(StreamStoreConfiguratorSuite.CreateServiceCollection());
 
             //Assert
             act.Should().Throw<InvalidOperationException>().WithMessage("Database backend is not set");
@@ -29,10 +29,10 @@ namespace StreamStore.Tests.Configurator
             // Arrange
             var database = Generated.MockOf<IStreamDatabase>();
             var typeRegistry = Generated.MockOf<ITypeRegistry>();
-            var configurator = Suite.CreateConfigurator();
+            var configurator = StreamStoreConfiguratorSuite.CreateConfigurator();
             var pageSize = Generated.Int;
             var mode = StreamReadingMode.ProduceConsume;
-            var services = Suite.CreateServiceCollection();
+            var services = StreamStoreConfiguratorSuite.CreateServiceCollection();
 
             // Act
             configurator.WithReadingPageSize(pageSize);
@@ -80,8 +80,8 @@ namespace StreamStore.Tests.Configurator
             var database = Generated.MockOf<IStreamDatabase>();
             var typeRegistry = Generated.MockOf<ITypeRegistry>();
             var serializer = Generated.MockOf<IEventSerializer>();
-            var configurator = Suite.CreateConfigurator();
-            var services = Suite.CreateServiceCollection();
+            var configurator = StreamStoreConfiguratorSuite.CreateConfigurator();
+            var services = StreamStoreConfiguratorSuite.CreateServiceCollection();
 
             // Act
             configurator.WithEventSerializer(serializer.Object);
@@ -124,12 +124,12 @@ namespace StreamStore.Tests.Configurator
         public void When_database_backend_is_not_configured_manually()
         {
             // Arrange
-            var configurator = Suite.CreateConfigurator();
+            var configurator = StreamStoreConfiguratorSuite.CreateConfigurator();
 
             configurator.WithDatabase(x => { });
 
             // Act
-            var act = () => configurator.Configure(Suite.CreateServiceCollection());
+            var act = () => configurator.Configure(StreamStoreConfiguratorSuite.CreateServiceCollection());
 
             //Assert
             act.Should().Throw<InvalidOperationException>().WithMessage("Database backend (IStreamDatabase) is not registered");
@@ -141,7 +141,7 @@ namespace StreamStore.Tests.Configurator
             });
 
             // Act
-            act = () => configurator.Configure(Suite.CreateServiceCollection());
+            act = () => configurator.Configure(StreamStoreConfiguratorSuite.CreateServiceCollection());
 
             //Assert
             act.Should().Throw<InvalidOperationException>().WithMessage("Database backend (IStreamReader) is not registered");

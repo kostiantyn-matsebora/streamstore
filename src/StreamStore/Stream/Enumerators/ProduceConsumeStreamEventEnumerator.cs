@@ -108,11 +108,11 @@ namespace StreamStore.Stream
                     throw;
                 }
 
-                if (records.Count() == 0) break;
+                if (!records.Any()) break;
 
                 cursor = await WritePageAsync(records, cursor);
 
-            } while (records.Count() > 0);
+            } while (records.Any());
 
             channel.Writer.Complete();
         }

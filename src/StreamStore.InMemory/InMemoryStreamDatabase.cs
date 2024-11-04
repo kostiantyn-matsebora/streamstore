@@ -25,7 +25,7 @@ namespace StreamStore.InMemory
         public Task DeleteAsync(Id streamId, CancellationToken token = default)
         {
             if (store.ContainsKey(streamId))
-                store.TryRemove(streamId, out var commited);
+                store.TryRemove(streamId, out var _);
 
             return Task.CompletedTask;
         }

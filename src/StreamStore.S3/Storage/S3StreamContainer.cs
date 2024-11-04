@@ -10,8 +10,6 @@ namespace StreamStore.S3.Storage
 {
     internal class S3StreamContainer : S3ObjectStorage<S3MetadataObject, S3EventStorage>
     {
-        readonly IS3ClientFactory factory;
-
         public S3EventStorage Events { get; }
 
         public S3MetadataObject MetadataObject { get; }
@@ -27,7 +25,6 @@ namespace StreamStore.S3.Storage
 
             Events = GetContainer("events");
             MetadataObject = GetItem("__metadata");
-            factory = clientFactory.ThrowIfNull(nameof(clientFactory));
         }
 
         public async Task LoadAsync(Revision startFrom, int count, CancellationToken token = default)

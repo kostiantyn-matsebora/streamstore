@@ -21,7 +21,7 @@
 
     public sealed class StreamRecord : StreamRecord<EventRecord>
     {
-        public StreamRecord(Id streamId) : this(streamId, new EventRecord[0]) { }
+        public StreamRecord(Id streamId) : this(streamId, Array.Empty<EventRecord>()) { }
         public StreamRecord(Id streamId, IEnumerable<EventRecord> records) : base(streamId, records) { }
 
         public bool IsEmpty => !Events.Any();

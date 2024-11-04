@@ -134,12 +134,12 @@ namespace StreamStore
             {
                 databaseRegistrator(services);
 
-                if (services.Count(s => s.ServiceType == typeof(IStreamDatabase)) == 0)
+                if (!services.Any(s => s.ServiceType == typeof(IStreamDatabase)))
                 {
                     throw new InvalidOperationException("Database backend (IStreamDatabase) is not registered");
                 }
 
-                if (services.Count(s => s.ServiceType == typeof(IStreamReader)) == 0)
+                if (!services.Any(s => s.ServiceType == typeof(IStreamReader)))
                 {
                     throw new InvalidOperationException("Database backend (IStreamReader) is not registered");
                 }
