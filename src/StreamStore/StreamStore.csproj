@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <SignAssembly>False</SignAssembly>
     <Title>StreamStore</Title>
-    <Description>Lightweight library provides logical layer for storing and querying events as a stream.</Description>
+    <Description>Asynchronous event sourcing.</Description>
     <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
     <Authors>kostiantyn-matsebora</Authors>

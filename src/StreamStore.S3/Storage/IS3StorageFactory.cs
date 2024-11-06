@@ -2,6 +2,6 @@
 {
     internal interface IS3StorageFactory
     {
-        public IS3Storage CreateStorage();
+        public IS3TransactionalStorage CreateStorage();
     }
 }

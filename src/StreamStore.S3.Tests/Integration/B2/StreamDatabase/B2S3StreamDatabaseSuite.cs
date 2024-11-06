@@ -21,7 +21,7 @@ namespace StreamStore.S3.Tests.Integration.B2.StreamDatabase
 
         protected override void ConfigureDatabase(IStreamStoreConfigurator configurator)
         {
-            configurator.UseB2StreamDatabase(GetConfiguration()!);
+            configurator.UseB2Database(GetConfiguration()!);
         }
 
         protected override bool CheckPrerequisities()

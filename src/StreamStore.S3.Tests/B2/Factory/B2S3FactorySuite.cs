@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System.Net;
+using AutoFixture;
 using Moq;
 using StreamStore.S3.B2;
 using StreamStore.Testing;
@@ -24,7 +25,7 @@ namespace StreamStore.S3.Tests.B2.Factory
             Settings = new B2StreamDatabaseSettingsBuilder()
                 .WithBucketId(fixture.Create<string>())
                 .WithBucketName(fixture.Create<string>())
-                .WithCredentials(fixture.Create<string>(), fixture.Create<string>())
+                .WithCredential(fixture.Create<string>(), fixture.Create<string>())
                 .Build();
         }
     }

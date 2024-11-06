@@ -25,7 +25,7 @@ namespace StreamStore.S3
         protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
             var storage = storageFactory.CreateStorage();
-            var container = await storage.Persistent.LoadAsync(streamId, startFrom, count, token);
+            var container = await storage.LoadPersistentContainerAsync(streamId, startFrom, count, token);
             if (container.State == S3ObjectState.DoesNotExist) throw new StreamNotFoundException(streamId);
             return container.Events!.Select(e => e.Event!).ToArray();
         }
@@ -34,7 +34,7 @@ namespace StreamStore.S3
         {
             var storage = storageFactory.CreateStorage();
 
-            await storage.Persistent.DeleteContainerAsync(streamId, token);
+            await storage.DeletePersistentContainerAsync(streamId, token);
         }
 
         protected override async Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
@@ -48,7 +48,7 @@ namespace StreamStore.S3
         {
             var storage = storageFactory.CreateStorage();
 
-            var metadata = await storage.Persistent.LoadMetadataAsync(streamId);
+            var metadata = await storage.LoadPersistentMetadataAsync(streamId);
 
             if (metadata!.State == S3ObjectState.DoesNotExist) return null;
 

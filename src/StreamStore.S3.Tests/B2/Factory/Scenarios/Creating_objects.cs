@@ -15,7 +15,7 @@ namespace StreamStore.S3.Tests.B2.Factory {
 
             var client = new Mock<IStorageClient>();
             Suite.FactoryMock.Setup(m => m.Create()).Returns(client.Object);
-            client.Setup(client => client.Connect(Suite.Settings.Credentials!.AccessKeyId, Suite.Settings.Credentials!.AccessKey));
+            client.Setup(client => client.Connect(Suite.Settings.Credential!.UserName, Suite.Settings.Credential!.Password));
             // Act
             var factory = new B2S3Factory(Suite.Settings, Suite.FactoryMock.Object);
             var result = factory.CreateClient();
@@ -31,7 +31,7 @@ namespace StreamStore.S3.Tests.B2.Factory {
             // Arrange
             var client = new Mock<IStorageClient>();
             Suite.FactoryMock.Setup(m => m.Create()).Returns(client.Object);
-            client.Setup(client => client.Connect(Suite.Settings.Credentials!.AccessKeyId, Suite.Settings.Credentials!.AccessKey));
+            client.Setup(client => client.Connect(Suite.Settings.Credential!.UserName, Suite.Settings.Credential!.Password));
 
             // Act
             var factory = new B2S3Factory(Suite.Settings, Suite.FactoryMock.Object);

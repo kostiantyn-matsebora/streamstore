@@ -1,11 +1,13 @@
-﻿namespace StreamStore.S3.B2
+﻿using System.Security;
+
+namespace StreamStore.S3.B2
 {
     public class B2S3Credentials
     {
-        public string AccessKeyId { get; }
-        public string AccessKey { get; }
+        public SecureString AccessKeyId { get; }
+        public SecureString AccessKey { get; }
 
-        internal B2S3Credentials(string accessKeyId, string accessKey)
+        internal B2S3Credentials(SecureString accessKeyId, SecureString accessKey)
         {
             AccessKeyId = accessKeyId;
             AccessKey = accessKey;

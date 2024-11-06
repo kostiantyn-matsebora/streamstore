@@ -1,4 +1,5 @@
-﻿using Bytewizer.Backblaze.Client;
+﻿using System.Net;
+using Bytewizer.Backblaze.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore.S3.B2;
@@ -34,7 +35,7 @@ namespace StreamStore.S3.Tests.B2.Client
             Settings = configurator
                 .WithBucketId(Generated.String)
                 .WithBucketName(Generated.String)
-                .WithCredentials(Generated.String, Generated.String)
+                .WithCredential(Generated.String, Generated.String)
                 .Build();
         }
     }

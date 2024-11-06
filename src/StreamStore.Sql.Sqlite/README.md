@@ -60,7 +60,6 @@ You can define configuration of the library in `appsettings.json` file:
       "SchemaName": "main", // Optional
       "TableName": "Events", // Optional
       "ProvisionSchema": true, // Optional
-      "ProfilingEnabled": false // Optional
     }
   }
 }
@@ -71,18 +70,18 @@ You can define configuration of the library in `appsettings.json` file:
 ```csharp
    // Adding StreamStore
    services.ConfigureStreamStore();
-
-   // Adding  Sqlite stream database and getting configuration from appsettings.json
-   services.UseSqliteStreamDatabase(Configuration);
+ // Adding SQLite database with configuration from appsettings.json, requires ConnectionStrings:StreamStore
+   services.ConfigureStreamStore(x => x.UseSqliteDatabase(Configuration));
 
   // Or configuring it manually
-  services
-    .ConfigureSqliteStreamDatabase()
-      .WithSchema("main")
-      .WithTableName("Events")
-      .ProvisioningSchema(true)
-      .EnableProfiling()
-    .Configure();
+   services.ConfigureStreamStore(x =>
+      x.UseSqliteDatabase(c => {
+           x.WithConnectionString("your-connection-string") // Connection string
+           x.WithSchema("your-schema-name");                // Schema name, optional, default is "main"
+           x.WithTableName("your-table-name");              // Table name, optional, default is "Events"
+           x.ProvisionSchema(false);                        // Provision schema, optional, default is true
+      })
+   );
 ```
 
 ### Use in application code

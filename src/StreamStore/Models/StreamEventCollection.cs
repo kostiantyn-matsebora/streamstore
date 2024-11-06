@@ -9,6 +9,10 @@ namespace StreamStore.Models
     public class StreamEventCollection : IEnumerable<StreamEvent>
     {
         readonly List<StreamEvent> events;
+
+        public StreamEventCollection() : this(Enumerable.Empty<StreamEvent>())
+        {
+        }
         public StreamEventCollection(IEnumerable<StreamEvent> events)
         {
             this.events = events != null ? events.OrderBy(e => e.Revision).ToList() : throw new ArgumentNullException(nameof(events));
@@ -19,6 +23,12 @@ namespace StreamStore.Models
         public IEnumerator<StreamEvent> GetEnumerator()
         {
             return events.GetEnumerator();
+        }
+
+        public void Add(StreamEvent @event)
+        {
+            @event.ThrowIfNull(nameof(@event));
+            events.Add(@event);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

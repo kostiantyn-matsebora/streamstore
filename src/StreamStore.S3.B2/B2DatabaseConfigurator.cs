@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.S3.Client;
@@ -35,11 +36,9 @@ namespace StreamStore.S3.B2
             if (section == null)
                 throw new InvalidOperationException("streamStore:b2 configuration section not found.");
 
-            WithCredentials(
-            section!.GetSection("applicationKeyId").Value!,
-            section.GetSection("applicationKey").Value!)
-                 .WithBucketId(section.GetSection("bucketId").Value!)
-                 .WithBucketName(section.GetSection("bucketName").Value!);
+             WithCredential(section!.GetSection("applicationKeyId").Value!, section!.GetSection("applicationKeyId").Value!)
+            .WithBucketId(section.GetSection("bucketId").Value!)
+            .WithBucketName(section.GetSection("bucketName").Value!);
 
             var settings = Build();
             services.AddSingleton(settings);
