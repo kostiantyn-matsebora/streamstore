@@ -1,8 +1,8 @@
-﻿using StreamStore.S3.Tests.Integration.AWS.StreamDatabase;
+﻿using StreamStore.S3.IntegrationTests;
 using StreamStore.Testing.StreamDatabase.Scenarios;
 using Xunit.Abstractions;
 
-namespace StreamStore.S3.Tests.Integration.AWS.Database
+namespace StreamStore.S3.IntegrationTests.AWS.StreamDatabase
 {
     [Collection("Reading AWS")]
     public class Finding_stream_metadata : Find_stream_data<AWSS3StreamDatabaseSuite>

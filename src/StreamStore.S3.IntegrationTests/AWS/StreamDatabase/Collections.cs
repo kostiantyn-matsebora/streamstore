@@ -1,4 +1,6 @@
-﻿namespace StreamStore.S3.Tests.Integration.AWS.StreamDatabase
+﻿using StreamStore.S3.IntegrationTests;
+
+namespace StreamStore.S3.IntegrationTests.AWS.StreamDatabase
 {
     [CollectionDefinition("Reading AWS")]
     public class Reading_collection : ICollectionFixture<S3IntegrationFixture>

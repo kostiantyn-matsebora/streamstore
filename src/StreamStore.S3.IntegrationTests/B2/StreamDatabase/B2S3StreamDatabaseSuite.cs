@@ -3,7 +3,7 @@ using StreamStore.S3.B2;
 using StreamStore.Testing;
 using StreamStore.Testing.StreamDatabase;
 
-namespace StreamStore.S3.Tests.Integration.B2.StreamDatabase
+namespace StreamStore.S3.IntegrationTests.B2.StreamDatabase
 {
     public class B2S3StreamDatabaseSuite : DatabaseSuiteBase
     {
@@ -16,7 +16,7 @@ namespace StreamStore.S3.Tests.Integration.B2.StreamDatabase
 
         public B2S3StreamDatabaseSuite(S3IntegrationFixture fixture)
         {
-           this.fixture = fixture;
+            this.fixture = fixture;
         }
 
         protected override void ConfigureDatabase(IStreamStoreConfigurator configurator)

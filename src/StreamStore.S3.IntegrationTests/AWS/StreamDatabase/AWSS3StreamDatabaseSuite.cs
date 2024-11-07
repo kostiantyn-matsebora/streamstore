@@ -2,14 +2,14 @@
 using StreamStore.Testing;
 using StreamStore.Testing.StreamDatabase;
 
-namespace StreamStore.S3.Tests.Integration.AWS.StreamDatabase
+namespace StreamStore.S3.IntegrationTests.AWS.StreamDatabase
 {
     public class AWSS3StreamDatabaseSuite : DatabaseSuiteBase
     {
         readonly S3IntegrationFixture? fixture;
 
         public override MemoryDatabase Container => fixture!.Container;
-        
+
         public AWSS3StreamDatabaseSuite()
         {
         }

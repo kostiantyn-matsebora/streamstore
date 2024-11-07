@@ -1,7 +1,8 @@
-﻿using StreamStore.Testing.StreamDatabase.Scenarios;
+﻿using StreamStore.S3.IntegrationTests;
+using StreamStore.Testing.StreamDatabase.Scenarios;
 using Xunit.Abstractions;
 
-namespace StreamStore.S3.Tests.Integration.B2.StreamDatabase
+namespace StreamStore.S3.IntegrationTests.B2.StreamDatabase
 {
     public class Scenarios
     {

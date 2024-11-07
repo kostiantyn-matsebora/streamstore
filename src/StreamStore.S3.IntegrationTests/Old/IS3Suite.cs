@@ -2,7 +2,7 @@
 using StreamStore.Testing;
 
 
-namespace StreamStore.S3.IntegrationTests
+namespace StreamStore.S3.IntegrationTests.Old
 {
     public interface IS3Suite : ITestSuite
     {

@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using StreamStore.Testing;
 
-namespace StreamStore.S3.Tests.Integration
+namespace StreamStore.S3.IntegrationTests
 {
     public class S3IntegrationFixture : IDisposable
     {
@@ -51,7 +51,7 @@ namespace StreamStore.S3.Tests.Integration
                 disposedValue = true;
             }
         }
-        
+
         public void Dispose()
         {
             Dispose(disposing: true);

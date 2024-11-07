@@ -1,4 +1,6 @@
-﻿namespace StreamStore.S3.Tests.Integration.B2.StreamDatabase
+﻿using StreamStore.S3.IntegrationTests;
+
+namespace StreamStore.S3.IntegrationTests.B2.StreamDatabase
 {
     [CollectionDefinition("Reading B2")]
     public class Reading_collection : ICollectionFixture<S3IntegrationFixture>

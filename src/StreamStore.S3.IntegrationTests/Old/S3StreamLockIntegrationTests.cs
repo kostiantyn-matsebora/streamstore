@@ -7,15 +7,15 @@ using StreamStore.Testing;
 using StreamStore.Testing.Framework;
 
 
-namespace StreamStore.S3.IntegrationTests
+namespace StreamStore.S3.IntegrationTests.Old
 {
-    public abstract class S3StreamLockIntegrationTests<TSuite>: Scenario<TSuite> where TSuite : IS3Suite, new()
+    public abstract class S3StreamLockIntegrationTests<TSuite> : Scenario<TSuite> where TSuite : IS3Suite, new()
     {
         private readonly IS3LockFactory? lockFactory;
 
-        protected S3StreamLockIntegrationTests(TSuite suite): base(suite)
+        protected S3StreamLockIntegrationTests(TSuite suite) : base(suite)
         {
-            this.lockFactory = suite.ArePrerequisitiesMet? suite.CreateLockFactory() : null!;
+            lockFactory = suite.ArePrerequisitiesMet ? suite.CreateLockFactory() : null!;
         }
 
         [InlineData(1000)]

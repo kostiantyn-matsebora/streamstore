@@ -3,14 +3,14 @@ using StreamStore.S3.Client;
 using StreamStore.Testing;
 using StreamStore.Testing.Framework;
 
-namespace StreamStore.S3.IntegrationTests
+namespace StreamStore.S3.IntegrationTests.Old
 {
 
-    public abstract class S3ClientIntegrationTestsBase<TSuite>: Scenario<TSuite> where TSuite : IS3Suite, new()
+    public abstract class S3ClientIntegrationTestsBase<TSuite> : Scenario<TSuite> where TSuite : IS3Suite, new()
     {
         readonly IS3Client? client;
 
-        protected S3ClientIntegrationTestsBase(TSuite suite): base(suite)
+        protected S3ClientIntegrationTestsBase(TSuite suite) : base(suite)
         {
             if (suite.ArePrerequisitiesMet)
                 client = suite.CreateClientFactory()!.CreateClient();

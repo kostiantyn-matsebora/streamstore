@@ -30,8 +30,10 @@ namespace StreamStore.ExampleBase
                 await foreach (var @event in await store.BeginReadAsync(StreamId))
                 {
                     if (stoppingToken.IsCancellationRequested) break;
+
                     logger.LogInformation("Read event with id: {id}, revision: {revision}", @event.EventId, @event.Revision);
                     logger.LogInformation("Waiting 3 seconds before next iteration.");
+
                     await Task.Delay(3000, stoppingToken);
                 }
             }

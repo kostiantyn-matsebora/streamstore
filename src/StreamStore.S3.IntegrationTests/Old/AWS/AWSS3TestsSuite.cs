@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StreamStore.S3.AWS;
 using StreamStore.S3.Client;
+using StreamStore.S3.IntegrationTests.Old;
 using StreamStore.Testing.Framework;
 
-namespace StreamStore.S3.IntegrationTests.AWS
+namespace StreamStore.S3.IntegrationTests.Old.AWS
 {
     public class AWSS3TestsSuite : TestSuiteBase, IS3Suite
     {
@@ -12,7 +13,7 @@ namespace StreamStore.S3.IntegrationTests.AWS
 
         public IS3LockFactory? LockFactory => Services.GetRequiredService<IS3LockFactory>();
         public IS3ClientFactory? ClientFactory => Services.GetRequiredService<IS3ClientFactory>();
-        
+
         public async Task WithDatabase(Func<IStreamDatabase, Task> action)
         {
             var database = Services.GetRequiredService<IStreamDatabase>();

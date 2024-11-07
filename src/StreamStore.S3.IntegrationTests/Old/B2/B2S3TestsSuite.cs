@@ -5,9 +5,9 @@ using StreamStore.S3.Client;
 using StreamStore.Testing.Framework;
 
 
-namespace StreamStore.S3.IntegrationTests.B2
+namespace StreamStore.S3.IntegrationTests.Old.B2
 {
-    public  class B2S3TestsSuite : TestSuiteBase, IS3Suite
+    public class B2S3TestsSuite : TestSuiteBase, IS3Suite
     {
         public B2S3TestsSuite()
         {
@@ -56,6 +56,6 @@ namespace StreamStore.S3.IntegrationTests.B2
             return config;
         }
 
-     
+
     }
 }
