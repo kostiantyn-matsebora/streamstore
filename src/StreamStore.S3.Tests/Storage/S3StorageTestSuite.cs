@@ -26,6 +26,11 @@ namespace StreamStore.S3.Tests.Storage
             return new S3ObjectContainer(Path, MockS3ClientFactory.Object);
         }
 
+        internal S3BinaryObject CreateS3Object()
+        {
+            return new S3BinaryObject(Path, MockS3ClientFactory.Object);
+        }
+
         public S3StorageTestSuite()
         {
             MockRepository = new MockRepository(MockBehavior.Strict);

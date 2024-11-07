@@ -20,7 +20,7 @@ namespace StreamStore.S3.Tests.Storage.ObjectContainer
             var nextResponse = fixture.Create<ListS3ObjectsResponse>();
             nextResponse.Objects = Enumerable.Empty<ObjectDescriptor>().ToArray();
 
-            Suite.MockS3Client.SetupSequence(x => x.ListObjectsAsync(Suite.Path.Normalize(), null, token)).ReturnsAsync(response);
+            Suite.MockS3Client.Setup(x => x.ListObjectsAsync(Suite.Path.Normalize(), null, token)).ReturnsAsync(response);
             Suite.MockS3Client.Setup(x => x.ListObjectsAsync(Suite.Path.Normalize(), lastObject.Key, token)).ReturnsAsync(nextResponse);
             Suite.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
 
