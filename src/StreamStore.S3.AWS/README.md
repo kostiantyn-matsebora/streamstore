@@ -2,7 +2,7 @@
 
 [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)
 
-[Amazon S3] backend database for [StreamStore] event stream library.
+[Amazon S3] backend database for [StreamStore] asynchronous event sourcing library.
 
 ## Installation
 

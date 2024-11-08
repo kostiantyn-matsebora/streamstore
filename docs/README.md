@@ -40,7 +40,7 @@ The general idea is to highlight the common characteristics and features of even
 - [ ] External transaction support (?).
 - [ ] Transactional outbox pattern implementation (?).
 - [ ] Multitenancy support.
-- [ ] Automatic provisioning of storage schema.
+- [x] Automatic provisioning of storage schema.
 
 Also add implementations of particular storage backends, such as:
 
@@ -85,7 +85,7 @@ or from NuGet Package Manager Console:
 ```csharp
        services.ConfigureStreamStore(x =>  // Register StreamStore
           x.UseSqliteDatabase(x => ...);   // Register database implementation,
-                                           // more details in particular implementation documentation
+                                           // more details you can fing in particular implementation documentation
         ); 
 ```
 
@@ -115,14 +115,14 @@ or from NuGet Package Manager Console:
     store
       .OpenStreamAsync("stream-1")                          // Open stream like new since revision is not provided
         .AddAsync("event-3", DateTime.Now, yourEventObject) // You can add events one by one
-        .AddRangeAsync(events)                              // Or just add a range of events
-      .SaveChangesAsync(streamId);
+        .AddRangeAsync(events)                              // Or range of events by passing IEnumerable<Event>
+      .SaveChangesAsync(token);
 
   } catch (StreamConcurrencyException ex) {
 
     // Read from stream and implement your logic for handling optimistic concurrency exception
     await foreach(var @event in await store.BeginReadAsync("stream-1", token)) {
-
+        ...
     }
     
     // Push result to the end of stream
@@ -152,7 +152,7 @@ More examples of reading and writing events you can find in test scenarios[Strea
 
 - You can read from any stream starting from the provided revision.
 
-- `ReadToEnd` method  returns collection of events from the stream starting from the provided revision:
+- _`ReadToEnd` method  returns collection of events from the stream starting from the provided revision_:
   - Contains only **unique events ordered by revision**.
   - Contains only **events that were committed**.
   
@@ -166,6 +166,9 @@ More examples of reading and writing events you can find in test scenarios[Strea
 - _Despite the fact that reading is declared as asynchronous and iterative operation,, for the sake of performance it is implemented as paginated operation._
 
   You can define the page size by using `WithReadingPageSize` method of store configuration, by default it is 10 events.
+
+- _Reading and writing operations are not thread-safe_.  
+ Thus, it is not recommended to use the same instances of `IStreamReader` and `IAsyncEnumerable<StreamEvent>` in multiple threads simultaneously.
 
 ## Customization
 

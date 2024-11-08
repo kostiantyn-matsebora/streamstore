@@ -2,7 +2,7 @@
 
 [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)
 
-[Backblaze B2] backend database for [StreamStore] event stream library.
+[Backblaze B2] backend database for [StreamStore] asynchronous event sourcing library.
 
 ## Installation
 

@@ -2,7 +2,7 @@
 
 [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
 
-[SQLite] backend database for [StreamStore] event stream library.
+[SQLite] backend database for [StreamStore] asynchronous event sourcing library.
 
 ## Installation
 

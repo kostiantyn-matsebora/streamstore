@@ -28,10 +28,9 @@ or from Nuget Package Manager Console:
   
 ```csharp
   services.ConfigureStreamStore(x =>  x.UseInMemoryDatabase());// Register StreamStore
-
 ```
 
-- How to use store in your application you can find in [StreamStore](https://github.com/kostiantyn-matsebora/streamstore/tree/master#usage) documentation
+- How to use store in your application you can find in [StreamStore](https://github.com/kostiantyn-matsebora/streamstore/tree/master#usage) documentation.
 
 ## License
 
