@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <PackageId>StreamStore.Serialization.Protobuf</PackageId>
     <Title>StreamStore.Serialization.Protobuf</Title>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>kostiantyn-matsebora</Authors>
     <Description>Protobuf event serializer for StreamStore solution.</Description>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
