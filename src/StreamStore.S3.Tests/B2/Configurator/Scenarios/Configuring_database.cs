@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.ComponentModel.DataAnnotations;
+using FluentAssertions;
 using FluentAssertions.Common;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.S3.B2;
@@ -66,6 +67,34 @@ namespace StreamStore.S3.Tests.B2.Configurator
             // Assert
             result.Should().NotBeNull();
             result.Should().BeOfType<B2DatabaseConfigurator>();
+            Suite.MockRepository.VerifyAll();
+        }
+
+        [Fact]
+        public void When_using_store_configurator_for_reading_from_app_config()
+        {
+            // Arrange
+            var section = Suite.SetupConfiguration();
+            var collection = new ServiceCollection();
+
+            // Act
+            collection.ConfigureStreamStore(x => x.UseB2Database(section.Object));
+
+            // Assert
+            Suite.MockRepository.VerifyAll();
+            section.VerifyAll();
+        }
+
+        [Fact]
+        public void When_using_store_configurator_for_configuring_manually()
+        {
+            // Arrange
+            var collection = new ServiceCollection();
+
+            // Act
+            collection.ConfigureStreamStore(x => x.UseB2Database(c => c.WithCredential(Generated.String, Generated.String).WithBucketId(Generated.String)));
+
+            // Assert
             Suite.MockRepository.VerifyAll();
         }
     }

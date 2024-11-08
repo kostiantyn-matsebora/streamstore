@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.S3.Client;
@@ -20,6 +19,7 @@ namespace StreamStore.S3.B2
             services.AddSingleton<IS3ClientFactory, B2S3Factory>();
             services.AddSingleton<IStorageClientFactory, BackblazeClientFactory>();
             services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
+            services.AddSingleton<IStreamReader, S3StreamDatabase>();
             services.AddSingleton<IS3StorageFactory, S3StorageFactory>();
         }
 
