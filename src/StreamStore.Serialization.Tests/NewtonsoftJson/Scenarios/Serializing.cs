@@ -1,7 +1,7 @@
 ﻿using StreamStore.Testing.Serializer.Scenarios;
 using Xunit.Abstractions;
 
-namespace StreamStore.Serialization.Tests.NewtonsoftJson.Scenarios
+namespace StreamStore.Serialization.Tests.NewtonsoftJson
 {
     public class Serializing : Serializing<NewtonsoftTestSuite>
     {
