@@ -15,9 +15,9 @@ namespace StreamStore.SQL
             };
         }
 
-        public static EventRecordCollection ToCollection(this EventEntity[] entity)
+        public static EventRecord[] ToRecords(this EventEntity[] entity)
         {
-            return new EventRecordCollection(entity.Select(ToRecord).ToArray());
+            return entity.Select(ToRecord).ToArray();
         }
     }
 }

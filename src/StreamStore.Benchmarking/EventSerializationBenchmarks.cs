@@ -17,7 +17,7 @@ namespace StreamStore.Benchmarking
 
         public EventSerializationBenchmarks()
         {
-            registry = TypeRegistry.CreateAndInitialize();
+            registry = new TypeRegistry();
             var fixture = new Fixture();
             @event = fixture.Create<RootEvent>();
         }

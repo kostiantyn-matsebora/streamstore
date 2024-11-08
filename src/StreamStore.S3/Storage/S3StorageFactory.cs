@@ -12,9 +12,9 @@ namespace StreamStore.S3.Storage
             this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
 
-        public IS3Storage CreateStorage()
+        public IS3TransactionalStorage CreateStorage()
         {
-           return new S3Storage(clientFactory);
+           return new S3TransactionalStorage(clientFactory);
         }
     }
 }

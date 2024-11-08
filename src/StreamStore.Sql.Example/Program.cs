@@ -1,12 +1,10 @@
 ﻿using System.Data.SQLite;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using StreamStore.SQL.Sqlite;
+using StreamStore.ExampleBase;
+using StreamStore.Sql.Sqlite;
 
-namespace StreamStore.SQL.Example
+namespace StreamStore.Sql.Example
 {
     [ExcludeFromCodeCoverage]
     internal static class Program
@@ -16,24 +14,14 @@ namespace StreamStore.SQL.Example
             SQLiteConnection.CreateFile("StreamStore.sqlite");
 
             var builder = Host.CreateApplicationBuilder(args);
-            builder.Logging.AddSimpleConsole(configure =>
-            {
-                configure.SingleLine = true;
-                configure.ColorBehavior = LoggerColorBehavior.Enabled;
-                configure.IncludeScopes = true;
-            });
-
+          
             builder
                 .Services
-                .ConfigureStreamStore()
-                .ConfigureSqliteStreamDatabase()
-                    .WithConnectionString("Data Source=StreamStore.sqlite;Version=3;")
-                    .EnableProfiling()
-                .Configure();
+                .ConfigureStreamStore(x =>
+                    x.UseSqliteDatabase(builder.Configuration));
 
-            builder.Services.AddHostedService<Worker1>();
-            builder.Services.AddHostedService<Worker2>();
-            builder.Services.AddHostedService<Worker3>();
+            builder.ConfigureExampleApplication();
+
             var host = builder.Build();
             host.Run();
         }

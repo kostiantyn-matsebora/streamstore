@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
-using StreamStore.Serialization;
+using StreamStore.Stream;
+
 
 
 namespace StreamStore
@@ -11,48 +13,61 @@ namespace StreamStore
     {
         readonly IStreamDatabase database;
         readonly EventConverter converter;
-
-        public StreamStore(IStreamDatabase database, IEventSerializer serializer)
+        readonly int pageSize = 10;
+        readonly StreamEventEnumeratorFactory enumeratorFactory;
+        public StreamStore(StreamStoreConfiguration configuration, IStreamDatabase database, IEventSerializer serializer)
         {
             if (database == null) throw new ArgumentNullException(nameof(database));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
             this.database = database;
             converter = new EventConverter(serializer);
-        }
-
-        public Task<IStream> OpenStreamAsync(Id streamId, CancellationToken cancellationToken = default)
-        {            
-            return OpenStreamAsync(streamId, Revision.Zero, cancellationToken);
-        }
-
-        public async Task<IStream> OpenStreamAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
-        {
-            var stream = new Stream(database, converter);
-            await stream.OpenAsync(streamId, expectedRevision, cancellationToken);
-            return stream;
+            enumeratorFactory = new StreamEventEnumeratorFactory(configuration, database, converter);
         }
 
         public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken = default)
         {
-            if (streamId == Id.None)
-                throw new ArgumentNullException(nameof(streamId), "streamId is required.");
+            streamId.ThrowIfHasNoValue(nameof(streamId));
 
             await database.DeleteAsync(streamId, cancellationToken);
         }
 
-        public async Task<StreamEntity> GetAsync(Id streamId, CancellationToken cancellationToken = default)
+        public  async Task<IAsyncEnumerable<StreamEvent>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
         {
-            if (streamId == Id.None)
-                throw new ArgumentNullException(nameof(streamId), "streamId is required.");
+            streamId.ThrowIfHasNoValue(nameof(streamId));
 
-            var streamRecord =
-                await database.FindAsync(streamId, cancellationToken);
+            if (startFrom < Revision.One)
+                throw new ArgumentOutOfRangeException(nameof(startFrom), "startFrom must be greater than or equal to 1.");
 
-            if (streamRecord == null)
-                throw new StreamNotFoundException(streamId);
+            var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
+            if (metadata == null) throw new StreamNotFoundException(streamId);
 
-            return converter.ConvertToEntity(streamId, streamRecord);
+            if (metadata.MaxRevision < startFrom)
+                throw new InvalidStartFromException(streamId, startFrom, metadata.MaxRevision);
+
+            var parameters = new StreamReadingParameters(streamId, startFrom, pageSize);
+
+            return new StreamEventEnumerable(parameters, enumeratorFactory);
+        }
+
+        public async Task<IStreamWriter> BeginWriteAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
+        {
+            streamId.ThrowIfHasNoValue(nameof(streamId));
+
+            var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
+            
+            if (metadata == null) metadata = new EventMetadataRecordCollection();
+
+
+            if (expectedRevision != metadata.MaxRevision)
+                throw new OptimisticConcurrencyException(expectedRevision, metadata.MaxRevision, streamId);
+
+            var uow = await database.BeginAppendAsync(streamId, expectedRevision);
+
+            if (uow == null)
+                throw new InvalidOperationException("Failed to open stream, either stream does not exist or revision is incorrect.");
+
+            return new StreamWriter(uow, converter);
         }
     }
 }

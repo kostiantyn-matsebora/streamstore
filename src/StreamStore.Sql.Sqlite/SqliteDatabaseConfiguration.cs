@@ -15,8 +15,6 @@ namespace StreamStore.SQL.Sqlite
 
         public bool ProvisionSchema { get; set; } = true;
 
-        public bool EnableProfiling { get; set; } = false;
-
         internal SqliteDatabaseConfiguration()
         {
         }
@@ -28,7 +26,6 @@ namespace StreamStore.SQL.Sqlite
         string name = "Events";
         string schema = "main";
         bool provisionSchema = true;
-        bool enableProfiling = false;
 
         public SqliteDatabaseConfigurationBuilder WithConnectionString(string connectionString)
         {
@@ -54,12 +51,6 @@ namespace StreamStore.SQL.Sqlite
             return this;
         }
 
-        public SqliteDatabaseConfigurationBuilder EnableProfiling()
-        {
-            this.enableProfiling = true;
-            return this;
-        }
-
         public SqliteDatabaseConfiguration Build()
         {
             if (connectionString == null)
@@ -71,8 +62,7 @@ namespace StreamStore.SQL.Sqlite
                 ConnectionString = connectionString,
                 SchemaName = schema,
                 TableName = name,
-                ProvisionSchema = provisionSchema,
-                EnableProfiling = enableProfiling
+                ProvisionSchema = provisionSchema
             };
         }
 

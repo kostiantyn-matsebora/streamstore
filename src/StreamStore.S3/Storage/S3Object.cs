@@ -13,6 +13,7 @@ namespace StreamStore.S3.Storage
         readonly IS3ClientFactory clientFactory;
 
         public S3ObjectState State { get; private set; } = S3ObjectState.Unknown;
+        public S3ContainerPath Path => path;
 
         protected S3Object(S3ContainerPath path, IS3ClientFactory clientFactory)
         {
@@ -24,20 +25,21 @@ namespace StreamStore.S3.Storage
         {
             await using var client = clientFactory.CreateClient();
 
-            string? fileId = null;
+            string? versionId = null;
             do
             {
                 var descriptor = await client.FindObjectDescriptorAsync(path, token);
+
                 if (descriptor != null)
                 {
-                    fileId = descriptor!.FileId!;
-                    await client.DeleteObjectByFileIdAsync(fileId!, descriptor.FileName!, token);
+                    versionId = descriptor!.VersionId!;
+                    await client.DeleteObjectByVersionIdAsync(versionId!, descriptor.Key!, token);
                     State = S3ObjectState.DoesNotExist;
                 } else
                 {
-                    fileId = null;
+                    versionId = null;
                 }
-            } while (fileId != null);
+            } while (versionId != null);
 
             ResetState();
         }
@@ -58,7 +60,6 @@ namespace StreamStore.S3.Storage
                 State = S3ObjectState.DoesNotExist;
                 return null!;
             }
-           
         }
 
         protected  async Task UploadDataAsync(byte[] data, CancellationToken token)
@@ -74,10 +75,22 @@ namespace StreamStore.S3.Storage
             State = S3ObjectState.Loaded;
         }
 
+        protected async Task CopyFromAsync(S3Object source, CancellationToken token)
+        {
+            await using var client = clientFactory.CreateClient();
+
+            var descriptor = await client.FindObjectDescriptorAsync(source.Path, token);
+            if (descriptor == null)
+                throw new InvalidOperationException("Source object does not exist");
+            
+            await client.CopyByVersionIdAsync(descriptor!.VersionId!, descriptor.Key!, path, token);
+        }
+
         public virtual void ResetState()
         {
             State = S3ObjectState.Unknown;
         }
+
 
         public abstract Task UploadAsync(CancellationToken token);
 

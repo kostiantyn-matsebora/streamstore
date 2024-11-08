@@ -1,7 +1,4 @@
 ﻿using System;
-using Dapper.Extensions;
-using Dapper.Extensions.MiniProfiler;
-using Dapper.Extensions.SQLite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,8 +21,6 @@ namespace StreamStore.SQL.Sqlite
             return services;
         }
 
-     
-
         public override IServiceCollection Configure(IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("StreamStore");
@@ -41,10 +36,6 @@ namespace StreamStore.SQL.Sqlite
                 WithTable(section.GetValue("TableName", "Events")!);
                 WithSchema(section.GetValue("SchemaName", "main")!);
                 ProvisionSchema(section.GetValue("ProvisionSchema", true));
-                if (section.GetValue("ProfilingEnabled", false))
-                {
-                    EnableProfiling();
-                }
             }
 
             Configure(Build());
@@ -54,11 +45,11 @@ namespace StreamStore.SQL.Sqlite
 
         void Configure(SqliteDatabaseConfiguration configuration)
         {
-            services.AddDapperForSQLite();
-            services.AddDapperConnectionStringProvider<SqliteDapperConnectionStringProvider>();
-
+            services.AddSingleton<IDbConnectionFactory, SqliteDapperConnectionFactory>();
+            
             services.AddSingleton(configuration);
             services.AddSingleton<IStreamDatabase, SqliteStreamDatabase>();
+            services.AddSingleton<IStreamReader, SqliteStreamDatabase>();
 
             if (configuration.ProvisionSchema)
             {
@@ -66,10 +57,6 @@ namespace StreamStore.SQL.Sqlite
                 services.AddHostedService<SqliteSchemaProvisioningService>();
             }
 
-            if (configuration.EnableProfiling)
-            {
-                services.AddMiniProfilerForDapper();
-            }
         }
     }
 
@@ -77,6 +64,5 @@ namespace StreamStore.SQL.Sqlite
     {
         IServiceCollection Configure();
         IServiceCollection Configure(IConfiguration configuration);
-
     }
 }

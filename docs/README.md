@@ -1,16 +1,18 @@
-# StreamStore 
+# StreamStore
 
 [![Build](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/streamstore.yml/badge.svg)](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/streamstore.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kostiantyn-matsebora_streamstore&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kostiantyn-matsebora_streamstore)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kostiantyn-matsebora_streamstore&metric=coverage)](https://sonarcloud.io/summary/new_code?id=kostiantyn-matsebora_streamstore)
 [![NuGet version (StreamStore)](https://img.shields.io/nuget/v/StreamStore.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore/)
 
-A lightweight library provides a logical layer for storing and querying events as a stream.
+Asynchronous event sourcing.
+
+Library provides a logical layer for storing and querying events as a stream.
 
 Heavily inspired by Greg Young's Event Store and [`Streamstone`](https://github.com/yevhen/Streamstone) solutions.
 
 ## Overview
 
-Designed to be easily extended with custom database backends.  
+Designed to be easily extended with custom database backends.
 Despite the fact that component implements a logical layer for storing and querying events as a stream,
  `it does not provide functionality of DDD aggregate`, such as state mutation, conflict resolution etc., but serves more as `persistence layer`  for it.
 
@@ -27,6 +29,7 @@ Despite the fact that component implements a logical layer for storing and query
 
 The general idea is to highlight the common characteristics and features of event sourcing storage:
 
+- [x] Asynchronous read and write operations.
 - [x] Event ordering.
 - [x] Serialization/deserialization of events.
 - [x] Optimistic concurrency control.
@@ -37,7 +40,7 @@ The general idea is to highlight the common characteristics and features of even
 - [ ] External transaction support (?).
 - [ ] Transactional outbox pattern implementation (?).
 - [ ] Multitenancy support.
-- [ ] Automatic provisioning of storage schema.
+- [x] Automatic provisioning of storage schema.
 
 Also add implementations of particular storage backends, such as:
 
@@ -71,8 +74,8 @@ or from NuGet Package Manager Console:
    # Install StreamStore package
   Install-Package StreamStore
 
-   #Install package of particular database implementation, for instance InMemory
-  Install-Package StreamStore.InMemory
+   # Install package of particular database implementation, for instance SQLite database backend
+  Install-Package StreamStore.Sql.Sqlite
 ```
 
 ## Usage
@@ -80,19 +83,14 @@ or from NuGet Package Manager Console:
 - Register store in DI container
   
 ```csharp
-       services.ConfigureStreamStore();
-```
-
-- Add database implementation, see instructions for particular database in [Databases](#databases) section.
-  
-  For instance, to use in-memory database, you can add the following code:
-
-```csharp
-      services.UseInMemoryStreamDatabase();
+       services.ConfigureStreamStore(x =>  // Register StreamStore
+          x.UseSqliteDatabase(x => ...);   // Register database implementation,
+                                           // more details you can fing in particular implementation documentation
+        ); 
 ```
 
 - Use store in your application
-  
+
 ```csharp
 
    // Inject IStreamStore in your service
@@ -106,45 +104,40 @@ or from NuGet Package Manager Console:
         }
     }
  
-  //Append events to stream or create a new stream if it does not exist
+  // Append events to stream or create a new stream if it does not exist
   // EventObject property is where you store your event
-  var events = new Event[] 
-      {
+  var events = new Event[]  {
         new Event { Id = "event-1", Timestamp = DateTime.Now, EventObject = eventObject } 
         ...
       };
 
   try {
     store
-    .OpenStreamAsync("stream-1") // Open stream like new since version is not provided.     
-      .AddAsync(new Event { Id = "event-1", Timestamp = DateTime.Now, EventObject = events[0] }) 
-      .AddAsync(new Event { Id = "event-2", Timestamp = DateTime.Now, EventObject = events[1] })
-      .AddAsync("event-3", DateTime.Now, event[2])
-      .AddRangeAsync(events)
-    .SaveChangesAsync(streamId);
+      .OpenStreamAsync("stream-1")                          // Open stream like new since revision is not provided
+        .AddAsync("event-3", DateTime.Now, yourEventObject) // You can add events one by one
+        .AddRangeAsync(events)                              // Or range of events by passing IEnumerable<Event>
+      .SaveChangesAsync(token);
 
   } catch (StreamConcurrencyException ex) {
 
-    // Implement your logic for handling optimistic concurrency exception, 
-    // or try to push with latest revision, like this
-    ...
+    // Read from stream and implement your logic for handling optimistic concurrency exception
+    await foreach(var @event in await store.BeginReadAsync("stream-1", token)) {
+        ...
+    }
+    
+    // Push result to the end of stream
     store
         .OpenStreamAsync("stream-1", ex.ActualRevision)
-        .AddAsync(new Event { Id = "event-4", Timestamp = DateTime.Now, EventObject = events[3] })
+        .AddAsync(new Event { Id = "event-4", Timestamp = DateTime.Now, EventObject = yourEventObject })
         ...
         .SaveChangesAsync(streamId);
-  } catch (StreamLockedException ex)
-  {
+  } catch (StreamLockedException ex) {
     // Some database backends like S3 do not support optimistic concurrency control
+    // So, the only way to handle concurrency is to lock the stream
   }
-
-  // Get stream read-only entity
-  StreamEntity streamEntity = await store.GetAsync(streamId);
-
-  // Delete stream
-  store.DeleteAsync(streamId);
-
 ```
+
+More examples of reading and writing events you can find in test scenarios[StreamStore.Tests](../src/StreamStore.Testing/StreamStore/Scenarios/) project.
 
 ## Good to know
 
@@ -157,16 +150,25 @@ or from NuGet Package Manager Console:
   It has implicit conversion from and to `Int32` type.  
   Also implements `IEquatable` and `IComparable` for itself and for `Int32`.
 
-- _[`StreamEntity`][StreamEntity] returned by store is a read-only consistent object_, i.e.:
+- You can read from any stream starting from the provided revision.
+
+- _`ReadToEnd` method  returns collection of events from the stream starting from the provided revision_:
   - Contains only **unique events ordered by revision**.
   - Contains only **events that were committed**.
+  
 - _Stream revision is always the revision of an event with maximum revision value_.
 
-- _Idempotency of get and delete operations fully depends on particular database implementation._
+- _Idempotency of reading and deletion fully depends on particular database implementation._
 
-- _You don't need to retrieve stream entity to append events to the stream_.
+- _You don't need to retrieve stream  to add events to it_.  
+  Appending to stream and getting stream  are separate operations.
 
-  Appending stream and getting stream entity are separate operations.
+- _Despite the fact that reading is declared as asynchronous and iterative operation, for the sake of performance it is implemented as paginated operation._
+
+  You can define the page size by using `WithReadingPageSize` method of store configuration, by default it is 10 events.
+
+- _Reading and writing operations are not thread-safe_.  
+ Thus, it is not recommended to use the same instances of `IStreamWriter` or `IAsyncEnumerable<StreamEvent>` in multiple threads simultaneously.
 
 ## Customization
 
@@ -191,8 +193,10 @@ About serialization you can read in [SERIALIZATION.md](SERIALIZATION.md) file.
 To create your own database implementation, you need to implement the following interfaces:
 
 - [`IStreamDatabase`][IStreamDatabase] - provides methods for working with streams.
+  Create your own implementation based on [`StreamDatabaseBase`](../src/StreamStore.Contracts/Database/StreamDatabaseBase.cs) abstract class.
+
 - [`IStreamUnitOfWork`][IStreamUnitOfWork] - provides methods for appending events to the stream and saving changes.  
-  Create your own implementation based on [`StreamUnitOfWorkBase`](../src/StreamStore.Contracts/StreamUnitOfWorkBase.cs)
+  Create your own implementation based on [`StreamUnitOfWorkBase`](../src/StreamStore.Contracts/Database/StreamUnitOfWorkBase.cs)
   and override following methods:
 
   ```csharp
@@ -200,7 +204,7 @@ To create your own database implementation, you need to implement the following 
     {
       protected override Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
       {
-        // Implement saving changes
+        // Implement saving logic
       }
   
       protected override Task OnEventAdded(EventRecord @event, CancellationToken token)
@@ -217,7 +221,7 @@ To create your own database implementation, you need to implement the following 
   ```
 
   Default serializer is using `Newtonsoft.Json` library, so you can create your own using `System.Text.Json` or any other, by
-  implementing [`IEventSerializer`](../src/StreamStore.Contracts/IEventSerializer.cs) interface.
+  implementing [`IEventSerializer`](../src/StreamStore.Contracts/Serialization/IEventSerializer.cs) interface.
 
 ### Considerations
 
@@ -247,9 +251,8 @@ to contribute, feel free to [open an issue][issues] or
 [discussions]: https://github.com/kostiantyn-matsebora/streamstore/discussions
 [Id]: ../src/StreamStore.Contracts/Id.cs
 [Revision]: ../src/StreamStore.Contracts/Revision.cs
-[StreamEntity]: ../src/StreamStore/StreamEntity.cs
-[IStreamUnitOfWork]: ../src/StreamStore.Contracts/IStreamUnitOfWork.cs
-[IStreamDatabase]: ../src/StreamStore.Contracts/IStreamDatabase.cs
+[IStreamUnitOfWork]: ../src/StreamStore.Contracts/Database/IStreamUnitOfWork.cs
+[IStreamDatabase]: ../src/StreamStore.Contracts/Database/IStreamDatabase.cs
 [StreamStore.S3.B2]: ../src/StreamStore.S3.B2
 [StreamStore.S3.AWS]: ../src/StreamStore.S3.AWS
 [StreamStore.InMemory]: ../src/StreamStore.InMemory

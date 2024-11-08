@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
-using Dapper.Extensions.Factory;
+
 
 
 namespace StreamStore.Benchmarking
@@ -19,22 +19,16 @@ namespace StreamStore.Benchmarking
         [Benchmark]
         public async Task SqliteStore_Save10Events()
         {
-            await DapperFactory.Step(async dapper =>
-            {
-                var store = CreateSqliteStore(dapper);
-                await Save10Events(store);
-            });
+            var store = GetSqliteStore();
+            await Save10Events(store);
         }
 
-
-        async Task Save10Events(StreamStore store)
+        async Task Save10Events(IStreamStore store)
         {
             var streamId = Guid.NewGuid().ToString();
 
             await store
-                .OpenStreamAsync(streamId,  CancellationToken.None)
-                .AddRangeAsync(events.Take(10), CancellationToken.None)
-                .SaveChangesAsync(CancellationToken.None);
+                .WriteAsync(streamId, events.Take(10), CancellationToken.None);
         }
     }
 }

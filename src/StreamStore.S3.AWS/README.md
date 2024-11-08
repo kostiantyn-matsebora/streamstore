@@ -2,7 +2,7 @@
 
 [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)
 
-[Amazon S3] backend database for [StreamStore] event stream library.
+[Amazon S3] backend database for [StreamStore] asynchronous event sourcing library.
 
 ## Installation
 
@@ -42,18 +42,10 @@ or you can provide the configuration in code, see section below.
 ### Register in DI container
 
 ```csharp
-   // Adding StreamStore
-   services.ConfigureStreamStore();
-
-   // Adding AWS S3 database 
-   services.UseS3AmazonStreamStoreDatabase();
-
-  // Or configuring it manually
-  services
-    .ConfigureS3AmazonStreamStoreDatabase()
-      .WithBucketName("your-bucket-name")
-    .Configure();
-
+   services.ConfigureStreamStore(x =>
+      x.UseAWSDatabase(
+        c => c.WithBucketName("bucket-name")) // Bucket name, optional, by default "streamstore"
+   );
 ```
 
 If you want to use advanced scenarios for configuring the S3 client, you can create and register your own ``IAmazonS3ClientFactory``:

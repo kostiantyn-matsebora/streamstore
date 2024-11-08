@@ -1,7 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Xml.Linq;
+
 
 namespace StreamStore.S3.Storage
 {
@@ -34,7 +33,9 @@ namespace StreamStore.S3.Storage
             {
                 return this;
             }
-            return $"{Value}{Delimiter}{name}";
+            var delimiter = !string.IsNullOrEmpty(Value) ? Delimiter : string.Empty;
+
+            return $"{Value}{delimiter}{name}";
         }
 
         public bool Equals(string other)

@@ -14,16 +14,10 @@ namespace StreamStore
             this.serializer = serializer;
         }
 
-        public StreamEntity ConvertToEntity(Id id, StreamRecord record)
-        {
-            var eventEntities = record.Events.AsParallel().Select(ConvertToEntity).ToArray();
-            return new StreamEntity(id, eventEntities);
-        }
-
-        public EventEntity ConvertToEntity(EventRecord record)
+        public StreamEvent ConvertToEvent(EventRecord record)
         {
             var data = serializer.Deserialize(record.Data!);
-            return new EventEntity(record.Id, record.Revision, record.Timestamp, data);
+            return new StreamEvent(record.Id, record.Revision, record.Timestamp, data);
         }
 
         public byte[] ConvertToByteArray(object @event)

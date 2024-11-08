@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Storage;
@@ -9,20 +8,20 @@ namespace StreamStore.S3.Concurrency
     internal class S3StreamContext
     {
         public Revision ExpectedRevision { get; }
-        public S3StreamContainer Transient { get; }
-        public S3StreamContainer Persistent { get; }
+        internal S3StreamContainer Transient { get; }
+        internal S3StreamContainer Persistent { get; }
         public Id StreamId { get; }
 
         public Id TransactionId { get; }
 
         public bool NotEmpty => Transient.NotEmpty;
 
-        public S3StreamContext(Id streamId, Revision expectedRevision, IS3Storage storage)
+        public S3StreamContext(Id streamId, Revision expectedRevision, IS3TransactionalStorage storage)
         {
             TransactionId = Guid.NewGuid().ToString();
             ExpectedRevision = expectedRevision;
-            Transient = storage.Transient.GetContainer(new S3ContainerPath(streamId).Combine(TransactionId));
-            Persistent = storage.Persistent.GetContainer(streamId);
+            Transient = storage.GetTransientContainer(new S3ContainerPath(streamId).Combine(TransactionId));
+            Persistent = storage.GetPersistentContainer(streamId);
             StreamId = streamId;
          
         }
@@ -54,9 +53,7 @@ namespace StreamStore.S3.Concurrency
             await Persistent.MetadataObject.LoadAsync(token);
             if (Persistent.MetadataObject.State == S3ObjectState.Loaded)
             {
-                await Transient.MetadataObject
-                        .ReplaceBy(Persistent.MetadataObject.Events)
-                        .UploadAsync(token);
+                await Transient.MetadataObject.ReplaceByAsync(Persistent.MetadataObject, token);
             }
         }
 

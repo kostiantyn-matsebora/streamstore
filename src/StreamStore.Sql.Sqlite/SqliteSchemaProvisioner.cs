@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Data.SQLite;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using Dapper.Extensions;
 
 
 namespace StreamStore.SQL.Sqlite
@@ -11,12 +9,14 @@ namespace StreamStore.SQL.Sqlite
     internal sealed class SqliteSchemaProvisioner
     {
         readonly SqliteDatabaseConfiguration configuration;
-        readonly IDapper dapper;
+        readonly IDbConnectionFactory connectionFactory;
+        
 
-        public SqliteSchemaProvisioner(SqliteDatabaseConfiguration configuration, IDapper dapper) {
+        public SqliteSchemaProvisioner(SqliteDatabaseConfiguration configuration, IDbConnectionFactory connectionFactory) {
             
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            this.dapper = dapper ?? throw new ArgumentNullException(nameof(dapper));
+            this.connectionFactory = connectionFactory;
+
         }
 
         public async Task ProvisionSchemaAsync(CancellationToken token)
@@ -35,7 +35,11 @@ namespace StreamStore.SQL.Sqlite
                 CREATE INDEX IF NOT EXISTS {configuration.SchemaName}.ix_streams_stream_revision ON {configuration.TableName}(Revision);
                 CREATE UNIQUE INDEX IF NOT EXISTS {configuration.SchemaName}.ix_streams_stream_id_revision ON {configuration.TableName}(StreamId, Revision);";
 
-          await dapper.ExecuteAsync(query);
+            using (var connection = connectionFactory.GetConnection())
+            {
+                await connection.OpenAsync(token);
+                await connection.ExecuteAsync(query);
+            }
         }
     }
 }

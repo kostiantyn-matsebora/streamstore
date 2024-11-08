@@ -19,6 +19,7 @@ namespace StreamStore.S3.B2
             services.AddSingleton<IS3ClientFactory, B2S3Factory>();
             services.AddSingleton<IStorageClientFactory, BackblazeClientFactory>();
             services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
+            services.AddSingleton<IStreamReader, S3StreamDatabase>();
             services.AddSingleton<IS3StorageFactory, S3StorageFactory>();
         }
 
@@ -35,11 +36,9 @@ namespace StreamStore.S3.B2
             if (section == null)
                 throw new InvalidOperationException("streamStore:b2 configuration section not found.");
 
-            WithCredentials(
-            section!.GetSection("applicationKeyId").Value!,
-            section.GetSection("applicationKey").Value!)
-                 .WithBucketId(section.GetSection("bucketId").Value!)
-                 .WithBucketName(section.GetSection("bucketName").Value!);
+             WithCredential(section!.GetSection("applicationKeyId").Value!, section!.GetSection("applicationKey").Value!)
+            .WithBucketId(section.GetSection("bucketId").Value!)
+            .WithBucketName(section.GetSection("bucketName").Value!);
 
             var settings = Build();
             services.AddSingleton(settings);

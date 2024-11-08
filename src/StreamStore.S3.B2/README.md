@@ -2,7 +2,7 @@
 
 [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)
 
-[Backblaze B2] backend database for [StreamStore] event stream library.
+[Backblaze B2] backend database for [StreamStore] asynchronous event sourcing library.
 
 ## Installation
 
@@ -51,19 +51,17 @@ or you can provide the configuration in code, see section below.
 ### Register in DI container
 
 ```csharp
-   // Adding StreamStore
-   services.ConfigureStreamStore();
-
    // Adding B2 database with configuration from appsettings.json
-   services.UseB2StreamStoreDatabase(Configuration);
+   services.ConfigureStreamStore(x => x.UseB2Database(Configuration));
 
   // Or configuring it manually
-  services
-    .ConfigureB2StreamStoreDatabase()
-      .WithBucketId("your-bucket-id")
-      .WithBucketName("your-bucket-name")
-      .WithCredentials("your-application-key-id","your-application-key")
-    .Configure();
+   services.ConfigureStreamStore(x =>
+      x.UseB2Database(c => {
+           x.WithBucketId("your-bucket-id");
+           x.WithBucketName("your-bucket-name");
+           x.WithCredential("your-access-key-id","your-access-key");
+      })
+   );
 
 ```
 
@@ -93,7 +91,6 @@ To be able to run tests from [StreamStore.S3.Tests](../StreamStore.S3.Tests/) pr
       "applicationKeyId": "your-application-key-id",
       "applicationKey": "your-application-key",
     }
-  
 }
 ```
 

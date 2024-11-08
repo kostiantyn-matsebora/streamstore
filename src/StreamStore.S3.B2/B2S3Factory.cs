@@ -14,7 +14,7 @@ namespace StreamStore.S3.B2
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             client = clientFactory.Create();
-            client!.Connect(settings.Credentials!.AccessKeyId, settings.Credentials!.AccessKey);
+            client!.Connect(settings.Credential!.UserName, settings.Credential!.Password);
         }
 
         public override IS3Client CreateClient()

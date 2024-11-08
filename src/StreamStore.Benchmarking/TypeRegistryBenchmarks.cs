@@ -10,10 +10,11 @@ namespace StreamStore.Benchmarking
     {
         readonly Type[] types;
         readonly string[] names;
-        readonly TypeRegistry typeRegistry = TypeRegistry.CreateAndInitialize();
+        readonly TypeRegistry typeRegistry;
 
         public TypeRegistryBenchmarks()
         {
+           typeRegistry = new TypeRegistry();
            types = AppDomain.CurrentDomain.GetAssemblies()
              .Where(a => !a.IsDynamic)
              .SelectMany(a => a.GetTypes())

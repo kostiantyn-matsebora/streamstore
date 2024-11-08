@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Security;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -10,7 +12,7 @@ namespace StreamStore.S3.B2
 
         public string? BucketName { get; internal set; }
 
-        public B2S3Credentials? Credentials { get; internal set; }
+        public NetworkCredential? Credential { get; internal set; }
 
         public string? Delimiter { get; internal set; }
 
@@ -27,7 +29,7 @@ namespace StreamStore.S3.B2
         string? bucketName;
 
 
-        B2S3Credentials? credentials;
+        NetworkCredential? credentials;
         TimeSpan ttl = TimeSpan.FromSeconds(30);
 
         public B2StreamDatabaseSettingsBuilder WithBucketId(string bucketId)
@@ -42,9 +44,9 @@ namespace StreamStore.S3.B2
             return this;
         }
 
-        public B2StreamDatabaseSettingsBuilder WithCredentials(string keyId, string key)
+        public B2StreamDatabaseSettingsBuilder WithCredential(string accessKeyId, string accessKey)
         {
-            credentials = new B2S3Credentials(keyId, key);
+            credentials = new NetworkCredential(accessKeyId, accessKey);
             return this;
         }
 
@@ -65,7 +67,7 @@ namespace StreamStore.S3.B2
             {
                 BucketId = bucketId,
                 BucketName = bucketName ?? "streamstore",
-                Credentials = credentials,
+                Credential = credentials,
                 InMemoryLockTTL = ttl,
                 Delimiter = "/"
             };

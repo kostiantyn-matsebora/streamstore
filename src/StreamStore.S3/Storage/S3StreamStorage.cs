@@ -11,10 +11,10 @@ namespace StreamStore.S3.Storage
         {
         }
 
-        public async Task<S3StreamContainer> LoadAsync(Id streamId, CancellationToken token = default)
+        public async Task<S3StreamContainer> LoadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
             var stream = GetContainer(streamId);
-            await stream.LoadAsync(token);
+            await stream.LoadAsync(startFrom, count, token);
             return stream;
         }
  

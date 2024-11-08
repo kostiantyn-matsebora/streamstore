@@ -12,16 +12,18 @@ namespace StreamStore
         public static readonly Revision Zero = new Revision(0);
         public static readonly Revision One = new Revision(1);
 
-        private Revision(int value)
+        public Revision(int revision)
         {
-            if (value < 0)
+            if (revision < 0)
             {
-                throw new ArgumentNullException(nameof(value), "Revision must be greater or equal 0.");
+                throw new ArgumentOutOfRangeException(nameof(revision), "Revision must be greater or equal 0.");
             }
-            this.value = value;
+            this.value = revision;
         }
 
-        public Revision Increment() => New(Value + 1);
+        public Revision Increment() => new Revision(Value + 1);
+
+        public Revision Decrement() => new Revision(Value - 1);
 
         public bool Equals(Revision other)
         {
@@ -112,13 +114,6 @@ namespace StreamStore
         }
 
         public static implicit operator int(Revision revision) => revision.Value;
-        public static implicit operator Revision(int revision) => New(revision);
-
-        public static Revision New(int revision)
-        {
-            if (revision == 0) return Zero;
-            if (revision == 1) return One;
-            return new Revision(revision);
-        }
+        public static implicit operator Revision(int revision) => new Revision(revision);
     }
 }

@@ -1,25 +1,14 @@
-﻿using StreamStore.S3.Storage;
-using StreamStore.Testing;
+﻿using Microsoft.Extensions.DependencyInjection;
+using StreamStore.InMemory;
+using StreamStore.Testing.Framework;
 
 namespace StreamStore.S3.Tests.InMemory
 {
-    internal class S3InMemorySuite : ITestSuite
+    public class S3InMemorySuite : TestSuiteBase
     {
-        public bool IsReady => true;
-
-        public void Initialize()
+        protected override void RegisterServices(IServiceCollection services)
         {
-        }
-
-        public async Task WithDatabase(Func<IStreamDatabase, Task> action)
-        {
-            var database = CreateDatabase();
-            await action(database!);
-        }
-
-        static S3StreamDatabase? CreateDatabase()
-        {
-            return new S3StreamDatabase(new S3InMemoryFactory(), new S3StorageFactory(new S3InMemoryFactory()));
+            services.AddSingleton<IStreamDatabase, InMemoryStreamDatabase>();
         }
     }
 }

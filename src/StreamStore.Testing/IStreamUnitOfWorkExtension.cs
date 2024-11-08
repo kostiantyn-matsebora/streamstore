@@ -2,7 +2,7 @@
 {
     public static class IStreamUnitOfWorkExtension
     {
-        public static async Task<IStreamUnitOfWork> AddRangeAsync(this IStreamUnitOfWork unitOfWork, IEnumerable<EventItem> records, CancellationToken token = default)
+        public static async Task<IStreamUnitOfWork> AddRangeAsync(this IStreamUnitOfWork unitOfWork, IEnumerable<EventRecord> records, CancellationToken token = default)
         {
             foreach (var record in records)
             {
@@ -11,7 +11,7 @@
             return unitOfWork;
         }
 
-        public static async Task<IStreamUnitOfWork> AddRangeAsync(this Task<IStreamUnitOfWork> unitOfWork, IEnumerable<EventItem> records, CancellationToken token = default)
+        public static async Task<IStreamUnitOfWork> AddRangeAsync(this Task<IStreamUnitOfWork> unitOfWork, IEnumerable<EventRecord> records, CancellationToken token = default)
         {
             await unitOfWork.Result.AddRangeAsync(records, token);
             return unitOfWork.Result;
