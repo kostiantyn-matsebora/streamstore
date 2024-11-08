@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
@@ -12,9 +11,9 @@ namespace StreamStore.S3.Storage
 
     internal class S3MetadataObject : S3Object
     {
-        List<EventMetadataRecord> records = new List<EventMetadataRecord>();
+        EventMetadataRecordCollection records = new EventMetadataRecordCollection();
 
-        public EventMetadataRecordCollection Events => new EventMetadataRecordCollection(records);
+        public EventMetadataRecordCollection Events => records;
 
         public S3MetadataObject(S3ContainerPath path, IS3ClientFactory clientFactory) : base(path, clientFactory)
         {
@@ -30,7 +29,9 @@ namespace StreamStore.S3.Storage
         {
             var data = await LoadDataAsync(token);
             if (State == S3ObjectState.Loaded)
-                records = Converter.FromByteArray<EventMetadataRecord[]>(data).ToList();
+            {
+                records = new EventMetadataRecordCollection(Converter.FromByteArray<EventMetadataRecord[]>(data)!);
+            }
         }
 
         public S3MetadataObject AppendEventAsync(EventMetadataRecord record, CancellationToken token)
