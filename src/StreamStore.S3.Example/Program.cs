@@ -13,8 +13,8 @@ namespace StreamStore.S3.Example
 
             builder
                 .Services
-                .ConfigureStreamStore()
-                .UseS3AmazonStreamStoreDatabase();
+                .ConfigureStreamStore(x => x.UseAWSDatabase());
+
 
             builder.ConfigureExampleApplication();
             builder.Services.AddHostedService<Janitor>();

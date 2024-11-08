@@ -38,7 +38,7 @@ namespace StreamStore.S3.IntegrationTests.Old.B2
 
         protected override void RegisterServices(IServiceCollection services)
         {
-            services.UseB2StreamStoreDatabase(GetConfiguration()!);
+            new B2DatabaseConfigurator(services).ReadFromConfig(GetConfiguration()!);
         }
 
         static IConfiguration? GetConfiguration()

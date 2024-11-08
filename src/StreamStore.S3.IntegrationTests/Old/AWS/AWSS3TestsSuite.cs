@@ -37,8 +37,7 @@ namespace StreamStore.S3.IntegrationTests.Old.AWS
 
         protected override void RegisterServices(IServiceCollection services)
         {
-            services.UseS3AmazonStreamStoreDatabase();
-
+            new AWSS3DatabaseConfigurator(services).Configure();
         }
     }
 }

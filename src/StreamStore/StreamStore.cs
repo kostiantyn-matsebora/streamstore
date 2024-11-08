@@ -54,9 +54,6 @@ namespace StreamStore
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
 
-            if (expectedRevision < Revision.Zero)
-                throw new ArgumentOutOfRangeException(nameof(expectedRevision), "expectedRevision must be greater than or equal to 0.");
-
             var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
             
             if (metadata == null) metadata = new EventMetadataRecordCollection();

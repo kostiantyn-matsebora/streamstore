@@ -18,7 +18,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_saving_changes(int firstBatchCount, int secondBatchCount, int thirdBatchCount)
         {
             // Arrange
-            var streamStore = Suite.Store;
+            IStreamStore store = Suite.Store;
             var eventIds = new List<Id>();
             var streamId = Generated.Id;
             var events = Generated.Events(firstBatchCount);
@@ -26,7 +26,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             Revision actualRevision;
 
             // Act 1: First way to append to stream
-            var writer = await streamStore.BeginWriteAsync(streamId, CancellationToken.None);
+            var writer = await store.BeginWriteAsync(streamId, CancellationToken.None);
 
             foreach (var @event in events)
             {
@@ -44,7 +44,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
 
             // Act 2: Second way to append to stream
             actualRevision =
-                await streamStore
+                await store
                     .BeginWriteAsync(streamId, actualRevision, CancellationToken.None)
                         .AddRangeAsync(events)
                     .CommitAsync(CancellationToken.None);
@@ -57,10 +57,10 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             eventIds.AddRange(events.Select(e => e.Id));
 
             // Act 3: Third way to append to stream
-            await streamStore.WriteAsync(streamId, actualRevision, events, CancellationToken.None);
+            await store.WriteAsync(streamId, actualRevision, events, CancellationToken.None);
 
             // Getting stream
-            var collection = await streamStore.ReadToEndAsync(streamId, CancellationToken.None);
+            var collection = await store.ReadToEndAsync(streamId, CancellationToken.None);
 
             // Assert 3
             collection.Should().NotBeNull();
@@ -77,6 +77,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_stream_was_already_updated(int count)
         {
             // Arrange
+            IStreamStore store = Suite.Store;
             var stream = Suite.Container.RandomStream;
 
             // Act
@@ -84,7 +85,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             // Trying to append events with wrong expected revision = 0
             var act = async () =>
                 await
-                    Suite.Store
+                   store
                         .BeginWriteAsync(stream.Id, CancellationToken.None)
                         .AddRangeAsync(Generated.Events(count))
                         .CommitAsync(CancellationToken.None);
@@ -97,8 +98,8 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_event_with_same_id_already_exists()
         {
             // Arrange
+            IStreamStore store = Suite.Store;
             var stream = Suite.Container.RandomStream;
-
             var existingEvents = stream.Events.Take(1).ToEvents();
 
             // Act
@@ -107,7 +108,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
 
             var act = async () =>
                 await
-                    Suite.Store
+                    store
                         .BeginWriteAsync(stream.Id, stream.Revision, CancellationToken.None)
                         .AddRangeAsync(mixedEvents)
                         .CommitAsync(CancellationToken.None);
@@ -119,8 +120,11 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         [Fact]
         public async Task When_stream_id_is_null()
         {
+            // Arrange
+            IStreamStore store = Suite.Store;
+
             // Act
-            var act = () => Suite.Store.BeginWriteAsync(null!);
+            var act = () => store.BeginWriteAsync(null!);
 
             // Assert
             await act.Should().ThrowAsync<ArgumentNullException>();

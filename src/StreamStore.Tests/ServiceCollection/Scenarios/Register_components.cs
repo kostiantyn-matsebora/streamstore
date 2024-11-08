@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentAssertions.Common;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore;
 using StreamStore.InMemory;
@@ -21,7 +22,7 @@ namespace StreamStore.Tests.ServiceCollection
             ));
 
             // Act
-            Suite.MockServices.Object.AddInMemoryStreamDatabase();
+            Suite.MockServices.Object.AddSingleton<IStreamDatabase, InMemoryStreamDatabase>();
             Suite.MockRepository.VerifyAll();
         }
 

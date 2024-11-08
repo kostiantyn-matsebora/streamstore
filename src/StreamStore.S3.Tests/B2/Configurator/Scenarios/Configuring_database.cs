@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Common;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.S3.B2;
 using StreamStore.Testing;
@@ -43,9 +44,10 @@ namespace StreamStore.S3.Tests.B2.Configurator
             // Arrange
             var collection = Suite.MockRepository.Create<IServiceCollection>();
             var configuration = Suite.SetupConfiguration();
+            var b2DatabaseConfigurator = Suite.CreateB2DatabaseConfigurator();
 
             // Act
-            collection.Object.UseB2StreamStoreDatabase(configuration.Object);
+            b2DatabaseConfigurator.ReadFromConfig(configuration.Object);
 
             // Assert
             Suite.MockRepository.VerifyAll();
@@ -59,7 +61,7 @@ namespace StreamStore.S3.Tests.B2.Configurator
             var collection = Suite.MockRepository.Create<IServiceCollection>();
 
             // Act
-            var result = collection.Object.ConfigureB2StreamStoreDatabase();
+            var result = Suite.CreateB2DatabaseConfigurator();
 
             // Assert
             result.Should().NotBeNull();
