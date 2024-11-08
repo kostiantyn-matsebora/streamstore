@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.8.0] - 2024-11-08
+
+### Changed
+
+- Changed reading of events, now it is done asynchronously, and implemented as `IAsyncEnumerable`.
+- Changed the way how unit tests are built, now they are scenario-based, using BDD approach.
+
 ## [0.7.0] - 2024-10-20
 
 ### Added
