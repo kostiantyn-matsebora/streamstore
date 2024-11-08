@@ -168,7 +168,7 @@ More examples of reading and writing events you can find in test scenarios[Strea
   You can define the page size by using `WithReadingPageSize` method of store configuration, by default it is 10 events.
 
 - _Reading and writing operations are not thread-safe_.  
- Thus, it is not recommended to use the same instances of `IStreamReader` or `IAsyncEnumerable<StreamEvent>` in multiple threads simultaneously.
+ Thus, it is not recommended to use the same instances of `IStreamWriter` or `IAsyncEnumerable<StreamEvent>` in multiple threads simultaneously.
 
 ## Customization
 
