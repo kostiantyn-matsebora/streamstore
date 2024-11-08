@@ -16,7 +16,8 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
             // Arrange
             var streamContainer = Suite.CreateS3StreamContainer();
             Suite.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
-            Suite.MockS3Client.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default)).ReturnsAsync(default(FindObjectResponse));
+            Suite.MockS3Client.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default))
+                              .ReturnsAsync(default(FindObjectResponse));
 
             // Act
             await streamContainer.LoadAsync(startFrom: Revision.One, count: 1);
@@ -35,7 +36,8 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
             {
                 new EventMetadataRecord { Id = "1", Revision = Revision.One }
             });
-            Suite.MockS3Client.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default)).ReturnsAsync(new FindObjectResponse { Data = Converter.ToByteArray(events.ToArray()) });
+            Suite.MockS3Client.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default))
+                              .ReturnsAsync(new FindObjectResponse { Data = Converter.ToByteArray(events.ToArray()) });
 
             // Act
             await streamContainer.LoadAsync(startFrom: 2, count: 1);
@@ -60,7 +62,8 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
             var @event = new EventRecord { Id = "2", Revision = 2, Data = Generated.ByteArray };
 
             Suite.MockS3Client
-                .SetupSequence(x => x.FindObjectAsync(It.IsAny<string>(), default)).ReturnsAsync(new FindObjectResponse { Data = Converter.ToByteArray(metadata.ToArray()) })
+                .SetupSequence(x => x.FindObjectAsync(It.IsAny<string>(), default))
+                .ReturnsAsync(new FindObjectResponse { Data = Converter.ToByteArray(metadata.ToArray()) })
                 .ReturnsAsync(new FindObjectResponse { Data = Converter.ToByteArray(@event) });
 
             // Act

@@ -1,8 +1,6 @@
 ﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using StreamStore.S3.Client;
 using StreamStore.Serialization;
 
