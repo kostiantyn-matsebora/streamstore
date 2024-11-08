@@ -32,6 +32,7 @@
     <ProjectReference Include="..\StreamStore.S3.AWS\StreamStore.S3.AWS.csproj" />
     <ProjectReference Include="..\StreamStore.S3.B2\StreamStore.S3.B2.csproj" />
     <ProjectReference Include="..\StreamStore.S3\StreamStore.S3.csproj" />
+    <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" />
     <ProjectReference Include="..\StreamStore.Testing\StreamStore.Testing.csproj" />
     <ProjectReference Include="..\StreamStore\StreamStore.csproj" />
   </ItemGroup>

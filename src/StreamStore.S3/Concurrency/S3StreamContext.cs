@@ -8,8 +8,8 @@ namespace StreamStore.S3.Concurrency
     internal class S3StreamContext
     {
         public Revision ExpectedRevision { get; }
-        public S3StreamContainer Transient { get; }
-        public S3StreamContainer Persistent { get; }
+        internal S3StreamContainer Transient { get; }
+        internal S3StreamContainer Persistent { get; }
         public Id StreamId { get; }
 
         public Id TransactionId { get; }

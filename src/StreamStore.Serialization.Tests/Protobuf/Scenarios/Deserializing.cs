@@ -1,8 +1,6 @@
-﻿
-using StreamStore.Serialization.Tests.NewtonsoftJson;
-using StreamStore.Testing.Serializer.Scenarios;
+﻿using StreamStore.Testing.Serializer.Scenarios;
 
-namespace StreamStore.Serialization.Tests.Protobuf.Scenarios
+namespace StreamStore.Serialization.Tests.Protobuf
 {
     public class Deserializing : Deserializing<ProtobufTestSuite>
     {

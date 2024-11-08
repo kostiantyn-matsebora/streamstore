@@ -1,7 +1,7 @@
 ﻿using StreamStore.Testing.Serializer.Scenarios;
 using Xunit.Abstractions;
 
-namespace StreamStore.Serialization.Tests.Protobuf.Scenarios
+namespace StreamStore.Serialization.Tests.Protobuf
 {
     public class Serializing : Serializing<ProtobufTestSuite>
     {
