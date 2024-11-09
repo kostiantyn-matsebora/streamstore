@@ -16,7 +16,7 @@ namespace StreamStore
           this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
         }
 
-        public async Task<IStreamWriter> AppendAsync(Id eventId, DateTime timestamp, object @event, CancellationToken cancellationToken = default)
+        public async Task<IStreamWriter> AppendEventAsync(Id eventId, DateTime timestamp, object @event, CancellationToken cancellationToken = default)
         {
             if (uow == null) throw new InvalidOperationException("Writing is not started.");
 

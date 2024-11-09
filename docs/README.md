@@ -113,10 +113,15 @@ or from NuGet Package Manager Console:
 
   try {
     store
-      .OpenStreamAsync("stream-1")                          // Open stream like new since revision is not provided
-        .AddAsync("event-3", DateTime.Now, yourEventObject) // You can add events one by one
-        .AddRangeAsync(events)                              // Or range of events by passing IEnumerable<Event>
-      .SaveChangesAsync(token);
+      .BeginWriteAsync("stream-1")       // Open stream like new since revision is not provided
+         .AppendEventAsync(x =>          // Append events one by one using fluent API
+            x.WithId("event-3")
+             .Dated(DateTime.Now)
+             .WithEvent(eventObject)
+         )
+        ...
+        .AppendRangeAsync(events)       // Or append range of events by passing IEnumerable<Event>
+      .CommitAsync(token);
 
   } catch (StreamConcurrencyException ex) {
 
@@ -127,17 +132,21 @@ or from NuGet Package Manager Console:
     
     // Push result to the end of stream
     store
-        .OpenStreamAsync("stream-1", ex.ActualRevision)
-        .AddAsync(new Event { Id = "event-4", Timestamp = DateTime.Now, EventObject = yourEventObject })
+        .BeginWriteAsync("stream-1", ex.ActualRevision)
+           .AppendEventAsync(x =>                // Append events one by one using fluent API
+            x.WithId( "event-4")
+             .Dated(DateTime.Now)
+             .WithEvent(yourEventObject)
+           )
         ...
-        .SaveChangesAsync(streamId);
+        .CommitAsync(streamId);
   } catch (StreamLockedException ex) {
     // Some database backends like S3 do not support optimistic concurrency control
     // So, the only way to handle concurrency is to lock the stream
   }
 ```
 
-More examples of reading and writing events you can find in test scenarios[StreamStore.Tests](../src/StreamStore.Testing/StreamStore/Scenarios/) project.
+More examples of reading and writing events you can find in test scenarios of [StreamStore.Testing](../src/StreamStore.Testing/StreamStore/Scenarios/) project.
 
 ## Good to know
 

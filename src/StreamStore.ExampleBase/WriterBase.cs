@@ -34,9 +34,9 @@ namespace StreamStore.S3.Example
                     {
                         actualRevision = 
                             await store.BeginWriteAsync(StreamId, actualRevision, stoppingToken)
-                                            .AppendAsync(CreateEvent(), stoppingToken)
-                                            .AppendAsync(CreateEvent(), stoppingToken)
-                                            .AppendAsync(CreateEvent(), stoppingToken)
+                                            .AppendEventAsync(CreateEvent(), stoppingToken)
+                                            .AppendEventAsync(CreateEvent(), stoppingToken)
+                                            .AppendEventAsync(CreateEvent(), stoppingToken)
                                         .CommitAsync(stoppingToken);
                     }
                     catch (OptimisticConcurrencyException ex)
