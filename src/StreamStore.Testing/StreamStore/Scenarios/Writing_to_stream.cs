@@ -30,7 +30,12 @@ namespace StreamStore.Testing.StreamStore.Scenarios
 
             foreach (var @event in events)
             {
-                await writer.AppendAsync(@event.Id, @event.Timestamp, @event.EventObject);
+                await writer
+                        .AppendEventAsync(x => 
+                            x.WithId(@event.Id)
+                             .Dated(@event.Timestamp)
+                             .WithEvent(@event.EventObject)
+                        );
             }
 
             actualRevision = await writer.CommitAsync(CancellationToken.None);
@@ -46,7 +51,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             actualRevision =
                 await store
                     .BeginWriteAsync(streamId, actualRevision, CancellationToken.None)
-                        .AddRangeAsync(events)
+                        .AppendRangeAsync(events)
                     .CommitAsync(CancellationToken.None);
 
             // Assert 2
@@ -87,7 +92,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                 await
                    store
                         .BeginWriteAsync(stream.Id, CancellationToken.None)
-                        .AddRangeAsync(Generated.Events(count))
+                        .AppendRangeAsync(Generated.Events(count))
                         .CommitAsync(CancellationToken.None);
 
             // Assert
@@ -110,7 +115,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                 await
                     store
                         .BeginWriteAsync(stream.Id, stream.Revision, CancellationToken.None)
-                        .AddRangeAsync(mixedEvents)
+                        .AppendRangeAsync(mixedEvents)
                         .CommitAsync(CancellationToken.None);
 
             // Assert
