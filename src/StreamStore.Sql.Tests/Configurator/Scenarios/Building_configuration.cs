@@ -3,8 +3,8 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Sqlite;
-using StreamStore.SQL.Sqlite;
 using StreamStore.Testing;
 
 namespace StreamStore.Sql.Tests.Configurator

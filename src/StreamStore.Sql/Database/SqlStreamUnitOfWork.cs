@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using StreamStore.Exceptions;
-using StreamStore.SQL;
+using StreamStore.Sql.API;
 
-namespace StreamStore.Sql
+
+namespace StreamStore.Sql.Database
 {
     public class SqlStreamUnitOfWork : StreamUnitOfWorkBase
     {
@@ -33,7 +32,7 @@ namespace StreamStore.Sql
                 {
                     try
                     {
-                        await connection.ExecuteAsync(commandFactory.CreateAppendingEventsCommand(streamId,uncommited.ToEntityArray(streamId), transaction));
+                        await connection.ExecuteAsync(commandFactory.CreateAppendingEventsCommand(streamId, uncommited.ToEntityArray(streamId), transaction));
                         await transaction.CommitAsync(token);
                     }
                     catch (Exception ex)
@@ -48,7 +47,6 @@ namespace StreamStore.Sql
                 }
             }
         }
-
         int GetActualRevision()
         {
             using (var connection = connectionFactory.GetConnection())

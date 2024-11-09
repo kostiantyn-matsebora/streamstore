@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using StreamStore.SQL;
+using StreamStore.Sql.API;
 
-namespace StreamStore.Sql
+namespace StreamStore.Sql.Provisioning
 {
     internal sealed class SqlSchemaProvisioner
     {

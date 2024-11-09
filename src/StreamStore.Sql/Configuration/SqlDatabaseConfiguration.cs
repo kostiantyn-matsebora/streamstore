@@ -3,12 +3,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 
-namespace StreamStore.Sql { 
+namespace StreamStore.Sql.Configuration
+{
     public class SqlDatabaseConfiguration
     {
-        public string ConnectionString { get;  set; } = string.Empty;
-        public string SchemaName { get;  set; } = string.Empty;
-        public string TableName { get;  set; } = string.Empty;
+        public string ConnectionString { get; set; } = string.Empty;
+        public string SchemaName { get; set; } = string.Empty;
+        public string TableName { get; set; } = string.Empty;
 
         public string FullTableName => $"{SchemaName}.{TableName}";
 

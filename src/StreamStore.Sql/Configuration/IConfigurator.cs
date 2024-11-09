@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace StreamStore.Sql
+namespace StreamStore.Sql.Configuration
 {
 
     public interface IConfigurator

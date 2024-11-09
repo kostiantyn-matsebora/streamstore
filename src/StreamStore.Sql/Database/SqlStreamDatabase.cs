@@ -4,9 +4,10 @@ using System.Threading.Tasks;
 using Dapper;
 using StreamStore.Database;
 using StreamStore.Exceptions;
-using StreamStore.SQL;
+using StreamStore.Sql.API;
 
-namespace StreamStore.Sql
+
+namespace StreamStore.Sql.Database
 {
     public class SqlStreamDatabase : StreamDatabaseBase
     {
@@ -68,7 +69,7 @@ namespace StreamStore.Sql
 
         protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-           using (var connection = connectionFactory.GetConnection())
+            using (var connection = connectionFactory.GetConnection())
             {
                 await connection.OpenAsync(token);
                 var number = await connection.ExecuteScalarAsync<int>(commandFactory.CreateGettingEventCountCommand(streamId));

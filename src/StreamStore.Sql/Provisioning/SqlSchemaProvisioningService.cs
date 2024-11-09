@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
 
-namespace StreamStore.Sql
+namespace StreamStore.Sql.Provisioning
 {
     class SqlSchemaProvisioningService : BackgroundService
     {

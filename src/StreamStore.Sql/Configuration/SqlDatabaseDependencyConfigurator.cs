@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.SQL;
+using StreamStore.Sql.API;
+using StreamStore.Sql.Database;
 
-
-namespace StreamStore.Sql
+namespace StreamStore.Sql.Configuration
 {
     public class SqlDatabaseDependencyConfigurator
     {

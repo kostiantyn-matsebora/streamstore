@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 
 
-namespace StreamStore.SQL
+namespace StreamStore.Sql.API
 {
     public interface IDbConnectionFactory
     {

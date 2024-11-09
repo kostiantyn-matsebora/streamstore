@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Data;
 using Dapper;
-using StreamStore.SQL;
+using StreamStore.Sql.API;
+using StreamStore.Sql.Configuration;
 
 namespace StreamStore.Sql.Postgres
 {

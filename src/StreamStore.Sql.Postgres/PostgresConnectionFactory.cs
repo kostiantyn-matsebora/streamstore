@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using Npgsql;
-using StreamStore.SQL;
+using StreamStore.Sql.API;
+using StreamStore.Sql.Configuration;
 
 namespace StreamStore.Sql.Postgres
 {

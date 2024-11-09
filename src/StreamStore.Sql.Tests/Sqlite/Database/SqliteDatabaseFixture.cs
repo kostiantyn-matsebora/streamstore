@@ -1,8 +1,8 @@
 ﻿using System.Data.SQLite;
+using StreamStore.Sql.API;
+using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Sqlite;
 using StreamStore.Sql.Tests.Database;
-using StreamStore.SQL;
-using StreamStore.SQL.Sqlite;
 using StreamStore.Testing;
 
 

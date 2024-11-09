@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StreamStore.Sql
+namespace StreamStore.Sql.API
 {
     public interface ISqlExceptionHandler
     {

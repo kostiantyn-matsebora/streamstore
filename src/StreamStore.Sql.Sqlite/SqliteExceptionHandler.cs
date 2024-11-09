@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
+using StreamStore.Sql.API;
 
 
 namespace StreamStore.Sql.Sqlite

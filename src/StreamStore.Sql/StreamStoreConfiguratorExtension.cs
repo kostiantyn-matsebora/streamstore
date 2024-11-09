@@ -2,17 +2,17 @@
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.SQL;
-using StreamStore.SQL.Sqlite;
+using StreamStore.Sql.API;
+using StreamStore.Sql.Configuration;
 
-namespace StreamStore.Sql.Sqlite
+namespace StreamStore.Sql
 {
     public static class StreamStoreConfiguratorExtension
     {
         public static IStreamStoreConfigurator UseSqlDatabase(
-                this IStreamStoreConfigurator configurator, 
+                this IStreamStoreConfigurator configurator,
                 Action<SqlDatabaseDependencyConfigurator> dependencyConfigurator,
-                IConfiguration configuration, 
+                IConfiguration configuration,
                 string sectionName = "StreamStore:Sql")
         {
             configurator.WithDatabase(services =>
@@ -29,8 +29,8 @@ namespace StreamStore.Sql.Sqlite
         }
 
         public static IStreamStoreConfigurator UseSqlDatabase(
-                this IStreamStoreConfigurator configurator, 
-                Action<SqlDatabaseDependencyConfigurator> dependencyConfigurator, 
+                this IStreamStoreConfigurator configurator,
+                Action<SqlDatabaseDependencyConfigurator> dependencyConfigurator,
                 Action<SqlDatabaseConfigurator> dbConfigurator)
         {
             configurator.WithDatabase(services =>

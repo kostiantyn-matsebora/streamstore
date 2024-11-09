@@ -1,6 +1,7 @@
 ﻿using System;
+using StreamStore.Sql.API;
 
-namespace StreamStore.Sql
+namespace StreamStore.Sql.Database
 {
     internal class DefaultSqlExceptionHandler : ISqlExceptionHandler
     {

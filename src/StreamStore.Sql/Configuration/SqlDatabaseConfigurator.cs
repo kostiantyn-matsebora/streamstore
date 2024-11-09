@@ -1,10 +1,11 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Sql;
+using StreamStore.Sql.Database;
+using StreamStore.Sql.Provisioning;
 
 
-namespace StreamStore.SQL.Sqlite
+namespace StreamStore.Sql.Configuration
 {
     public sealed class SqlDatabaseConfigurator : SqlDatabaseConfigurationBuilder
     {
@@ -46,8 +47,6 @@ namespace StreamStore.SQL.Sqlite
 
         void Configure(SqlDatabaseConfiguration configuration)
         {
-            //services.AddSingleton<IDbConnectionFactory, SqliteDapperConnectionFactory>();
-
             services.AddSingleton(configuration);
             services.AddSingleton<IStreamDatabase, SqlStreamDatabase>();
             services.AddSingleton<IStreamReader, SqlStreamDatabase>();

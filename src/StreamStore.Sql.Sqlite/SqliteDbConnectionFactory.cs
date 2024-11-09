@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Data.Common;
 using System.Data.SQLite;
-using StreamStore.Sql;
+using StreamStore.Sql.API;
+using StreamStore.Sql.Configuration;
 
 
-namespace StreamStore.SQL.Sqlite
+namespace StreamStore.Sql.Sqlite
 {
     internal class SqliteDbConnectionFactory: IDbConnectionFactory
     {

@@ -1,9 +1,8 @@
 ﻿
 using Dapper;
-using StreamStore.SQL;
 using System.Data;
 
-namespace StreamStore.Sql
+namespace StreamStore.Sql.API
 {
     public interface IDapperCommandFactory
     {
