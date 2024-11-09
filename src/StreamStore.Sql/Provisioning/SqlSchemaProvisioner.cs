@@ -8,14 +8,11 @@ namespace StreamStore.Sql
 {
     internal sealed class SqlSchemaProvisioner
     {
-        readonly SqlDatabaseConfiguration configuration;
         readonly IDbConnectionFactory connectionFactory;
         readonly IDapperCommandFactory commandFactory;
 
-        public SqlSchemaProvisioner(SqlDatabaseConfiguration configuration, IDbConnectionFactory connectionFactory, IDapperCommandFactory commandFactory)
+        public SqlSchemaProvisioner(IDbConnectionFactory connectionFactory, IDapperCommandFactory commandFactory)
         {
-
-            this.configuration = configuration.ThrowIfNull(nameof(configuration));
             this.connectionFactory = connectionFactory.ThrowIfNull(nameof(connectionFactory));
             this.commandFactory = commandFactory.ThrowIfNull(nameof(commandFactory));
         }

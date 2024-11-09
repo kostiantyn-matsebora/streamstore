@@ -4,14 +4,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore.Sql.Sqlite;
+using StreamStore.Sql.Tests.Configurator;
 using StreamStore.SQL.Sqlite;
 using StreamStore.Testing;
 
-namespace StreamStore.Sql.Tests.Sqlite.Configurator
+namespace StreamStore.Sql.Tests.Configurator.Scenarios
 {
-    public class Building_configuration : Scenario<SqliteDatabaseConfiguratorTestSuite>
+    public class Building_configuration : Scenario<SqlDatabaseConfiguratorTestSuite>
     {
-        public Building_configuration() : base(new SqliteDatabaseConfiguratorTestSuite())
+        public Building_configuration() : base(new SqlDatabaseConfiguratorTestSuite())
         {
         }
 
@@ -92,7 +93,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
 
         [Fact]
         public void When_configuring_manually()
-        {   
+        {
             var streamStoreConfigurator = new StreamStoreConfigurator();
             var collection = new ServiceCollection();
 
@@ -105,7 +106,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
             streamStoreConfigurator.Configure(collection);
             var provider = collection.BuildServiceProvider();
             var config = provider.GetRequiredService<SqlDatabaseConfiguration>();
-            
+
             config.TableName.Should().Be("tableName");
             config.ConnectionString.Should().Be("connectionString");
             config.SchemaName.Should().Be("schemaName");

@@ -1,51 +1,48 @@
 ﻿using System.Data.SQLite;
 using StreamStore.Sql.Sqlite;
+using StreamStore.Sql.Tests.Database;
+using StreamStore.SQL;
 using StreamStore.SQL.Sqlite;
 using StreamStore.Testing;
 
 
 namespace StreamStore.Sql.Tests.Sqlite.Database
 {
-    public sealed class SqliteDatabaseFixture : IDisposable
+    public sealed class SqliteDatabaseFixture : SqlDatabaseFixtureBase
     {
         readonly string databaseName = $"{Generated.String}.sqlite";
 
-        public readonly MemoryDatabase Container = new MemoryDatabase();
-
         public string DatabaseName => databaseName;
 
-        public SqliteDatabaseFixture()
+        public SqliteDatabaseFixture(): base()
         {
-            SQLiteConnection.CreateFile($"{databaseName}");
-            ProvisionDatabase().Wait();
         }
 
-
-        async Task ProvisionDatabase()
+        protected override IDbConnectionFactory CreateConnectionFactory()
         {
-
-            var configuration = CreateConfiguration();
-            var connectionFactory = new SqliteDbConnectionFactory(configuration);
-            var commandFactory =  new SqliteDapperCommandFactory(configuration);
-            var exceptionHandler = new SqliteExceptionHandler();
-            var provisioner = new SqlSchemaProvisioner(CreateConfiguration(), connectionFactory, commandFactory);
-            await provisioner.ProvisionSchemaAsync(CancellationToken.None);
-
-            var database = new SqlStreamDatabase(connectionFactory, commandFactory, exceptionHandler);
-            Container.CopyTo(database);
+            return new SqliteDbConnectionFactory(CreateConfiguration());
         }
 
+        protected override IDapperCommandFactory CreateCommandFactory()
+        {
+            return new SqliteDapperCommandFactory(CreateConfiguration());
+        }
+
+        protected override ISqlExceptionHandler CreateExceptionHandler()
+        {
+            return new SqliteExceptionHandler();
+        }
 
         SqlDatabaseConfiguration CreateConfiguration()
         {
-            return
-            new SqlDatabaseConfigurationBuilder()
-                 .WithConnectionString($"Data Source ={databaseName}; Version = 3;")
-                 .Build();
+            return new SqlDatabaseConfigurationBuilder()
+                        .WithConnectionString($"Data Source ={databaseName}; Version = 3;")
+                        .Build();
         }
 
-        public void Dispose()
+        protected override void CreateDatabase()
         {
+            SQLiteConnection.CreateFile($"{databaseName}");
         }
     }
 }
