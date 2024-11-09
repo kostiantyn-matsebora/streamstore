@@ -1,19 +1,18 @@
-﻿using System.Data.Entity;
-using StreamStore.SQL;
+﻿using StreamStore.SQL;
 using StreamStore.Testing;
 
 
 namespace StreamStore.Sql.Tests.Database
 {
-    public abstract class SqlDatabaseFixtureBase : IDisposable
+    public abstract class SqlDatabaseFixtureBase
     {
-        private bool disposed = false;
-
         public readonly MemoryDatabase Container = new MemoryDatabase();
+        
+        public string DatabaseName { get; }
 
         protected SqlDatabaseFixtureBase()
         {
-
+            DatabaseName = GenerateDatabaseName();
             ProvisionDatabase();
         }
 
@@ -21,16 +20,14 @@ namespace StreamStore.Sql.Tests.Database
         void ProvisionDatabase()
         {
             CreateDatabase();
-            var connectionFactory = CreateConnectionFactory();
-            var commandFactory = CreateCommandFactory();
-            var exceptionHandler = CreateExceptionHandler();
 
-            var provisioner = new SqlSchemaProvisioner(connectionFactory, commandFactory);
-            provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
+            ProvisionSchema();
 
-            var database = new SqlStreamDatabase(connectionFactory, commandFactory, exceptionHandler);
-            Container.CopyTo(database);
+            FillSchema();
         }
+
+        
+        protected abstract string GenerateDatabaseName();
 
         protected abstract void CreateDatabase();
 
@@ -38,22 +35,16 @@ namespace StreamStore.Sql.Tests.Database
         protected abstract IDapperCommandFactory CreateCommandFactory();
         protected abstract ISqlExceptionHandler CreateExceptionHandler();
 
-        protected virtual void Dispose(bool disposing)
+        void FillSchema()
         {
-            if (!disposed)
-            {
-                if (disposing)
-                {
-                    // Dispose managed resources here.
-                }
-                disposed = true;
-            }
+            var database = new SqlStreamDatabase(CreateConnectionFactory(), CreateCommandFactory(), CreateExceptionHandler());
+            Container.CopyTo(database);
         }
 
-        public void Dispose()
+        void ProvisionSchema()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            var provisioner = new SqlSchemaProvisioner(CreateConnectionFactory(), CreateCommandFactory());
+            provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
         }
     }
 }

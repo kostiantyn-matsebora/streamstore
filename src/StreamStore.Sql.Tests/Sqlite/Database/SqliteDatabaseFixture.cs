@@ -10,10 +10,6 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
 {
     public sealed class SqliteDatabaseFixture : SqlDatabaseFixtureBase
     {
-        readonly string databaseName = $"{Generated.String}.sqlite";
-
-        public string DatabaseName => databaseName;
-
         public SqliteDatabaseFixture(): base()
         {
         }
@@ -36,13 +32,18 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
         SqlDatabaseConfiguration CreateConfiguration()
         {
             return new SqlDatabaseConfigurationBuilder()
-                        .WithConnectionString($"Data Source ={databaseName}; Version = 3;")
+                        .WithConnectionString($"Data Source = {DatabaseName}; Version = 3;")
                         .Build();
         }
 
         protected override void CreateDatabase()
         {
-            SQLiteConnection.CreateFile($"{databaseName}");
+            SQLiteConnection.CreateFile($"{DatabaseName}");
+        }
+
+        protected override string GenerateDatabaseName()
+        {
+            return $"{Generated.String}.sqlite";
         }
     }
 }

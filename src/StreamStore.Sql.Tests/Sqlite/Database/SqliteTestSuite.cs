@@ -1,46 +1,26 @@
-﻿using Microsoft.Extensions.Configuration;
-using StreamStore.Sql.Sqlite;
-using StreamStore.Testing;
-using StreamStore.Testing.StreamDatabase;
-
+﻿using StreamStore.Sql.Sqlite;
+using StreamStore.Sql.Tests.Database;
 
 namespace StreamStore.Sql.Tests.Sqlite.Database
 {
-    public class SqliteTestSuite : DatabaseSuiteBase
+    public class SqliteTestSuite : SqlTestSuiteBase
     {
-        readonly SqliteDatabaseFixture fixture;
-
         public SqliteTestSuite(): this(new SqliteDatabaseFixture())
         {
         }
 
-        public SqliteTestSuite(SqliteDatabaseFixture fixture)
+        public SqliteTestSuite(SqliteDatabaseFixture fixture): base(fixture)
         {
-            this.fixture = fixture.ThrowIfNull(nameof(fixture));
         }
-
-        public override MemoryDatabase Container => fixture.Container;
 
         protected override void ConfigureDatabase(IStreamStoreConfigurator configurator)
         {
             configurator.UseSqliteDatabase(CreateConfiguration());
         }
 
-        IConfiguration CreateConfiguration()
+        protected override string GetConnectionString()
         {
-            return ConfigureConfiguration(new ConfigurationBuilder()).Build();
-        }
-
-        IConfigurationBuilder ConfigureConfiguration(IConfigurationBuilder builder)
-        {
-            return builder.AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                { $"connectionStrings:StreamStore", $"Data Source={fixture.DatabaseName};Version=3;" },
-            });
-        }
-
-        protected override void SetUp()
-        {
+            return $"Data Source={fixture.DatabaseName};Version=3;";
         }
     }
 }

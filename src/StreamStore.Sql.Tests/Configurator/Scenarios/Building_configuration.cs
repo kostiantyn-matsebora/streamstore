@@ -4,11 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore.Sql.Sqlite;
-using StreamStore.Sql.Tests.Configurator;
 using StreamStore.SQL.Sqlite;
 using StreamStore.Testing;
 
-namespace StreamStore.Sql.Tests.Configurator.Scenarios
+namespace StreamStore.Sql.Tests.Configurator
 {
     public class Building_configuration : Scenario<SqlDatabaseConfiguratorTestSuite>
     {
