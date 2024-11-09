@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamStore.Stream;
+
 
 namespace StreamStore
 {
@@ -46,15 +46,6 @@ namespace StreamStore
            return await  writer.Result.AppendEventAsync(eventId, timestamp, @event, token);
         }
 
-        public static async Task<IStreamWriter> AppendRangeAsync(this Task<IStreamWriter> writer, IEnumerable<Event> events, CancellationToken token = default)
-        {
-            foreach (var @event in events)
-            {
-                await writer.Result.AppendEventAsync(@event);
-            }
-            return writer.Result;
-        }
-
         public static async Task<IStreamWriter> AppendEventAsync(this IStreamWriter writer, Action<IEventBuilder> build, CancellationToken token = default)
         {
             var builder = new EventBuilder();
@@ -69,5 +60,15 @@ namespace StreamStore
         {
             return writer.Result.AppendEventAsync(build, token);
         }
+
+        public static async Task<IStreamWriter> AppendRangeAsync(this Task<IStreamWriter> writer, IEnumerable<Event> events, CancellationToken token = default)
+        {
+            foreach (var @event in events)
+            {
+                await writer.Result.AppendEventAsync(@event);
+            }
+            return writer.Result;
+        }
+
     }
 }
