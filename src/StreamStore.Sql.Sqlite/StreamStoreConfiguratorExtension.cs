@@ -19,7 +19,7 @@ namespace StreamStore.Sql.Sqlite
 
         static void ConfigureDependencies(SqlDatabaseDependencyConfigurator dependencyConfigurator)
         {
-            dependencyConfigurator.WithConnectionFactory<SqliteDapperConnectionFactory>();
+            dependencyConfigurator.WithConnectionFactory<SqliteDbConnectionFactory>();
             dependencyConfigurator.WithExceptionHandling<SqliteExceptionHandler>();
             dependencyConfigurator.WithCommandFactory<SqliteDapperCommandFactory>();
         }
