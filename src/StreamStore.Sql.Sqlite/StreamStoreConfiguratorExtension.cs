@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using Microsoft.Extensions.Configuration;
 using StreamStore.SQL.Sqlite;
 
@@ -8,24 +9,19 @@ namespace StreamStore.Sql.Sqlite
     {
         public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-            configurator.WithDatabase(services => 
-            {
-                new SqliteDatabaseConfigurator(services).Configure(configuration);
-            });
-
-            return configurator;
+            return configurator.UseSqlDatabase(ConfigureDependencies, configuration);
         }
 
-        public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, Action<SqliteDatabaseConfigurator> dbConfigurator)
+        public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, Action<SqlDatabaseConfigurator> dbConfigurator)
         {
-            configurator.WithDatabase(services =>
-            {
-                var configurator = new SqliteDatabaseConfigurator(services);
-                dbConfigurator(configurator);
-                configurator.Configure();
-            });
+            return configurator.UseSqlDatabase(ConfigureDependencies, dbConfigurator);
+        }
 
-            return configurator;
+        static void ConfigureDependencies(SqlDatabaseDependencyConfigurator dependencyConfigurator)
+        {
+            dependencyConfigurator.WithConnectionFactory<SqliteDapperConnectionFactory>();
+            dependencyConfigurator.WithExceptionHandling<SqliteExceptionHandler>();
+            dependencyConfigurator.WithCommandFactory<SqliteDapperCommandFactory>();
         }
     }
 }

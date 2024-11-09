@@ -1,14 +1,15 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Sql;
 
 
 namespace StreamStore.SQL.Sqlite
 {
-    public sealed class SqliteDatabaseConfigurator : SqliteDatabaseConfigurationBuilder
+    public sealed class SqlDatabaseConfigurator : SqlDatabaseConfigurationBuilder
     {
         readonly IServiceCollection services;
-        public SqliteDatabaseConfigurator(IServiceCollection services)
+        public SqlDatabaseConfigurator(IServiceCollection services)
         {
             this.services = services ?? throw new ArgumentNullException(nameof(services));
         }
@@ -21,16 +22,16 @@ namespace StreamStore.SQL.Sqlite
             return services;
         }
 
-        public override IServiceCollection Configure(IConfiguration configuration)
+        public override IServiceCollection Configure(IConfiguration configuration, string sectionName = "StreamStore:Sql")
         {
             var connectionString = configuration.GetConnectionString("StreamStore");
             if (string.IsNullOrWhiteSpace(connectionString))
             {
                 throw new InvalidOperationException("Connection string 'StreamStore' not found in configuration");
             }
-            
+
             WithConnectionString(connectionString);
-            var section = configuration.GetSection("StreamStore:Sqlite");
+            var section = configuration.GetSection(sectionName);
             if (section.Exists())
             {
                 WithTable(section.GetValue("TableName", "Events")!);
@@ -43,26 +44,21 @@ namespace StreamStore.SQL.Sqlite
             return services;
         }
 
-        void Configure(SqliteDatabaseConfiguration configuration)
+        void Configure(SqlDatabaseConfiguration configuration)
         {
-            services.AddSingleton<IDbConnectionFactory, SqliteDapperConnectionFactory>();
-            
+            //services.AddSingleton<IDbConnectionFactory, SqliteDapperConnectionFactory>();
+
             services.AddSingleton(configuration);
-            services.AddSingleton<IStreamDatabase, SqliteStreamDatabase>();
-            services.AddSingleton<IStreamReader, SqliteStreamDatabase>();
+            services.AddSingleton<IStreamDatabase, SqlStreamDatabase>();
+            services.AddSingleton<IStreamReader, SqlStreamDatabase>();
 
             if (configuration.ProvisionSchema)
             {
-                services.AddSingleton<SqliteSchemaProvisioner>();
-                services.AddHostedService<SqliteSchemaProvisioningService>();
+                services.AddSingleton<SqlSchemaProvisioner>();
+                services.AddHostedService<SqlSchemaProvisioningService>();
             }
 
         }
     }
 
-    public interface IConfigurator
-    {
-        IServiceCollection Configure();
-        IServiceCollection Configure(IConfiguration configuration);
-    }
 }

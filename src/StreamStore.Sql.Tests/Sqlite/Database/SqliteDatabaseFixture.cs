@@ -1,4 +1,5 @@
 ﻿using System.Data.SQLite;
+using StreamStore.Sql.Sqlite;
 using StreamStore.SQL.Sqlite;
 using StreamStore.Testing;
 
@@ -25,19 +26,20 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
 
             var configuration = CreateConfiguration();
             var connectionFactory = new SqliteDbConnectionFactory(configuration);
-
-            var provisioner = new SqliteSchemaProvisioner(CreateConfiguration(), connectionFactory);
+            var commandFactory =  new SqliteDapperCommandFactory(configuration);
+            var exceptionHandler = new SqliteExceptionHandler();
+            var provisioner = new SqlSchemaProvisioner(CreateConfiguration(), connectionFactory, commandFactory);
             await provisioner.ProvisionSchemaAsync(CancellationToken.None);
 
-            var database = new SqliteStreamDatabase(connectionFactory, configuration);
+            var database = new SqlStreamDatabase(connectionFactory, commandFactory, exceptionHandler);
             Container.CopyTo(database);
         }
 
 
-        SqliteDatabaseConfiguration CreateConfiguration()
+        SqlDatabaseConfiguration CreateConfiguration()
         {
             return
-            new SqliteDatabaseConfigurationBuilder()
+            new SqlDatabaseConfigurationBuilder()
                  .WithConnectionString($"Data Source ={databaseName}; Version = 3;")
                  .Build();
         }

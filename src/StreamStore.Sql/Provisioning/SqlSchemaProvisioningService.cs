@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
 
-namespace StreamStore.SQL.Sqlite
+namespace StreamStore.Sql
 {
-    class SqliteSchemaProvisioningService : BackgroundService
+    class SqlSchemaProvisioningService : BackgroundService
     {
-        readonly SqliteSchemaProvisioner provisioner;
+        readonly SqlSchemaProvisioner provisioner;
 
-        public SqliteSchemaProvisioningService(SqliteSchemaProvisioner provisioner)
+        public SqlSchemaProvisioningService(SqlSchemaProvisioner provisioner)
         {
             this.provisioner = provisioner ?? throw new ArgumentNullException(nameof(provisioner));
 
@@ -18,7 +18,7 @@ namespace StreamStore.SQL.Sqlite
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-          await provisioner.ProvisionSchemaAsync(stoppingToken);
+            await provisioner.ProvisionSchemaAsync(stoppingToken);
         }
     }
 }

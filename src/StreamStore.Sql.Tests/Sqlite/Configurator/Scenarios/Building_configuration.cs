@@ -15,9 +15,9 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
         {
         }
 
-        SqliteDatabaseConfigurator CreateSqliteDatabaseConfigurator()
+        SqlDatabaseConfigurator CreateSqliteDatabaseConfigurator()
         {
-            return new SqliteDatabaseConfigurator(Suite.MockServiceCollection.Object);
+            return new SqlDatabaseConfigurator(Suite.MockServiceCollection.Object);
         }
 
         [SkippableFact]
@@ -66,7 +66,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
             provisionSchema.SetupGet(x => x.Value).Returns("true");
 
             configuration.Setup(x => x.GetSection("ConnectionStrings")).Returns(connectionStrings.Object);
-            configuration.Setup(x => x.GetSection("StreamStore:Sqlite")).Returns(section.Object);
+            configuration.Setup(x => x.GetSection("StreamStore:Sql")).Returns(section.Object);
             connectionStrings.SetupGet(x => x["StreamStore"]).Returns("connectionString");
             section.Setup(x => x.GetChildren()).Returns(new[] { section.Object });
             section.Setup(x => x.GetSection("TableName")).Returns(tableName.Object);
@@ -104,7 +104,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
 
             streamStoreConfigurator.Configure(collection);
             var provider = collection.BuildServiceProvider();
-            var config = provider.GetRequiredService<SqliteDatabaseConfiguration>();
+            var config = provider.GetRequiredService<SqlDatabaseConfiguration>();
             
             config.TableName.Should().Be("tableName");
             config.ConnectionString.Should().Be("connectionString");

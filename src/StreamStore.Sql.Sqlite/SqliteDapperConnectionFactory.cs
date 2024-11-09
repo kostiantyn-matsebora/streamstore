@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Data.Common;
 using System.Data.SQLite;
+using StreamStore.Sql;
 
 namespace StreamStore.SQL.Sqlite
 {
     internal class SqliteDapperConnectionFactory: IDbConnectionFactory
     {
-        readonly SqliteDatabaseConfiguration configuration;
+        readonly SqlDatabaseConfiguration configuration;
 
-        public SqliteDapperConnectionFactory(SqliteDatabaseConfiguration configuration)
+        public SqliteDapperConnectionFactory(SqlDatabaseConfiguration configuration)
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }

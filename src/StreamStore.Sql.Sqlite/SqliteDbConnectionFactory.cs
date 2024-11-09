@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 using System.Data.SQLite;
+using StreamStore.Sql;
 
 
 namespace StreamStore.SQL.Sqlite
@@ -9,7 +10,7 @@ namespace StreamStore.SQL.Sqlite
     {
         readonly string connectionString;
 
-        public SqliteDbConnectionFactory(SqliteDatabaseConfiguration configuration): this(configuration.ConnectionString)
+        public SqliteDbConnectionFactory(SqlDatabaseConfiguration configuration): this(configuration.ConnectionString)
         {
         }
         

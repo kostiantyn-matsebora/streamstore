@@ -1,7 +1,4 @@
-﻿using AutoFixture;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
 using StreamStore.Sql.Sqlite;
 using StreamStore.Testing;
 using StreamStore.Testing.StreamDatabase;
