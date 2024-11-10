@@ -4,7 +4,7 @@ using System.Text;
 
 namespace StreamStore.Sql.API
 {
-    public interface ISqlProvisionQueryProvider
+    public interface ISqlProvisioningQueryProvider
     {
         public string GetSchemaProvisioningQuery();
     }

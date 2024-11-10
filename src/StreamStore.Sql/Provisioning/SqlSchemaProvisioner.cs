@@ -8,9 +8,9 @@ namespace StreamStore.Sql.Provisioning
     internal sealed class SqlSchemaProvisioner
     {
         readonly IDbConnectionFactory connectionFactory;
-        readonly ISqlProvisionQueryProvider queryProvider;
+        readonly ISqlProvisioningQueryProvider queryProvider;
 
-        public SqlSchemaProvisioner(IDbConnectionFactory connectionFactory, ISqlProvisionQueryProvider queryProvider)
+        public SqlSchemaProvisioner(IDbConnectionFactory connectionFactory, ISqlProvisioningQueryProvider queryProvider)
         {
             this.connectionFactory = connectionFactory.ThrowIfNull(nameof(connectionFactory));
             this.queryProvider = queryProvider.ThrowIfNull(nameof(queryProvider));

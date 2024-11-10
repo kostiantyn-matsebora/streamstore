@@ -13,7 +13,7 @@ namespace StreamStore.Sql
                 this IStreamStoreConfigurator configurator,
                 Action<SqlDatabaseDependencyConfigurator> dependencyConfigurator,
                 IConfiguration configuration,
-                string sectionName = "StreamStore:Sql")
+                string sectionName)
         {
             configurator.WithDatabase(services =>
             {

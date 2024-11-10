@@ -76,7 +76,7 @@ namespace StreamStore.Sql.Tests.Configurator
 
             // Act
             var configurator = CreateSqliteDatabaseConfigurator();
-            configurator.Configure(configuration.Object);
+            configurator.Configure(configuration.Object, "StreamStore:Sql");
             var config = configurator.Build();
 
             // Assert
@@ -110,7 +110,6 @@ namespace StreamStore.Sql.Tests.Configurator
             config.ConnectionString.Should().Be("connectionString");
             config.SchemaName.Should().Be("schemaName");
             config.ProvisionSchema.Should().BeTrue();
-
         }
     }
 }

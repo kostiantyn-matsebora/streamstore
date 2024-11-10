@@ -38,7 +38,7 @@ namespace StreamStore.Sql.Configuration
             return this;
         }
 
-        public SqlDatabaseDependencyConfigurator WithProvisioingQueryProvider<TProvisioningProvider>() where TProvisioningProvider : ISqlProvisionQueryProvider
+        public SqlDatabaseDependencyConfigurator WithProvisioingQueryProvider<TProvisioningProvider>() where TProvisioningProvider : ISqlProvisioningQueryProvider
         {
             sqlProvisionQueryProviderType = typeof(TProvisioningProvider);
             return this;
@@ -55,7 +55,7 @@ namespace StreamStore.Sql.Configuration
             services.AddSingleton(typeof(IDbConnectionFactory), connectionFactoryType);
             services.AddSingleton(typeof(ISqlExceptionHandler), sqlExceptionHandlerType);
             services.AddSingleton(typeof(ISqlQueryProvider), sqlQueryProviderType);
-            services.AddSingleton(typeof(ISqlProvisionQueryProvider), sqlProvisionQueryProviderType);
+            services.AddSingleton(typeof(ISqlProvisioningQueryProvider), sqlProvisionQueryProviderType);
         }
     }
 }

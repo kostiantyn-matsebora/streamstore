@@ -47,7 +47,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
             return $"{Generated.String}.sqlite";
         }
 
-        protected override ISqlProvisionQueryProvider CreateProvisionQueryProvider()
+        protected override ISqlProvisioningQueryProvider CreateProvisionQueryProvider()
         {
            return new SqliteProvisioningQueryProvider(CreateConfiguration());
         }

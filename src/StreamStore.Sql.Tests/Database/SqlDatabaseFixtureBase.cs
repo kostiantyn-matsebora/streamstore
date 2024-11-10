@@ -34,7 +34,7 @@ namespace StreamStore.Sql.Tests.Database
         protected abstract IDbConnectionFactory CreateConnectionFactory();
         protected abstract IDapperCommandFactory CreateCommandFactory();
         protected abstract ISqlExceptionHandler CreateExceptionHandler();
-        protected abstract ISqlProvisionQueryProvider CreateProvisionQueryProvider();
+        protected abstract ISqlProvisioningQueryProvider CreateProvisionQueryProvider();
 
         void FillSchema()
         {

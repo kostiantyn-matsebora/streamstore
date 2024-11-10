@@ -23,7 +23,7 @@ namespace StreamStore.Sql.Configuration
             return services;
         }
 
-        public override IServiceCollection Configure(IConfiguration configuration, string sectionName = "StreamStore:Sql")
+        public override IServiceCollection Configure(IConfiguration configuration, string sectionName)
         {
             var connectionString = configuration.GetConnectionString("StreamStore");
             if (string.IsNullOrWhiteSpace(connectionString))

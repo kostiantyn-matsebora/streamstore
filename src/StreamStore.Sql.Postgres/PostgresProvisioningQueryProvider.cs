@@ -1,26 +1,26 @@
 ﻿using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 
-namespace StreamStore.Sql.Sqlite
+namespace StreamStore.Sql.Postgres
 {
-    internal class SqliteProvisioningQueryProvider : ISqlProvisioningQueryProvider
+    internal class PostgresProvisioningQueryProvider : ISqlProvisioningQueryProvider
     {
         readonly SqlDatabaseConfiguration configuration;
 
-        public SqliteProvisioningQueryProvider(SqlDatabaseConfiguration configuration)
+        public PostgresProvisioningQueryProvider(SqlDatabaseConfiguration configuration)
         {
-          this.configuration = configuration.ThrowIfNull(nameof(configuration));
+            this.configuration = configuration.ThrowIfNull(nameof(configuration));
         }
 
         public string GetSchemaProvisioningQuery()
         {
             return @$"
                 CREATE TABLE IF NOT EXISTS {configuration.FullTableName} (
-                    Id TEXT NOT NULL,
-                    StreamId TEXT NOT NULL,
-                    Timestamp datetime2 NOT NULL, 
-                    Revision INTEGER NOT NULL,
-                    Data BLOB NOT NULL,
+                    Id text NOT NULL,
+                    StreamId text NOT NULL,
+                    Timestamp timestamp NOT NULL,
+                    Revision integer NOT NULL,
+                    Data bytea NOT NULL,
                     PRIMARY KEY (Id, StreamId)
                 );
 

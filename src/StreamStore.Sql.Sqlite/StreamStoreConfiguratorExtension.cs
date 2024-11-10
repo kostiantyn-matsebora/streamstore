@@ -9,7 +9,7 @@ namespace StreamStore.Sql.Sqlite
     {
         public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-            return configurator.UseSqlDatabase(ConfigureDependencies, configuration);
+            return configurator.UseSqlDatabase(ConfigureDependencies, configuration, "StreamStore:Postgres");
         }
 
         public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, Action<SqlDatabaseConfigurator> dbConfigurator)
