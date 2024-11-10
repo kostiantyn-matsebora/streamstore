@@ -18,9 +18,6 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
             configurator.UseSqliteDatabase(CreateConfiguration());
         }
 
-        protected override string GetConnectionString()
-        {
-            return $"Data Source={fixture.DatabaseName};Version=3;";
-        }
+
     }
 }

@@ -16,15 +16,19 @@ namespace StreamStore.Sql.Tests.Database
         }
 
         public override MemoryDatabase Container => fixture.Container;
-
-        protected abstract string GetConnectionString();
+       
         protected override void SetUp() { }
+
+        protected override bool CheckPrerequisities()
+        {
+            return fixture.IsDatabaseReady;
+        }
 
         protected IConfiguration CreateConfiguration()
         {
             return new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
             {
-                { $"connectionStrings:StreamStore", GetConnectionString() },
+                { $"connectionStrings:StreamStore", fixture.GetConnectionString() },
             }).Build();
         }
     }

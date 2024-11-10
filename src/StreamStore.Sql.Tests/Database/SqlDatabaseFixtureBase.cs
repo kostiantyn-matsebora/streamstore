@@ -1,4 +1,5 @@
 ﻿using StreamStore.Sql.API;
+using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Database;
 using StreamStore.Sql.Provisioning;
 using StreamStore.Testing;
@@ -9,36 +10,45 @@ namespace StreamStore.Sql.Tests.Database
     public abstract class SqlDatabaseFixtureBase
     {
         public readonly MemoryDatabase Container = new MemoryDatabase();
-        
-        public string DatabaseName { get; }
+        public readonly bool IsDatabaseReady  = false;
+
+        protected readonly string databaseName;
 
         protected SqlDatabaseFixtureBase()
         {
-            DatabaseName = GenerateDatabaseName();
+            databaseName = CreateDatabase();
             ProvisionDatabase();
+            IsDatabaseReady = true;
         }
 
 
         void ProvisionDatabase()
         {
-            CreateDatabase();
-
             ProvisionSchema();
 
             FillSchema();
         }
 
-        
-        protected abstract string GenerateDatabaseName();
-        protected abstract void CreateDatabase();
+        public abstract string GetConnectionString();
+        protected abstract string CreateDatabase();
         protected abstract IDbConnectionFactory CreateConnectionFactory();
-        protected abstract IDapperCommandFactory CreateCommandFactory();
         protected abstract ISqlExceptionHandler CreateExceptionHandler();
         protected abstract ISqlProvisioningQueryProvider CreateProvisionQueryProvider();
 
+        protected SqlDatabaseConfiguration CreateConfiguration()
+        {
+            return new SqlDatabaseConfigurationBuilder()
+                        .WithConnectionString(GetConnectionString())
+                        .Build();
+        }
+
         void FillSchema()
         {
-            var database = new SqlStreamDatabase(CreateConnectionFactory(), CreateCommandFactory(), CreateExceptionHandler());
+            var database = new SqlStreamDatabase(
+                                connectionFactory: CreateConnectionFactory(),
+                                commandFactory: new DefaultDapperCommandFactory(new DefaultSqlQueryProvider(CreateConfiguration())),
+                                exceptionHandler: CreateExceptionHandler());
+
             Container.CopyTo(database);
         }
 

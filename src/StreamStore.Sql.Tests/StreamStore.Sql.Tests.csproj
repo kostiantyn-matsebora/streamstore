@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
+    <ProjectReference Include="..\StreamStore.Sql.Postgres\StreamStore.Sql.Postgres.csproj" />
     <ProjectReference Include="..\StreamStore.Sql.Sqlite\StreamStore.Sql.Sqlite.csproj" />
     <ProjectReference Include="..\StreamStore.Testing\StreamStore.Testing.csproj" />
   </ItemGroup>
