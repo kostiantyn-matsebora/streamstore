@@ -30,12 +30,11 @@ namespace StreamStore.Sql.Tests.Database
 
         
         protected abstract string GenerateDatabaseName();
-
         protected abstract void CreateDatabase();
-
         protected abstract IDbConnectionFactory CreateConnectionFactory();
         protected abstract IDapperCommandFactory CreateCommandFactory();
         protected abstract ISqlExceptionHandler CreateExceptionHandler();
+        protected abstract ISqlProvisionQueryProvider CreateProvisionQueryProvider();
 
         void FillSchema()
         {
@@ -45,7 +44,7 @@ namespace StreamStore.Sql.Tests.Database
 
         void ProvisionSchema()
         {
-            var provisioner = new SqlSchemaProvisioner(CreateConnectionFactory(), CreateCommandFactory());
+            var provisioner = new SqlSchemaProvisioner(CreateConnectionFactory(), CreateProvisionQueryProvider());
             provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
         }
     }

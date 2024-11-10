@@ -35,7 +35,7 @@ namespace StreamStore.Sql.Database
                 await connection.OpenAsync(token);
                 using (var transaction = await connection.BeginTransactionAsync(token))
                 {
-                    await connection.ExecuteAsync(commandFactory.CreateDeletionCommand(streamId, transaction));
+                    await connection.ExecuteAsync(commandFactory.CreateStreamDeleteCommand(streamId, transaction));
                     await transaction.CommitAsync(token);
                 }
             }
@@ -47,7 +47,7 @@ namespace StreamStore.Sql.Database
             {
                 await connection.OpenAsync(token);
 
-                EventEntity[] entities = (await connection.QueryAsync<EventEntity>(commandFactory.CreateGettingMetadataCommand(streamId))).ToArray();
+                EventEntity[] entities = (await connection.QueryAsync<EventEntity>(commandFactory.CreateGetStreamMetadataCommand(streamId))).ToArray();
 
                 if (!entities.Any())
                 {
@@ -63,7 +63,7 @@ namespace StreamStore.Sql.Database
             using (var connection = connectionFactory.GetConnection())
             {
                 await connection.OpenAsync(token);
-                return await connection.ExecuteScalarAsync<int>(commandFactory.CreateGettingActualRevisionCommand(streamId));
+                return await connection.ExecuteScalarAsync<int>(commandFactory.CreateGetActualRevisionCommand(streamId));
             }
         }
 
@@ -72,12 +72,12 @@ namespace StreamStore.Sql.Database
             using (var connection = connectionFactory.GetConnection())
             {
                 await connection.OpenAsync(token);
-                var number = await connection.ExecuteScalarAsync<int>(commandFactory.CreateGettingEventCountCommand(streamId));
+                var number = await connection.ExecuteScalarAsync<int>(commandFactory.CreateGetEventCountCommand(streamId));
 
                 if (number == 0)
                     throw new StreamNotFoundException(streamId);
 
-                var entities = (await connection.QueryAsync<EventEntity>(commandFactory.CreateGettingEventsCommand(streamId, startFrom, count))).ToArray();
+                var entities = (await connection.QueryAsync<EventEntity>(commandFactory.CreateGetEventsCommand(streamId, startFrom, count))).ToArray();
 
                 return entities.ToArray().ToRecords();
             }

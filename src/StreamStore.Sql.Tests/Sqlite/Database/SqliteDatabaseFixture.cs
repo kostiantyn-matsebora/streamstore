@@ -1,6 +1,7 @@
 ﻿using System.Data.SQLite;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
+using StreamStore.Sql.Database;
 using StreamStore.Sql.Sqlite;
 using StreamStore.Sql.Tests.Database;
 using StreamStore.Testing;
@@ -21,7 +22,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
 
         protected override IDapperCommandFactory CreateCommandFactory()
         {
-            return new SqliteDapperCommandFactory(CreateConfiguration());
+            return new DefaultDapperCommandFactory(CreateConfiguration());
         }
 
         protected override ISqlExceptionHandler CreateExceptionHandler()
@@ -44,6 +45,11 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
         protected override string GenerateDatabaseName()
         {
             return $"{Generated.String}.sqlite";
+        }
+
+        protected override ISqlProvisionQueryProvider CreateProvisionQueryProvider()
+        {
+           return new SqliteProvisioningQueryProvider(CreateConfiguration());
         }
     }
 }

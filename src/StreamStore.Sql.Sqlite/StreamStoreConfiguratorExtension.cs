@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using Microsoft.Extensions.Configuration;
 using StreamStore.Sql.Configuration;
 
@@ -22,7 +21,7 @@ namespace StreamStore.Sql.Sqlite
         {
             dependencyConfigurator.WithConnectionFactory<SqliteDbConnectionFactory>();
             dependencyConfigurator.WithExceptionHandling<SqliteExceptionHandler>();
-            dependencyConfigurator.WithCommandFactory<SqliteDapperCommandFactory>();
+            dependencyConfigurator.WithProvisioingQueryProvider<SqliteProvisioningQueryProvider>();
         }
     }
 }

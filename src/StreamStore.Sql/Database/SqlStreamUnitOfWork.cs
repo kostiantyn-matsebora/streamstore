@@ -32,7 +32,7 @@ namespace StreamStore.Sql.Database
                 {
                     try
                     {
-                        await connection.ExecuteAsync(commandFactory.CreateAppendingEventsCommand(streamId, uncommited.ToEntityArray(streamId), transaction));
+                        await connection.ExecuteAsync(commandFactory.CreateAppendEventCommand(streamId, uncommited.ToEntityArray(streamId), transaction));
                         await transaction.CommitAsync(token);
                     }
                     catch (Exception ex)
@@ -51,7 +51,7 @@ namespace StreamStore.Sql.Database
         {
             using (var connection = connectionFactory.GetConnection())
             {
-                return connection.ExecuteScalar<int>(commandFactory.CreateGettingActualRevisionCommand(streamId));
+                return connection.ExecuteScalar<int>(commandFactory.CreateGetActualRevisionCommand(streamId));
             }
         }
     }

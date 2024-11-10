@@ -6,17 +6,15 @@ namespace StreamStore.Sql.API
 {
     public interface IDapperCommandFactory
     {
-        CommandDefinition CreateDeletionCommand(Id streamId, IDbTransaction transaction);
-        CommandDefinition CreateGettingMetadataCommand(Id streamId);
+        CommandDefinition CreateStreamDeleteCommand(Id streamId, IDbTransaction transaction);
+        CommandDefinition CreateGetStreamMetadataCommand(Id streamId);
 
-        CommandDefinition CreateGettingActualRevisionCommand(Id streamId);
+        CommandDefinition CreateGetActualRevisionCommand(Id streamId);
 
-        CommandDefinition CreateGettingEventCountCommand(Id streamId);
+        CommandDefinition CreateGetEventCountCommand(Id streamId);
 
-        CommandDefinition CreateGettingEventsCommand(Id streamId, Revision startFrom, int count);
+        CommandDefinition CreateGetEventsCommand(Id streamId, Revision startFrom, int count);
 
-        CommandDefinition CreateAppendingEventsCommand(Id streamId, EventEntity[] events, IDbTransaction transaction);
-
-        CommandDefinition CreateSchemaProvisioningCommand();
+        CommandDefinition CreateAppendEventCommand(Id streamId, EventEntity[] events, IDbTransaction transaction);
     }
 }

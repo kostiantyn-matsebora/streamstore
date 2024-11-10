@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using StreamStore.Sql.API;
@@ -9,12 +8,12 @@ namespace StreamStore.Sql.Provisioning
     internal sealed class SqlSchemaProvisioner
     {
         readonly IDbConnectionFactory connectionFactory;
-        readonly IDapperCommandFactory commandFactory;
+        readonly ISqlProvisionQueryProvider queryProvider;
 
-        public SqlSchemaProvisioner(IDbConnectionFactory connectionFactory, IDapperCommandFactory commandFactory)
+        public SqlSchemaProvisioner(IDbConnectionFactory connectionFactory, ISqlProvisionQueryProvider queryProvider)
         {
             this.connectionFactory = connectionFactory.ThrowIfNull(nameof(connectionFactory));
-            this.commandFactory = commandFactory.ThrowIfNull(nameof(commandFactory));
+            this.queryProvider = queryProvider.ThrowIfNull(nameof(queryProvider));
         }
 
         public async Task ProvisionSchemaAsync(CancellationToken token)
@@ -22,7 +21,7 @@ namespace StreamStore.Sql.Provisioning
             using (var connection = connectionFactory.GetConnection())
             {
                 await connection.OpenAsync(token);
-                await connection.ExecuteAsync(commandFactory.CreateSchemaProvisioningCommand());
+                await connection.ExecuteAsync(queryProvider.GetSchemaProvisioningQuery());
             }
         }
     }
