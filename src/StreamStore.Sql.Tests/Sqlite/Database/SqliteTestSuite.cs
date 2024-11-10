@@ -12,12 +12,5 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
         public SqliteTestSuite(SqliteDatabaseFixture fixture): base(fixture)
         {
         }
-
-        protected override void ConfigureDatabase(IStreamStoreConfigurator configurator)
-        {
-            configurator.UseSqliteDatabase(CreateConfiguration());
-        }
-
-
     }
 }

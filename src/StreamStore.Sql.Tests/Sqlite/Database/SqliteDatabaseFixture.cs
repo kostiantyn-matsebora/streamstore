@@ -13,19 +13,9 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
         {
         }
 
-        public override string GetConnectionString()
+        public override void ConfigureDatabase(IStreamStoreConfigurator configurator)
         {
-            return $"Data Source = {databaseName}; Version = 3;";
-        }
-
-        protected override IDbConnectionFactory CreateConnectionFactory()
-        {
-            return new SqliteDbConnectionFactory(CreateConfiguration());
-        }
-
-        protected override ISqlExceptionHandler CreateExceptionHandler()
-        {
-            return new SqliteExceptionHandler();
+            configurator.UseSqliteDatabase(c => c.WithConnectionString(GetConnectionString()));
         }
 
         protected override string CreateDatabase()
@@ -35,9 +25,9 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
             return databaseName;
         }
 
-        protected override ISqlProvisioningQueryProvider CreateProvisionQueryProvider()
+        string GetConnectionString()
         {
-           return new SqliteProvisioningQueryProvider(CreateConfiguration());
+            return $"Data Source = {databaseName}; Version = 3;";
         }
     }
 }

@@ -17,6 +17,7 @@ namespace StreamStore.Sql.Sqlite
             return configurator.UseSqlDatabase(ConfigureDependencies, dbConfigurator);
         }
 
+
         static void ConfigureDependencies(SqlDatabaseDependencyConfigurator dependencyConfigurator)
         {
             dependencyConfigurator.WithConnectionFactory<SqliteDbConnectionFactory>();

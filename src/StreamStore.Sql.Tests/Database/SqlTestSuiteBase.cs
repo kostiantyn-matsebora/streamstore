@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Extensions.Configuration;
+﻿using StreamStore.Sql.Configuration;
 using StreamStore.Testing;
 using StreamStore.Testing.StreamDatabase;
 
@@ -23,13 +22,9 @@ namespace StreamStore.Sql.Tests.Database
         {
             return fixture.IsDatabaseReady;
         }
-
-        protected IConfiguration CreateConfiguration()
+        protected override void ConfigureDatabase(IStreamStoreConfigurator configurator)
         {
-            return new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                { $"connectionStrings:StreamStore", fixture.GetConnectionString() },
-            }).Build();
+            fixture.ConfigureDatabase(configurator);
         }
     }
 }

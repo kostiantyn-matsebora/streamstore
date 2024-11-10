@@ -1,6 +1,4 @@
-﻿using StreamStore.Sql.API;
-using StreamStore.Sql.Configuration;
-using StreamStore.Sql.Database;
+﻿using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Sql.Provisioning;
 using StreamStore.Testing;
 
@@ -17,44 +15,39 @@ namespace StreamStore.Sql.Tests.Database
         protected SqlDatabaseFixtureBase()
         {
             databaseName = CreateDatabase();
-            ProvisionDatabase();
+
+            var provider = BuildServiceProvider();
+
+            ProvisionSchema(provider);
+
+            FillSchema(provider);
+
             IsDatabaseReady = true;
         }
 
+        public abstract void ConfigureDatabase(IStreamStoreConfigurator configurator);
 
-        void ProvisionDatabase()
-        {
-            ProvisionSchema();
-
-            FillSchema();
-        }
-
-        public abstract string GetConnectionString();
         protected abstract string CreateDatabase();
-        protected abstract IDbConnectionFactory CreateConnectionFactory();
-        protected abstract ISqlExceptionHandler CreateExceptionHandler();
-        protected abstract ISqlProvisioningQueryProvider CreateProvisionQueryProvider();
 
-        protected SqlDatabaseConfiguration CreateConfiguration()
+        ServiceProvider BuildServiceProvider()
         {
-            return new SqlDatabaseConfigurationBuilder()
-                        .WithConnectionString(GetConnectionString())
-                        .Build();
+            var serviceCollection = new ServiceCollection();
+            var configurator = new StreamStoreConfigurator();
+
+            ConfigureDatabase(configurator);
+            configurator.Configure(serviceCollection);
+            return serviceCollection.BuildServiceProvider();
         }
 
-        void FillSchema()
+        void FillSchema(IServiceProvider provider)
         {
-            var database = new SqlStreamDatabase(
-                                connectionFactory: CreateConnectionFactory(),
-                                commandFactory: new DefaultDapperCommandFactory(new DefaultSqlQueryProvider(CreateConfiguration())),
-                                exceptionHandler: CreateExceptionHandler());
-
+            var database = provider.GetRequiredService<IStreamDatabase>();
             Container.CopyTo(database);
         }
 
-        void ProvisionSchema()
+        void ProvisionSchema(IServiceProvider provider)
         {
-            var provisioner = new SqlSchemaProvisioner(CreateConnectionFactory(), CreateProvisionQueryProvider());
+            var provisioner = provider.GetRequiredService<SqlSchemaProvisioner>();
             provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
         }
     }

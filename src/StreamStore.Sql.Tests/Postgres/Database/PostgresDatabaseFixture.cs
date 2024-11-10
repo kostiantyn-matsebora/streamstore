@@ -1,37 +1,24 @@
-﻿
-using StreamStore.Sql.API;
-using StreamStore.Sql.Postgres;
+﻿using StreamStore.Sql.Postgres;
 using StreamStore.Sql.Tests.Database;
-using StreamStore.Testing;
+
 
 namespace StreamStore.Sql.Tests.Postgres.Database
 {
     internal class PostgresDatabaseFixture : SqlDatabaseFixtureBase
     {
-
-        public override string GetConnectionString()
+        public override void ConfigureDatabase(IStreamStoreConfigurator configurator)
         {
-            return String.Empty;
+           configurator.UsePostgresDatabase(c => c.WithConnectionString(GetConnectionString()));
         }
         
-        protected override IDbConnectionFactory CreateConnectionFactory()
-        {
-           return new PostgresConnectionFactory(CreateConfiguration());
-        }
-
         protected override string CreateDatabase()
         {
-            return Generated.Id;
+            throw new NotImplementedException();
         }
 
-        protected override ISqlExceptionHandler CreateExceptionHandler()
+        string GetConnectionString()
         {
-            return new PostgresExceptionHandler();
-        }
-
-        protected override ISqlProvisioningQueryProvider CreateProvisionQueryProvider()
-        {
-            return new PostgresProvisioningQueryProvider(CreateConfiguration());
+            throw new NotImplementedException();
         }
     }
 }
