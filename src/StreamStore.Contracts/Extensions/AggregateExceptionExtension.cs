@@ -7,17 +7,11 @@ namespace StreamStore
     {
         public static Exception GetFirstOriginalException(this AggregateException exception)
         {
-            Exception realException = exception;
-            var aggregateException = realException as AggregateException;
+            Exception realException = exception.Flatten().InnerException;
 
-            if (aggregateException != null)
+            while (realException != null && realException.InnerException != null)
             {
-                realException = aggregateException.Flatten().InnerException; 
-
-                while (realException != null && realException.InnerException != null)
-                {
-                    realException = realException.InnerException;
-                }
+                realException = realException.InnerException;
             }
 
             return realException ?? exception;

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning].
 
 - Added support for PostgreSQL backend.
 
+### Fixed
+
+- Fixed bug in extensions when AggregateException was thrown instead of the original exception.
+
 ## [0.9.0] - 2024-11-09
 
 ### Added
