@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Data.Common;
 using System.Data.SQLite;
+using StreamStore.Sql.API;
+using StreamStore.Sql.Configuration;
 
 
-namespace StreamStore.SQL.Sqlite
+namespace StreamStore.Sql.Sqlite
 {
     internal class SqliteDbConnectionFactory: IDbConnectionFactory
     {
         readonly string connectionString;
 
-        public SqliteDbConnectionFactory(SqliteDatabaseConfiguration configuration): this(configuration.ConnectionString)
+        public SqliteDbConnectionFactory(SqlDatabaseConfiguration configuration): this(configuration.ConnectionString)
         {
         }
         

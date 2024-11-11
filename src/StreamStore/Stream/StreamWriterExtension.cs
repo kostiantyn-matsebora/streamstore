@@ -26,7 +26,7 @@ namespace StreamStore
 
         public static Task<Revision> CommitAsync(this Task<IStreamWriter> writer, CancellationToken token = default)
         {
-            return writer.Result!.CommitAsync(token);
+            return FuncExtension.ThrowOriginalExceptionIfOccured(() => writer.Result.CommitAsync(token));
         }
 
         public static async Task<IStreamWriter> AppendEventAsync(this IStreamWriter writer, Event @event, CancellationToken token = default)
@@ -37,13 +37,14 @@ namespace StreamStore
 
         public static async Task<IStreamWriter> AppendEventAsync(this Task<IStreamWriter> writer, Event @event, CancellationToken token = default)
         {
-            return await writer.Result.AppendEventAsync(@event);
-            
+            return await FuncExtension.ThrowOriginalExceptionIfOccured(async () => await writer.Result.AppendEventAsync(@event));
+
         }
 
         public static async Task<IStreamWriter> AppendEventAsync(this Task<IStreamWriter> writer, Id eventId, DateTime timestamp, object @event, CancellationToken token = default)
         {
-           return await  writer.Result.AppendEventAsync(eventId, timestamp, @event, token);
+            return await FuncExtension.ThrowOriginalExceptionIfOccured(async () => await writer.Result.AppendEventAsync(eventId, timestamp, @event, token));
+
         }
 
         public static async Task<IStreamWriter> AppendEventAsync(this IStreamWriter writer, Action<IEventBuilder> build, CancellationToken token = default)
@@ -58,17 +59,16 @@ namespace StreamStore
 
         public static Task<IStreamWriter> AppendEventAsync(this Task<IStreamWriter> writer, Action<IEventBuilder> build, CancellationToken token = default)
         {
-            return writer.Result.AppendEventAsync(build, token);
+            return FuncExtension.ThrowOriginalExceptionIfOccured(() => writer.Result.AppendEventAsync(build, token));
         }
 
         public static async Task<IStreamWriter> AppendRangeAsync(this Task<IStreamWriter> writer, IEnumerable<Event> events, CancellationToken token = default)
         {
             foreach (var @event in events)
             {
-                await writer.Result.AppendEventAsync(@event);
+                await FuncExtension.ThrowOriginalExceptionIfOccured(() => writer.Result.AppendEventAsync(@event));
             }
             return writer.Result;
         }
-
     }
 }

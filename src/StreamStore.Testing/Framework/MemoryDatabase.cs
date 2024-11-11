@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
-using Newtonsoft.Json.Linq;
 using StreamStore.Testing.Models;
 
 namespace StreamStore.Testing

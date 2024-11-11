@@ -2,11 +2,11 @@
 using Moq;
 using StreamStore.Testing.Framework;
 
-namespace StreamStore.Sql.Tests.Sqlite.Configurator
+namespace StreamStore.Sql.Tests.DatabaseConfigurator
 {
-    public class SqliteDatabaseConfiguratorTestSuite: TestSuiteBase
+    public class SqlDatabaseConfiguratorTestSuite : TestSuiteBase
     {
-        public SqliteDatabaseConfiguratorTestSuite()
+        public SqlDatabaseConfiguratorTestSuite()
         {
             MockRepository = new MockRepository(MockBehavior.Default);
 

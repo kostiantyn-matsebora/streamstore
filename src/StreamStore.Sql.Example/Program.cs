@@ -3,27 +3,52 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Hosting;
 using StreamStore.ExampleBase;
 using StreamStore.Sql.Sqlite;
+using StreamStore.Sql.PostgreSql;
+using StreamStore.Sql.Tests.PostgreSql.Database;
+using StreamStore.Sql.Tests.Sqlite.Database;
 
 namespace StreamStore.Sql.Example
 {
     [ExcludeFromCodeCoverage]
     internal static class Program
     {
+        const string databaseName = "streamstore";
         static void Main(string[] args)
         {
-            SQLiteConnection.CreateFile("StreamStore.sqlite");
+          
 
             var builder = Host.CreateApplicationBuilder(args);
-          
-            builder
-                .Services
-                .ConfigureStreamStore(x =>
-                    x.UseSqliteDatabase(builder.Configuration));
+
+            UseSqliteDatabase(builder); // Uncomment this line to use SQLite database
+            // UsePostgresDatabase(builder); // Uncomment this line to use PostgreSQL database
 
             builder.ConfigureExampleApplication();
 
             var host = builder.Build();
+
             host.Run();
+        }
+
+        static void UseSqliteDatabase(HostApplicationBuilder builder)
+        {
+            var database = new SqliteTestDatabase(databaseName);
+            database.EnsureExists();
+
+            builder
+                .Services
+                .ConfigureStreamStore(x =>
+                    x.UseSqliteDatabase(x => x.WithConnectionString(database.ConnectionString)));
+        }
+
+        static void UsePostgresDatabase(HostApplicationBuilder builder)
+        {
+            var database = new PostgresTestDatabase(databaseName);
+            database.EnsureExists();
+
+            builder
+                .Services
+                .ConfigureStreamStore(x =>
+                    x.UsePostgresDatabase(x => x.WithConnectionString(database.ConnectionString)));
         }
     }
 }

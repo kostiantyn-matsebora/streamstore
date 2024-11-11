@@ -33,7 +33,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.ExampleBase\StreamStore.ExampleBase.csproj" />
+    <ProjectReference Include="..\StreamStore.Sql.PostgreSql\StreamStore.Sql.PostgreSql.csproj" />
     <ProjectReference Include="..\StreamStore.Sql.Sqlite\StreamStore.Sql.Sqlite.csproj" />
+    <ProjectReference Include="..\StreamStore.Sql.Tests\StreamStore.Sql.Tests.csproj" />
   </ItemGroup>
 
 </Project>

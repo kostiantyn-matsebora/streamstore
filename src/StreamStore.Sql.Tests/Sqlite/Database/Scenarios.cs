@@ -3,7 +3,7 @@ using Xunit.Abstractions;
 
 namespace StreamStore.Sql.Tests.Sqlite.Database
 {
-    [Collection("Reading")]
+    [Collection("Reading Sqlite")]
     public class Finding_stream_metadata : Find_stream_data<SqliteTestSuite>
     {
         public Finding_stream_metadata(SqliteDatabaseFixture fixture) : base(new SqliteTestSuite(fixture))
@@ -11,7 +11,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
         }
     }
 
-    [Collection("Reading")]
+    [Collection("Reading Sqlite")]
 
     public class Reading_from_database : Reading_from_database<SqliteTestSuite>
     {
@@ -21,7 +21,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
     }
 
 
-    [Collection("Deleting")]
+    [Collection("Deleting Sqlite")]
     public class Deleting_from_database : Deleting_from_database<SqliteTestSuite>
     {
         public Deleting_from_database(SqliteDatabaseFixture fixture) : base(new SqliteTestSuite(fixture))
@@ -29,7 +29,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
         }
     }
 
-    [Collection("Writing")]
+    [Collection("Writing Sqlite")]
     public class Writing_to_database : Writing_to_database<SqliteTestSuite>
     {
         public Writing_to_database(SqliteDatabaseFixture fixture) : base(new SqliteTestSuite(fixture))

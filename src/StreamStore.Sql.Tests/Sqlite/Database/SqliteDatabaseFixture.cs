@@ -1,49 +1,18 @@
-﻿using System.Data.SQLite;
-using StreamStore.SQL.Sqlite;
-using StreamStore.Testing;
+﻿using StreamStore.Sql.Sqlite;
+using StreamStore.Sql.Tests.Database;
 
 
 namespace StreamStore.Sql.Tests.Sqlite.Database
 {
-    public sealed class SqliteDatabaseFixture : IDisposable
+    public sealed class SqliteDatabaseFixture : SqlDatabaseFixtureBase
     {
-        readonly string databaseName = $"{Generated.String}.sqlite";
-
-        public readonly MemoryDatabase Container = new MemoryDatabase();
-
-        public string DatabaseName => databaseName;
-
-        public SqliteDatabaseFixture()
+        public SqliteDatabaseFixture(): base(new SqliteTestDatabase($"{Generated.DatabaseName}.sqlite"))
         {
-            SQLiteConnection.CreateFile($"{databaseName}");
-            ProvisionDatabase().Wait();
         }
 
-
-        async Task ProvisionDatabase()
+        public override void ConfigureDatabase(IStreamStoreConfigurator configurator)
         {
-
-            var configuration = CreateConfiguration();
-            var connectionFactory = new SqliteDbConnectionFactory(configuration);
-
-            var provisioner = new SqliteSchemaProvisioner(CreateConfiguration(), connectionFactory);
-            await provisioner.ProvisionSchemaAsync(CancellationToken.None);
-
-            var database = new SqliteStreamDatabase(connectionFactory, configuration);
-            Container.CopyTo(database);
-        }
-
-
-        SqliteDatabaseConfiguration CreateConfiguration()
-        {
-            return
-            new SqliteDatabaseConfigurationBuilder()
-                 .WithConnectionString($"Data Source ={databaseName}; Version = 3;")
-                 .Build();
-        }
-
-        public void Dispose()
-        {
+            configurator.UseSqliteDatabase(c => c.WithConnectionString(connectionString));
         }
     }
 }

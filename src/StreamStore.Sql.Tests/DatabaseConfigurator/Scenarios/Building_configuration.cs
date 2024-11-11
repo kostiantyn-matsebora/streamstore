@@ -3,21 +3,21 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Sqlite;
-using StreamStore.SQL.Sqlite;
 using StreamStore.Testing;
 
-namespace StreamStore.Sql.Tests.Sqlite.Configurator
+namespace StreamStore.Sql.Tests.DatabaseConfigurator
 {
-    public class Building_configuration : Scenario<SqliteDatabaseConfiguratorTestSuite>
+    public class Building_configuration : Scenario<SqlDatabaseConfiguratorTestSuite>
     {
-        public Building_configuration() : base(new SqliteDatabaseConfiguratorTestSuite())
+        public Building_configuration() : base(new SqlDatabaseConfiguratorTestSuite())
         {
         }
 
-        SqliteDatabaseConfigurator CreateSqliteDatabaseConfigurator()
+        SqlDatabaseConfigurator CreateSqliteDatabaseConfigurator()
         {
-            return new SqliteDatabaseConfigurator(Suite.MockServiceCollection.Object);
+            return new SqlDatabaseConfigurator(Suite.MockServiceCollection.Object, new SqlDatabaseConfiguration());
         }
 
         [SkippableFact]
@@ -66,7 +66,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
             provisionSchema.SetupGet(x => x.Value).Returns("true");
 
             configuration.Setup(x => x.GetSection("ConnectionStrings")).Returns(connectionStrings.Object);
-            configuration.Setup(x => x.GetSection("StreamStore:Sqlite")).Returns(section.Object);
+            configuration.Setup(x => x.GetSection("StreamStore:Sql")).Returns(section.Object);
             connectionStrings.SetupGet(x => x["StreamStore"]).Returns("connectionString");
             section.Setup(x => x.GetChildren()).Returns(new[] { section.Object });
             section.Setup(x => x.GetSection("TableName")).Returns(tableName.Object);
@@ -76,7 +76,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
 
             // Act
             var configurator = CreateSqliteDatabaseConfigurator();
-            configurator.Configure(configuration.Object);
+            configurator.Configure(configuration.Object, "StreamStore:Sql");
             var config = configurator.Build();
 
             // Assert
@@ -92,7 +92,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
 
         [Fact]
         public void When_configuring_manually()
-        {   
+        {
             var streamStoreConfigurator = new StreamStoreConfigurator();
             var collection = new ServiceCollection();
 
@@ -104,13 +104,12 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
 
             streamStoreConfigurator.Configure(collection);
             var provider = collection.BuildServiceProvider();
-            var config = provider.GetRequiredService<SqliteDatabaseConfiguration>();
-            
+            var config = provider.GetRequiredService<SqlDatabaseConfiguration>();
+
             config.TableName.Should().Be("tableName");
             config.ConnectionString.Should().Be("connectionString");
             config.SchemaName.Should().Be("schemaName");
             config.ProvisionSchema.Should().BeTrue();
-
         }
     }
 }

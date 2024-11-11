@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace StreamStore.SQL
+namespace StreamStore.Sql
 {
     public static class EventEntityExtension
     {

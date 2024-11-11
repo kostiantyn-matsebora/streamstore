@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.10.0] - 2024-11-11
+
+### Added
+
+- Added support for PostgreSQL backend.
+
+### Fixed
+
+- Fixed bug in extensions when AggregateException was thrown instead of the original exception.
+
 ## [0.9.0] - 2024-11-09
 
 ### Added

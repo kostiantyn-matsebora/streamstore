@@ -20,7 +20,8 @@ Despite the fact that component implements a logical layer for storing and query
 
   | Package                | Description                                                                            |                                                                                                                                                                            |
   | ------------------------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | [StreamStore.Sql.Sqlite] | [`SQLite`] implementation                                                              | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/) |
+  | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) implementation | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
+  | [StreamStore.Sql.Sqlite] | [`SQLite`](https://www.sqlite.org/index.html) implementation | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
   | [StreamStore.InMemory]   | `In-memory` implementation is provided **for testing and educational purposes only** | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
   | [StreamStore.S3.AWS]     | [`Amazon S3`] implementation                                                         | [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
   | [StreamStore.S3.B2]      | [`Backblaze B2`] implementation                                                      | [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
@@ -49,7 +50,7 @@ Also add implementations of particular storage backends, such as:
 - [x] [`Amazon S3`] - Amazon S3.
 - [x] [`SQL`](https://github.com/DapperLib/Dapper) based DBMS:
   - [x] [`SQLite`]
-  - [ ] [`PostgreSQL`](https://www.postgresql.org/)
+  - [x] [`PostgreSQL`](https://www.postgresql.org/)
   - [ ] [`Azure SQL`](https://azure.microsoft.com/en-us/services/sql-database/)
   - [ ] [`MySQL`](https://www.mysql.com/)
 - [ ] [`Cassandra DB`](https://cassandra.apache.org/_/index.html) - distributed storage.
@@ -270,3 +271,4 @@ to contribute, feel free to [open an issue][issues] or
 [`Backblaze B2`]: https://www.backblaze.com/b2/cloud-storage.html
 [`Amazon S3`]: https://aws.amazon.com/s3/
 [`SQLite`]: https://www.sqlite.org/index.html
+[StreamStore.Sql.PostgreSql]:https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/
