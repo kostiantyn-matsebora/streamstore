@@ -42,7 +42,7 @@ namespace StreamStore.Sql.Tests.Database
             return serviceCollection.BuildServiceProvider();
         }
 
-        void ProvisionSchema(IServiceProvider provider)
+        static void ProvisionSchema(IServiceProvider provider)
         {
             var provisioner = provider.GetRequiredService<SqlSchemaProvisioner>();
             provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
