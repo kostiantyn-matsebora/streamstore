@@ -6,9 +6,11 @@ namespace StreamStore.Sql.PostgreSql
 {
     public static class StreamStoreConfiguratorExtension
     {
+        const string configurationSection = "StreamStore:PostgreSql";
+
         public static IStreamStoreConfigurator UsePostgresDatabase(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-            return configurator.UseSqlDatabase(DefaultConfiguration, ConfigureDependencies, configuration, "StreamStore:Sqlite");
+            return configurator.UseSqlDatabase(DefaultConfiguration, ConfigureDependencies, configuration, configurationSection);
         }
 
         public static IStreamStoreConfigurator UsePostgresDatabase(this IStreamStoreConfigurator configurator, Action<SqlDatabaseConfigurator> dbConfigurator)

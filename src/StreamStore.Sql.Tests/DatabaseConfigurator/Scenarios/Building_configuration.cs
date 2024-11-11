@@ -7,7 +7,8 @@ using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Sqlite;
 using StreamStore.Testing;
 
-namespace StreamStore.Sql.Tests.Configurator { 
+namespace StreamStore.Sql.Tests.DatabaseConfigurator
+{
     public class Building_configuration : Scenario<SqlDatabaseConfiguratorTestSuite>
     {
         public Building_configuration() : base(new SqlDatabaseConfiguratorTestSuite())
