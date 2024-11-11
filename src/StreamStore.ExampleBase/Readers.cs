@@ -26,4 +26,12 @@ namespace StreamStore.ExampleBase
         {
         }
     }
+
+    [ExcludeFromCodeCoverage]
+    public class ReaderToEnd1 : ReaderToEndBase
+    {
+        public ReaderToEnd1(ILogger<ReaderToEnd1> logger, IStreamStore store) : base(logger, store)
+        {
+        }
+    }
 }

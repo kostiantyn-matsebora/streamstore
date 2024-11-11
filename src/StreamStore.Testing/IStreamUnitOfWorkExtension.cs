@@ -13,13 +13,13 @@
 
         public static async Task<IStreamUnitOfWork> AddRangeAsync(this Task<IStreamUnitOfWork> unitOfWork, IEnumerable<EventRecord> records, CancellationToken token = default)
         {
-            await unitOfWork.Result.AddRangeAsync(records, token);
+            await FuncExtension.ThrowOriginalExceptionIfOccured(async() => await unitOfWork.Result.AddRangeAsync(records, token));
             return unitOfWork.Result;
         }
 
         public static async Task<IStreamUnitOfWork> SaveChangesAsync(this Task<IStreamUnitOfWork> unitOfWork, CancellationToken token = default)
         {
-            await unitOfWork.Result.SaveChangesAsync(token);
+            await FuncExtension.ThrowOriginalExceptionIfOccured(async () => await unitOfWork.Result.SaveChangesAsync(token));
             return unitOfWork.Result;
         }
     }

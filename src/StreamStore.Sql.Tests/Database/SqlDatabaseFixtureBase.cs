@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Sql.Provisioning;
+using StreamStore.Sql.API;
 using StreamStore.Testing;
 
 
@@ -9,15 +9,13 @@ namespace StreamStore.Sql.Tests.Database
     {
         public readonly MemoryDatabase Container = new MemoryDatabase();
         public readonly bool IsDatabaseReady  = false;
-
-        protected readonly string databaseName;
-
-        protected SqlDatabaseFixtureBase()
+        protected readonly string connectionString;
+        protected SqlDatabaseFixtureBase(ITestDatabase database)
         {
-            var created  = CreateDatabase(out databaseName);
+            var exists  = database.EnsureExists();
+            this.connectionString = database.ConnectionString;
 
-            if (!created) return;
-            
+            if (!exists) return;
 
             var provider = BuildServiceProvider();
 
@@ -29,8 +27,6 @@ namespace StreamStore.Sql.Tests.Database
         }
 
         public abstract void ConfigureDatabase(IStreamStoreConfigurator configurator);
-
-        protected abstract bool CreateDatabase(out string databaseName);
 
         ServiceProvider BuildServiceProvider()
         {
@@ -44,7 +40,7 @@ namespace StreamStore.Sql.Tests.Database
 
         static void ProvisionSchema(IServiceProvider provider)
         {
-            var provisioner = provider.GetRequiredService<SqlSchemaProvisioner>();
+            var provisioner = provider.GetRequiredService<ISqlSchemaProvisioner>();
             provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
         }
 

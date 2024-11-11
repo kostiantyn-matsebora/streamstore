@@ -27,8 +27,8 @@ namespace StreamStore.ExampleBase
                 .AddHostedService<Writer3>()
                 .AddHostedService<Reader1>()
                 .AddHostedService<Reader2>()
-                .AddHostedService<Reader3>();
-            
+                .AddHostedService<Reader3>()
+                .AddHostedService<ReaderToEnd1>();
             return builder;
         }
     }

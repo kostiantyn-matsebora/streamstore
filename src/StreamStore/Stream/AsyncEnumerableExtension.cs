@@ -20,7 +20,7 @@ namespace StreamStore
 
         public static async Task<StreamEventCollection> ReadToEndAsync(this Task<IAsyncEnumerable<StreamEvent>> enumerable, CancellationToken cancellationToken = default)
         {
-            return await enumerable.Result.ReadToEndAsync(cancellationToken);
+            return await FuncExtension.ThrowOriginalExceptionIfOccured(async () => await enumerable.Result.ReadToEndAsync(cancellationToken));
         }
     }
 }
