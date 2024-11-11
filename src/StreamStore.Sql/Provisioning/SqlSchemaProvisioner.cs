@@ -5,7 +5,7 @@ using StreamStore.Sql.API;
 
 namespace StreamStore.Sql.Provisioning
 {
-    internal sealed class SqlSchemaProvisioner
+    internal sealed class SqlSchemaProvisioner: ISqlSchemaProvisioner
     {
         readonly IDbConnectionFactory connectionFactory;
         readonly ISqlProvisioningQueryProvider queryProvider;
