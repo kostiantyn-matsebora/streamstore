@@ -14,20 +14,23 @@ namespace StreamStore.Sql.Tests.Database
 
         protected SqlDatabaseFixtureBase()
         {
-            databaseName = CreateDatabase();
+            var created  = CreateDatabase(out databaseName);
+
+            if (!created) return;
+            
 
             var provider = BuildServiceProvider();
 
             ProvisionSchema(provider);
 
-            FillSchema(provider);
+            FillDatabase(provider);
 
             IsDatabaseReady = true;
         }
 
         public abstract void ConfigureDatabase(IStreamStoreConfigurator configurator);
 
-        protected abstract string CreateDatabase();
+        protected abstract bool CreateDatabase(out string databaseName);
 
         ServiceProvider BuildServiceProvider()
         {
@@ -39,16 +42,17 @@ namespace StreamStore.Sql.Tests.Database
             return serviceCollection.BuildServiceProvider();
         }
 
-        void FillSchema(IServiceProvider provider)
-        {
-            var database = provider.GetRequiredService<IStreamDatabase>();
-            Container.CopyTo(database);
-        }
-
         void ProvisionSchema(IServiceProvider provider)
         {
             var provisioner = provider.GetRequiredService<SqlSchemaProvisioner>();
             provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
         }
+
+        void FillDatabase(IServiceProvider provider)
+        {
+            var database = provider.GetRequiredService<IStreamDatabase>();
+            Container.CopyTo(database);
+        }
+
     }
 }

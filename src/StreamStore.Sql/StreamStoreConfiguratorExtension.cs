@@ -11,6 +11,7 @@ namespace StreamStore.Sql
     {
         public static IStreamStoreConfigurator UseSqlDatabase(
                 this IStreamStoreConfigurator configurator,
+                SqlDatabaseConfiguration defaultConfig,
                 Action<SqlDatabaseDependencyConfigurator> dependencyConfigurator,
                 IConfiguration configuration,
                 string sectionName)
@@ -18,7 +19,7 @@ namespace StreamStore.Sql
             configurator.WithDatabase(services =>
             {
                 // Configuring database
-                new SqlDatabaseConfigurator(services).Configure(configuration, sectionName);
+                new SqlDatabaseConfigurator(services, defaultConfig).Configure(configuration, sectionName);
 
                 // Configuring dependencies
                 ConfigureDependencies(dependencyConfigurator, services);
@@ -30,13 +31,14 @@ namespace StreamStore.Sql
 
         public static IStreamStoreConfigurator UseSqlDatabase(
                 this IStreamStoreConfigurator configurator,
+                SqlDatabaseConfiguration defaultConfig,
                 Action<SqlDatabaseDependencyConfigurator> dependencyConfigurator,
                 Action<SqlDatabaseConfigurator> dbConfigurator)
         {
             configurator.WithDatabase(services =>
             {
                 // Configuring database
-                var configurator = new SqlDatabaseConfigurator(services);
+                var configurator = new SqlDatabaseConfigurator(services, defaultConfig);
                 dbConfigurator(configurator);
                 configurator.Configure();
 

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace StreamStore.Sql.Configuration
 {
-    public class SqlDatabaseConfiguration
+    public class SqlDatabaseConfiguration : ICloneable
     {
         public string ConnectionString { get; set; } = string.Empty;
         public string SchemaName { get; set; } = string.Empty;
@@ -18,52 +18,70 @@ namespace StreamStore.Sql.Configuration
         public SqlDatabaseConfiguration()
         {
         }
+
+        public object Clone()
+        {
+            return new SqlDatabaseConfiguration
+            {
+                SchemaName = SchemaName,
+                TableName = TableName,
+                ConnectionString = ConnectionString,
+                ProvisionSchema = ProvisionSchema
+            };
+        }
     }
 
     public class SqlDatabaseConfigurationBuilder : IConfigurator
     {
-        string? connectionString;
-        string name = "Events";
-        string schema = "main";
-        bool provisionSchema = true;
+        readonly SqlDatabaseConfiguration configuration;
+
+        public SqlDatabaseConfigurationBuilder(SqlDatabaseConfiguration defaultConfig)
+        {
+            configuration = (SqlDatabaseConfiguration)defaultConfig.Clone();
+        }
 
         public SqlDatabaseConfigurationBuilder WithConnectionString(string connectionString)
         {
-            this.connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            configuration.ConnectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
             return this;
         }
 
         public SqlDatabaseConfigurationBuilder WithTable(string name)
         {
-            this.name = name ?? throw new ArgumentNullException(nameof(name));
+            configuration.TableName = name ?? throw new ArgumentNullException(nameof(name));
             return this;
         }
 
         public SqlDatabaseConfigurationBuilder WithSchema(string schema)
         {
-            this.schema = schema ?? throw new ArgumentNullException(nameof(schema));
+            configuration.SchemaName = schema ?? throw new ArgumentNullException(nameof(schema));
             return this;
         }
 
         public SqlDatabaseConfigurationBuilder ProvisionSchema(bool provisionSchema)
         {
-            this.provisionSchema = provisionSchema;
+            configuration.ProvisionSchema = provisionSchema;
             return this;
         }
 
         public SqlDatabaseConfiguration Build()
         {
-            if (connectionString == null)
+            if (configuration.ConnectionString == null)
             {
                 throw new InvalidOperationException("Connection string must be set");
             }
-            return new SqlDatabaseConfiguration
+
+            if (configuration.SchemaName == null)
             {
-                ConnectionString = connectionString,
-                SchemaName = schema,
-                TableName = name,
-                ProvisionSchema = provisionSchema
-            };
+                throw new InvalidOperationException("SchemaName must be set");
+            }
+
+            if (configuration.TableName == null)
+            {
+                throw new InvalidOperationException("TableName string must be set");
+            }
+
+            return (SqlDatabaseConfiguration)configuration.Clone();
         }
 
         public virtual IServiceCollection Configure()

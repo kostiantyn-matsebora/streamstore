@@ -1,8 +1,6 @@
 ﻿using System.Data.SQLite;
-using StreamStore.Sql.API;
 using StreamStore.Sql.Sqlite;
 using StreamStore.Sql.Tests.Database;
-using StreamStore.Testing;
 
 
 namespace StreamStore.Sql.Tests.Sqlite.Database
@@ -18,11 +16,11 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
             configurator.UseSqliteDatabase(c => c.WithConnectionString(GetConnectionString()));
         }
 
-        protected override string CreateDatabase()
+        protected override bool CreateDatabase(out string databaseName)
         {
-            var databaseName = $"{Generated.String}.sqlite";
+            databaseName = $"{Generated.DatabaseName}.sqlite";
             SQLiteConnection.CreateFile(databaseName);
-            return databaseName;
+            return true;
         }
 
         string GetConnectionString()

@@ -1,5 +1,4 @@
-﻿using StreamStore.Sql.Sqlite;
-using StreamStore.Sql.Tests.Database;
+﻿using StreamStore.Sql.Tests.Database;
 
 namespace StreamStore.Sql.Tests.Sqlite.Database
 {

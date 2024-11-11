@@ -1,7 +1,7 @@
 ﻿using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 
-namespace StreamStore.Sql.Postgres
+namespace StreamStore.Sql.PostgreSql
 {
     internal class PostgresProvisioningQueryProvider : ISqlProvisioningQueryProvider
     {
@@ -24,9 +24,9 @@ namespace StreamStore.Sql.Postgres
                     PRIMARY KEY (Id, StreamId)
                 );
 
-                CREATE INDEX IF NOT EXISTS {configuration.SchemaName}.ix_streams_stream_id ON {configuration.TableName}(StreamId);
-                CREATE INDEX IF NOT EXISTS {configuration.SchemaName}.ix_streams_stream_revision ON {configuration.TableName}(Revision);
-                CREATE UNIQUE INDEX IF NOT EXISTS {configuration.SchemaName}.ix_streams_stream_id_revision ON {configuration.TableName}(StreamId, Revision);";
+                CREATE INDEX IF NOT EXISTS ix_events_stream_id ON {configuration.TableName}(StreamId);
+                CREATE INDEX IF NOT EXISTS ix_events_stream_revision ON {configuration.TableName}(Revision);
+                CREATE UNIQUE INDEX IF NOT EXISTS ix_events_stream_id_revision ON {configuration.TableName}(StreamId, Revision);";
         }
     }
 }

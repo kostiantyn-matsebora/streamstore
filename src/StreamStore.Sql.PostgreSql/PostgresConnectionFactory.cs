@@ -3,7 +3,7 @@ using Npgsql;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 
-namespace StreamStore.Sql.Postgres
+namespace StreamStore.Sql.PostgreSql
 {
     internal class PostgresConnectionFactory : IDbConnectionFactory
     {

@@ -9,12 +9,12 @@ namespace StreamStore.Sql.Sqlite
     {
         public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-            return configurator.UseSqlDatabase(ConfigureDependencies, configuration, "StreamStore:Postgres");
+            return configurator.UseSqlDatabase(DefaultConfiguration, ConfigureDependencies, configuration, "StreamStore:PostgreSql");
         }
 
         public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, Action<SqlDatabaseConfigurator> dbConfigurator)
         {
-            return configurator.UseSqlDatabase(ConfigureDependencies, dbConfigurator);
+            return configurator.UseSqlDatabase(DefaultConfiguration, ConfigureDependencies, dbConfigurator);
         }
 
 
@@ -24,5 +24,12 @@ namespace StreamStore.Sql.Sqlite
             dependencyConfigurator.WithExceptionHandling<SqliteExceptionHandler>();
             dependencyConfigurator.WithProvisioingQueryProvider<SqliteProvisioningQueryProvider>();
         }
+
+        static SqlDatabaseConfiguration DefaultConfiguration = new SqlDatabaseConfiguration
+        {
+            SchemaName = "main",
+            TableName = "Events",
+            ProvisionSchema = true
+        };
     }
 }

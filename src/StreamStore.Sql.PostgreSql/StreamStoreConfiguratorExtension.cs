@@ -2,19 +2,18 @@
 using Microsoft.Extensions.Configuration;
 using StreamStore.Sql.Configuration;
 
-
-namespace StreamStore.Sql.Postgres
+namespace StreamStore.Sql.PostgreSql
 {
     public static class StreamStoreConfiguratorExtension
     {
         public static IStreamStoreConfigurator UsePostgresDatabase(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-            return configurator.UseSqlDatabase(ConfigureDependencies, configuration, "StreamStore:Sqlite");
+            return configurator.UseSqlDatabase(DefaultConfiguration, ConfigureDependencies, configuration, "StreamStore:Sqlite");
         }
 
         public static IStreamStoreConfigurator UsePostgresDatabase(this IStreamStoreConfigurator configurator, Action<SqlDatabaseConfigurator> dbConfigurator)
         {
-            return configurator.UseSqlDatabase(ConfigureDependencies, dbConfigurator);
+            return configurator.UseSqlDatabase(DefaultConfiguration, ConfigureDependencies, dbConfigurator);
         }
 
         static void ConfigureDependencies(SqlDatabaseDependencyConfigurator dependencyConfigurator)
@@ -23,5 +22,13 @@ namespace StreamStore.Sql.Postgres
             dependencyConfigurator.WithExceptionHandling<PostgresExceptionHandler>();
             dependencyConfigurator.WithProvisioingQueryProvider<PostgresProvisioningQueryProvider>();
         }
+
+
+        static SqlDatabaseConfiguration DefaultConfiguration = new SqlDatabaseConfiguration
+        {
+            SchemaName = "public",
+            TableName = "Events",
+            ProvisionSchema = true
+        };
     }
 }

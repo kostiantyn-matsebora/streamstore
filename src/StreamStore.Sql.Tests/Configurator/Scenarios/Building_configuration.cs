@@ -7,8 +7,7 @@ using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Sqlite;
 using StreamStore.Testing;
 
-namespace StreamStore.Sql.Tests.Configurator
-{
+namespace StreamStore.Sql.Tests.Configurator { 
     public class Building_configuration : Scenario<SqlDatabaseConfiguratorTestSuite>
     {
         public Building_configuration() : base(new SqlDatabaseConfiguratorTestSuite())
@@ -17,7 +16,7 @@ namespace StreamStore.Sql.Tests.Configurator
 
         SqlDatabaseConfigurator CreateSqliteDatabaseConfigurator()
         {
-            return new SqlDatabaseConfigurator(Suite.MockServiceCollection.Object);
+            return new SqlDatabaseConfigurator(Suite.MockServiceCollection.Object, new SqlDatabaseConfiguration());
         }
 
         [SkippableFact]

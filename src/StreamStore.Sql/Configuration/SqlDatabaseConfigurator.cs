@@ -10,9 +10,12 @@ namespace StreamStore.Sql.Configuration
     public sealed class SqlDatabaseConfigurator : SqlDatabaseConfigurationBuilder
     {
         readonly IServiceCollection services;
-        public SqlDatabaseConfigurator(IServiceCollection services)
+        readonly SqlDatabaseConfiguration defaultConfig;
+
+        public SqlDatabaseConfigurator(IServiceCollection services, SqlDatabaseConfiguration defaultConfig): base(defaultConfig)
         {
             this.services = services ?? throw new ArgumentNullException(nameof(services));
+            this.defaultConfig = defaultConfig.ThrowIfNull(nameof(defaultConfig));
         }
 
         public override IServiceCollection Configure()
@@ -35,9 +38,9 @@ namespace StreamStore.Sql.Configuration
             var section = configuration.GetSection(sectionName);
             if (section.Exists())
             {
-                WithTable(section.GetValue("TableName", "Events")!);
-                WithSchema(section.GetValue("SchemaName", "main")!);
-                ProvisionSchema(section.GetValue("ProvisionSchema", true));
+                WithTable(section.GetValue("TableName", defaultConfig.TableName)!);
+                WithSchema(section.GetValue("SchemaName", defaultConfig.SchemaName)!);
+                ProvisionSchema(section.GetValue("ProvisionSchema", defaultConfig.ProvisionSchema));
             }
 
             Configure(Build());
