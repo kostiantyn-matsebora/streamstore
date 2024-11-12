@@ -1,74 +1,44 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 
 namespace StreamStore.Sql
 {
     public static class StreamStoreConfiguratorExtension
     {
-        public static IStreamStoreConfigurator UseSqlDatabase(
-                this IStreamStoreConfigurator configurator,
+        public static IStreamDatabaseRegistrator UseSqlDatabase(
+                this IStreamDatabaseRegistrator registrator,
                 SqlDatabaseConfiguration defaultConfig,
-                Action<SqlDatabaseDependencyConfigurator> dependencyConfigurator,
                 IConfiguration configuration,
                 string sectionName)
         {
-            configurator.WithDatabase(c =>
-            {
-                c.ConfigureWith(services =>
-                {
-                    // Configuring database
-                    new SqlDatabaseConfigurator(services, defaultConfig).Configure(configuration, sectionName);
 
-                    // Configuring dependencies
-                    ConfigureDependencies(dependencyConfigurator, services);
-                });
+            registrator.ConfigureWith(services =>
+            {
+                // Configuring database
+                new SqlDatabaseConfigurator(services, defaultConfig)
+                    .Configure(configuration, sectionName, registrator.MultiTenancyEnabled);
             });
 
-            return configurator;
+            return registrator;
         }
 
-        public static IStreamStoreConfigurator UseSqlDatabase(
-                this IStreamStoreConfigurator configurator,
+        public static IStreamDatabaseRegistrator UseSqlDatabase(
+                this IStreamDatabaseRegistrator registrator,
                 SqlDatabaseConfiguration defaultConfig,
-                Action<SqlDatabaseDependencyConfigurator> dependencyConfigurator,
-                Action<SqlDatabaseConfigurator> dbConfigurator)
+                Action<SqlDatabaseConfigurator> configurator)
         {
-            configurator.WithDatabase(c =>
-            {
-                c.ConfigureWith(services =>
+
+            registrator.ConfigureWith(services =>
                 {
                     // Configuring database
-                    var configurator = new SqlDatabaseConfigurator(services, defaultConfig);
-                    dbConfigurator(configurator);
-                    configurator.Configure();
-
-                    // Configuring dependencies
-                    ConfigureDependencies(dependencyConfigurator, services);
+                    var dbConfigurator = new SqlDatabaseConfigurator(services, defaultConfig);
+                    configurator(dbConfigurator);
+                    dbConfigurator.Configure(registrator.MultiTenancyEnabled);
                 });
-            });
-
-            return configurator;
+            return registrator;
         }
 
-        static void ConfigureDependencies(Action<SqlDatabaseDependencyConfigurator> dependencyConfigurator, IServiceCollection services)
-        {
-            var depConfigurator = new SqlDatabaseDependencyConfigurator();
-            dependencyConfigurator(depConfigurator);
-            depConfigurator.Configure(services);
-
-            if (!services.Any(s => s.ServiceType == typeof(IDbConnectionFactory)))
-            {
-                throw new InvalidOperationException("Database connection factory (IDbConnectionFactory) is not registered");
-            }
-
-            if (!services.Any(s => s.ServiceType == typeof(IDapperCommandFactory)))
-            {
-                throw new InvalidOperationException("Dapper command factory (IDapperCommandFactory) is not registered");
-            }
-        }
+     
     }
 }

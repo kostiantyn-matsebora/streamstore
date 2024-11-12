@@ -8,58 +8,108 @@ using StreamStore.Sql.Provisioning;
 
 namespace StreamStore.Sql.Configuration
 {
-    public sealed class SqlDatabaseConfigurator : SqlDatabaseConfigurationBuilder
+    public sealed class SqlDatabaseConfigurator
     {
         readonly IServiceCollection services;
-        readonly SqlDatabaseConfiguration defaultConfig;
+        readonly SqlDatabaseConfigurationBuilder configurationBuilder;
 
-        public SqlDatabaseConfigurator(IServiceCollection services, SqlDatabaseConfiguration defaultConfig): base(defaultConfig)
+
+        Type commandFactoryType = typeof(DefaultDapperCommandFactory);
+        Type sqlExceptionHandlerType = typeof(DefaultSqlExceptionHandler);
+        Type sqlQueryProviderType = typeof(DefaultSqlQueryProvider);
+
+        Type? connectionFactoryType;
+        Type? sqlProvisionQueryProviderType;
+
+
+        public SqlDatabaseConfigurator WithCommandFactory<TFactory>() where TFactory : IDapperCommandFactory
+        {
+            commandFactoryType = typeof(TFactory);
+            return this;
+        }
+
+        public SqlDatabaseConfigurator WithConnectionFactory<TFactory>() where TFactory : IDbConnectionFactory
+        {
+            connectionFactoryType = typeof(TFactory);
+            return this;
+        }
+
+        public SqlDatabaseConfigurator WithExceptionHandling<THandler>() where THandler : ISqlExceptionHandler
+        {
+            sqlExceptionHandlerType = typeof(THandler);
+            return this;
+        }
+
+        public SqlDatabaseConfigurator WithQueryProvider<TProvider>() where TProvider : ISqlQueryProvider
+        {
+            sqlQueryProviderType = typeof(TProvider);
+            return this;
+        }
+
+        public SqlDatabaseConfigurator WithProvisioingQueryProvider<TProvisioningProvider>() where TProvisioningProvider : ISqlProvisioningQueryProvider
+        {
+            sqlProvisionQueryProviderType = typeof(TProvisioningProvider);
+            return this;
+        }
+
+        public SqlDatabaseConfigurator(IServiceCollection services, SqlDatabaseConfiguration defaultConfig)
         {
             this.services = services ?? throw new ArgumentNullException(nameof(services));
-            this.defaultConfig = defaultConfig.ThrowIfNull(nameof(defaultConfig));
+            configurationBuilder = new SqlDatabaseConfigurationBuilder(defaultConfig);
         }
 
-        public override IServiceCollection Configure()
+        public IServiceCollection Configure(bool multitenancyEnabled)
         {
-            var configuration = Build();
-            Configure(configuration);
-
-            return services;
+            return RegisterDependencies(configurationBuilder.Build(multitenancyEnabled));
         }
 
-        public override IServiceCollection Configure(IConfiguration configuration, string sectionName)
+        public SqlDatabaseConfigurator ConfigureDatabase(Action<SqlDatabaseConfigurationBuilder> configurator)
         {
-            var connectionString = configuration.GetConnectionString("StreamStore");
-            if (string.IsNullOrWhiteSpace(connectionString))
-            {
-                throw new InvalidOperationException("Connection string 'StreamStore' not found in configuration");
-            }
-
-            WithConnectionString(connectionString);
-            var section = configuration.GetSection(sectionName);
-            if (section.Exists())
-            {
-                WithTable(section.GetValue("TableName", defaultConfig.TableName)!);
-                WithSchema(section.GetValue("SchemaName", defaultConfig.SchemaName)!);
-                ProvisionSchema(section.GetValue("ProvisionSchema", defaultConfig.ProvisionSchema));
-            }
-
-            Configure(Build());
-
-            return services;
+            configurator(configurationBuilder);
+            return this;
         }
 
-        void Configure(SqlDatabaseConfiguration configuration)
+        public IServiceCollection Configure(IConfiguration configuration, string sectionName, bool multitenancyEnabled)
+        {
+            return RegisterDependencies(configurationBuilder.ReadFromConfig(configuration, sectionName, multitenancyEnabled));
+        }
+
+        IServiceCollection RegisterDependencies(SqlDatabaseConfiguration configuration)
+        {
+            return RegisterStreamStoreDependencies(
+                        RegisterSqlSpecificDependencies(configuration, services));
+        }
+
+        IServiceCollection RegisterSqlSpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
         {
             services.AddSingleton(configuration);
-            services.AddSingleton<IStreamDatabase, SqlStreamDatabase>();
-            services.AddSingleton<IStreamReader, SqlStreamDatabase>();
+
+            if (connectionFactoryType == null)
+                throw new InvalidOperationException("IDbConnectionFactory type not set");
+            if (sqlProvisionQueryProviderType == null)
+                throw new InvalidOperationException("ISqlProvisionQueryProvider type not set");
+
+            services.AddSingleton(typeof(IDapperCommandFactory), commandFactoryType);
+            services.AddSingleton(typeof(IDbConnectionFactory), connectionFactoryType);
+            services.AddSingleton(typeof(ISqlExceptionHandler), sqlExceptionHandlerType);
+            services.AddSingleton(typeof(ISqlQueryProvider), sqlQueryProviderType);
+            services.AddSingleton(typeof(ISqlProvisioningQueryProvider), sqlProvisionQueryProviderType);
+
 
             if (configuration.ProvisionSchema)
             {
                 services.AddSingleton<ISqlSchemaProvisioner, SqlSchemaProvisioner>();
                 services.AddHostedService<SqlSchemaProvisioningService>();
             }
+
+            return services;
+        }
+
+        IServiceCollection RegisterStreamStoreDependencies(IServiceCollection services)
+        {
+            services.AddSingleton<IStreamDatabase, SqlStreamDatabase>();
+            services.AddSingleton<IStreamReader, SqlStreamDatabase>();
+            return services;
         }
     }
 }

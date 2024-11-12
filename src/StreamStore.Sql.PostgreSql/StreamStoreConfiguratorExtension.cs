@@ -10,19 +10,32 @@ namespace StreamStore.Sql.PostgreSql
 
         public static IStreamStoreConfigurator UsePostgresDatabase(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-            return configurator.UseSqlDatabase(DefaultConfiguration, ConfigureDependencies, configuration, configurationSection);
+            return configurator.WithDatabase(registrator =>
+            {
+
+                registrator.UseSqlDatabase(DefaultConfiguration, configuration, configurationSection);
+            });
+
+
         }
 
         public static IStreamStoreConfigurator UsePostgresDatabase(this IStreamStoreConfigurator configurator, Action<SqlDatabaseConfigurator> dbConfigurator)
         {
-            return configurator.UseSqlDatabase(DefaultConfiguration, ConfigureDependencies, dbConfigurator);
+            return configurator.WithDatabase(registrator =>
+            {
+                registrator.UseSqlDatabase(DefaultConfiguration, c =>
+                {
+                    ConfigureDependencies(c);
+                    dbConfigurator(c);
+                });
+            });
         }
 
-        static void ConfigureDependencies(SqlDatabaseDependencyConfigurator dependencyConfigurator)
+        static void ConfigureDependencies(SqlDatabaseConfigurator configurator)
         {
-            dependencyConfigurator.WithConnectionFactory<PostgresConnectionFactory>();
-            dependencyConfigurator.WithExceptionHandling<PostgresExceptionHandler>();
-            dependencyConfigurator.WithProvisioingQueryProvider<PostgresProvisioningQueryProvider>();
+            configurator.WithConnectionFactory<PostgresConnectionFactory>();
+            configurator.WithExceptionHandling<PostgresExceptionHandler>();
+            configurator.WithProvisioingQueryProvider<PostgresProvisioningQueryProvider>();
         }
 
 

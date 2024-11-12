@@ -18,7 +18,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
             var serviceCollection = new ServiceCollection();
 
             // Act
-            configurator.UseSqliteDatabase(c =>  c.WithConnectionString(connectionString));
+            configurator.UseSqliteDatabase(c =>  c.ConfigureDatabase( x => x.WithConnectionString(connectionString)));
             var provider =configurator.Configure(serviceCollection).BuildServiceProvider();
 
             // Assert

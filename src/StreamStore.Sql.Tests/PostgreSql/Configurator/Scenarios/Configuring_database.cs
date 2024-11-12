@@ -19,8 +19,8 @@ namespace StreamStore.Sql.Tests.PostgreSql.Configurator
             var serviceCollection = new ServiceCollection();
 
             // Act
-            configurator.UsePostgresDatabase(c =>  c.WithConnectionString(connectionString));
-            var provider =configurator.Configure(serviceCollection).BuildServiceProvider();
+            configurator.UsePostgresDatabase(c =>  c.ConfigureDatabase( x => x.WithConnectionString(connectionString)));
+            var provider = configurator.Configure(serviceCollection).BuildServiceProvider();
 
             // Assert
             var configuration = provider.GetRequiredService<SqlDatabaseConfiguration>();

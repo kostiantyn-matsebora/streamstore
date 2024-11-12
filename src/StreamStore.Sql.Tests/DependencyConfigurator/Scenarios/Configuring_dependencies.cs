@@ -8,15 +8,22 @@ using StreamStore.Testing;
 namespace StreamStore.Sql.Tests.DependencyConfigurator { 
     public class Configuring_dependencies: Scenario { 
 
+
+        SqlDatabaseConfigurator CreateConfigurator(ServiceCollection? services = null)
+        {
+            var serviceCollection = services ?? new ServiceCollection();
+            return new SqlDatabaseConfigurator(serviceCollection, new SqlDatabaseConfiguration());
+        }
+
         [Fact]
         public void When_connection_factory_is_not_set()
         {
             // Arrange
-            var configurator = new SqlDatabaseDependencyConfigurator();
+            var configurator = CreateConfigurator();
             configurator.WithProvisioingQueryProvider<SqliteProvisioningQueryProvider>();
 
             // Act
-            Action act = () => configurator.Configure(new ServiceCollection());
+            Action act = () => configurator.Configure(false);
 
             // Assert
             act.Should().Throw<InvalidOperationException>();
@@ -26,11 +33,11 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator {
         public void When_provisioning_query_provider_is_not_set()
         {
             // Arrange
-            var configurator = new SqlDatabaseDependencyConfigurator();
+            var configurator = CreateConfigurator();
             configurator.WithConnectionFactory<SqliteDbConnectionFactory>();
 
             // Act
-            Action act = () => configurator.Configure(new ServiceCollection());
+            Action act = () => configurator.Configure(false);
 
             // Assert
             act.Should().Throw<InvalidOperationException>();
@@ -40,17 +47,16 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator {
         public void When_required_dependencies_are_set()
         {
             // Arrange
-            var configurator = new SqlDatabaseDependencyConfigurator();
+            var serviceCollection = new ServiceCollection();
+            var configurator = CreateConfigurator(serviceCollection);
             configurator.WithConnectionFactory<SqliteDbConnectionFactory>();
             configurator.WithProvisioingQueryProvider<SqliteProvisioningQueryProvider>();
             configurator.WithExceptionHandling<SqliteExceptionHandler>();
-            var serviceCollection = new ServiceCollection();
+
 
             // Act
-            configurator.Configure(serviceCollection);
+            configurator.Configure(false);
             
-
-
             // Assert
             serviceCollection.Should().NotBeEmpty();
             serviceCollection.Should().Contain(x => x.ServiceType == typeof(IDapperCommandFactory));

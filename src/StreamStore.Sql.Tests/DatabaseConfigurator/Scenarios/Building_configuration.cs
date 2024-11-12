@@ -20,24 +20,28 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
             return new SqlDatabaseConfigurator(Suite.MockServiceCollection.Object, new SqlDatabaseConfiguration());
         }
 
+        SqlDatabaseConfigurationBuilder CreateSqliteDatabaseConfigurationBuilder()
+        {
+            return new SqlDatabaseConfigurationBuilder(new SqlDatabaseConfiguration());
+        }
+
         [SkippableFact]
         public void When_manually_configured()
         {
             TrySkip();
 
             // Arrange
-            var configurator = CreateSqliteDatabaseConfigurator();
+            var builder = CreateSqliteDatabaseConfigurationBuilder();
 
-            configurator
-                .WithTable("tableName")
-                .WithConnectionString("connectionString")
-                .ProvisionSchema(true)
-                .Build();
+            builder
+                     .WithConnectionString("connectionString")
+                     .WithTable("tableName")
+                     .WithSchema("schemaName")
+                     .ProvisionSchema(true);
 
             // Act 
-            var configuration = configurator.Build();
-            configurator.Configure();
-
+            var configuration = builder.Build(false);
+            
             // Assert
             configuration.ProvisionSchema.Should().BeTrue();
             configuration.ConnectionString.Should().Be("connectionString");
@@ -75,9 +79,10 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
 
 
             // Act
-            var configurator = CreateSqliteDatabaseConfigurator();
-            configurator.Configure(configuration.Object, "StreamStore:Sql");
-            var config = configurator.Build();
+            var builder = CreateSqliteDatabaseConfigurationBuilder();
+            builder.ReadFromConfig(configuration.Object, "StreamStore:Sql", false);
+
+            var config = builder.ReadFromConfig(configuration.Object, "StreamStore:Sql", false);
 
             // Assert
             Suite.MockRepository.VerifyAll();
@@ -96,11 +101,12 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
             var streamStoreConfigurator = new StreamStoreConfigurator();
             var collection = new ServiceCollection();
 
-            streamStoreConfigurator.UseSqliteDatabase(c => c
-                .WithConnectionString("connectionString")
-                .WithTable("tableName")
-                .WithSchema("schemaName")
-                .ProvisionSchema(true));
+            streamStoreConfigurator.UseSqliteDatabase(c =>
+                c.ConfigureDatabase(builder => builder
+                    .WithConnectionString("connectionString")
+                    .WithTable("tableName")
+                    .WithSchema("schemaName")
+                    .ProvisionSchema(true)));
 
             streamStoreConfigurator.Configure(collection);
             var provider = collection.BuildServiceProvider();

@@ -11,20 +11,31 @@ namespace StreamStore.Sql.Sqlite
 
         public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-            return configurator.UseSqlDatabase(DefaultConfiguration, ConfigureDependencies, configuration, configurationSection);
+           return configurator.WithDatabase(registrator =>
+            {
+                registrator.UseSqlDatabase(DefaultConfiguration, configuration, configurationSection);
+            });
         }
 
         public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, Action<SqlDatabaseConfigurator> dbConfigurator)
         {
-            return configurator.UseSqlDatabase(DefaultConfiguration, ConfigureDependencies, dbConfigurator);
+            return configurator.WithDatabase(registrator =>
+            {
+                registrator.UseSqlDatabase(DefaultConfiguration, c =>
+                {
+                    ConfigureDependencies(c);
+                    dbConfigurator(c);
+                });
+            });
         }
 
 
-        static void ConfigureDependencies(SqlDatabaseDependencyConfigurator dependencyConfigurator)
+
+        static void ConfigureDependencies(SqlDatabaseConfigurator configurator)
         {
-            dependencyConfigurator.WithConnectionFactory<SqliteDbConnectionFactory>();
-            dependencyConfigurator.WithExceptionHandling<SqliteExceptionHandler>();
-            dependencyConfigurator.WithProvisioingQueryProvider<SqliteProvisioningQueryProvider>();
+            configurator.WithConnectionFactory<SqliteDbConnectionFactory>();
+            configurator.WithExceptionHandling<SqliteExceptionHandler>();
+            configurator.WithProvisioingQueryProvider<SqliteProvisioningQueryProvider>();
         }
 
         static SqlDatabaseConfiguration DefaultConfiguration = new SqlDatabaseConfiguration
