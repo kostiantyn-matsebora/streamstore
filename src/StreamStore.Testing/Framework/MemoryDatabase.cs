@@ -59,7 +59,7 @@ namespace StreamStore.Testing
             Parallel.ForEach(ids, id => store.TryAdd(id, GenerateStream(id, eventPerStream)));
         }
 
-        private static Id[] GenerateIds(int capacity)
+        static Id[] GenerateIds(int capacity)
         {
             return Enumerable.Range(0, capacity).Select(i => Generated.Id).ToArray();
         }
