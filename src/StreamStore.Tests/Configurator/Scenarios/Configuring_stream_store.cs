@@ -1,6 +1,4 @@
-﻿
-
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.InMemory;
 using StreamStore.Serialization;
@@ -40,7 +38,7 @@ namespace StreamStore.Tests.Configurator
             configurator.WithCompression();
             configurator.WithEventSerializer<SystemTextJsonEventSerializer>();
             configurator.WithTypeRegistry<TypeRegistry>();
-            configurator.WithDatabase<InMemoryStreamDatabase>();
+            configurator.UseInMemoryDatabase();
 
             configurator.Configure(services);
 
@@ -86,10 +84,13 @@ namespace StreamStore.Tests.Configurator
             // Act
             configurator.WithEventSerializer(serializer.Object);
             configurator.WithTypeRegistry(typeRegistry.Object);
-            configurator.WithDatabase(c =>
+            configurator.WithDatabase(registrator =>
                 {
-                    c.AddSingleton<IStreamDatabase>(database.Object);
-                    c.AddSingleton<IStreamReader>(database.Object);
+                    registrator.ConfigureWith(c =>
+                    {
+                        c.AddSingleton<IStreamDatabase>(database.Object);
+                        c.AddSingleton<IStreamReader>(database.Object);
+                    });
                 });
 
             configurator.Configure(services);
@@ -126,7 +127,7 @@ namespace StreamStore.Tests.Configurator
             // Arrange
             var configurator = StreamStoreConfiguratorSuite.CreateConfigurator();
 
-            configurator.WithDatabase(x => { });
+            configurator.WithDatabase((x) => { });
 
             // Act
             var act = () => configurator.Configure(StreamStoreConfiguratorSuite.CreateServiceCollection());
@@ -135,9 +136,9 @@ namespace StreamStore.Tests.Configurator
             act.Should().Throw<InvalidOperationException>().WithMessage("Database backend (IStreamDatabase) is not registered");
 
             // Arrange
-            configurator.WithDatabase(c =>
+            configurator.WithDatabase((x) =>
             {
-                c.AddSingleton<IStreamDatabase>(Generated.MockOf<IStreamDatabase>().Object);
+                x.ConfigureWith(c => c.AddSingleton<IStreamDatabase>(Generated.MockOf<IStreamDatabase>().Object));
             });
 
             // Act

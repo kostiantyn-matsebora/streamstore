@@ -16,7 +16,7 @@ namespace StreamStore.Serialization.Tests.SystemTextJson
 
             // Act
             configurator.WithTextJsonSerializer();
-            configurator.WithDatabase<InMemoryStreamDatabase>();
+            configurator.UseInMemoryDatabase();
             configurator.Configure(collection);
 
             // Assert

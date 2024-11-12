@@ -60,8 +60,6 @@ namespace StreamStore.Sql.Configuration
                 services.AddSingleton<ISqlSchemaProvisioner, SqlSchemaProvisioner>();
                 services.AddHostedService<SqlSchemaProvisioningService>();
             }
-
         }
     }
-
 }

@@ -16,14 +16,16 @@ namespace StreamStore.Sql
                 IConfiguration configuration,
                 string sectionName)
         {
-            configurator.WithDatabase(services =>
+            configurator.WithDatabase(c =>
             {
-                // Configuring database
-                new SqlDatabaseConfigurator(services, defaultConfig).Configure(configuration, sectionName);
+                c.ConfigureWith(services =>
+                {
+                    // Configuring database
+                    new SqlDatabaseConfigurator(services, defaultConfig).Configure(configuration, sectionName);
 
-                // Configuring dependencies
-                ConfigureDependencies(dependencyConfigurator, services);
-
+                    // Configuring dependencies
+                    ConfigureDependencies(dependencyConfigurator, services);
+                });
             });
 
             return configurator;
@@ -35,15 +37,18 @@ namespace StreamStore.Sql
                 Action<SqlDatabaseDependencyConfigurator> dependencyConfigurator,
                 Action<SqlDatabaseConfigurator> dbConfigurator)
         {
-            configurator.WithDatabase(services =>
+            configurator.WithDatabase(c =>
             {
-                // Configuring database
-                var configurator = new SqlDatabaseConfigurator(services, defaultConfig);
-                dbConfigurator(configurator);
-                configurator.Configure();
+                c.ConfigureWith(services =>
+                {
+                    // Configuring database
+                    var configurator = new SqlDatabaseConfigurator(services, defaultConfig);
+                    dbConfigurator(configurator);
+                    configurator.Configure();
 
-                // Configuring dependencies
-                ConfigureDependencies(dependencyConfigurator, services);
+                    // Configuring dependencies
+                    ConfigureDependencies(dependencyConfigurator, services);
+                });
             });
 
             return configurator;

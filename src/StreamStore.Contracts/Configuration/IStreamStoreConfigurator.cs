@@ -22,8 +22,6 @@ namespace StreamStore
 
         public IStreamStoreConfigurator WithEventSerializer<TSerialzier>() where TSerialzier : IEventSerializer;
 
-        public IStreamStoreConfigurator WithDatabase<T>() where T : IStreamDatabase;
-
-        public IStreamStoreConfigurator WithDatabase(Action<IServiceCollection> registrator);
+        public IStreamStoreConfigurator WithDatabase(Action<IStreamDatabaseRegistrator> registrator);
     }
 }
