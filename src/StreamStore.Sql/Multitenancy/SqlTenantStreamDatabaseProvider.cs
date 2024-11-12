@@ -8,7 +8,7 @@ namespace StreamStore.Sql.Multitenancy
     internal abstract class SqlTenantStreamDatabaseProvider : ITenantStreamDatabaseProvider
     {
         readonly ISqlTenantDatabaseConfigurationProvider configProvider;
-                readonly ISqlQueryProvider queryProvider;
+        readonly ISqlQueryProvider queryProvider;
 
         protected SqlTenantStreamDatabaseProvider(ISqlTenantDatabaseConfigurationProvider configProvider, ISqlQueryProvider queryProvider)
         {

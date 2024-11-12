@@ -7,7 +7,7 @@ namespace StreamStore.InMemory
     {
         public static IStreamStoreConfigurator UseInMemoryDatabase(this IStreamStoreConfigurator configurator)
         {
-            configurator.WithDatabase(registrator => registrator.ConfigureWith(RegisterDatabase));
+            configurator.WithSingleDatabase(registrator => registrator.ConfigureWith(RegisterDatabase));
 
             return configurator;
         }

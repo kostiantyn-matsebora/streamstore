@@ -1,5 +1,5 @@
 ﻿using Moq;
-using StreamStore.Sql.API;
+using StreamStore.Provisioning;
 using StreamStore.Testing.Framework;
 
 namespace StreamStore.Sql.Tests.SchemaProvisioning
@@ -10,10 +10,10 @@ namespace StreamStore.Sql.Tests.SchemaProvisioning
         {
             MockRepository = new MockRepository(MockBehavior.Default);
 
-            MockProvisioner = MockRepository.Create<ISqlSchemaProvisioner>();
+            MockProvisioner = MockRepository.Create<ISchemaProvisioner>();
         }
 
         public MockRepository MockRepository { get; }
-        public Mock<ISqlSchemaProvisioner> MockProvisioner { get; }
+        public Mock<ISchemaProvisioner> MockProvisioner { get; }
     }
 }

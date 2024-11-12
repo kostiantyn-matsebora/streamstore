@@ -1,17 +1,16 @@
 ﻿using System;
+
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using StreamStore.Sql.API;
 
-
-namespace StreamStore.Sql.Provisioning
+namespace StreamStore.Provisioning
 {
-    class SqlSchemaProvisioningService : BackgroundService
+    internal class SchemaProvisioningService : BackgroundService
     {
-        readonly ISqlSchemaProvisioner provisioner;
+        readonly ISchemaProvisioner provisioner;
 
-        public SqlSchemaProvisioningService(ISqlSchemaProvisioner provisioner)
+        public SchemaProvisioningService(ISchemaProvisioner provisioner)
         {
             this.provisioner = provisioner ?? throw new ArgumentNullException(nameof(provisioner));
 

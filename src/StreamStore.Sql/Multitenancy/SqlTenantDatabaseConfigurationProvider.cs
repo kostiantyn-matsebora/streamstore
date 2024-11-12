@@ -13,7 +13,6 @@ namespace StreamStore.Sql.Multitenancy
             this.tenantConnectionStringProvider = connectionStringProvider.ThrowIfNull(nameof(connectionStringProvider));
         }
 
-
         public SqlDatabaseConfiguration GetConfiguration(Id tenantId)
         {
            var tenantConfig = (SqlDatabaseConfiguration)configPrototype.Clone();

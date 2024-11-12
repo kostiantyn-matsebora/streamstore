@@ -11,7 +11,7 @@ namespace StreamStore.Sql.Sqlite
 
         public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-           return configurator.WithDatabase(registrator =>
+           return configurator.WithSingleDatabase(registrator =>
             {
                 registrator.UseSqlDatabase(DefaultConfiguration, configuration, configurationSection);
             });
@@ -19,7 +19,7 @@ namespace StreamStore.Sql.Sqlite
 
         public static IStreamStoreConfigurator UseSqliteDatabase(this IStreamStoreConfigurator configurator, Action<SqlDatabaseConfigurator> dbConfigurator)
         {
-            return configurator.WithDatabase(registrator =>
+            return configurator.WithSingleDatabase(registrator =>
             {
                 registrator.UseSqlDatabase(DefaultConfiguration, c =>
                 {
@@ -42,7 +42,6 @@ namespace StreamStore.Sql.Sqlite
         {
             SchemaName = "main",
             TableName = "Events",
-            ProvisionSchema = true
         };
     }
 }

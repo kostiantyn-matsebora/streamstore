@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using System.Threading;
 
-namespace StreamStore.Sql.API
+namespace StreamStore.Provisioning
 {
-    public interface ISqlSchemaProvisioner
+    public interface ISchemaProvisioner
     {
         Task ProvisionSchemaAsync(CancellationToken token);
     }

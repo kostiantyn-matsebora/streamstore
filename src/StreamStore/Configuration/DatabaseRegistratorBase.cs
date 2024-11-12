@@ -4,11 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace StreamStore.Configuration
 {
-    internal abstract class DatabaseRegistrationBase: IStreamDatabaseRegistrator 
+    public abstract class DatabaseRegistratorBase: IStreamDatabaseRegistrator 
     {
         Action<IServiceCollection>? configurator;
-
-        public abstract bool MultiTenancyEnabled { get; }
 
         public void ConfigureWith(Action<IServiceCollection> configurator)
         {
@@ -16,7 +14,7 @@ namespace StreamStore.Configuration
         }
 
 
-        public void Register(IServiceCollection services)
+        public void Register(IServiceCollection services, StreamStoreConfiguration configuration)
         {
             if (configurator == null)
             {

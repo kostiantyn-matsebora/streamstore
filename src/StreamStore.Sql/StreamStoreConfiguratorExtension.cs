@@ -17,7 +17,7 @@ namespace StreamStore.Sql
             {
                 // Configuring database
                 new SqlDatabaseConfigurator(services, defaultConfig)
-                    .Configure(configuration, sectionName, registrator.MultiTenancyEnabled);
+                    .Configure(configuration, sectionName, false);
             });
 
             return registrator;
@@ -34,7 +34,7 @@ namespace StreamStore.Sql
                     // Configuring database
                     var dbConfigurator = new SqlDatabaseConfigurator(services, defaultConfig);
                     configurator(dbConfigurator);
-                    dbConfigurator.Configure(registrator.MultiTenancyEnabled);
+                    dbConfigurator.Configure(false);
                 });
             return registrator;
         }

@@ -5,10 +5,8 @@ using System.Linq;
 
 namespace StreamStore
 {
-    internal class SingleTenantRegistration : DatabaseRegistrationBase
+    public class SingleTenantDatabaseRegistrator : DatabaseRegistratorBase, ISingleTenantDatabaseRegistrator
     {
-        public override bool MultiTenancyEnabled => false;
-
         protected override void Validate(IServiceCollection services)
         {
             if (!services.Any(s => s.ServiceType == typeof(IStreamDatabase)))

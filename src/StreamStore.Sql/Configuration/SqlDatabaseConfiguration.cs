@@ -10,8 +10,6 @@ namespace StreamStore.Sql.Configuration
         public string TableName { get; internal set; } = string.Empty;
         public string FullTableName => $"{SchemaName}.{TableName}";
 
-        public bool ProvisionSchema { get; internal set; } = true;
-
         public SqlDatabaseConfiguration()
         {
         }
@@ -22,8 +20,7 @@ namespace StreamStore.Sql.Configuration
             {
                 SchemaName = SchemaName,
                 TableName = TableName,
-                ConnectionString = ConnectionString,
-                ProvisionSchema = ProvisionSchema
+                ConnectionString = ConnectionString
             };
         }
     }

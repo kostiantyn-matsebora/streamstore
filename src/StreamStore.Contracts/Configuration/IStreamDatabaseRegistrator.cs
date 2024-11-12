@@ -5,8 +5,15 @@ namespace StreamStore
 {
     public interface IStreamDatabaseRegistrator
     {
-        public bool MultiTenancyEnabled { get; }
         public void ConfigureWith(Action<IServiceCollection> configurator);
-        public void Register(IServiceCollection services);
+        public void Register(IServiceCollection services, StreamStoreConfiguration configuration);
+    }
+
+    public interface ISingleTenantDatabaseRegistrator: IStreamDatabaseRegistrator
+    {
+    }
+
+    public interface IMultitenantDatabaseRegistrator : IStreamDatabaseRegistrator
+    {
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Provisioning;
 using StreamStore.Sql.API;
 using StreamStore.Testing;
 
@@ -40,7 +41,7 @@ namespace StreamStore.Sql.Tests.Database
 
         static void ProvisionSchema(IServiceProvider provider)
         {
-            var provisioner = provider.GetRequiredService<ISqlSchemaProvisioner>();
+            var provisioner = provider.GetRequiredService<ISchemaProvisioner>();
             provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
         }
 

@@ -10,7 +10,7 @@ namespace StreamStore.Sql.PostgreSql
 
         public static IStreamStoreConfigurator UsePostgresDatabase(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-            return configurator.WithDatabase(registrator =>
+            return configurator.WithSingleDatabase(registrator =>
             {
 
                 registrator.UseSqlDatabase(DefaultConfiguration, configuration, configurationSection);
@@ -21,7 +21,7 @@ namespace StreamStore.Sql.PostgreSql
 
         public static IStreamStoreConfigurator UsePostgresDatabase(this IStreamStoreConfigurator configurator, Action<SqlDatabaseConfigurator> dbConfigurator)
         {
-            return configurator.WithDatabase(registrator =>
+            return configurator.WithSingleDatabase(registrator =>
             {
                 registrator.UseSqlDatabase(DefaultConfiguration, c =>
                 {
@@ -43,7 +43,6 @@ namespace StreamStore.Sql.PostgreSql
         {
             SchemaName = "public",
             TableName = "Events",
-            ProvisionSchema = true
         };
     }
 }

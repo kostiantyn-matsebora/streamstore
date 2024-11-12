@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Provisioning;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Database;
 using StreamStore.Sql.Provisioning;
@@ -94,13 +95,6 @@ namespace StreamStore.Sql.Configuration
             services.AddSingleton(typeof(ISqlExceptionHandler), sqlExceptionHandlerType);
             services.AddSingleton(typeof(ISqlQueryProvider), sqlQueryProviderType);
             services.AddSingleton(typeof(ISqlProvisioningQueryProvider), sqlProvisionQueryProviderType);
-
-
-            if (configuration.ProvisionSchema)
-            {
-                services.AddSingleton<ISqlSchemaProvisioner, SqlSchemaProvisioner>();
-                services.AddHostedService<SqlSchemaProvisioningService>();
-            }
 
             return services;
         }

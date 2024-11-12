@@ -32,12 +32,6 @@ namespace StreamStore.Sql.Configuration
             return this;
         }
 
-        public SqlDatabaseConfigurationBuilder ProvisionSchema(bool provisionSchema)
-        {
-            configuration.ProvisionSchema = provisionSchema;
-            return this;
-        }
-
         public SqlDatabaseConfiguration Build(bool multitenancyEnabled)
         {
             if (multitenancyEnabled && configuration.ConnectionString == null)
@@ -65,7 +59,6 @@ namespace StreamStore.Sql.Configuration
             {
                 WithTable(section.GetValue("TableName", defaultConfig.TableName)!);
                 WithSchema(section.GetValue("SchemaName", defaultConfig.SchemaName)!);
-                ProvisionSchema(section.GetValue("ProvisionSchema", defaultConfig.ProvisionSchema));
             }
 
             var connectionString = configuration.GetConnectionString("StreamStore");

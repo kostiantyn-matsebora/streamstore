@@ -4,7 +4,7 @@
     {
         public static IStreamStoreConfigurator UseAWSDatabase(this IStreamStoreConfigurator configurator)
         {
-            configurator.WithDatabase(registrator =>
+            configurator.WithSingleDatabase(registrator =>
             {
                 registrator.ConfigureWith(services =>
                 {

@@ -36,14 +36,12 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
             builder
                      .WithConnectionString("connectionString")
                      .WithTable("tableName")
-                     .WithSchema("schemaName")
-                     .ProvisionSchema(true);
+                     .WithSchema("schemaName");
 
             // Act 
             var configuration = builder.Build(false);
             
             // Assert
-            configuration.ProvisionSchema.Should().BeTrue();
             configuration.ConnectionString.Should().Be("connectionString");
             configuration.TableName.Should().Be("tableName");
 
@@ -75,8 +73,6 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
             section.Setup(x => x.GetChildren()).Returns(new[] { section.Object });
             section.Setup(x => x.GetSection("TableName")).Returns(tableName.Object);
             section.Setup(x => x.GetSection("SchemaName")).Returns(schemaName.Object);
-            section.Setup(x => x.GetSection("ProvisionSchema")).Returns(provisionSchema.Object);
-
 
             // Act
             var builder = CreateSqliteDatabaseConfigurationBuilder();
@@ -92,7 +88,6 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
             config.ConnectionString.Should().Be("connectionString");
             config.TableName.Should().Be("tableName");
             config.SchemaName.Should().Be("SchemaName");
-            config.ProvisionSchema.Should().BeTrue();
         }
 
         [Fact]
@@ -105,8 +100,7 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
                 c.ConfigureDatabase(builder => builder
                     .WithConnectionString("connectionString")
                     .WithTable("tableName")
-                    .WithSchema("schemaName")
-                    .ProvisionSchema(true)));
+                    .WithSchema("schemaName")));
 
             streamStoreConfigurator.Configure(collection);
             var provider = collection.BuildServiceProvider();
@@ -115,7 +109,6 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
             config.TableName.Should().Be("tableName");
             config.ConnectionString.Should().Be("connectionString");
             config.SchemaName.Should().Be("schemaName");
-            config.ProvisionSchema.Should().BeTrue();
         }
     }
 }

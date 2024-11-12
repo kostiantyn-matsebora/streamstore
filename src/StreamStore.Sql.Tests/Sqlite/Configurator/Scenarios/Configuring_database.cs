@@ -26,7 +26,6 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
             configuration.ConnectionString.Should().Be(connectionString);
             configuration.SchemaName.Should().Be("main");
             configuration.TableName.Should().Be("Events");
-            configuration.ProvisionSchema.Should().BeTrue();
             provider.GetService<IDbConnectionFactory>().Should().BeOfType<SqliteDbConnectionFactory>();
             provider.GetService<ISqlExceptionHandler>().Should().BeOfType<SqliteExceptionHandler>();
             provider.GetService<ISqlProvisioningQueryProvider>().Should().BeOfType<SqliteProvisioningQueryProvider>();

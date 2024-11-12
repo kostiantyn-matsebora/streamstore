@@ -1,6 +1,8 @@
 
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using StreamStore.Provisioning;
 using StreamStore.Serialization;
 
 
@@ -10,12 +12,14 @@ namespace StreamStore
     public class StreamStoreConfigurator : IStreamStoreConfigurator
     {
         StreamReadingMode mode = StreamReadingMode.Default;
-        IStreamDatabaseRegistrator registrator = new SingleTenantRegistration();
+        IStreamDatabaseRegistrator registrator = new SingleTenantDatabaseRegistrator();
 
         Action<IServiceCollection> eventSerializerRegistrator = services => services.AddSingleton<IEventSerializer, NewtonsoftEventSerializer>();
         Action<IServiceCollection> typeRegistryRegistrator = services => services.AddSingleton<ITypeRegistry, TypeRegistry>();
 
         bool compression = false;
+        bool schemaProvisioningEnabled = true;
+
         int pageSize = 10;
 
         public StreamStoreConfigurator()
@@ -58,21 +62,31 @@ namespace StreamStore
             return this;
         }
 
-        public IStreamStoreConfigurator WithCompression()
+        public IStreamStoreConfigurator EnableCompression()
         {
             this.compression = true;
             return this;
         }
 
-        public IStreamStoreConfigurator EnableMultitenancy()
+        public IStreamStoreConfigurator EnableSchemaProvisioning()
         {
-            registrator = new MultitenantRegistration();
+            schemaProvisioningEnabled = true;
             return this;
         }
 
-        public IStreamStoreConfigurator WithDatabase(Action<IStreamDatabaseRegistrator> registrator)
+        public IStreamStoreConfigurator WithSingleDatabase(Action<ISingleTenantDatabaseRegistrator> registrator)
         {
-            registrator(this.registrator);
+            var singleTenantRegistrator = new SingleTenantDatabaseRegistrator();
+            registrator(singleTenantRegistrator);
+            this.registrator = singleTenantRegistrator;
+            return this;
+        }
+
+        public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenantDatabaseRegistrator> registrator)
+        {
+            var multiTenantregistrator = new MultitenantDatabaseRegistrator();
+            registrator(multiTenantregistrator);
+            this.registrator = multiTenantregistrator;
             return this;
         }
 
@@ -82,21 +96,30 @@ namespace StreamStore
             {
                 ReadingMode = mode,
                 ReadingPageSize = pageSize,
-                Compression = compression
+                CompressionEnabled = compression,
+                SchemaProvisioningEnabled = schemaProvisioningEnabled
             };
 
-            registrator.Register(services);
+            registrator.Register(services, configuration);
 
             eventSerializerRegistrator(services);
             typeRegistryRegistrator(services);
 
+            RegisterStoreDependencies(services, configuration);
+
+            if (configuration.SchemaProvisioningEnabled)
+                services.AddHostedService<SchemaProvisioningService>();
+
+            return services;
+        }
+
+        private static void RegisterStoreDependencies(IServiceCollection services, StreamStoreConfiguration configuration)
+        {
             services
                 .AddSingleton(configuration)
                 .AddSingleton<StreamEventEnumeratorFactory>()
                 .AddSingleton<EventConverter>()
                 .AddSingleton<IStreamStore, StreamStore>();
-
-            return services;
         }
     }
 }

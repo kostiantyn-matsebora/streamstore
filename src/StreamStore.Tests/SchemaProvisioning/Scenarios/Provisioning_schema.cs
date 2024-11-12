@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
-using StreamStore.Sql.Provisioning;
+using StreamStore.Provisioning;
 using StreamStore.Testing;
 
 namespace StreamStore.Sql.Tests.SchemaProvisioning
@@ -12,7 +12,7 @@ namespace StreamStore.Sql.Tests.SchemaProvisioning
         {
 
             // Act
-            var act = () => new SqlSchemaProvisioningService(null!);
+            var act = () => new SchemaProvisioningService(null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
@@ -21,9 +21,8 @@ namespace StreamStore.Sql.Tests.SchemaProvisioning
         [Fact]
         public async Task When_provisioning_schema()
         {
-
             // Arrange
-            var provisioningService = new SqlSchemaProvisioningService(Suite.MockProvisioner.Object);
+            var provisioningService = new SchemaProvisioningService(Suite.MockProvisioner.Object);
             var token = CancellationToken.None;
 
             Suite.MockProvisioner

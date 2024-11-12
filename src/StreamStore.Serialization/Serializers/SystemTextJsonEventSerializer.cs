@@ -10,7 +10,7 @@ namespace StreamStore.Serialization
 
         }
 
-        public SystemTextJsonEventSerializer(ITypeRegistry registry, StreamStoreConfiguration configuration) : base(registry, configuration.Compression)
+        public SystemTextJsonEventSerializer(ITypeRegistry registry, StreamStoreConfiguration configuration) : base(registry, configuration.CompressionEnabled)
         {
 
         }

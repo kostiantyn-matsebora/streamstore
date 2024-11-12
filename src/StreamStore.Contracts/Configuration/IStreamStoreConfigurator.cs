@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Serialization;
 
 
@@ -22,6 +21,8 @@ namespace StreamStore
 
         public IStreamStoreConfigurator WithEventSerializer<TSerialzier>() where TSerialzier : IEventSerializer;
 
-        public IStreamStoreConfigurator WithDatabase(Action<IStreamDatabaseRegistrator> registrator);
+        public IStreamStoreConfigurator WithSingleDatabase(Action<ISingleTenantDatabaseRegistrator> registrator);
+
+        public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenantDatabaseRegistrator> registrator);
     }
 }

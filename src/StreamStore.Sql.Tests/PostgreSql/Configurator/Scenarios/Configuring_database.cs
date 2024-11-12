@@ -27,7 +27,6 @@ namespace StreamStore.Sql.Tests.PostgreSql.Configurator
             configuration.ConnectionString.Should().Be(connectionString);
             configuration.SchemaName.Should().Be("public");
             configuration.TableName.Should().Be("Events");
-            configuration.ProvisionSchema.Should().BeTrue();
             provider.GetService<IDbConnectionFactory>().Should().BeOfType<PostgresConnectionFactory>();
             provider.GetService<ISqlExceptionHandler>().Should().BeOfType<PostgresExceptionHandler>();
             provider.GetService<ISqlProvisioningQueryProvider>().Should().BeOfType<PostgresProvisioningQueryProvider>();

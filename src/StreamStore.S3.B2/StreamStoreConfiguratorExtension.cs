@@ -8,7 +8,7 @@ namespace StreamStore.S3.B2
 
         public static IStreamStoreConfigurator UseB2Database(this IStreamStoreConfigurator configurator, Action<B2DatabaseConfigurator>? configure = null)
         {
-            return configurator.WithDatabase(c =>
+            return configurator.WithSingleDatabase(c =>
             {
                 c.ConfigureWith(services =>
                 {
@@ -21,7 +21,7 @@ namespace StreamStore.S3.B2
 
         public static IStreamStoreConfigurator UseB2Database(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-            return configurator.WithDatabase(c =>
+            return configurator.WithSingleDatabase(c =>
             {
                 c.ConfigureWith(services =>
                 {
