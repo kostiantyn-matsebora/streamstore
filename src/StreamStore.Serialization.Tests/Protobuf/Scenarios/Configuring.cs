@@ -19,7 +19,7 @@ namespace StreamStore.Serialization.Tests.Protobuf
 
             // Act
             configurator.WithProtobufSerializer(true);
-            configurator.UseInMemoryDatabase();
+            configurator.WithSingleTenant(x => x.UseInMemoryDatabase());
             configurator.Configure(collection);
 
             // Assert

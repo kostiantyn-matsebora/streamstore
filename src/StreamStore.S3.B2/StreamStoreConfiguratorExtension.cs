@@ -8,9 +8,9 @@ namespace StreamStore.S3.B2
 
         public static IStreamStoreConfigurator UseB2Database(this IStreamStoreConfigurator configurator, Action<B2DatabaseConfigurator>? configure = null)
         {
-            return configurator.WithSingleDatabase(c =>
+            return configurator.WithSingleTenant(c =>
             {
-                c.ConfigureWith(services =>
+                c.RegisterDependencies(services =>
                 {
                     var configurator = new B2DatabaseConfigurator(services);
                     configure?.Invoke(configurator);
@@ -21,9 +21,9 @@ namespace StreamStore.S3.B2
 
         public static IStreamStoreConfigurator UseB2Database(this IStreamStoreConfigurator configurator, IConfiguration configuration)
         {
-            return configurator.WithSingleDatabase(c =>
+            return configurator.WithSingleTenant(c =>
             {
-                c.ConfigureWith(services =>
+                c.RegisterDependencies(services =>
                 {
                     new B2DatabaseConfigurator(services).ReadFromConfig(configuration);
                 });

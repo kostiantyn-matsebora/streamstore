@@ -6,25 +6,23 @@ namespace StreamStore.Configuration
 {
     public abstract class DatabaseRegistratorBase: IStreamDatabaseRegistrator 
     {
-        Action<IServiceCollection>? configurator;
+        Action<IServiceCollection>? registrator;
 
-        public void ConfigureWith(Action<IServiceCollection> configurator)
+        public void RegisterDependencies(Action<IServiceCollection> registrator)
         {
-            this.configurator = configurator.ThrowIfNull(nameof(configurator));
+            this.registrator = registrator.ThrowIfNull(nameof(registrator));
         }
 
 
-        public void Register(IServiceCollection services, StreamStoreConfiguration configuration)
+        public void Apply(IServiceCollection services)
         {
-            if (configurator == null)
-            {
-                throw new InvalidOperationException("Database backend is not set");
-            }
-
-            configurator.Invoke(services);
+            if (registrator != null) registrator.Invoke(services);
+            ApplyInternal(services);
             Validate(services);
         }
 
+        protected abstract void ApplyInternal(IServiceCollection services);
+        
         protected abstract void Validate(IServiceCollection services);
 
     }

@@ -1,7 +1,6 @@
 
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using StreamStore.Provisioning;
 using StreamStore.Serialization;
 
@@ -12,14 +11,13 @@ namespace StreamStore
     public class StreamStoreConfigurator : IStreamStoreConfigurator
     {
         StreamReadingMode mode = StreamReadingMode.Default;
-        IStreamDatabaseRegistrator registrator = new SingleTenantDatabaseRegistrator();
+        IStreamDatabaseRegistrator? dbRegistrator;
 
         Action<IServiceCollection> eventSerializerRegistrator = services => services.AddSingleton<IEventSerializer, NewtonsoftEventSerializer>();
         Action<IServiceCollection> typeRegistryRegistrator = services => services.AddSingleton<ITypeRegistry, TypeRegistry>();
 
         bool compression = false;
-        bool schemaProvisioningEnabled = true;
-
+        bool schemaProvisioningEnabled = false;
         int pageSize = 10;
 
         public StreamStoreConfigurator()
@@ -74,11 +72,11 @@ namespace StreamStore
             return this;
         }
 
-        public IStreamStoreConfigurator WithSingleDatabase(Action<ISingleTenantDatabaseRegistrator> registrator)
+        public IStreamStoreConfigurator WithSingleTenant(Action<ISingleTenantDatabaseRegistrator> registrator)
         {
             var singleTenantRegistrator = new SingleTenantDatabaseRegistrator();
             registrator(singleTenantRegistrator);
-            this.registrator = singleTenantRegistrator;
+            this.dbRegistrator = singleTenantRegistrator;
             return this;
         }
 
@@ -86,21 +84,18 @@ namespace StreamStore
         {
             var multiTenantregistrator = new MultitenantDatabaseRegistrator();
             registrator(multiTenantregistrator);
-            this.registrator = multiTenantregistrator;
+            this.dbRegistrator = multiTenantregistrator;
             return this;
         }
 
         public IServiceCollection Configure(IServiceCollection services)
         {
-            var configuration = new StreamStoreConfiguration
-            {
-                ReadingMode = mode,
-                ReadingPageSize = pageSize,
-                CompressionEnabled = compression,
-                SchemaProvisioningEnabled = schemaProvisioningEnabled
-            };
+            if (dbRegistrator == null)
+                throw new InvalidOperationException("Database backend is not registered");
 
-            registrator.Register(services, configuration);
+            var configuration = CreateConfiguration();
+
+            dbRegistrator.Apply(services);
 
             eventSerializerRegistrator(services);
             typeRegistryRegistrator(services);
@@ -111,6 +106,17 @@ namespace StreamStore
                 services.AddHostedService<SchemaProvisioningService>();
 
             return services;
+        }
+
+        private StreamStoreConfiguration CreateConfiguration()
+        {
+            return new StreamStoreConfiguration
+            {
+                ReadingMode = mode,
+                ReadingPageSize = pageSize,
+                CompressionEnabled = compression,
+                SchemaProvisioningEnabled = schemaProvisioningEnabled
+            };
         }
 
         private static void RegisterStoreDependencies(IServiceCollection services, StreamStoreConfiguration configuration)

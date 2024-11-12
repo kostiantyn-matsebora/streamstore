@@ -13,15 +13,13 @@ namespace StreamStore
 
         public IStreamStoreConfigurator WithTypeRegistry(ITypeRegistry registry);
 
-
         public IStreamStoreConfigurator WithTypeRegistry<T>() where T : ITypeRegistry;
-
 
         public IStreamStoreConfigurator WithEventSerializer(IEventSerializer eventSerializer);
 
         public IStreamStoreConfigurator WithEventSerializer<TSerialzier>() where TSerialzier : IEventSerializer;
 
-        public IStreamStoreConfigurator WithSingleDatabase(Action<ISingleTenantDatabaseRegistrator> registrator);
+        public IStreamStoreConfigurator WithSingleTenant(Action<ISingleTenantDatabaseRegistrator> registrator);
 
         public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenantDatabaseRegistrator> registrator);
     }

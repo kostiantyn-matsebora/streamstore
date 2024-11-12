@@ -38,7 +38,7 @@ namespace StreamStore.Tests.Configurator
             configurator.EnableCompression();
             configurator.WithEventSerializer<SystemTextJsonEventSerializer>();
             configurator.WithTypeRegistry<TypeRegistry>();
-            configurator.UseInMemoryDatabase();
+            configurator.WithSingleTenant(x => x.UseInMemoryDatabase());
 
             configurator.Configure(services);
 
@@ -84,9 +84,9 @@ namespace StreamStore.Tests.Configurator
             // Act
             configurator.WithEventSerializer(serializer.Object);
             configurator.WithTypeRegistry(typeRegistry.Object);
-            configurator.WithSingleDatabase(registrator =>
+            configurator.WithSingleTenant(registrator =>
                 {
-                    registrator.ConfigureWith(c =>
+                    registrator.RegisterDependencies(c =>
                     {
                         c.AddSingleton<IStreamDatabase>(database.Object);
                         c.AddSingleton<IStreamReader>(database.Object);
@@ -127,7 +127,7 @@ namespace StreamStore.Tests.Configurator
             // Arrange
             var configurator = StreamStoreConfiguratorSuite.CreateConfigurator();
 
-            configurator.WithSingleDatabase((x) => { });
+            configurator.WithSingleTenant((x) => { });
 
             // Act
             var act = () => configurator.Configure(StreamStoreConfiguratorSuite.CreateServiceCollection());
@@ -136,9 +136,9 @@ namespace StreamStore.Tests.Configurator
             act.Should().Throw<InvalidOperationException>().WithMessage("Database backend (IStreamDatabase) is not registered");
 
             // Arrange
-            configurator.WithSingleDatabase((x) =>
+            configurator.WithSingleTenant((x) =>
             {
-                x.ConfigureWith(c => c.AddSingleton<IStreamDatabase>(Generated.MockOf<IStreamDatabase>().Object));
+                x.RegisterDependencies(c => c.AddSingleton<IStreamDatabase>(Generated.MockOf<IStreamDatabase>().Object));
             });
 
             // Act

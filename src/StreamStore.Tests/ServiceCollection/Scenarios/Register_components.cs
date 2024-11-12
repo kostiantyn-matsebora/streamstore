@@ -74,7 +74,7 @@ namespace StreamStore.Tests.ServiceCollection
 
 
             // Act
-            Suite.MockServices.Object.ConfigureStreamStore(x => x.UseInMemoryDatabase());
+            Suite.MockServices.Object.ConfigureStreamStore(x => x.WithSingleTenant(x => x.UseInMemoryDatabase()));
             Suite.MockRepository.VerifyAll();
         }
     }

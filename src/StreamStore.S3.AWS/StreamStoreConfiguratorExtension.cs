@@ -4,9 +4,9 @@
     {
         public static IStreamStoreConfigurator UseAWSDatabase(this IStreamStoreConfigurator configurator)
         {
-            configurator.WithSingleDatabase(registrator =>
+            configurator.WithSingleTenant(registrator =>
             {
-                registrator.ConfigureWith(services =>
+                registrator.RegisterDependencies(services =>
                 {
                     new AWSS3DatabaseConfigurator(services).Configure();
                 });

@@ -9,10 +9,10 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator {
     public class Configuring_dependencies: Scenario { 
 
 
-        SqlDatabaseConfigurator CreateConfigurator(ServiceCollection? services = null)
+        SqlSingleTenantDatabaseConfigurator CreateConfigurator(ServiceCollection? services = null)
         {
             var serviceCollection = services ?? new ServiceCollection();
-            return new SqlDatabaseConfigurator(serviceCollection, new SqlDatabaseConfiguration());
+            return new SqlSingleTenantDatabaseConfigurator(serviceCollection, new SqlDatabaseConfiguration());
         }
 
         [Fact]
@@ -23,7 +23,7 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator {
             configurator.WithProvisioingQueryProvider<SqliteProvisioningQueryProvider>();
 
             // Act
-            Action act = () => configurator.Configure(false);
+            Action act = () => configurator.Apply();
 
             // Assert
             act.Should().Throw<InvalidOperationException>();
@@ -37,7 +37,7 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator {
             configurator.WithConnectionFactory<SqliteDbConnectionFactory>();
 
             // Act
-            Action act = () => configurator.Configure(false);
+            Action act = () => configurator.Apply();
 
             // Assert
             act.Should().Throw<InvalidOperationException>();
@@ -55,7 +55,7 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator {
 
 
             // Act
-            configurator.Configure(false);
+            configurator.Apply();
             
             // Assert
             serviceCollection.Should().NotBeEmpty();

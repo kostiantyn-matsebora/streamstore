@@ -13,7 +13,6 @@ namespace StreamStore.Provisioning
         public SchemaProvisioningService(ISchemaProvisioner provisioner)
         {
             this.provisioner = provisioner ?? throw new ArgumentNullException(nameof(provisioner));
-
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

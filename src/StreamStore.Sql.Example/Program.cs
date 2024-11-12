@@ -37,7 +37,9 @@ namespace StreamStore.Sql.Example
             builder
                 .Services
                 .ConfigureStreamStore(x =>
-                    x.UseSqliteDatabase(x => x.ConfigureDatabase(c => c.WithConnectionString(database.ConnectionString))));
+                    x.WithSingleTenant(c =>
+                        c.UseSqliteDatabase(x => x.ConfigureDatabase(c =>
+                            c.WithConnectionString(database.ConnectionString)))));
         }
 
         static void UsePostgresDatabase(HostApplicationBuilder builder)
@@ -48,7 +50,9 @@ namespace StreamStore.Sql.Example
             builder
                 .Services
                 .ConfigureStreamStore(x =>
-                    x.UsePostgresDatabase(x => x.ConfigureDatabase( c => c.WithConnectionString(database.ConnectionString))));
+                    x.WithSingleTenant(c =>
+                        c.UsePostgresDatabase(x => x.ConfigureDatabase(c => 
+                            c.WithConnectionString(database.ConnectionString)))));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Specialized;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,9 +16,9 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
         {
         }
 
-        SqlDatabaseConfigurator CreateSqliteDatabaseConfigurator()
+        SqlSingleTenantDatabaseConfigurator CreateSqliteDatabaseConfigurator(IServiceCollection? collection = null)
         {
-            return new SqlDatabaseConfigurator(Suite.MockServiceCollection.Object, new SqlDatabaseConfiguration());
+            return new SqlSingleTenantDatabaseConfigurator(collection ?? Suite.MockServiceCollection.Object, new SqlDatabaseConfiguration());
         }
 
         SqlDatabaseConfigurationBuilder CreateSqliteDatabaseConfigurationBuilder()
@@ -39,7 +40,7 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
                      .WithSchema("schemaName");
 
             // Act 
-            var configuration = builder.Build(false);
+            var configuration = builder.Build();
             
             // Assert
             configuration.ConnectionString.Should().Be("connectionString");
@@ -76,9 +77,9 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
 
             // Act
             var builder = CreateSqliteDatabaseConfigurationBuilder();
-            builder.ReadFromConfig(configuration.Object, "StreamStore:Sql", false);
+            builder.ReadFromConfig(configuration.Object, "StreamStore:Sql");
 
-            var config = builder.ReadFromConfig(configuration.Object, "StreamStore:Sql", false);
+            var config = builder.ReadFromConfig(configuration.Object, "StreamStore:Sql");
 
             // Assert
             Suite.MockRepository.VerifyAll();
@@ -92,17 +93,17 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
 
         [Fact]
         public void When_configuring_manually()
-        {
-            var streamStoreConfigurator = new StreamStoreConfigurator();
+        {            
             var collection = new ServiceCollection();
+            var configurator = CreateSqliteDatabaseConfigurator(collection);
 
-            streamStoreConfigurator.UseSqliteDatabase(c =>
-                c.ConfigureDatabase(builder => builder
+            configurator
+                .ConfigureDatabase(builder => builder
                     .WithConnectionString("connectionString")
                     .WithTable("tableName")
-                    .WithSchema("schemaName")));
+                    .WithSchema("schemaName"));
 
-            streamStoreConfigurator.Configure(collection);
+            configurator.Apply();
             var provider = collection.BuildServiceProvider();
             var config = provider.GetRequiredService<SqlDatabaseConfiguration>();
 

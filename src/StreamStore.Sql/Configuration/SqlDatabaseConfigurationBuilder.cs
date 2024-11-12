@@ -32,13 +32,8 @@ namespace StreamStore.Sql.Configuration
             return this;
         }
 
-        public SqlDatabaseConfiguration Build(bool multitenancyEnabled)
+        public SqlDatabaseConfiguration Build()
         {
-            if (multitenancyEnabled && configuration.ConnectionString == null)
-            {
-                throw new InvalidOperationException("Connection string must be set");
-            }
-
             if (configuration.SchemaName == null)
             {
                 throw new InvalidOperationException("SchemaName must be set");
@@ -52,7 +47,7 @@ namespace StreamStore.Sql.Configuration
             return (SqlDatabaseConfiguration)defaultConfig.Clone();
         }
 
-        public SqlDatabaseConfiguration ReadFromConfig(IConfiguration configuration, string sectionName, bool multitenancyEnabled)
+        public SqlDatabaseConfiguration ReadFromConfig(IConfiguration configuration, string sectionName)
         {
             var section = configuration.GetSection(sectionName);
             if (section.Exists())
@@ -64,7 +59,7 @@ namespace StreamStore.Sql.Configuration
             var connectionString = configuration.GetConnectionString("StreamStore");
             if (!string.IsNullOrWhiteSpace(connectionString)) WithConnectionString(connectionString);
 
-            return Build(multitenancyEnabled);
+            return Build();
         }
     }
 }
