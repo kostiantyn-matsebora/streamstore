@@ -6,9 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Sqlite;
+using StreamStore.Sql.Tests.Configuration.SingleTenant.DatabaseConfigurator;
 using StreamStore.Testing;
 
-namespace StreamStore.Sql.Tests.DatabaseConfigurator
+namespace StreamStore.Sql.Tests.Configuration.SingleTenant.DatabaseConfigurator.Scenarios
 {
     public class Building_configuration : Scenario<SqlDatabaseConfiguratorTestSuite>
     {
@@ -41,7 +42,7 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
 
             // Act 
             var configuration = builder.Build();
-            
+
             // Assert
             configuration.ConnectionString.Should().Be("connectionString");
             configuration.TableName.Should().Be("tableName");
@@ -93,7 +94,7 @@ namespace StreamStore.Sql.Tests.DatabaseConfigurator
 
         [Fact]
         public void When_configuring_manually()
-        {            
+        {
             var collection = new ServiceCollection();
             var configurator = CreateSqliteDatabaseConfigurator(collection);
 

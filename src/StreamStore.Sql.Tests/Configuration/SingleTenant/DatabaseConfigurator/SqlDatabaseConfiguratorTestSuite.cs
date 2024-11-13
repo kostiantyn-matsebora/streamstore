@@ -2,7 +2,7 @@
 using Moq;
 using StreamStore.Testing.Framework;
 
-namespace StreamStore.Sql.Tests.DatabaseConfigurator
+namespace StreamStore.Sql.Tests.Configuration.SingleTenant.DatabaseConfigurator
 {
     public class SqlDatabaseConfiguratorTestSuite : TestSuiteBase
     {

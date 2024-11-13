@@ -17,5 +17,7 @@ namespace StreamStore
         public IStreamStoreConfigurator WithSingleTenant(Action<ISingleTenantDatabaseConfigurator> configure);
 
         public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenantDatabaseConfigurator> configure);
+
+        public IServiceCollection Configure(IServiceCollection services);
     }
 }

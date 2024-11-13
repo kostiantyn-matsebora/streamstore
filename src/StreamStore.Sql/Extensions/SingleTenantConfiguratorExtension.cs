@@ -9,37 +9,36 @@ namespace StreamStore.Sql
     public static class SingleTenantConfiguratorExtension
     {
         internal static ISingleTenantDatabaseConfigurator UseSqlDatabase(
-                this ISingleTenantDatabaseConfigurator registrator,
+                this ISingleTenantDatabaseConfigurator configurator,
                 SqlDatabaseConfiguration defaultConfig,
                 IConfiguration configuration,
                 string sectionName,
-                Action<SqlSingleTenantDatabaseConfigurator> configurator)
+                Action<SqlSingleTenantDatabaseConfigurator> configureDatabase)
         {
-
-
-            return registrator
-                .UseSchemaProvisioner<SqlSchemaProvisioner>()
-                .UseDatabase<SqlStreamDatabase>(services =>
-            {
-                // Configuring database
-                new SqlSingleTenantDatabaseConfigurator(services, defaultConfig)
-                .ApplyFromConfig(configuration, sectionName);
-            });
-        }
-
-        internal static ISingleTenantDatabaseConfigurator UseSqlDatabase(
-                this ISingleTenantDatabaseConfigurator registrator,
-                SqlDatabaseConfiguration defaultConfig,
-                Action<SqlSingleTenantDatabaseConfigurator> configurator)
-        {
-
-            return registrator
+            return configurator
                 .UseSchemaProvisioner<SqlSchemaProvisioner>()
                 .UseDatabase<SqlStreamDatabase>(services =>
                 {
                     // Configuring database
                     var dbConfigurator = new SqlSingleTenantDatabaseConfigurator(services, defaultConfig);
-                    configurator(dbConfigurator);
+                    configureDatabase(dbConfigurator);
+                    dbConfigurator.ApplyFromConfig(configuration, sectionName);
+                });
+        }
+
+        internal static ISingleTenantDatabaseConfigurator UseSqlDatabase(
+                this ISingleTenantDatabaseConfigurator configurator,
+                SqlDatabaseConfiguration defaultConfig,
+                Action<SqlSingleTenantDatabaseConfigurator> configureDatabase)
+        {
+
+            return configurator
+                .UseSchemaProvisioner<SqlSchemaProvisioner>()
+                .UseDatabase<SqlStreamDatabase>(services =>
+                {
+                    // Configuring database
+                    var dbConfigurator = new SqlSingleTenantDatabaseConfigurator(services, defaultConfig);
+                    configureDatabase(dbConfigurator);
                     dbConfigurator.Apply();
                 });
         }

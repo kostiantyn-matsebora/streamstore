@@ -27,15 +27,15 @@ namespace StreamStore.Sql.Tests.Database
             IsDatabaseReady = true;
         }
 
-        public abstract void ConfigureDatabase(IStreamStoreConfigurator configurator);
+        public abstract void ConfigureDatabase(ISingleTenantDatabaseConfigurator configurator);
 
         ServiceProvider BuildServiceProvider()
         {
             var serviceCollection = new ServiceCollection();
             var configurator = new StreamStoreConfigurator();
-
-            ConfigureDatabase(configurator);
-            configurator.Configure(serviceCollection);
+            configurator
+                .WithSingleTenant(ConfigureDatabase)
+                .Configure(serviceCollection);
             return serviceCollection.BuildServiceProvider();
         }
 

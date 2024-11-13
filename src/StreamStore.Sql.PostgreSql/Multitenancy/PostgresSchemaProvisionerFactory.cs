@@ -4,11 +4,11 @@ using StreamStore.Sql.Provisioning;
 
 namespace StreamStore.Sql.PostgreSql
 {
-    internal class PostgresSchemaProvisioningFactory : ITenantSchemaProvisionerFactory
+    internal class PostgresSchemaProvisionerFactory : ITenantSchemaProvisionerFactory
     {
         readonly ISqlTenantDatabaseConfigurationProvider configurationProvider;
 
-        public PostgresSchemaProvisioningFactory(ISqlTenantDatabaseConfigurationProvider configurationProvider)
+        public PostgresSchemaProvisionerFactory(ISqlTenantDatabaseConfigurationProvider configurationProvider)
         {
             this.configurationProvider = configurationProvider.ThrowIfNull(nameof(configurationProvider));
         }

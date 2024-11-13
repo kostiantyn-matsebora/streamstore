@@ -44,7 +44,7 @@ namespace StreamStore.Sql.Configuration
                 throw new InvalidOperationException("TableName string must be set");
             }
 
-            return (SqlDatabaseConfiguration)defaultConfig.Clone();
+            return (SqlDatabaseConfiguration)configuration.Clone();
         }
 
         public SqlDatabaseConfiguration ReadFromConfig(IConfiguration configuration, string sectionName)

@@ -1,5 +1,4 @@
-﻿using StreamStore.Sql.Configuration;
-using StreamStore.Testing;
+﻿using StreamStore.Testing;
 using StreamStore.Testing.StreamDatabase;
 
 namespace StreamStore.Sql.Tests.Database
@@ -22,7 +21,7 @@ namespace StreamStore.Sql.Tests.Database
         {
             return fixture.IsDatabaseReady;
         }
-        protected override void ConfigureDatabase(IStreamStoreConfigurator configurator)
+        protected override void ConfigureDatabase(ISingleTenantDatabaseConfigurator configurator)
         {
             fixture.ConfigureDatabase(configurator);
         }
