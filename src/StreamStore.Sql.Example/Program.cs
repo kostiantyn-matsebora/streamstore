@@ -39,7 +39,7 @@ namespace StreamStore.Sql.Example
                 .Services
                 .ConfigureStreamStore(x =>
                     x.EnableSchemaProvisioning()
-                     .WithSingleTenant(c =>
+                     .WithSingleDatabse(c =>
                         c.UseSqliteDatabase(x => x.ConfigureDatabase(c =>
                             c.WithConnectionString(database.ConnectionString)))));
         }
@@ -54,7 +54,7 @@ namespace StreamStore.Sql.Example
                 .Services
                 .ConfigureStreamStore(x =>
                     x.EnableSchemaProvisioning()
-                     .WithSingleTenant(c =>
+                     .WithSingleDatabse(c =>
                         c.UsePostgresDatabase(x => x.ConfigureDatabase(c => 
                             c.WithConnectionString(database.ConnectionString)))));
         }

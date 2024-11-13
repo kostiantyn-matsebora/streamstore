@@ -34,7 +34,7 @@ namespace StreamStore.Sql.Tests.Database
             var serviceCollection = new ServiceCollection();
             var configurator = new StreamStoreConfigurator();
             configurator
-                .WithSingleTenant(ConfigureDatabase)
+                .WithSingleDatabse(ConfigureDatabase)
                 .Configure(serviceCollection);
             return serviceCollection.BuildServiceProvider();
         }

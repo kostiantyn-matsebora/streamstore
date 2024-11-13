@@ -11,12 +11,12 @@ namespace StreamStore.Sql.Tests.Sqlite.Configuration.SingleTenant
 
         public override string SectionName => SqliteConfiguration.ConfigurationSection;
 
-        public override void UseDatabase(ISingleTenantDatabaseConfigurator configurator, Action<SqlSingleTenantDatabaseConfigurator> configureDatabase)
+        public override void UseParticularDatabase(ISingleTenantDatabaseConfigurator configurator, Action<SqlSingleTenantDatabaseConfigurator> configureDatabase)
         {
             configurator.UseSqliteDatabase(configureDatabase);
         }
 
-        public override void UseDatabaseWithAppSettings(ISingleTenantDatabaseConfigurator configurator, IConfigurationRoot configuration)
+        public override void UseParticularDatabaseWithAppSettings(ISingleTenantDatabaseConfigurator configurator, IConfigurationRoot configuration)
         {
             configurator.UseSqliteDatabase(configuration);
         }

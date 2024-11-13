@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Serialization;
 
 
 namespace StreamStore
@@ -14,7 +13,7 @@ namespace StreamStore
 
         IStreamStoreConfigurator ConfigureSerialization(Action<ISerializationConfigurator> configure);
 
-        public IStreamStoreConfigurator WithSingleTenant(Action<ISingleTenantDatabaseConfigurator> configure);
+        public IStreamStoreConfigurator WithSingleDatabse(Action<ISingleTenantDatabaseConfigurator> configure);
 
         public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenantDatabaseConfigurator> configure);
 
