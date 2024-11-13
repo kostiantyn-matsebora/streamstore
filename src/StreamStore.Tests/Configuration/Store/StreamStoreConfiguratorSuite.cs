@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Testing.Framework;
 
-namespace StreamStore.Tests.Configuration.StoreConfigurator
+namespace StreamStore.Tests.Configuration.Store
 {
     public class StreamStoreConfiguratorSuite : TestSuiteBase
     {

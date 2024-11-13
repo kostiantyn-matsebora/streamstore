@@ -26,7 +26,7 @@ namespace StreamStore.Tests.Configuration.SingleTenant
         }
 
         [Fact]
-        public void When_database_is_configured_by_type()
+        public void When_database_is_configured_by_defaults()
         {
             // Arrange
             var configurator = CreateConfigurator();
@@ -53,7 +53,7 @@ namespace StreamStore.Tests.Configuration.SingleTenant
 
 
         [Fact]
-        public void When_database_is_configured_by_instance()
+        public void When_database_is_configured_by_database_instance()
         {
             // Arrange
             var configurator = CreateConfigurator();
@@ -79,8 +79,9 @@ namespace StreamStore.Tests.Configuration.SingleTenant
                     .And.BeOfType<DefaultSchemaProvisioner>();
         }
 
+
         [Fact]
-        public void When_database_is_configured_by_custom_schema_provider()
+        public void When_database_is_configured_with_custom_dependencies()
         {
             // Arrange
             var configurator = CreateConfigurator();

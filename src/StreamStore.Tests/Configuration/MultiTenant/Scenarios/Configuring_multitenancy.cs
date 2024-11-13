@@ -27,7 +27,7 @@ namespace StreamStore.Tests.Configuration.MultiTenant
         }
 
         [Fact]
-        public void When_multitenancy_is_configured()
+        public void When_multitenancy_is_configured_by_defaults()
         {
             // Arrange
             var configurator = CreateConfigurator();

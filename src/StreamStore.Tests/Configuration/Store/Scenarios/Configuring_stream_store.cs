@@ -5,7 +5,7 @@ using StreamStore.InMemory.Extensions;
 using StreamStore.Serialization;
 using StreamStore.Testing;
 
-namespace StreamStore.Tests.Configuration.StoreConfigurator
+namespace StreamStore.Tests.Configuration.Store
 {
     public class Configuring_stream_store : Scenario<StreamStoreConfiguratorSuite>
     {

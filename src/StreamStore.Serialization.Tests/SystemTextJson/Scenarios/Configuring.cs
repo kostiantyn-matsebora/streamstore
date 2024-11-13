@@ -15,7 +15,7 @@ namespace StreamStore.Serialization.Tests.SystemTextJson
             var configurator = new SerializationConfigurator();
 
             // Act
-            var collection = configurator.WithTextJsonSerializer().Configure();
+            var collection = configurator.UseTextJsonSerializer().Configure();
 
             // Assert
             collection.Should().ContainSingle(x => x.ServiceType == typeof(IEventSerializer) && x.ImplementationType == typeof(SystemTextJsonEventSerializer));
