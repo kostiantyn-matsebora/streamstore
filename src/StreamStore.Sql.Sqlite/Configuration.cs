@@ -8,7 +8,7 @@ namespace StreamStore.Sql.Sqlite
 
         public readonly static SqlDatabaseConfiguration DefaultConfiguration = new SqlDatabaseConfiguration
         {
-            SchemaName = "public",
+            SchemaName = "main",
             TableName = "Events",
         };
     }
