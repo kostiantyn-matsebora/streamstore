@@ -6,7 +6,7 @@
         {
             configurator.WithSingleTenant(registrator =>
             {
-                registrator.RegisterDependencies(services =>
+                registrator.UseDatabase<S3StreamDatabase>(services =>
                 {
                     new AWSS3DatabaseConfigurator(services).Configure();
                 });

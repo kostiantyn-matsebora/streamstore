@@ -2,9 +2,9 @@
 {
     public static class StreamStoreConfiguratorExtension
     {
-        public static IStreamStoreConfigurator WithProtobufSerializer(this IStreamStoreConfigurator configurator, bool compression = true)
+        public static ISerializationConfigurator WithProtobufSerializer(this ISerializationConfigurator configurator, bool compression = true)
         {
-            return configurator.WithEventSerializer<ProtobufEventSerializer>();
+            return configurator.UseSerializer<ProtobufEventSerializer>();
         }
     }
 }

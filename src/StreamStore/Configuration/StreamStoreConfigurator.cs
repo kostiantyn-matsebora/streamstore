@@ -1,6 +1,7 @@
 
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Configuration;
 using StreamStore.Provisioning;
 using StreamStore.Serialization;
 
@@ -11,12 +12,11 @@ namespace StreamStore
     public class StreamStoreConfigurator : IStreamStoreConfigurator
     {
         StreamReadingMode mode = StreamReadingMode.Default;
-        IStreamDatabaseRegistrator? dbRegistrator;
+        IStreamDatabaseConfigurator? databaseConfigurator;
+        ISerializationConfigurator serializationConfigurator = new SerializationConfigurator();
 
-        Action<IServiceCollection> eventSerializerRegistrator = services => services.AddSingleton<IEventSerializer, NewtonsoftEventSerializer>();
         Action<IServiceCollection> typeRegistryRegistrator = services => services.AddSingleton<ITypeRegistry, TypeRegistry>();
 
-        bool compression = false;
         bool schemaProvisioningEnabled = false;
         int pageSize = 10;
 
@@ -36,33 +36,9 @@ namespace StreamStore
             return this;
         }
 
-        public IStreamStoreConfigurator WithTypeRegistry(ITypeRegistry registry)
+        public IStreamStoreConfigurator ConfigureSerialization(Action<ISerializationConfigurator> configure)
         {
-            typeRegistryRegistrator = services => services.AddSingleton<ITypeRegistry>(registry);
-            return this;
-        }
-
-        public IStreamStoreConfigurator WithTypeRegistry<T>() where T : ITypeRegistry
-        {
-            typeRegistryRegistrator = services => services.AddSingleton(typeof(ITypeRegistry), typeof(T));
-            return this;
-        }
-
-        public IStreamStoreConfigurator WithEventSerializer(IEventSerializer eventSerializer)
-        {
-            eventSerializerRegistrator = services => services.AddSingleton<IEventSerializer>(eventSerializer);
-            return this;
-        }
-
-        public IStreamStoreConfigurator WithEventSerializer<TSerialzier>() where TSerialzier : IEventSerializer
-        {
-            eventSerializerRegistrator = services => services.AddSingleton(typeof(IEventSerializer), typeof(TSerialzier));
-            return this;
-        }
-
-        public IStreamStoreConfigurator EnableCompression()
-        {
-            this.compression = true;
+            configure(serializationConfigurator);
             return this;
         }
 
@@ -72,40 +48,47 @@ namespace StreamStore
             return this;
         }
 
-        public IStreamStoreConfigurator WithSingleTenant(Action<ISingleTenantDatabaseRegistrator> registrator)
+        public IStreamStoreConfigurator WithSingleTenant(Action<ISingleTenantDatabaseConfigurator> configure)
         {
-            var singleTenantRegistrator = new SingleTenantDatabaseRegistrator();
-            registrator(singleTenantRegistrator);
-            this.dbRegistrator = singleTenantRegistrator;
+            var configurator = new SingleTenantDatabaseConfigurator();
+            configure(configurator);
+            databaseConfigurator = configurator;
             return this;
         }
 
-        public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenantDatabaseRegistrator> registrator)
+        public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenantDatabaseConfigurator> configure)
         {
-            var multiTenantregistrator = new MultitenantDatabaseRegistrator();
-            registrator(multiTenantregistrator);
-            this.dbRegistrator = multiTenantregistrator;
+            var configurator = new MultitenantDatabaseConfigurator();
+            configure(configurator);
+            databaseConfigurator = configurator;
             return this;
         }
 
         public IServiceCollection Configure(IServiceCollection services)
         {
-            if (dbRegistrator == null)
+            if (databaseConfigurator == null)
                 throw new InvalidOperationException("Database backend is not registered");
 
             var configuration = CreateConfiguration();
 
-            dbRegistrator.Apply(services);
+            CopyServices(databaseConfigurator.Configure(), services);
+            CopyServices(serializationConfigurator.Configure(), services);
 
-            eventSerializerRegistrator(services);
             typeRegistryRegistrator(services);
 
             RegisterStoreDependencies(services, configuration);
 
-            if (configuration.SchemaProvisioningEnabled)
-                services.AddHostedService<SchemaProvisioningService>();
+            if (configuration.SchemaProvisioningEnabled) services.AddHostedService<SchemaProvisioningService>();
 
             return services;
+        }
+
+        void CopyServices(IServiceCollection source, IServiceCollection destination)
+        {
+            foreach (var service in source)
+            {
+                destination.Add(service);
+            }
         }
 
         private StreamStoreConfiguration CreateConfiguration()
@@ -114,7 +97,6 @@ namespace StreamStore
             {
                 ReadingMode = mode,
                 ReadingPageSize = pageSize,
-                CompressionEnabled = compression,
                 SchemaProvisioningEnabled = schemaProvisioningEnabled
             };
         }

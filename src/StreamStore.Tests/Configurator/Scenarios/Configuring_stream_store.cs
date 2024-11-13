@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Reflection.Metadata.Ecma335;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.InMemory;
 using StreamStore.Serialization;
@@ -35,9 +36,6 @@ namespace StreamStore.Tests.Configurator
             // Act
             configurator.WithReadingPageSize(pageSize);
             configurator.WithReadingMode(mode);
-            configurator.EnableCompression();
-            configurator.WithEventSerializer<SystemTextJsonEventSerializer>();
-            configurator.WithTypeRegistry<TypeRegistry>();
             configurator.WithSingleTenant(x => x.UseInMemoryDatabase());
 
             configurator.Configure(services);
@@ -68,7 +66,6 @@ namespace StreamStore.Tests.Configurator
             configuration.Should().NotBeNull();
             configuration!.ReadingPageSize.Should().Be(pageSize);
             configuration.ReadingMode.Should().Be(mode);
-            configuration.CompressionEnabled.Should().BeTrue();
         }
 
         [Fact]
@@ -82,16 +79,7 @@ namespace StreamStore.Tests.Configurator
             var services = StreamStoreConfiguratorSuite.CreateServiceCollection();
 
             // Act
-            configurator.WithEventSerializer(serializer.Object);
-            configurator.WithTypeRegistry(typeRegistry.Object);
-            configurator.WithSingleTenant(registrator =>
-                {
-                    registrator.RegisterDependencies(c =>
-                    {
-                        c.AddSingleton<IStreamDatabase>(database.Object);
-                        c.AddSingleton<IStreamReader>(database.Object);
-                    });
-                });
+            configurator.WithSingleTenant(registrator => registrator.UseDatabase(database.Object));
 
             configurator.Configure(services);
 
@@ -136,10 +124,7 @@ namespace StreamStore.Tests.Configurator
             act.Should().Throw<InvalidOperationException>().WithMessage("Database backend (IStreamDatabase) is not registered");
 
             // Arrange
-            configurator.WithSingleTenant((x) =>
-            {
-                x.RegisterDependencies(c => c.AddSingleton<IStreamDatabase>(Generated.MockOf<IStreamDatabase>().Object));
-            });
+            configurator.WithSingleTenant((x) => x.UseDatabase(Generated.MockOf<IStreamDatabase>().Object));
 
             // Act
             act = () => configurator.Configure(StreamStoreConfiguratorSuite.CreateServiceCollection());

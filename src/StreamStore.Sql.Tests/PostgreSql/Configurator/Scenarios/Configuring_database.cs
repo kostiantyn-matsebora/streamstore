@@ -14,14 +14,15 @@ namespace StreamStore.Sql.Tests.PostgreSql.Configurator
         {
 
             // Arrange
-            var registrator = new SingleTenantDatabaseRegistrator();
+            var registrator = new SingleTenantDatabaseConfigurator();
             var connectionString = Generated.String;
-            var serviceCollection = new ServiceCollection();
+
 
             // Act
-            registrator
-               .UsePostgresDatabase(c => c.ConfigureDatabase(x => x.WithConnectionString(connectionString)))
-               .Apply(serviceCollection);
+
+             var serviceCollection = registrator
+                .UsePostgresDatabase(c => c.ConfigureDatabase(x => x.WithConnectionString(connectionString)))
+                .Configure();
 
             var provider = serviceCollection.BuildServiceProvider();
 

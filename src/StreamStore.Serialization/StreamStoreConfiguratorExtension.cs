@@ -3,9 +3,9 @@ namespace StreamStore.Serialization
 
     public static class StreamStoreConfiguratorExtension
     {
-        public static IStreamStoreConfigurator WithTextJsonSerializer(this IStreamStoreConfigurator configurator)
+        public static ISerializationConfigurator WithTextJsonSerializer(this ISerializationConfigurator configurator)
         {
-            configurator.WithEventSerializer<SystemTextJsonEventSerializer>();
+            configurator.UseSerializer<SystemTextJsonEventSerializer>();
             return configurator;
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace StreamStore.Configuration
+﻿namespace StreamStore
 {
     public class SerializationConfiguration
     {

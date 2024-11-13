@@ -8,24 +8,23 @@ namespace StreamStore.Sql.Multitenancy
     internal abstract class SqlTenantStreamDatabaseProvider : ITenantStreamDatabaseProvider
     {
         readonly ISqlTenantDatabaseConfigurationProvider configProvider;
-        readonly ISqlQueryProvider queryProvider;
 
-        protected SqlTenantStreamDatabaseProvider(ISqlTenantDatabaseConfigurationProvider configProvider, ISqlQueryProvider queryProvider)
+        protected SqlTenantStreamDatabaseProvider(ISqlTenantDatabaseConfigurationProvider configProvider)
         {
             this.configProvider = configProvider.ThrowIfNull(nameof(configProvider));
-            this.queryProvider = queryProvider.ThrowIfNull(nameof(queryProvider));
         }
 
         public IStreamDatabase GetDatabase(Id tenantId)
         {
             tenantId.ThrowIfNull(nameof(tenantId));
-            return new SqlStreamDatabase(CreateConnectionFactory(configProvider.GetConfiguration(tenantId)), CreateCommandFactory(), CreateExceptionHandler());
+            var configuration = configProvider.GetConfiguration(tenantId);
+            return new SqlStreamDatabase(CreateConnectionFactory(configuration), CreateCommandFactory(configuration), CreateExceptionHandler());
         }
 
         protected abstract IDbConnectionFactory CreateConnectionFactory(SqlDatabaseConfiguration configuration);
-        protected virtual IDapperCommandFactory CreateCommandFactory()
+        protected virtual IDapperCommandFactory CreateCommandFactory(SqlDatabaseConfiguration configuration)
         {
-            return new DefaultDapperCommandFactory(queryProvider);
+            return new DefaultDapperCommandFactory(new DefaultSqlQueryProvider(configuration));
         }
 
         protected virtual ISqlExceptionHandler CreateExceptionHandler()

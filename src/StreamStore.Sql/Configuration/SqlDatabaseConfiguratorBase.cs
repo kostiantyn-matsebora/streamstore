@@ -12,9 +12,6 @@ namespace StreamStore.Sql.Configuration
 
         Type commandFactoryType = typeof(DefaultDapperCommandFactory);
         Type sqlExceptionHandlerType = typeof(DefaultSqlExceptionHandler);
-        Type sqlQueryProviderType = typeof(DefaultSqlQueryProvider);
-
-        Type? sqlProvisionQueryProviderType;
 
         readonly IServiceCollection services;
 
@@ -31,17 +28,6 @@ namespace StreamStore.Sql.Configuration
             return (TConfigurator)this;
         }
 
-        public TConfigurator WithQueryProvider<TProvider>() where TProvider : ISqlQueryProvider
-        {
-            sqlQueryProviderType = typeof(TProvider);
-            return (TConfigurator)this;
-        }
-
-        public TConfigurator WithProvisioingQueryProvider<TProvisioningProvider>() where TProvisioningProvider : ISqlProvisioningQueryProvider
-        {
-            sqlProvisionQueryProviderType = typeof(TProvisioningProvider);
-            return (TConfigurator)this;
-        }
 
         public TConfigurator WithCommandFactory<TFactory>() where TFactory : IDapperCommandFactory
         {
@@ -80,13 +66,8 @@ namespace StreamStore.Sql.Configuration
         {
             services.AddSingleton(configuration);
 
-            if (sqlProvisionQueryProviderType == null)
-                throw new InvalidOperationException("ISqlProvisionQueryProvider type not set");
-
             services.AddSingleton(typeof(IDapperCommandFactory), commandFactoryType);
             services.AddSingleton(typeof(ISqlExceptionHandler), sqlExceptionHandlerType);
-            services.AddSingleton(typeof(ISqlQueryProvider), sqlQueryProviderType);
-            services.AddSingleton(typeof(ISqlProvisioningQueryProvider), sqlProvisionQueryProviderType);
 
             return services;
         }

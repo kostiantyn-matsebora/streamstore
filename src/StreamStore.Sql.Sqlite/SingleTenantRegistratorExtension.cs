@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Sql.Configuration;
 
 
@@ -10,14 +11,14 @@ namespace StreamStore.Sql.Sqlite
     {
         const string configurationSection = "StreamStore:Sqlite";
 
-        public static IStreamDatabaseRegistrator UseSqliteDatabase(this ISingleTenantDatabaseRegistrator registrator, IConfiguration configuration)
+        public static ISingleTenantDatabaseConfigurator UseSqliteDatabase(this ISingleTenantDatabaseConfigurator registrator, IConfiguration configuration)
         {
             return registrator.UseSqlDatabase(DefaultConfiguration, configuration, configurationSection, ConfigureRequiredDependencies);
 
         }
 
-        public static IStreamDatabaseRegistrator UseSqliteDatabase(
-            this ISingleTenantDatabaseRegistrator registrator, 
+        public static ISingleTenantDatabaseConfigurator UseSqliteDatabase(
+            this ISingleTenantDatabaseConfigurator registrator, 
             Action<SqlSingleTenantDatabaseConfigurator> dbConfigurator)
         {
             return registrator.UseSqlDatabase(DefaultConfiguration, (c) =>

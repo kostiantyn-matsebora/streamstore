@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Serialization;
 
 
@@ -11,16 +12,10 @@ namespace StreamStore
 
         public IStreamStoreConfigurator WithReadingPageSize(int pageSize);
 
-        public IStreamStoreConfigurator WithTypeRegistry(ITypeRegistry registry);
+        IStreamStoreConfigurator ConfigureSerialization(Action<ISerializationConfigurator> configure);
 
-        public IStreamStoreConfigurator WithTypeRegistry<T>() where T : ITypeRegistry;
+        public IStreamStoreConfigurator WithSingleTenant(Action<ISingleTenantDatabaseConfigurator> configure);
 
-        public IStreamStoreConfigurator WithEventSerializer(IEventSerializer eventSerializer);
-
-        public IStreamStoreConfigurator WithEventSerializer<TSerialzier>() where TSerialzier : IEventSerializer;
-
-        public IStreamStoreConfigurator WithSingleTenant(Action<ISingleTenantDatabaseRegistrator> registrator);
-
-        public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenantDatabaseRegistrator> registrator);
+        public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenantDatabaseConfigurator> configure);
     }
 }

@@ -13,15 +13,15 @@ namespace StreamStore.Sql.Tests.Sqlite.Configurator
         public void When_configuring_streamstore_database()
         {
             // Arrange
-            var registrator = new SingleTenantDatabaseRegistrator();
-
+            var configurator = new SingleTenantDatabaseConfigurator();
             var connectionString = Generated.String;
-            var serviceCollection = new ServiceCollection();
+
 
             // Act
-            registrator
-                .UseSqliteDatabase(c =>  c.ConfigureDatabase( x => x.WithConnectionString(connectionString)))
-                .Apply(serviceCollection);
+            var serviceCollection = configurator
+                    .UseSqliteDatabase(c => c.ConfigureDatabase(x => x.WithConnectionString(connectionString)))
+                    .Configure();
+
 
             var provider = serviceCollection.BuildServiceProvider();
 

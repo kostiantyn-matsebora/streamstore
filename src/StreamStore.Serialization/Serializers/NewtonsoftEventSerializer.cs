@@ -5,7 +5,7 @@ namespace StreamStore.Serialization
 {
     public sealed class NewtonsoftEventSerializer : StringEventSerializerBase
     {
-        public NewtonsoftEventSerializer(ITypeRegistry registry, StreamStoreConfiguration configuration) : base(registry, configuration.CompressionEnabled)
+        public NewtonsoftEventSerializer(ITypeRegistry registry, SerializationConfiguration configuration) : base(registry, configuration.CompressionEnabled)
         {
         }
 

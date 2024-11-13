@@ -6,8 +6,8 @@ namespace StreamStore.Sql.Sqlite
 {
     internal class SqliteTenantDatabaseProvider : SqlTenantStreamDatabaseProvider
     {
-        public SqliteTenantDatabaseProvider(ISqlTenantDatabaseConfigurationProvider configurationProvider, ISqlQueryProvider queryProvider) :
-            base(configurationProvider, queryProvider)
+        public SqliteTenantDatabaseProvider(ISqlTenantDatabaseConfigurationProvider configurationProvider) :
+            base(configurationProvider)
         {
         }
 

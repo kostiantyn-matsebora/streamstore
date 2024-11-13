@@ -10,7 +10,7 @@ namespace StreamStore.S3.B2
         {
             return configurator.WithSingleTenant(c =>
             {
-                c.RegisterDependencies(services =>
+                c.UseDatabase<S3StreamDatabase>(services =>
                 {
                     var configurator = new B2DatabaseConfigurator(services);
                     configure?.Invoke(configurator);
@@ -23,7 +23,7 @@ namespace StreamStore.S3.B2
         {
             return configurator.WithSingleTenant(c =>
             {
-                c.RegisterDependencies(services =>
+                c.UseDatabase<S3StreamDatabase>(services =>
                 {
                     new B2DatabaseConfigurator(services).ReadFromConfig(configuration);
                 });

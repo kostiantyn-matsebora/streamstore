@@ -4,19 +4,21 @@ using StreamStore.Sql.Configuration;
 
 namespace StreamStore.Sql.PostgreSql
 {
-    public static class SingleTenantRegistratorExtension
+    public static class SingleTenantConfiguratorExtension
     {
         const string configurationSection = "StreamStore:PostgreSql";
 
-        public static IStreamDatabaseRegistrator UsePostgresDatabase(this ISingleTenantDatabaseRegistrator registrator, IConfiguration configuration)
+        public static ISingleTenantDatabaseConfigurator UsePostgresDatabase(this ISingleTenantDatabaseConfigurator configurator, IConfiguration configuration)
         {
-            return registrator.UseSqlDatabase(DefaultConfiguration, configuration, configurationSection, ConfigureRequiredDependencies);
+            return configurator.UseSqlDatabase(DefaultConfiguration, configuration, configurationSection, ConfigureRequiredDependencies);
 
         }
 
-        public static IStreamDatabaseRegistrator UsePostgresDatabase(this ISingleTenantDatabaseRegistrator registrator, Action<SqlSingleTenantDatabaseConfigurator> dbConfigurator)
+        public static ISingleTenantDatabaseConfigurator UsePostgresDatabase(
+                        this ISingleTenantDatabaseConfigurator configurator, 
+                        Action<SqlSingleTenantDatabaseConfigurator> dbConfigurator)
         {
-            return registrator.UseSqlDatabase(DefaultConfiguration, (c) =>
+            return configurator.UseSqlDatabase(DefaultConfiguration, (c) =>
             {
                 ConfigureRequiredDependencies(c);
                 dbConfigurator(c);

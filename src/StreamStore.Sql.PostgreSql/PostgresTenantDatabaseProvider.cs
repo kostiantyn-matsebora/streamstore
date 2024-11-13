@@ -6,8 +6,8 @@ namespace StreamStore.Sql.PostgreSql
 {
     internal class PostgresTenantDatabaseProvider : SqlTenantStreamDatabaseProvider
     {
-        public PostgresTenantDatabaseProvider(ISqlTenantDatabaseConfigurationProvider configurationProvider, ISqlQueryProvider queryProvider) : 
-            base(configurationProvider, queryProvider)
+        public PostgresTenantDatabaseProvider(ISqlTenantDatabaseConfigurationProvider configurationProvider) : 
+            base(configurationProvider)
         {
         }
 
