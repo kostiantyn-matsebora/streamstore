@@ -12,7 +12,12 @@ namespace StreamStore.InMemory
 
     public sealed class InMemoryStreamDatabase : IStreamDatabase
     {
-        internal ConcurrentDictionary<string, EventRecordCollection> store = new ConcurrentDictionary<string, EventRecordCollection>();
+        internal ConcurrentDictionary<string, EventRecordCollection> store;
+
+        public InMemoryStreamDatabase()
+        {
+            store = new ConcurrentDictionary<string, EventRecordCollection>();
+        }
 
         public Task<EventRecordCollection?> FindAsync(Id streamId, CancellationToken token = default)
         {

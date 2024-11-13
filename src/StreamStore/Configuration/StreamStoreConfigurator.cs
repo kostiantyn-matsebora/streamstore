@@ -1,10 +1,9 @@
-
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Configuration;
 using StreamStore.Configuration.Database;
 using StreamStore.Provisioning;
-using StreamStore.Serialization;
+
 
 
 namespace StreamStore
@@ -74,7 +73,7 @@ namespace StreamStore
             CopyServices(serializationConfigurator.Configure(), services);
 
             RegisterStoreDependencies(services, configuration);
-            RegisterSchemaProvisioning(services);
+            if (schemaProvisioningEnabled) RegisterSchemaProvisioning(services);
 
             return services;
         }

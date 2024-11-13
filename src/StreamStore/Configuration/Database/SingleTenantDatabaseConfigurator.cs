@@ -17,7 +17,7 @@ namespace StreamStore.Configuration.Database
         public ISingleTenantDatabaseConfigurator UseDatabase<TDatabase>(Action<IServiceCollection>? dependencies = null) where TDatabase : IStreamDatabase
         {
             services.AddSingleton(typeof(IStreamDatabase), typeof(TDatabase));
-            services.AddSingleton(typeof(IStreamReader), typeof(TDatabase));
+            services.AddSingleton(typeof(IStreamReader), provider => provider.GetRequiredService<IStreamDatabase>());
             if (dependencies != null) dependencies.Invoke(services);
             ValidateConfiguration(services);
             return this;
