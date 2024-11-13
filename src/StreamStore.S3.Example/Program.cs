@@ -13,7 +13,9 @@ namespace StreamStore.S3.Example
 
             builder
                 .Services
-                .ConfigureStreamStore(x => x.UseAWSDatabase());
+                .ConfigureStreamStore(x =>
+                    x.WithSingleTenant(x => 
+                        x.UseAWSDatabase()));
 
 
             builder.ConfigureExampleApplication();

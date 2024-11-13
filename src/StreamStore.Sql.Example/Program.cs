@@ -19,38 +19,42 @@ namespace StreamStore.Sql.Example
 
             var builder = Host.CreateApplicationBuilder(args);
 
-            UseSqliteDatabase(builder); // Uncomment this line to use SQLite database
-            // UsePostgresDatabase(builder); // Uncomment this line to use PostgreSQL database
+            //UseSqliteDatabase(builder); // Uncomment this line to use SQLite database
+            UsePostgresDatabase(builder); // Uncomment this line to use PostgreSQL database
 
             builder.ConfigureExampleApplication();
 
             var host = builder.Build();
-
+            
             host.Run();
         }
 
         static void UseSqliteDatabase(HostApplicationBuilder builder)
         {
+            Console.WriteLine("Database backend: SQLite");
             var database = new SqliteTestDatabase(databaseName);
             database.EnsureExists();
 
             builder
                 .Services
                 .ConfigureStreamStore(x =>
-                    x.WithSingleTenant(c =>
+                    x.EnableSchemaProvisioning()
+                     .WithSingleTenant(c =>
                         c.UseSqliteDatabase(x => x.ConfigureDatabase(c =>
                             c.WithConnectionString(database.ConnectionString)))));
         }
 
         static void UsePostgresDatabase(HostApplicationBuilder builder)
         {
+            Console.WriteLine("Database backend: PostgreSQL");
             var database = new PostgresTestDatabase(databaseName);
             database.EnsureExists();
 
             builder
                 .Services
                 .ConfigureStreamStore(x =>
-                    x.WithSingleTenant(c =>
+                    x.EnableSchemaProvisioning()
+                     .WithSingleTenant(c =>
                         c.UsePostgresDatabase(x => x.ConfigureDatabase(c => 
                             c.WithConnectionString(database.ConnectionString)))));
         }
