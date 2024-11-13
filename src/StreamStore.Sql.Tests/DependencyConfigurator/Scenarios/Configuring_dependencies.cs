@@ -5,11 +5,11 @@ using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Sqlite;
 using StreamStore.Testing;
 
-namespace StreamStore.Sql.Tests.DependencyConfigurator { 
-    public class Configuring_dependencies: Scenario { 
-
-
-        SqlSingleTenantDatabaseConfigurator CreateConfigurator(ServiceCollection? services = null)
+namespace StreamStore.Sql.Tests.DependencyConfigurator
+{
+    public class Configuring_dependencies : Scenario
+    {
+        static SqlSingleTenantDatabaseConfigurator CreateConfigurator(ServiceCollection? services = null)
         {
             var serviceCollection = services ?? new ServiceCollection();
             return new SqlSingleTenantDatabaseConfigurator(serviceCollection, new SqlDatabaseConfiguration());
@@ -56,7 +56,7 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator {
 
             // Act
             configurator.Apply();
-            
+
             // Assert
             serviceCollection.Should().NotBeEmpty();
             serviceCollection.Should().Contain(x => x.ServiceType == typeof(IDapperCommandFactory));

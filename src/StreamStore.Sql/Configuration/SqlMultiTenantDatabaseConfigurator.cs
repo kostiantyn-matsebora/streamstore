@@ -20,7 +20,7 @@ namespace StreamStore.Sql.Configuration
             return this;
         }
 
-        protected override IServiceCollection ApplySpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
+        protected override void ApplySpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
         {
             if (connectionStringProviderType == null)
             {
@@ -28,7 +28,6 @@ namespace StreamStore.Sql.Configuration
             }
             services.AddSingleton(typeof(ISqlTenantConnectionStringProvider), connectionStringProviderType);
             services.AddSingleton(typeof(ISqlTenantDatabaseConfigurationProvider), typeof(SqlTenantDatabaseConfigurationProvider));
-            return services;
         }
     }
 }

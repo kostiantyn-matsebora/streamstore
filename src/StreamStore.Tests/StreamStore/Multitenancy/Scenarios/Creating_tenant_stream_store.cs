@@ -2,7 +2,7 @@
 using Moq;
 using StreamStore.Multitenancy;
 using StreamStore.Testing;
-
+using Suite = StreamStore.Tests.StreamStore.Multitenancy.TenantStreamStoreFactorySuite;
 namespace StreamStore.Tests.StreamStore.Multitenancy
 {
     public class Creating_tenant_stream_store : Scenario<TenantStreamStoreFactorySuite>

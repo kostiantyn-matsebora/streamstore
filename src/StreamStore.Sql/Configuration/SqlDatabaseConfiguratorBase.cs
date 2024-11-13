@@ -41,7 +41,6 @@ namespace StreamStore.Sql.Configuration
 
         public IServiceCollection Apply()
         {
-            var configuration = configurationBuilder.Build();
             return Apply(configurationBuilder.Build());
         }
 
@@ -53,7 +52,7 @@ namespace StreamStore.Sql.Configuration
             return services;
         }
 
-        protected abstract IServiceCollection ApplySpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services);
+        protected abstract void ApplySpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services);
 
         IServiceCollection ApplySharedDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
         {

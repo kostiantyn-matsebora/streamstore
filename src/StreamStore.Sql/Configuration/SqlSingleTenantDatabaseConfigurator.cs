@@ -44,7 +44,7 @@ namespace StreamStore.Sql.Configuration
             return this;
         }
 
-        protected override IServiceCollection ApplySpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
+        protected override void ApplySpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
         {
             if (connectionFactoryType == null)
                 throw new InvalidOperationException("IDbConnectionFactory type not set");
@@ -57,7 +57,6 @@ namespace StreamStore.Sql.Configuration
             services.AddSingleton(typeof(ISqlProvisioningQueryProvider), sqlProvisionQueryProviderType);
             services.AddSingleton<ISchemaProvisioner, SqlSchemaProvisioner>();
             services.AddSingleton(typeof(IDapperCommandFactory), commandFactoryType);
-            return services;
         }
     }
 }

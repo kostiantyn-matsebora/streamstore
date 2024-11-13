@@ -44,7 +44,7 @@ namespace StreamStore.Configuration.Database
             return services;
         }
 
-        void ValidateConfiguration(IServiceCollection services)
+        static void ValidateConfiguration(IServiceCollection services)
         {
             if (!services.Any(s => s.ServiceType == typeof(ITenantStreamDatabaseProvider)))
             {

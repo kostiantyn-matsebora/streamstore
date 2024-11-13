@@ -78,7 +78,7 @@ namespace StreamStore
             return services;
         }
 
-        void CopyServices(IServiceCollection source, IServiceCollection destination)
+        static void CopyServices(IServiceCollection source, IServiceCollection destination)
         {
             foreach (var service in source)
             {

@@ -7,9 +7,8 @@ namespace StreamStore.Tests.StreamStore.Multitenancy
 {
     public class TenantStreamStoreFactorySuite : TestSuiteBase
     {
-
-        public Mock<ITenantStreamDatabaseProvider> MockTenantStreamDatabaseProvider => Generated.MockOf<ITenantStreamDatabaseProvider>();
-        public Mock<IEventSerializer> MockEventSerializer => Generated.MockOf<IEventSerializer>();
-        public StreamStoreConfiguration Configuration => new StreamStoreConfiguration();
+        public static Mock<ITenantStreamDatabaseProvider> MockTenantStreamDatabaseProvider => Generated.MockOf<ITenantStreamDatabaseProvider>();
+        public static Mock<IEventSerializer> MockEventSerializer => Generated.MockOf<IEventSerializer>();
+        public static StreamStoreConfiguration Configuration => new StreamStoreConfiguration();
     }
 }

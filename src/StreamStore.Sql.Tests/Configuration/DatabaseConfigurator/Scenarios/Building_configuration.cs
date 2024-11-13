@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.Configuration;
-using Moq;
 using StreamStore.Sql.Configuration;
 using StreamStore.Testing;
 
@@ -8,8 +7,7 @@ namespace StreamStore.Sql.Tests.Configuration.DatabaseConfigurator
 {
     public class Building_configuration : Scenario
     {
-
-        SqlDatabaseConfigurationBuilder CreateDatabaseConfigurationBuilder()
+        static SqlDatabaseConfigurationBuilder CreateDatabaseConfigurationBuilder()
         {
             return new SqlDatabaseConfigurationBuilder(new SqlDatabaseConfiguration());
         }
