@@ -50,6 +50,7 @@ namespace StreamStore.Sql.Tests.Configuration.DatabaseConfigurator
                 };
 
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemoryConfig).Build();
+
             // Act
             var builder = CreateDatabaseConfigurationBuilder();
             var config = builder.ReadFromConfig(configuration, "StreamStore:Sql");

@@ -10,14 +10,14 @@ namespace StreamStore.Sql.Sqlite
     {
         public static ISingleTenantDatabaseConfigurator UseSqliteDatabase(this ISingleTenantDatabaseConfigurator configurator, IConfiguration configuration)
         {
-            return configurator.UseSqlDatabase(Configuration.DefaultConfiguration, configuration, Configuration.ConfigurationSection, ConfigureRequiredDependencies);
+            return configurator.UseSqlDatabase(SqliteConfiguration.DefaultConfiguration, configuration, SqliteConfiguration.ConfigurationSection, ConfigureRequiredDependencies);
         }
 
         public static ISingleTenantDatabaseConfigurator UseSqliteDatabase(
-                this ISingleTenantDatabaseConfigurator registrator, 
+                this ISingleTenantDatabaseConfigurator configurator, 
                 Action<SqlSingleTenantDatabaseConfigurator> dbConfigurator)
         {
-            return registrator.UseSqlDatabase(Configuration.DefaultConfiguration, (c) =>
+            return configurator.UseSqlDatabase(SqliteConfiguration.DefaultConfiguration, (c) =>
             {
                 ConfigureRequiredDependencies(c);
                 dbConfigurator(c);

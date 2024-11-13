@@ -1,14 +1,14 @@
 ﻿using StreamStore.Sql.Configuration;
 
-namespace StreamStore.Sql.PostgreSql
+namespace StreamStore.Sql.Sqlite
 {
-    internal static class Configuration
+    internal static class SqliteConfiguration
     {
-        public const string ConfigurationSection = "StreamStore:PostgreSql";
+        public const string ConfigurationSection = "StreamStore:Sqlite";
 
         public readonly static SqlDatabaseConfiguration DefaultConfiguration = new SqlDatabaseConfiguration
         {
-            SchemaName = "public",
+            SchemaName = "main",
             TableName = "Events",
         };
     }

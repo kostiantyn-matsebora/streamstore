@@ -6,7 +6,7 @@ using StreamStore.Sql.Multitenancy;
 
 namespace StreamStore.Sql.Configuration
 {
-    internal class SqlMultiTenantDatabaseConfigurator : SqlDatabaseConfiguratorBase<SqlMultiTenantDatabaseConfigurator>
+    public class SqlMultiTenantDatabaseConfigurator : SqlDatabaseConfiguratorBase<SqlMultiTenantDatabaseConfigurator>
     {
         Type? connectionStringProviderType;
 
@@ -20,11 +20,15 @@ namespace StreamStore.Sql.Configuration
             return this;
         }
 
-        protected override IServiceCollection ApplyModeSpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
+        protected override IServiceCollection ApplySpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
         {
-           services.AddSingleton(typeof(ISqlTenantConnectionStringProvider), connectionStringProviderType!);
-           services.AddSingleton(typeof(ISqlTenantDatabaseConfigurationProvider), typeof(SqlTenantDatabaseConfigurationProvider));
-           return services;
+            if (connectionStringProviderType == null)
+            {
+                throw new InvalidOperationException("ISqlTenantConnectionStringProvider type must be set");
+            }
+            services.AddSingleton(typeof(ISqlTenantConnectionStringProvider), connectionStringProviderType);
+            services.AddSingleton(typeof(ISqlTenantDatabaseConfigurationProvider), typeof(SqlTenantDatabaseConfigurationProvider));
+            return services;
         }
     }
 }

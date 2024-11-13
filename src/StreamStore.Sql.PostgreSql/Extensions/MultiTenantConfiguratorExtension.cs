@@ -6,26 +6,33 @@ namespace StreamStore.Sql.PostgreSql
 {
     public static class MultiTenantConfiguratorExtension
     {
-        internal static IMultitenantDatabaseConfigurator UseSqliteDatabase(
+        internal static IMultitenantDatabaseConfigurator UsePostgresDatabase(
               this IMultitenantDatabaseConfigurator configurator,
               Action<SqlMultiTenantDatabaseConfigurator> dbConfigurator)
         {
             return configurator
                 .UseDatabaseProvider<PostgresTenantDatabaseProvider>()
                 .UseSchemaProvisionerFactory<PostgresSchemaProvisionerFactory>()
-                .UseSqlDatabase(Configuration.DefaultConfiguration, (c) =>
+                .UseSqlDatabase<PostgresTenantDatabaseProvider>(PostgresConfiguration.DefaultConfiguration, (c) =>
                 {
                     ConfigureRequiredDependencies(c);
                     dbConfigurator(c);
                 });
         }
 
-        public static IMultitenantDatabaseConfigurator UseSqliteDatabase(this IMultitenantDatabaseConfigurator configurator, IConfiguration configuration)
+        public static IMultitenantDatabaseConfigurator UsePostgresDatabase(
+            this IMultitenantDatabaseConfigurator configurator, 
+            IConfiguration configuration,
+            Action<SqlMultiTenantDatabaseConfigurator> dbConfigurator)
         {
             return configurator
                  .UseDatabaseProvider<PostgresTenantDatabaseProvider>()
                  .UseSchemaProvisionerFactory<PostgresSchemaProvisionerFactory>()
-                 .UseSqlDatabase(Configuration.DefaultConfiguration, configuration, Configuration.ConfigurationSection, ConfigureRequiredDependencies);
+                 .UseSqlDatabase<PostgresTenantDatabaseProvider>(PostgresConfiguration.DefaultConfiguration, configuration, PostgresConfiguration.ConfigurationSection, (c) =>
+                 {
+                     ConfigureRequiredDependencies(c);
+                     dbConfigurator(c);
+                 });
         }
 
         static void ConfigureRequiredDependencies(SqlMultiTenantDatabaseConfigurator configurator)

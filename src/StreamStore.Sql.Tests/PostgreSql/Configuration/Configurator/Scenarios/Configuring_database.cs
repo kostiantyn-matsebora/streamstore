@@ -6,24 +6,23 @@ using FluentAssertions;
 using StreamStore.Sql.API;
 using StreamStore.Configuration.Database;
 
-namespace StreamStore.Sql.Tests.PostgreSql.Configurator
+namespace StreamStore.Sql.Tests.PostgreSql.Configuration.Configurator
 {
-    public class Configuring_database: Scenario
+    public class Configuring_database : Scenario
     {
         [Fact]
         public void When_configuring_streamstore_database()
         {
 
             // Arrange
-            var registrator = new SingleTenantDatabaseConfigurator();
+            var configurator = new SingleTenantDatabaseConfigurator();
             var connectionString = Generated.String;
-
 
             // Act
 
-             var serviceCollection = registrator
-                .UsePostgresDatabase(c => c.ConfigureDatabase(x => x.WithConnectionString(connectionString)))
-                .Configure();
+            var serviceCollection = configurator
+               .UsePostgresDatabase(c => c.ConfigureDatabase(x => x.WithConnectionString(connectionString)))
+               .Configure();
 
             var provider = serviceCollection.BuildServiceProvider();
 

@@ -10,7 +10,7 @@ namespace StreamStore.Sql.Configuration
     {
         readonly SqlDatabaseConfigurationBuilder configurationBuilder;
 
-        Type commandFactoryType = typeof(DefaultDapperCommandFactory);
+
         Type sqlExceptionHandlerType = typeof(DefaultSqlExceptionHandler);
 
         readonly IServiceCollection services;
@@ -25,13 +25,6 @@ namespace StreamStore.Sql.Configuration
         public TConfigurator WithExceptionHandling<THandler>() where THandler : ISqlExceptionHandler
         {
             sqlExceptionHandlerType = typeof(THandler);
-            return (TConfigurator)this;
-        }
-
-
-        public TConfigurator WithCommandFactory<TFactory>() where TFactory : IDapperCommandFactory
-        {
-            commandFactoryType = typeof(TFactory);
             return (TConfigurator)this;
         }
 
@@ -55,18 +48,16 @@ namespace StreamStore.Sql.Configuration
         IServiceCollection Apply(SqlDatabaseConfiguration configuration)
         {
             ApplySharedDependencies(configuration, services);
-            ApplyModeSpecificDependencies(configuration, services);
+            ApplySpecificDependencies(configuration, services);
 
             return services;
         }
 
-        protected abstract IServiceCollection ApplyModeSpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services);
+        protected abstract IServiceCollection ApplySpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services);
 
         IServiceCollection ApplySharedDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
         {
             services.AddSingleton(configuration);
-
-            services.AddSingleton(typeof(IDapperCommandFactory), commandFactoryType);
             services.AddSingleton(typeof(ISqlExceptionHandler), sqlExceptionHandlerType);
 
             return services;

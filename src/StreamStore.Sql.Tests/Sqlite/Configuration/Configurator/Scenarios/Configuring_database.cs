@@ -6,9 +6,9 @@ using StreamStore.Sql.API;
 using StreamStore.Sql.Sqlite;
 using StreamStore.Configuration.Database;
 
-namespace StreamStore.Sql.Tests.Sqlite.Configurator
+namespace StreamStore.Sql.Tests.Sqlite.Configuration.Configurator
 {
-    public class Configuring_database: Scenario
+    public class Configuring_database : Scenario
     {
         [Fact]
         public void When_configuring_streamstore_database()

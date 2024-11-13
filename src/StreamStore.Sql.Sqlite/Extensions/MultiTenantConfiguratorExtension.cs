@@ -11,21 +11,26 @@ namespace StreamStore.Sql.Sqlite
               Action<SqlMultiTenantDatabaseConfigurator> dbConfigurator)
         {
             return configurator
-                .UseDatabaseProvider<SqliteTenantDatabaseProvider>()
                 .UseSchemaProvisionerFactory<SqliteSchemaProvisionerFactory>()
-                .UseSqlDatabase(Configuration.DefaultConfiguration, (c) =>
+                .UseSqlDatabase<SqliteTenantDatabaseProvider>(SqliteConfiguration.DefaultConfiguration, (c) =>
                 {
                     ConfigureRequiredDependencies(c);
                     dbConfigurator(c);
                 });
         }
 
-        public static IMultitenantDatabaseConfigurator UseSqliteDatabase(this IMultitenantDatabaseConfigurator configurator, IConfiguration configuration)
+        public static IMultitenantDatabaseConfigurator UseSqliteDatabase(
+            this IMultitenantDatabaseConfigurator configurator, 
+            IConfiguration configuration, 
+            Action<SqlMultiTenantDatabaseConfigurator> dbConfigurator)
         {
             return configurator
-                 .UseDatabaseProvider<SqliteTenantDatabaseProvider>()
                  .UseSchemaProvisionerFactory<SqliteSchemaProvisionerFactory>()
-                 .UseSqlDatabase(Configuration.DefaultConfiguration, configuration, Configuration.ConfigurationSection, ConfigureRequiredDependencies);
+                 .UseSqlDatabase<SqliteTenantDatabaseProvider>(SqliteConfiguration.DefaultConfiguration, configuration, SqliteConfiguration.ConfigurationSection, (c) =>
+                 {
+                     ConfigureRequiredDependencies(c);
+                     dbConfigurator(c);
+                 });
         }
 
         static void ConfigureRequiredDependencies(SqlMultiTenantDatabaseConfigurator configurator)

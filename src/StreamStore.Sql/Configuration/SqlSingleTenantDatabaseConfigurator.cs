@@ -14,7 +14,7 @@ namespace StreamStore.Sql.Configuration
         Type? connectionFactoryType;
         Type sqlQueryProviderType = typeof(DefaultSqlQueryProvider);
         Type? sqlProvisionQueryProviderType;
-
+        Type commandFactoryType = typeof(DefaultDapperCommandFactory);
         public SqlSingleTenantDatabaseConfigurator(IServiceCollection services, SqlDatabaseConfiguration defaultConfig): base(services, defaultConfig)
         {
         }
@@ -38,8 +38,13 @@ namespace StreamStore.Sql.Configuration
             return this;
         }
 
+        public SqlSingleTenantDatabaseConfigurator WithCommandFactory<TFactory>() where TFactory : IDapperCommandFactory
+        {
+            commandFactoryType = typeof(TFactory);
+            return this;
+        }
 
-        protected override IServiceCollection ApplyModeSpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
+        protected override IServiceCollection ApplySpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
         {
             if (connectionFactoryType == null)
                 throw new InvalidOperationException("IDbConnectionFactory type not set");
@@ -51,7 +56,7 @@ namespace StreamStore.Sql.Configuration
             services.AddSingleton(typeof(ISqlQueryProvider), sqlQueryProviderType);
             services.AddSingleton(typeof(ISqlProvisioningQueryProvider), sqlProvisionQueryProviderType);
             services.AddSingleton<ISchemaProvisioner, SqlSchemaProvisioner>();
-            
+            services.AddSingleton(typeof(IDapperCommandFactory), commandFactoryType);
             return services;
         }
     }

@@ -42,5 +42,6 @@ namespace StreamStore.Sql
                     dbConfigurator.Apply();
                 });
         }
+
     }
 }
