@@ -7,6 +7,7 @@ namespace StreamStore.Configuration
     internal class SerializationConfigurator : ISerializationConfigurator
     {
         readonly ServiceCollection services = new ServiceCollection();
+        readonly SerializationConfiguration configuration = new SerializationConfiguration();
 
         public SerializationConfigurator()
         {
@@ -16,6 +17,7 @@ namespace StreamStore.Configuration
 
         public ISerializationConfigurator EnableCompression()
         {
+            configuration.CompressionEnabled = true;
             return this;
         }
 
@@ -35,6 +37,7 @@ namespace StreamStore.Configuration
 
         public IServiceCollection Configure()
         {
+            services.AddSingleton(configuration);
             return services;
         }
 
