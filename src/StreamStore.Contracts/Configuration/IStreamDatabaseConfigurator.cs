@@ -22,5 +22,7 @@ namespace StreamStore
     {
         IMultitenantDatabaseConfigurator UseDatabaseProvider<TDatabaseProvider>(Action<IServiceCollection>? dependencies = null) where TDatabaseProvider : ITenantStreamDatabaseProvider;
         IMultitenantDatabaseConfigurator UseSchemaProvisionerFactory<TFactory>(Action<IServiceCollection>? dependencies = null) where TFactory : ITenantSchemaProvisionerFactory;
+
+        IMultitenantDatabaseConfigurator UseTenantProvider<TProvider>(Action<IServiceCollection>? dependencies = null) where TProvider : ITenantProvider;
     }
 }

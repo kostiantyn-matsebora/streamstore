@@ -1,9 +1,6 @@
-﻿
-using Microsoft.Extensions.DependencyInjection;
-
-namespace StreamStore.InMemory
+﻿namespace StreamStore.InMemory.Extensions
 {
-    public static class StreamStoreConfiguratorExtension
+    public static class SingleTenantDatabaseConfiguratorExtension
     {
         public static ISingleTenantDatabaseConfigurator UseInMemoryDatabase(this ISingleTenantDatabaseConfigurator registrator)
         {

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Sql.Configuration;
 using FluentAssertions;
 using StreamStore.Sql.API;
+using StreamStore.Configuration.Database;
 
 namespace StreamStore.Sql.Tests.PostgreSql.Configurator
 {

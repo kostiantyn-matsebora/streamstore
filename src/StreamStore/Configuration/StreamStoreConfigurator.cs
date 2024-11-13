@@ -2,6 +2,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Configuration;
+using StreamStore.Configuration.Database;
 using StreamStore.Provisioning;
 using StreamStore.Serialization;
 
@@ -13,9 +14,7 @@ namespace StreamStore
     {
         StreamReadingMode mode = StreamReadingMode.Default;
         IStreamDatabaseConfigurator? databaseConfigurator;
-        ISerializationConfigurator serializationConfigurator = new SerializationConfigurator();
-
-        Action<IServiceCollection> typeRegistryRegistrator = services => services.AddSingleton<ITypeRegistry, TypeRegistry>();
+        readonly ISerializationConfigurator serializationConfigurator = new SerializationConfigurator();
 
         bool schemaProvisioningEnabled = false;
         int pageSize = 10;
@@ -74,11 +73,8 @@ namespace StreamStore
             CopyServices(databaseConfigurator.Configure(), services);
             CopyServices(serializationConfigurator.Configure(), services);
 
-            typeRegistryRegistrator(services);
-
             RegisterStoreDependencies(services, configuration);
-
-            if (configuration.SchemaProvisioningEnabled) services.AddHostedService<SchemaProvisioningService>();
+            RegisterSchemaProvisioning(services);
 
             return services;
         }
@@ -91,17 +87,30 @@ namespace StreamStore
             }
         }
 
-        private StreamStoreConfiguration CreateConfiguration()
+        void RegisterSchemaProvisioning(IServiceCollection services)
+        {
+            var type = databaseConfigurator!.GetType();
+            switch (type)
+            {
+                case Type _ when type == typeof(SingleTenantDatabaseConfigurator):
+                    services.AddHostedService<SchemaProvisioningService>();
+                    break;
+                case Type _ when type == typeof(MultitenantDatabaseConfigurator):
+                    services.AddHostedService<TenantSchemaProvisioningService>();
+                    break;
+            }
+        }
+
+        StreamStoreConfiguration CreateConfiguration()
         {
             return new StreamStoreConfiguration
             {
                 ReadingMode = mode,
                 ReadingPageSize = pageSize,
-                SchemaProvisioningEnabled = schemaProvisioningEnabled
             };
         }
 
-        private static void RegisterStoreDependencies(IServiceCollection services, StreamStoreConfiguration configuration)
+        static void RegisterStoreDependencies(IServiceCollection services, StreamStoreConfiguration configuration)
         {
             services
                 .AddSingleton(configuration)

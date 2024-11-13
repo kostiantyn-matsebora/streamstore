@@ -4,6 +4,7 @@ using StreamStore.Sql.Configuration;
 using FluentAssertions;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Sqlite;
+using StreamStore.Configuration.Database;
 
 namespace StreamStore.Sql.Tests.Sqlite.Configurator
 {

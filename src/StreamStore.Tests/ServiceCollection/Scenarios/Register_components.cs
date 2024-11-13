@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore;
 using StreamStore.InMemory;
+using StreamStore.InMemory.Extensions;
 using StreamStore.Serialization;
 using StreamStore.Testing;
 

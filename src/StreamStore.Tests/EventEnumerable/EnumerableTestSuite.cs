@@ -1,7 +1,7 @@
 ﻿using StreamStore.Testing.StreamStore;
-using StreamStore.InMemory;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Stream;
+using StreamStore.InMemory.Extensions;
 
 
 namespace StreamStore.Tests.Enumerator

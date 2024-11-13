@@ -1,4 +1,5 @@
-﻿using StreamStore.Testing.StreamDatabase;
+﻿using StreamStore.InMemory.Extensions;
+using StreamStore.Testing.StreamDatabase;
 
 namespace StreamStore.InMemory.Tests.StreamDatabase
 {

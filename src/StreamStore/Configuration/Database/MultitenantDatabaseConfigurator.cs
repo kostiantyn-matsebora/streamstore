@@ -4,9 +4,9 @@ using StreamStore.Provisioning;
 using System;
 using System.Linq;
 
-namespace StreamStore
+namespace StreamStore.Configuration.Database
 {
-    public sealed class MultitenantDatabaseConfigurator: IMultitenantDatabaseConfigurator
+    public sealed class MultitenantDatabaseConfigurator : IMultitenantDatabaseConfigurator
     {
         readonly ServiceCollection services = new ServiceCollection();
 

@@ -1,4 +1,4 @@
-﻿using StreamStore.InMemory;
+﻿using StreamStore.InMemory.Extensions;
 using StreamStore.Testing.StreamStore;
 
 

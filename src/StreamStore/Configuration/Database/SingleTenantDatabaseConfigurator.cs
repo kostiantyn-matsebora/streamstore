@@ -3,7 +3,7 @@ using StreamStore.Provisioning;
 using System;
 using System.Linq;
 
-namespace StreamStore
+namespace StreamStore.Configuration.Database
 {
     public class SingleTenantDatabaseConfigurator : ISingleTenantDatabaseConfigurator
     {
