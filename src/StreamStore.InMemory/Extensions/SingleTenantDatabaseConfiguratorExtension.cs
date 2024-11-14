@@ -2,7 +2,7 @@
 {
     public static class SingleTenantDatabaseConfiguratorExtension
     {
-        public static ISingleTenantDatabaseConfigurator UseInMemoryDatabase(this ISingleTenantDatabaseConfigurator registrator)
+        public static ISingleTenantConfigurator UseInMemoryDatabase(this ISingleTenantConfigurator registrator)
         {
             return registrator.UseDatabase<InMemoryStreamDatabase>();
         }

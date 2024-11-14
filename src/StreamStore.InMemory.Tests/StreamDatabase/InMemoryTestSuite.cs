@@ -9,7 +9,7 @@ namespace StreamStore.InMemory.Tests.StreamDatabase
         {
         }
 
-        protected override void ConfigureDatabase(ISingleTenantDatabaseConfigurator configurator)
+        protected override void ConfigureDatabase(ISingleTenantConfigurator configurator)
         {
             configurator.UseInMemoryDatabase();
         }

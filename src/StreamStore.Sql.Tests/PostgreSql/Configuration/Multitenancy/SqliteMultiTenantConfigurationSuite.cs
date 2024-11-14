@@ -12,7 +12,7 @@ namespace StreamStore.Sql.Tests.Postgres.Configuration.Multitenancy
 
         public override string SectionName => PostgresConfiguration.ConfigurationSection;
 
-        public override void UseDatabase(IMultitenantDatabaseConfigurator configurator, Action<SqlMultiTenantDatabaseConfigurator> configureDatabase)
+        public override void UseDatabase(IMultitenancyConfigurator configurator, Action<SqlMultiTenantDatabaseConfigurator> configureDatabase)
         {
             configurator.UsePostgresDatabase(x =>
             {
@@ -21,7 +21,7 @@ namespace StreamStore.Sql.Tests.Postgres.Configuration.Multitenancy
             });
         }
 
-        public override void UseDatabaseWithAppSettings(IMultitenantDatabaseConfigurator configurator, IConfigurationRoot configuration)
+        public override void UseDatabaseWithAppSettings(IMultitenancyConfigurator configurator, IConfigurationRoot configuration)
         {
             configurator.UsePostgresDatabase(configuration, x => x.WithConnectionStringProvider<FakeConnectionStringProvider>());
         }

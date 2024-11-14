@@ -10,19 +10,20 @@ namespace StreamStore
         public IServiceCollection Configure();
     }
 
-    public interface ISingleTenantDatabaseConfigurator: IStreamDatabaseConfigurator
+    public interface ISingleTenantConfigurator: IStreamDatabaseConfigurator
     {
-        ISingleTenantDatabaseConfigurator UseDatabase<TDatabase>(Action<IServiceCollection>? dependencies = null) where TDatabase : IStreamDatabase;
-        ISingleTenantDatabaseConfigurator UseDatabase(IStreamDatabase database);
+        ISingleTenantConfigurator UseDatabase<TDatabase>(Action<IServiceCollection>? dependencies = null) where TDatabase : IStreamDatabase;
+        ISingleTenantConfigurator UseDatabase(IStreamDatabase database);
 
-        ISingleTenantDatabaseConfigurator UseSchemaProvisioner<TProvisioner>(Action<IServiceCollection>? dependencies = null) where TProvisioner : ISchemaProvisioner;
+        ISingleTenantConfigurator UseSchemaProvisioner<TProvisioner>(Action<IServiceCollection>? dependencies = null) where TProvisioner : ISchemaProvisioner;
     }
 
-    public interface IMultitenantDatabaseConfigurator : IStreamDatabaseConfigurator
+    public interface IMultitenancyConfigurator : IStreamDatabaseConfigurator
     {
-        IMultitenantDatabaseConfigurator UseDatabaseProvider<TDatabaseProvider>(Action<IServiceCollection>? dependencies = null) where TDatabaseProvider : ITenantStreamDatabaseProvider;
-        IMultitenantDatabaseConfigurator UseSchemaProvisionerFactory<TFactory>(Action<IServiceCollection>? dependencies = null) where TFactory : ITenantSchemaProvisionerFactory;
+        IMultitenancyConfigurator UseDatabaseProvider<TDatabaseProvider>(Action<IServiceCollection>? dependencies = null) where TDatabaseProvider : ITenantStreamDatabaseProvider;
+        IMultitenancyConfigurator UseSchemaProvisionerFactory<TFactory>(Action<IServiceCollection>? dependencies = null) where TFactory : ITenantSchemaProvisionerFactory;
 
-        IMultitenantDatabaseConfigurator UseTenantProvider<TProvider>(Action<IServiceCollection>? dependencies = null) where TProvider : ITenantProvider;
+        IMultitenancyConfigurator UseTenantProvider<TProvider>(Action<IServiceCollection>? dependencies = null) where TProvider : ITenantProvider;
+        IMultitenancyConfigurator WithTenants(params Id[] tenants);
     }
 }

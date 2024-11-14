@@ -10,7 +10,7 @@ namespace StreamStore.Tests.Configuration.MultiTenant
 {
     public class MultiTenantConfiguratorSuite : TestSuiteBase
     {
-        public static IMultitenantDatabaseConfigurator CreateConfigurator() => new MultitenantDatabaseConfigurator();
+        public static IMultitenancyConfigurator CreateConfigurator() => new MultitenancyConfigurator();
 
 
         public static IServiceCollection CreateServiceCollection() => new Microsoft.Extensions.DependencyInjection.ServiceCollection();

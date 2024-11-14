@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 
-namespace StreamStore.ExampleBase
+namespace StreamStore.ExampleBase.Configuration
 {
     [ExcludeFromCodeCoverage]
     internal class DatabaseConfiguratorRegistry

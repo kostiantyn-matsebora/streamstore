@@ -16,7 +16,7 @@ namespace StreamStore.Sql.Tests.Configuration.SingleTenant
         public abstract SqlDatabaseConfiguration DefaultConfiguration { get; }
         public abstract string SectionName { get; }
 
-        public abstract void UseParticularDatabase(ISingleTenantDatabaseConfigurator configurator, Action<SqlSingleTenantDatabaseConfigurator> configureDatabase);
-        public abstract void UseParticularDatabaseWithAppSettings(ISingleTenantDatabaseConfigurator configurator, IConfigurationRoot configuration);
+        public abstract void UseParticularDatabase(ISingleTenantConfigurator configurator, Action<SqlSingleTenantDatabaseConfigurator> configureDatabase);
+        public abstract void UseParticularDatabaseWithAppSettings(ISingleTenantConfigurator configurator, IConfigurationRoot configuration);
     }
 }

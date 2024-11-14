@@ -8,8 +8,8 @@ namespace StreamStore.Sql
 {
     public static class SingleTenantConfiguratorExtension
     {
-        internal static ISingleTenantDatabaseConfigurator UseSqlDatabase(
-                this ISingleTenantDatabaseConfigurator configurator,
+        internal static ISingleTenantConfigurator UseSqlDatabase(
+                this ISingleTenantConfigurator configurator,
                 SqlDatabaseConfiguration defaultConfig,
                 IConfiguration configuration,
                 string sectionName,
@@ -26,8 +26,8 @@ namespace StreamStore.Sql
                 });
         }
 
-        internal static ISingleTenantDatabaseConfigurator UseSqlDatabase(
-                this ISingleTenantDatabaseConfigurator configurator,
+        internal static ISingleTenantConfigurator UseSqlDatabase(
+                this ISingleTenantConfigurator configurator,
                 SqlDatabaseConfiguration defaultConfig,
                 Action<SqlSingleTenantDatabaseConfigurator> configureDatabase)
         {

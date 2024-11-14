@@ -2,6 +2,7 @@
 using System.CommandLine;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Hosting;
+using StreamStore.ExampleBase.Configuration;
 
 
 namespace StreamStore.ExampleBase

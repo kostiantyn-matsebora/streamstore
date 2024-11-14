@@ -21,7 +21,7 @@ namespace StreamStore.Sql.Tests.Database
         {
             return fixture.IsDatabaseReady;
         }
-        protected override void ConfigureDatabase(ISingleTenantDatabaseConfigurator configurator)
+        protected override void ConfigureDatabase(ISingleTenantConfigurator configurator)
         {
             fixture.ConfigureDatabase(configurator);
         }

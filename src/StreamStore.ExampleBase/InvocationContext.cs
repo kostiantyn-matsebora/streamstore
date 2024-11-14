@@ -1,5 +1,8 @@
-﻿namespace StreamStore.ExampleBase
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace StreamStore.ExampleBase
 {
+    [ExcludeFromCodeCoverage]
     public sealed class InvocationContext
     {
         public InvocationContext(StoreMode mode, string database)

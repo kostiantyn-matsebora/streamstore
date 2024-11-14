@@ -5,16 +5,16 @@ using System.Linq;
 
 namespace StreamStore.Configuration.Database
 {
-    public class SingleTenantDatabaseConfigurator : ISingleTenantDatabaseConfigurator
+    public class SingleTenantConfigurator : ISingleTenantConfigurator
     {
         readonly ServiceCollection services = new ServiceCollection();
 
-        public SingleTenantDatabaseConfigurator()
+        public SingleTenantConfigurator()
         {
             services.AddSingleton(typeof(ISchemaProvisioner), typeof(DefaultSchemaProvisioner));
         }
 
-        public ISingleTenantDatabaseConfigurator UseDatabase<TDatabase>(Action<IServiceCollection>? dependencies = null) where TDatabase : IStreamDatabase
+        public ISingleTenantConfigurator UseDatabase<TDatabase>(Action<IServiceCollection>? dependencies = null) where TDatabase : IStreamDatabase
         {
             services.AddSingleton(typeof(IStreamDatabase), typeof(TDatabase));
             services.AddSingleton(typeof(IStreamReader), provider => provider.GetRequiredService<IStreamDatabase>());
@@ -23,14 +23,14 @@ namespace StreamStore.Configuration.Database
             return this;
         }
 
-        public ISingleTenantDatabaseConfigurator UseDatabase(IStreamDatabase database)
+        public ISingleTenantConfigurator UseDatabase(IStreamDatabase database)
         {
             services.AddSingleton(typeof(IStreamDatabase), database);
             services.AddSingleton(typeof(IStreamReader), database);
             return this;
         }
 
-        public ISingleTenantDatabaseConfigurator UseSchemaProvisioner<TProvisioner>(Action<IServiceCollection>? dependencies = null) where TProvisioner : ISchemaProvisioner
+        public ISingleTenantConfigurator UseSchemaProvisioner<TProvisioner>(Action<IServiceCollection>? dependencies = null) where TProvisioner : ISchemaProvisioner
         {
             services.AddSingleton(typeof(ISchemaProvisioner), typeof(TProvisioner));
             if (dependencies != null) dependencies.Invoke(services);

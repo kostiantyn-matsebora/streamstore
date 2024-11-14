@@ -6,8 +6,8 @@ namespace StreamStore.Sql.Sqlite
 {
     public static class MultiTenantConfiguratorExtension
     {
-        internal static IMultitenantDatabaseConfigurator UseSqliteDatabase(
-              this IMultitenantDatabaseConfigurator configurator,
+        public static IMultitenancyConfigurator UseSqliteDatabase(
+              this IMultitenancyConfigurator configurator,
               Action<SqlMultiTenantDatabaseConfigurator> dbConfigurator)
         {
             return configurator
@@ -19,8 +19,8 @@ namespace StreamStore.Sql.Sqlite
                 });
         }
 
-        public static IMultitenantDatabaseConfigurator UseSqliteDatabase(
-            this IMultitenantDatabaseConfigurator configurator, 
+        public static IMultitenancyConfigurator UseSqliteDatabase(
+            this IMultitenancyConfigurator configurator, 
             IConfiguration configuration, 
             Action<SqlMultiTenantDatabaseConfigurator> dbConfigurator)
         {

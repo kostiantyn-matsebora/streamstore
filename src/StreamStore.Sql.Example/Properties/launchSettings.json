@@ -1,0 +1,23 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "SQLite + single tenant": {
+      "commandName": "Project"
+    },
+    "PostgreSQL + multitenancy": {
+      "commandName": "Project",
+      "commandLineArgs": "--database postgresql --mode multitenancy"
+    },
+    "PostgreSQL + single tenant": {
+      "commandName": "Project",
+      "commandLineArgs": "--database postgresql"
+    },
+    "SQLite + multitenancy": {
+      "commandName": "Project",
+      "commandLineArgs": "--mode multitenancy"
+    }
+  }
+}

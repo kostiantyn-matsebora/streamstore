@@ -12,7 +12,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Database
         {
         }
        
-        public override void ConfigureDatabase(ISingleTenantDatabaseConfigurator configurator)
+        public override void ConfigureDatabase(ISingleTenantConfigurator configurator)
         {
              configurator.UsePostgresDatabase(
                     c => c.ConfigureDatabase(

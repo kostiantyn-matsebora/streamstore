@@ -10,6 +10,8 @@ namespace StreamStore.Sql.Configuration
     {
         Type? connectionStringProviderType;
 
+        readonly SqlDefaultConnectionStringProvider connectionStringProvider = new SqlDefaultConnectionStringProvider();
+
         public SqlMultiTenantDatabaseConfigurator(IServiceCollection services, SqlDatabaseConfiguration defaultConfig) : base(services, defaultConfig)
         {
         }
@@ -20,13 +22,27 @@ namespace StreamStore.Sql.Configuration
             return this;
         }
 
+        public SqlMultiTenantDatabaseConfigurator WithConnectionString(Id tenantId, string connectionString)
+        {
+            connectionStringProvider.AddConnectionString(tenantId, connectionString);
+            return this;
+        }
+
         protected override void ApplySpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
         {
-            if (connectionStringProviderType == null)
+            if (connectionStringProviderType != null)
             {
-                throw new InvalidOperationException("ISqlTenantConnectionStringProvider type must be set");
+                services.AddSingleton(typeof(ISqlTenantConnectionStringProvider), connectionStringProviderType);
             }
-            services.AddSingleton(typeof(ISqlTenantConnectionStringProvider), connectionStringProviderType);
+            else
+            {
+                if (!connectionStringProvider.Any)
+                {
+                    throw new InvalidOperationException("Neither ISqlTenantConnectionStringProvider nor tenant connection strings provided.");
+                }
+                services.AddSingleton(typeof(ISqlTenantConnectionStringProvider), connectionStringProvider);
+            }
+             
             services.AddSingleton(typeof(ISqlTenantDatabaseConfigurationProvider), typeof(SqlTenantDatabaseConfigurationProvider));
         }
     }

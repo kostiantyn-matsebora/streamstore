@@ -25,7 +25,8 @@ namespace StreamStore.Sql.Tests.Configuration.MultiTenant
             var act = () => configurator.Apply();
 
             //Assert
-            act.Should().Throw<InvalidOperationException>().WithMessage("ISqlTenantConnectionStringProvider type must be set");
+            act.Should().Throw<InvalidOperationException>()
+                .WithMessage("Neither ISqlTenantConnectionStringProvider nor tenant connection strings provided.");
         }
 
         [Fact]

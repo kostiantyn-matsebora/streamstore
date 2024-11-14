@@ -12,7 +12,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configuration.Multitenancy
 
         public override string SectionName => SqliteConfiguration.ConfigurationSection;
 
-        public override void UseDatabase(IMultitenantDatabaseConfigurator configurator, Action<SqlMultiTenantDatabaseConfigurator> configureDatabase)
+        public override void UseDatabase(IMultitenancyConfigurator configurator, Action<SqlMultiTenantDatabaseConfigurator> configureDatabase)
         {
             configurator.UseSqliteDatabase(x =>
             {
@@ -21,7 +21,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configuration.Multitenancy
             });
         }
 
-        public override void UseDatabaseWithAppSettings(IMultitenantDatabaseConfigurator configurator, IConfigurationRoot configuration)
+        public override void UseDatabaseWithAppSettings(IMultitenancyConfigurator configurator, IConfigurationRoot configuration)
         {
 
             configurator.UseSqliteDatabase(configuration, x => x.WithConnectionStringProvider<FakeConnectionStringProvider>());

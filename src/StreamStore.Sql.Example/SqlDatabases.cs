@@ -3,6 +3,6 @@
     internal enum SqlDatabases
     {
         SQLite,
-        Postgres
+        PostgreSQL
     }
 }

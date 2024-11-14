@@ -9,7 +9,7 @@ namespace StreamStore.Tests.Configuration.SingleTenant
 {
     public class SingleTenantConfiguratorSuite: TestSuiteBase
     {
-        public static ISingleTenantDatabaseConfigurator CreateConfigurator() => new SingleTenantDatabaseConfigurator();
+        public static ISingleTenantConfigurator CreateConfigurator() => new SingleTenantConfigurator();
 
 
         public static IServiceCollection CreateServiceCollection() => new Microsoft.Extensions.DependencyInjection.ServiceCollection();

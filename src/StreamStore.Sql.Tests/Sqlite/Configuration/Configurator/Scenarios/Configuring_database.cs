@@ -14,7 +14,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configuration.Configurator
         public void When_configuring_streamstore_database()
         {
             // Arrange
-            var configurator = new SingleTenantDatabaseConfigurator();
+            var configurator = new SingleTenantConfigurator();
             var connectionString = Generated.String;
 
 

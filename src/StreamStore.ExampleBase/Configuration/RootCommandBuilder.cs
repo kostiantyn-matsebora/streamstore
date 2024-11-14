@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using StreamStore.Extensions;
 
-namespace StreamStore.ExampleBase
+namespace StreamStore.ExampleBase.Configuration
 {
     [ExcludeFromCodeCoverage]
     class RootCommandBuilder
@@ -41,7 +41,7 @@ namespace StreamStore.ExampleBase
             rootCommand.AddOption(modeOption);
             rootCommand.SetHandler((mode, database) =>
                 command(new InvocationContext(mode.ToEnum<StoreMode>(), database)),
-                modeOption, 
+                modeOption,
                 databaseOption);
 
             return rootCommand;

@@ -6,8 +6,8 @@ namespace StreamStore.Sql.PostgreSql
 {
     public static class MultiTenantConfiguratorExtension
     {
-        internal static IMultitenantDatabaseConfigurator UsePostgresDatabase(
-              this IMultitenantDatabaseConfigurator configurator,
+        internal static IMultitenancyConfigurator UsePostgresDatabase(
+              this IMultitenancyConfigurator configurator,
               Action<SqlMultiTenantDatabaseConfigurator> dbConfigurator)
         {
             return configurator
@@ -20,8 +20,8 @@ namespace StreamStore.Sql.PostgreSql
                 });
         }
 
-        public static IMultitenantDatabaseConfigurator UsePostgresDatabase(
-            this IMultitenantDatabaseConfigurator configurator, 
+        public static IMultitenancyConfigurator UsePostgresDatabase(
+            this IMultitenancyConfigurator configurator, 
             IConfiguration configuration,
             Action<SqlMultiTenantDatabaseConfigurator> dbConfigurator)
         {

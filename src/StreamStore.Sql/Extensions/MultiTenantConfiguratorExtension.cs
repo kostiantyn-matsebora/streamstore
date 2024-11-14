@@ -8,8 +8,8 @@ namespace StreamStore.Sql
 {
     public static class MultiTenantConfiguratorExtension
     {
-        internal static IMultitenantDatabaseConfigurator UseSqlDatabase<TDatabaseProvider>(
-                this IMultitenantDatabaseConfigurator configurator,
+        internal static IMultitenancyConfigurator UseSqlDatabase<TDatabaseProvider>(
+                this IMultitenancyConfigurator configurator,
                 SqlDatabaseConfiguration defaultConfig,
                 IConfiguration configuration,
                 string sectionName,
@@ -24,8 +24,8 @@ namespace StreamStore.Sql
             
         }
 
-        internal static IMultitenantDatabaseConfigurator UseSqlDatabase<TDatabaseProvider>(
-             this IMultitenantDatabaseConfigurator configurator,
+        internal static IMultitenancyConfigurator UseSqlDatabase<TDatabaseProvider>(
+             this IMultitenancyConfigurator configurator,
              SqlDatabaseConfiguration defaultConfig,
              Action<SqlMultiTenantDatabaseConfigurator> configureDatabase) where TDatabaseProvider: ITenantStreamDatabaseProvider
         {

@@ -21,7 +21,7 @@ namespace StreamStore.Testing.StreamDatabase
                 .Configure(services);
         }
 
-        protected abstract void ConfigureDatabase(ISingleTenantDatabaseConfigurator configurator);
+        protected abstract void ConfigureDatabase(ISingleTenantConfigurator configurator);
 
         protected override void SetUp()
         {

@@ -5,8 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
+using StreamStore.ExampleBase.Multitenancy;
+using StreamStore.ExampleBase.SingleTenant;
 
-namespace StreamStore.ExampleBase
+
+namespace StreamStore.ExampleBase.Configuration
 {
     [ExcludeFromCodeCoverage]
     public sealed class ExampleApplicationConfigurator
@@ -14,10 +17,9 @@ namespace StreamStore.ExampleBase
         readonly RootCommandBuilder commandBuilder = new RootCommandBuilder(StoreMode.Single);
         readonly DatabaseConfiguratorRegistry configurators = new DatabaseConfiguratorRegistry();
 
-
         public ExampleApplicationConfigurator EnableMultitenancy()
         {
-            commandBuilder.AddMode(StoreMode.MultiTenant);
+            commandBuilder.AddMode(StoreMode.Multitenancy);
             return this;
         }
 
@@ -48,31 +50,12 @@ namespace StreamStore.ExampleBase
             host.Run();
         }
 
-        
+
         void ConfigureHost(InvocationContext ctx, IHostApplicationBuilder builder)
-        {            
+        {
             ConfigureDatabase(ctx, builder);
             ConfigureLogging(builder);
-            ConfigureServices(builder);
-        }
-
-        void ConfigureDatabase(InvocationContext ctx, IHostApplicationBuilder builder)
-        {
-            configurators
-                .Get(ctx.Database)
-                .ConfigureDatabase(builder, ctx.Mode);
-        }
-
-        static void ConfigureServices(IHostApplicationBuilder builder)
-        {
-            builder.Services
-                .AddHostedService<Writer1>()
-                .AddHostedService<Writer2>()
-                .AddHostedService<Writer3>()
-                .AddHostedService<Reader1>()
-                .AddHostedService<Reader2>()
-                .AddHostedService<Reader3>()
-                .AddHostedService<ReaderToEnd1>();
+            ConfigureApplication(ctx, builder);
         }
 
         static void ConfigureLogging(IHostApplicationBuilder builder)
@@ -85,5 +68,46 @@ namespace StreamStore.ExampleBase
                      configure.IncludeScopes = true;
                  });
         }
+
+        void ConfigureDatabase(InvocationContext ctx, IHostApplicationBuilder builder)
+        {
+            configurators
+                .Get(ctx.Database)
+                .ConfigureDatabase(builder, ctx.Mode);
+        }
+        static void ConfigureApplication(InvocationContext ctx, IHostApplicationBuilder builder)
+        {
+            switch (ctx.Mode)
+            {
+                case StoreMode.Single:
+                    ConfigureSingleMode(builder);
+                    break;
+                case StoreMode.Multitenancy:
+                    ConfigureMultitenancy(builder);
+                    break;
+            }
+        }
+
+        static void ConfigureSingleMode(IHostApplicationBuilder builder)
+        {
+            builder.Services
+                .AddHostedService<Writer1>()
+                .AddHostedService<Writer2>()
+                .AddHostedService<Writer3>()
+                .AddHostedService<Reader1>()
+                .AddHostedService<Reader2>()
+                .AddHostedService<Reader3>()
+                .AddHostedService<ReaderToEnd1>();
+        }
+
+        static void ConfigureMultitenancy(IHostApplicationBuilder builder)
+        {
+            builder.Services
+                .AddHostedService<MultitenantWriter>()
+                .AddHostedService<MultitenantReader>()
+                .AddHostedService<MultitenantReaderToEnd>();
+        }
+
+
     }
 }

@@ -2,7 +2,7 @@
 {
     public static class MultiTenantDatabaseConfiguratorExtension
     {
-        public static IMultitenantDatabaseConfigurator UseInMemoryDatabase(this IMultitenantDatabaseConfigurator registrator)
+        public static IMultitenancyConfigurator UseInMemoryDatabase(this IMultitenancyConfigurator registrator)
         {
             return registrator.UseDatabaseProvider<InMemoryStreamDatabaseProvider>();
         }

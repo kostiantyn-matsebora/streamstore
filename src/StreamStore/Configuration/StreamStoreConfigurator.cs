@@ -1,7 +1,9 @@
 using System;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Configuration;
 using StreamStore.Configuration.Database;
+using StreamStore.Multitenancy;
 using StreamStore.Provisioning;
 
 
@@ -46,17 +48,17 @@ namespace StreamStore
             return this;
         }
 
-        public IStreamStoreConfigurator WithSingleDatabse(Action<ISingleTenantDatabaseConfigurator> configure)
+        public IStreamStoreConfigurator WithSingleDatabse(Action<ISingleTenantConfigurator> configure)
         {
-            var configurator = new SingleTenantDatabaseConfigurator();
+            var configurator = new SingleTenantConfigurator();
             configure(configurator);
             databaseConfigurator = configurator;
             return this;
         }
 
-        public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenantDatabaseConfigurator> configure)
+        public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenancyConfigurator> configure)
         {
-            var configurator = new MultitenantDatabaseConfigurator();
+            var configurator = new MultitenancyConfigurator();
             configure(configurator);
             databaseConfigurator = configurator;
             return this;
@@ -72,8 +74,8 @@ namespace StreamStore
             CopyServices(databaseConfigurator.Configure(), services);
             CopyServices(serializationConfigurator.Configure(), services);
 
-            RegisterStoreDependencies(services, configuration);
-            if (schemaProvisioningEnabled) RegisterSchemaProvisioning(services);
+            RegisterSharedDependencies(services, configuration);
+            RegisterModeDependencies(services, (dynamic)databaseConfigurator);
 
             return services;
         }
@@ -86,21 +88,9 @@ namespace StreamStore
             }
         }
 
-        void RegisterSchemaProvisioning(IServiceCollection services)
-        {
-            var type = databaseConfigurator!.GetType();
-            switch (type)
-            {
-                case Type _ when type == typeof(SingleTenantDatabaseConfigurator):
-                    services.AddHostedService<SchemaProvisioningService>();
-                    break;
-                case Type _ when type == typeof(MultitenantDatabaseConfigurator):
-                    services.AddHostedService<TenantSchemaProvisioningService>();
-                    break;
-            }
-        }
 
-        StreamStoreConfiguration CreateConfiguration()
+
+         StreamStoreConfiguration CreateConfiguration()
         {
             return new StreamStoreConfiguration
             {
@@ -109,7 +99,7 @@ namespace StreamStore
             };
         }
 
-        static void RegisterStoreDependencies(IServiceCollection services, StreamStoreConfiguration configuration)
+        static void RegisterSharedDependencies(IServiceCollection services, StreamStoreConfiguration configuration)
         {
             services
                 .AddSingleton(configuration)
@@ -117,5 +107,19 @@ namespace StreamStore
                 .AddSingleton<EventConverter>()
                 .AddSingleton<IStreamStore, StreamStore>();
         }
+
+        #pragma warning disable S1172 // Unused method parameters should be removed
+        void RegisterModeDependencies(IServiceCollection services, SingleTenantConfigurator configurator)
+        {
+            if (schemaProvisioningEnabled) services.AddHostedService<SchemaProvisioningService>();
+        }
+
+        void RegisterModeDependencies(IServiceCollection services, MultitenancyConfigurator configurator)
+
+        {
+            services.AddSingleton<ITenantStreamStoreFactory, TenantStreamStoreFactory>();
+            if (schemaProvisioningEnabled)  services.AddHostedService<TenantSchemaProvisioningService>();
+        }
+        #pragma warning restore S1172 // Unused method parameters should be removed
     }
 }

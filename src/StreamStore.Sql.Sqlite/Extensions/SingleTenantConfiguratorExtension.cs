@@ -8,13 +8,13 @@ namespace StreamStore.Sql.Sqlite
 {
     public static class SingleTenantConfiguratorExtension
     {
-        public static ISingleTenantDatabaseConfigurator UseSqliteDatabase(this ISingleTenantDatabaseConfigurator configurator, IConfiguration configuration)
+        public static ISingleTenantConfigurator UseSqliteDatabase(this ISingleTenantConfigurator configurator, IConfiguration configuration)
         {
             return configurator.UseSqlDatabase(SqliteConfiguration.DefaultConfiguration, configuration, SqliteConfiguration.ConfigurationSection, ConfigureRequiredDependencies);
         }
 
-        public static ISingleTenantDatabaseConfigurator UseSqliteDatabase(
-                this ISingleTenantDatabaseConfigurator configurator, 
+        public static ISingleTenantConfigurator UseSqliteDatabase(
+                this ISingleTenantConfigurator configurator, 
                 Action<SqlSingleTenantDatabaseConfigurator> dbConfigurator)
         {
             return configurator.UseSqlDatabase(SqliteConfiguration.DefaultConfiguration, (c) =>

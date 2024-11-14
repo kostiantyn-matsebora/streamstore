@@ -8,13 +8,13 @@ namespace StreamStore.Sql.PostgreSql
 {
     public static class SingleTenantConfiguratorExtension
     {
-        public static ISingleTenantDatabaseConfigurator UsePostgresDatabase(this ISingleTenantDatabaseConfigurator configurator, IConfiguration configuration)
+        public static ISingleTenantConfigurator UsePostgresDatabase(this ISingleTenantConfigurator configurator, IConfiguration configuration)
         {
             return configurator.UseSqlDatabase(PostgresConfiguration.DefaultConfiguration, configuration, PostgresConfiguration.ConfigurationSection, ConfigureRequiredDependencies);
         }
 
-        public static ISingleTenantDatabaseConfigurator UsePostgresDatabase(
-                this ISingleTenantDatabaseConfigurator configurator, 
+        public static ISingleTenantConfigurator UsePostgresDatabase(
+                this ISingleTenantConfigurator configurator, 
                 Action<SqlSingleTenantDatabaseConfigurator> dbConfigurator)
         {
             return configurator.UseSqlDatabase(PostgresConfiguration.DefaultConfiguration, (c) =>

@@ -27,7 +27,7 @@ namespace StreamStore.Sql.Tests.Database
             IsDatabaseReady = true;
         }
 
-        public abstract void ConfigureDatabase(ISingleTenantDatabaseConfigurator configurator);
+        public abstract void ConfigureDatabase(ISingleTenantConfigurator configurator);
 
         ServiceProvider BuildServiceProvider()
         {

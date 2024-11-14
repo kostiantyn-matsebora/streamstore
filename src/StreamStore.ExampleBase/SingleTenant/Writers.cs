@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using StreamStore.S3.Example;
 
-namespace StreamStore.ExampleBase
+namespace StreamStore.ExampleBase.SingleTenant
 {
     [ExcludeFromCodeCoverage]
     internal class Writer1 : WriterBase

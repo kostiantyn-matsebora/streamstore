@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
-namespace StreamStore.ExampleBase
+namespace StreamStore.ExampleBase.SingleTenant
 {
     [ExcludeFromCodeCoverage]
     public class Reader1 : ReaderBase

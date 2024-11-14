@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Hosting;
 
-namespace StreamStore.ExampleBase
+namespace StreamStore.ExampleBase.Configuration
 {
     public sealed class DatabaseConfigurator
     {
@@ -10,13 +10,13 @@ namespace StreamStore.ExampleBase
 
         public DatabaseConfigurator WithSingleMode(Action<IHostApplicationBuilder> configure)
         {
-            this.single = configure;
+            single = configure;
             return this;
         }
 
         public DatabaseConfigurator WithMultitenancy(Action<IHostApplicationBuilder> configure)
         {
-            this.multi = configure;
+            multi = configure;
             return this;
         }
 

@@ -17,8 +17,8 @@ namespace StreamStore.Sql.Tests.Configuration.MultiTenant
         public abstract SqlDatabaseConfiguration DefaultConfiguration { get; }
         public abstract string SectionName { get; }
 
-        public abstract void UseDatabase(IMultitenantDatabaseConfigurator configurator, Action<SqlMultiTenantDatabaseConfigurator> configureDatabase);
-        public abstract void UseDatabaseWithAppSettings(IMultitenantDatabaseConfigurator configurator, IConfigurationRoot configuration);
+        public abstract void UseDatabase(IMultitenancyConfigurator configurator, Action<SqlMultiTenantDatabaseConfigurator> configureDatabase);
+        public abstract void UseDatabaseWithAppSettings(IMultitenancyConfigurator configurator, IConfigurationRoot configuration);
 
         internal class FakeConnectionStringProvider : ISqlTenantConnectionStringProvider
         {
