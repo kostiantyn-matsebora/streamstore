@@ -16,11 +16,10 @@ namespace StreamStore.S3.Example
 
             await builder
                 .ConfigureExampleApplication(c => 
-                    c.AddDatabase(Databases.AWS, x => x.WithSingleMode(UseAWSDatabase))
-                     .AddDatabase(Databases.B2, x => x.WithSingleMode(UseB2Database)))
+                    c.AddDatabase(S3Databases.AWS, x => x.WithSingleMode(UseAWSDatabase))
+                     .AddDatabase(S3Databases.B2, x => x.WithSingleMode(UseB2Database)))
                 .InvokeAsync(args);
         }
-
 
         static void UseAWSDatabase(IHostApplicationBuilder builder)
         {

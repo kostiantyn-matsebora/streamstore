@@ -1,6 +1,6 @@
 ﻿namespace StreamStore.Sql.Example
 {
-    internal enum Databases
+    internal enum SqlDatabases
     {
         SQLite,
         Postgres

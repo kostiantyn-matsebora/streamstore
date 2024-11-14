@@ -23,6 +23,7 @@ namespace StreamStore.ExampleBase
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             logger.LogInformation("Waiting 5 seconds for storing at least something to database");
+            if (stoppingToken.IsCancellationRequested) return;
             Thread.Sleep(5000);
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -30,10 +31,9 @@ namespace StreamStore.ExampleBase
                 await foreach (var @event in await store.BeginReadAsync(StreamId))
                 {
                     if (stoppingToken.IsCancellationRequested) break;
-
                     logger.LogInformation("Read event with id: {id}, revision: {revision}", @event.EventId, @event.Revision);
                     logger.LogInformation("Waiting 3 seconds before next iteration.");
-
+                    if (stoppingToken.IsCancellationRequested) return;
                     await Task.Delay(3000, stoppingToken);
                 }
             }

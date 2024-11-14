@@ -21,8 +21,8 @@ namespace StreamStore.Sql.Example
             await builder
                 .ConfigureExampleApplication(c =>
                     c.EnableMultitenancy() 
-                     .AddDatabase(Databases.SQLite, x => x.WithSingleMode(UseSqliteDatabase))
-                     .AddDatabase(Databases.Postgres,x => x.WithSingleMode(UsePostgresDatabase)))
+                     .AddDatabase(SqlDatabases.SQLite, x => x.WithSingleMode(UseSqliteDatabase))
+                     .AddDatabase(SqlDatabases.Postgres,x => x.WithSingleMode(UsePostgresDatabase)))
                 .InvokeAsync(args);
         }
 

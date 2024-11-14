@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.CommandLine;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,72 +11,59 @@ namespace StreamStore.ExampleBase
     [ExcludeFromCodeCoverage]
     public sealed class ExampleApplicationConfigurator
     {
-        bool multitenancyEnabled;
+        readonly RootCommandBuilder commandBuilder = new RootCommandBuilder(StoreMode.Single);
+        readonly DatabaseConfiguratorRegistry configurators = new DatabaseConfiguratorRegistry();
 
-        readonly List<DatabaseConfigurator> configurators = new List<DatabaseConfigurator>();
 
         public ExampleApplicationConfigurator EnableMultitenancy()
         {
-            multitenancyEnabled = true;
+            commandBuilder.AddMode(StoreMode.MultiTenant);
             return this;
         }
 
         public ExampleApplicationConfigurator AddDatabase<TEnum>(TEnum name, Action<DatabaseConfigurator> configure)
         {
-            var configurator = new DatabaseConfigurator();
-            configurator.WithName(name);
-            configure(configurator);
-            configurators.Add(configurator);
+            var databaseName = Enum.GetName(typeof(TEnum), name).ToLower();
+            commandBuilder.AddDatabase(databaseName);
+            configure(configurators.GetOrAdd(databaseName));
             return this;
         }
 
-        public RootCommand ConfigureHost(HostApplicationBuilder hostApplicationBuilder)
+        public RootCommand ConfigureCommand(HostApplicationBuilder builder)
         {
-            if (configurators.Count == 0)
+            return commandBuilder.Build(ctx =>
             {
-                throw new InvalidOperationException("At least one database configuration must be added.");
-            }
-
-            return ConfigureCommandLine(hostApplicationBuilder);
+                ConfigureHost(ctx, builder);
+                RunHost(ctx, builder);
+            });
         }
 
 
-        RootCommand ConfigureCommandLine(HostApplicationBuilder builder)
+        void RunHost(InvocationContext ctx, HostApplicationBuilder builder)
         {
-            var rootCommand = new RootCommand("Sample application for StreamStore");
+            Console.WriteLine("Mode: {0}", ctx.Mode);
+            Console.WriteLine("Database backend: {0}", ctx.Database);
 
-            Option<StoreMode> modeOption = CreateModeOption();
-
-            Option<string> databaseOption = CreateDatabaseOption();
-
-            rootCommand.AddOption(databaseOption);
-            rootCommand.AddOption(modeOption);
-            rootCommand.SetHandler((mode, database) =>
-            {
-                Console.WriteLine("Mode: {0}", mode);
-                Console.WriteLine("Database backend: {0}", database);
-
-                ConfigureHost(builder, mode, database);
-                var host = builder.Build();
-                host.Run();
-            }, modeOption, databaseOption);
-            return rootCommand;
+            var host = builder.Build();
+            host.Run();
         }
 
-        void ConfigureHost(IHostApplicationBuilder builder, StoreMode mode, string database)
-        {
-            var configurator = configurators.FirstOrDefault(c => c.Name == database);
-
-            if (configurator == null)
-            {
-                throw new InvalidOperationException($"Database provider {database} not found.");
-            }
-            configurator.ConfigureDatabase(builder, mode);
+        
+        void ConfigureHost(InvocationContext ctx, IHostApplicationBuilder builder)
+        {            
+            ConfigureDatabase(ctx, builder);
             ConfigureLogging(builder);
             ConfigureServices(builder);
         }
 
-        private static void ConfigureServices(IHostApplicationBuilder builder)
+        void ConfigureDatabase(InvocationContext ctx, IHostApplicationBuilder builder)
+        {
+            configurators
+                .Get(ctx.Database)
+                .ConfigureDatabase(builder, ctx.Mode);
+        }
+
+        static void ConfigureServices(IHostApplicationBuilder builder)
         {
             builder.Services
                 .AddHostedService<Writer1>()
@@ -90,7 +75,7 @@ namespace StreamStore.ExampleBase
                 .AddHostedService<ReaderToEnd1>();
         }
 
-        private static void ConfigureLogging(IHostApplicationBuilder builder)
+        static void ConfigureLogging(IHostApplicationBuilder builder)
         {
             builder.Logging
                  .AddSimpleConsole(configure =>
@@ -99,39 +84,6 @@ namespace StreamStore.ExampleBase
                      configure.ColorBehavior = LoggerColorBehavior.Enabled;
                      configure.IncludeScopes = true;
                  });
-        }
-
-        Option<string> CreateDatabaseOption()
-        {
-            var firstDatabase = configurators.First();
-            var databases = ListDatabases(configurators);
-
-            var databaseOption = new Option<string>(
-                name: "--database",
-                getDefaultValue: () => firstDatabase.Name!,
-                $"Database provider, possible values: {ListDatabases(configurators)}. Default: {firstDatabase.Name}");
-            return databaseOption;
-        }
-
-        Option<StoreMode> CreateModeOption()
-        {
-            var modeOption = new Option<StoreMode>(
-                    name: "--mode",
-                    getDefaultValue: () => StoreMode.Single,
-                    $"Store mode, possible values: {ListModes()}. Default: single");
-            return modeOption;
-        }
-
-        string ListDatabases(IEnumerable<DatabaseConfigurator> configurators)
-        {
-            return string.Join(",", configurators.Select(c => c.Name));
-        }
-
-        string ListModes()
-        {
-            return multitenancyEnabled ?
-                string.Join(",", Enum.GetNames(typeof(StoreMode))).ToLower() :
-                StoreMode.Single.ToString().ToLower();
         }
     }
 }

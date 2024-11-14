@@ -1,6 +1,6 @@
 ﻿namespace StreamStore.S3.Example
 {
-    internal enum Databases
+    internal enum S3Databases
     {
         AWS,
         B2

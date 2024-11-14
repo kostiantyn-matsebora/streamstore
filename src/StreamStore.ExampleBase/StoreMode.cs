@@ -1,7 +1,7 @@
 ﻿
 namespace StreamStore.ExampleBase
 {
-    internal  enum StoreMode
+    public  enum StoreMode
     {
         Single,
         MultiTenant

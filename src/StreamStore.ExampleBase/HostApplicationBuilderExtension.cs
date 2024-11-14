@@ -14,7 +14,7 @@ namespace StreamStore.ExampleBase
             var appConfigurator = new ExampleApplicationConfigurator();
             configure(appConfigurator);
 
-            return appConfigurator.ConfigureHost(builder);
+            return appConfigurator.ConfigureCommand(builder);
         }
     }
 }
