@@ -5,7 +5,6 @@ namespace StreamStore.S3.B2
 {
     public static class SingleTenantConfiguratorExtension
     {
-
         public static ISingleTenantDatabaseConfigurator UseB2Database(this ISingleTenantDatabaseConfigurator configurator, Action<B2DatabaseConfigurator>? configure = null)
         {
             return configurator.UseDatabase<S3StreamDatabase>(services =>

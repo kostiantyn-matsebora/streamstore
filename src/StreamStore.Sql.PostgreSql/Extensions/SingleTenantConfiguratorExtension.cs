@@ -30,6 +30,5 @@ namespace StreamStore.Sql.PostgreSql
             configurator.WithExceptionHandling<PostgresExceptionHandler>();
             configurator.WithProvisioingQueryProvider<PostgresProvisioningQueryProvider>();
         }
-
     }
 }

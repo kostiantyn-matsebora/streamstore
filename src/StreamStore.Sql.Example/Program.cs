@@ -1,11 +1,11 @@
-﻿using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Hosting;
 using StreamStore.ExampleBase;
 using StreamStore.Sql.Sqlite;
 using StreamStore.Sql.PostgreSql;
 using StreamStore.Sql.Tests.PostgreSql.Database;
 using StreamStore.Sql.Tests.Sqlite.Database;
+using System.CommandLine;
 
 namespace StreamStore.Sql.Example
 {
@@ -13,25 +13,21 @@ namespace StreamStore.Sql.Example
     internal static class Program
     {
         const string databaseName = "streamstore";
-        static void Main(string[] args)
-        {
-          
 
+        static async Task Main(string[] args)
+        {
             var builder = Host.CreateApplicationBuilder(args);
 
-            //UseSqliteDatabase(builder); // Uncomment this line to use SQLite database
-            UsePostgresDatabase(builder); // Uncomment this line to use PostgreSQL database
-
-            builder.ConfigureExampleApplication();
-
-            var host = builder.Build();
-            
-            host.Run();
+            await builder
+                .ConfigureExampleApplication(c =>
+                    c.EnableMultitenancy() 
+                     .AddDatabase(Databases.SQLite, x => x.WithSingleMode(UseSqliteDatabase))
+                     .AddDatabase(Databases.Postgres,x => x.WithSingleMode(UsePostgresDatabase)))
+                .InvokeAsync(args);
         }
 
-        static void UseSqliteDatabase(HostApplicationBuilder builder)
+        static void UseSqliteDatabase(IHostApplicationBuilder builder)
         {
-            Console.WriteLine("Database backend: SQLite");
             var database = new SqliteTestDatabase(databaseName);
             database.EnsureExists();
 
@@ -44,9 +40,8 @@ namespace StreamStore.Sql.Example
                             c.WithConnectionString(database.ConnectionString)))));
         }
 
-        static void UsePostgresDatabase(HostApplicationBuilder builder)
+        static void UsePostgresDatabase(IHostApplicationBuilder builder)
         {
-            Console.WriteLine("Database backend: PostgreSQL");
             var database = new PostgresTestDatabase(databaseName);
             database.EnsureExists();
 
