@@ -92,32 +92,29 @@ or from NuGet Package Manager Console:
 - Register store in DI container
   
 ```csharp
-       services.ConfigureStreamStore(x =>               // Register StreamStore
-          x.EnableSchemaProvisioning()                  // Enable schema provisioning, optional. Default: false.
-          
-
-          x.WithSingleDatabase(c => ...                 // Register single database implementation,
-                                                        // see details in documentation for particular database
-
-              c.UseSqliteDatabase(x =>                  // For instance, SQLite database backend
-                 x.WithConnectionString(connectionString)
+    services.ConfigureStreamStore(x =>              // Register StreamStore
+      x.EnableSchemaProvisioning()                  // Optional. Enable schema provisioning, default: false.
+      
+      // Register single database implementation, see details in documentation for particular database
+      x.WithSingleDatabase(c => ...                 
+          c.UseSqliteDatabase(x =>                  // For instance, SQLite database backend
+              x.ConfigureDatabase(c =>
+                c.WithConnectionString(connectionString)
               )
           )
-         
-          x.WithMultitenancy(c => ...                   // Or enable multitenancy, 
-                                                        // see details in documentation for particular database
-              x.UseTenantProvider<MyTenantProvider>()   // Register your  ITenantProvider implementation, optional.
-                                                        // Required if you want schema to be provisioned for each tenant.
-
-              c.UseInMemoryDatabase()                   // For instance, InMemory database backend
-          )
-        ); 
+      )
+      // Or enable multitenancy, see details in documentation for particular database.
+      x.WithMultitenancy(c => ...
+          c.UseInMemoryDatabase()                   // For instance, InMemory database backend
+          x.UseTenantProvider<MyTenantProvider>()   // Optional. Register your  ITenantProvider implementation.
+                                                    // Required if you want schema to be provisioned for each tenant.
+      )
+    ); 
 ```
 
 - Use store in your application
 
 ```csharp
-
    // Inject IStreamStore in your service or controller for single database implementation
     public class MyService
     {
@@ -183,6 +180,17 @@ or from NuGet Package Manager Console:
 ```
 
 More examples of reading and writing events you can find in test scenarios of [StreamStore.Testing](../src/StreamStore.Testing/StreamStore/Scenarios/) project.
+
+## Example
+
+Each type of storage has its own example project, for instance, you can find an example of usage in the [StreamStore.Sql.Example](../src/StreamStore.Sql.Example) project.
+
+Example projects provides a simple console application that demonstrates how to use [`StreamStore`] in your application as single database or multitenancy.
+
+`Single database` examples demonstrates optimistic concurrency control and asynchronous reading and writing operations.  
+`Multitenancy` examples, in turn, demonstrates asynchronous reading and writing operations in isolated tenant storages.
+
+For getting all running options simply run the application with `--help` argument.
 
 ## Good to know
 
@@ -292,6 +300,7 @@ to contribute, feel free to [open an issue][issues] or
 
 [`MIT License`](../LICENSE)
 
+[`StreamStore`]: https://github.com/kostiantyn-matsebora/streamstore/
 [issues]: https://github.com/kostiantyn-matsebora/streamstore/issues
 [discussions]: https://github.com/kostiantyn-matsebora/streamstore/discussions
 [Id]: ../src/StreamStore.Contracts/Id.cs

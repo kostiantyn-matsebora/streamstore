@@ -20,8 +20,9 @@ namespace StreamStore.ExampleBase
             {
                 if (token.IsCancellationRequested) break;
 
-                logger.LogInformation("Read event with id: {id}, revision: {revision}", @event.EventId, @event.Revision);
-                logger.LogInformation("Waiting {sleepPeriod} seconds before next iteration.", sleepPeriod);
+                logger.LogInformation(
+                    "Read event with id: {id}, revision: {revision}. Waiting {sleepPeriod} miliseconds before next iteration.", 
+                    @event.EventId, @event.Revision, sleepPeriod);
 
                 await Task.Delay(sleepPeriod, token);
             }

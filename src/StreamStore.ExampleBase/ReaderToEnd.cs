@@ -19,8 +19,7 @@ namespace StreamStore.ExampleBase
         protected override async Task DoWorkAsync(int sleepPeriod, CancellationToken token)
         {
             var events = await store.ReadToEndAsync(streamId, token);
-            logger.LogInformation("Read {count} events.", events.Count());
-            logger.LogInformation("Waiting {sleepPeriod} seconds before next iteration.", sleepPeriod);
+            logger.LogInformation("Read {count} events. Waiting {sleepPeriod} miliseconds before next iteration.", events.Count(), sleepPeriod);
 
             await Task.Delay(sleepPeriod, token);
         }

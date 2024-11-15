@@ -14,11 +14,9 @@ namespace StreamStore.Sql.Example
     internal static class Program
     {
         const string singleDatabaseName = "streamstore";
-        readonly static Id tenant1 = "tenant-1";
-        readonly static Id tenant2 = "tenant-2";
-        readonly static Id tenant3 = "tenant-3";
-
-        static Id[] tenants =  new Id[] { "tenant-1", "tenant-2", "tenant-3"};
+        readonly static Id tenant1 = "tenant_1";
+        readonly static Id tenant2 = "tenant_2";
+        readonly static Id tenant3 = "tenant_3";
 
         static async Task Main(string[] args)
         {
@@ -94,7 +92,7 @@ namespace StreamStore.Sql.Example
                     x.EnableSchemaProvisioning()
                      .WithMultitenancy(c =>
                             c.WithTenants(tenant1, tenant2, tenant3)
-                             .UseSqliteDatabase(x =>
+                             .UsePostgresDatabase(x =>
                                     x.WithConnectionString(tenant1, connectionString1)
                                      .WithConnectionString(tenant2, connectionString2)
                                      .WithConnectionString(tenant3, connectionString3))));
@@ -102,7 +100,12 @@ namespace StreamStore.Sql.Example
 
         static string EnsureDatabaseExists(ITestDatabase database)
         {
-            database.EnsureExists();
+            var result = database.EnsureExists();
+            if (result == false)
+            {
+                throw new InvalidOperationException($"Failed to create database {database.ConnectionString}");
+            }
+
             return database.ConnectionString;
         }
     }

@@ -6,7 +6,7 @@ namespace StreamStore.Sql.PostgreSql
 {
     public static class MultiTenantConfiguratorExtension
     {
-        internal static IMultitenancyConfigurator UsePostgresDatabase(
+        public static IMultitenancyConfigurator UsePostgresDatabase(
               this IMultitenancyConfigurator configurator,
               Action<SqlMultiTenantDatabaseConfigurator> dbConfigurator)
         {

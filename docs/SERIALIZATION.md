@@ -25,13 +25,13 @@ Taking into account that events needs to be deserialized to original type, seria
   {
     c => c.ConfigureSerialization(s =>
     {
-          s.EnableCompression();                                // Enable compression. Default: false
-          s.UseTypeRegistry<MyCustomTypeRegistry>();            // Custom type registry. Default: TypeRegistry
+          s.EnableCompression();                                // Optional. Enable compression, default: false.
+          s.UseTypeRegistry<MyCustomTypeRegistry>();            // Optional. Custom type registry, default: TypeRegistry.
 
-          // Register serializer. Default is Newtonsoft.Json
-          s.UseSystemTextJsonSerializer(compression: true);     // SystemTextJson
-          s.UseProtobufSerializer(compression: true);           // Protobuf 
-          s.UseSerializer<YourCustomEventSerializer>();         // Custom serializer
+          // Optional. Register serializer, default is Newtonsoft.Json.
+          s.UseSystemTextJsonSerializer();                      // SystemTextJson
+          s.UseProtobufSerializer();                            // Protobuf 
+          s.UseSerializer<YourCustomEventSerializer>();         // Your custom serializer
     });
   });
 ```

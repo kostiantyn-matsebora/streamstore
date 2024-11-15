@@ -35,8 +35,12 @@ namespace StreamStore.Sql.Tests.PostgreSql.Database
                     }
                 }
             }
-            catch (Npgsql.NpgsqlException)
+            catch (Npgsql.NpgsqlException ex)
             {
+                if (ex.SqlState == "42P04")
+                {
+                    return true;
+                }
                 return false;
             }
         }
