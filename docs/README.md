@@ -16,44 +16,52 @@ Designed to be easily extended with custom database backends.
 Despite the fact that component implements a logical layer for storing and querying events as a stream,
  `it does not provide functionality of DDD aggregate`, such as state mutation, conflict resolution etc., but serves more as `persistence layer`  for it.
 
-## Databases
+## Storage packages
 
-  | Package                | Description                                                                            |                                                                                                                                                                            |
-  | ------------------------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) implementation | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
-  | [StreamStore.Sql.Sqlite] | [`SQLite`](https://www.sqlite.org/index.html) implementation | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
-  | [StreamStore.InMemory]   | `In-memory` implementation is provided **for testing and educational purposes only** | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
-  | [StreamStore.S3.AWS]     | [`Amazon S3`] implementation                                                         | [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
-  | [StreamStore.S3.B2]      | [`Backblaze B2`] implementation                                                      | [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
+  | Package                | Description                                                                            |        Multitenancy        |                                                                                                                                 |
+  | ---------------------------- | ------------------------------------------------------------------------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) implementation | :white_check_mark: | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
+  | [StreamStore.Sql.Sqlite]     | [`SQLite`](https://www.sqlite.org/index.html) implementation | :white_check_mark: | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
+  | [StreamStore.InMemory]       | `In-memory` implementation is provided **for testing and educational purposes only** | :white_check_mark: | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
+  | [StreamStore.S3.AWS]         | [`Amazon S3`] implementation                                                         | :x: |[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
+  | [StreamStore.S3.B2]          | [`Backblaze B2`] implementation                                                      | :x: |[![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
 
 ## Features
 
 The general idea is to highlight the common characteristics and features of event sourcing storage:
 
 - [x] Asynchronous read and write operations.
+- [x] Multitenancy support.
+- [x] Automatic provisioning of storage schema.
 - [x] Event ordering.
 - [x] Serialization/deserialization of events.
 - [x] Optimistic concurrency control.
 - [x] Event duplication detection based on event ID.
 - [x] Database agnostic test framework, including benchmarking test scenarios.
 - [x] Binary serialization support.
-- [ ] Custom event properties (?).
-- [ ] External transaction support (?).
-- [ ] Transactional outbox pattern implementation (?).
-- [ ] Multitenancy support.
-- [x] Automatic provisioning of storage schema.
+
+## Storages
 
 Also add implementations of particular storage backends, such as:
 
 - [x] [`In-Memory`] - for testing purposes.
-- [x] [`Backblaze B2`] - Backblaze B2.
-- [x] [`Amazon S3`] - Amazon S3.
+- [x] [`Binary Object`] storages:
+  - [x] [`Backblaze B2`] - Backblaze B2.
+  - [x] [`Amazon S3`] - Amazon S3.
 - [x] [`SQL`](https://github.com/DapperLib/Dapper) based DBMS:
   - [x] [`SQLite`]
   - [x] [`PostgreSQL`](https://www.postgresql.org/)
   - [ ] [`Azure SQL`](https://azure.microsoft.com/en-us/services/sql-database/)
   - [ ] [`MySQL`](https://www.mysql.com/)
-- [ ] [`Cassandra DB`](https://cassandra.apache.org/_/index.html) - distributed storage.
+- [ ]  [`NoSQL`] based DBMS:
+  - [ ] [`Cassandra DB`](https://cassandra.apache.org/_/index.html) - distributed storage.
+
+## Roadmap
+
+- [ ] Custom event properties (?).
+- [ ] External transaction support (?).
+- [ ] Transactional outbox pattern implementation (?).
+
 
 ## Installation
 
@@ -272,3 +280,5 @@ to contribute, feel free to [open an issue][issues] or
 [`Amazon S3`]: https://aws.amazon.com/s3/
 [`SQLite`]: https://www.sqlite.org/index.html
 [StreamStore.Sql.PostgreSql]:https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/
+[`NoSQL`]: https://en.wikipedia.org/wiki/NoSQL
+[`Binary Object`]: https://en.wikipedia.org/wiki/Object_storage
