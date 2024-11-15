@@ -36,5 +36,12 @@ The general idea is to highlight the common characteristics and features of even
 - [x] Database agnostic test framework, including benchmarking test scenarios.
 - [x] Binary serialization support.
 
-
 More information you can find in the [documentation](https://github.com/kostiantyn-matsebora/streamstore).
+
+[StreamStore.S3.B2]: ../src/StreamStore.S3.B2
+[StreamStore.S3.AWS]: ../src/StreamStore.S3.AWS
+[StreamStore.InMemory]: ../src/StreamStore.InMemory
+[StreamStore.Sql.Sqlite]: ../src/StreamStore.Sql.Sqlite
+[StreamStore.Sql.PostgreSql]:https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/
+[`Amazon S3`]: https://aws.amazon.com/s3/
+[`Backblaze B2`]: https://www.backblaze.com/b2/cloud-storage.html

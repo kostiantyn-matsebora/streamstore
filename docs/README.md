@@ -185,10 +185,14 @@ More examples of reading and writing events you can find in test scenarios of [S
 
 Each type of storage has its own example project, for instance, you can find an example of usage in the [StreamStore.Sql.Example](../src/StreamStore.Sql.Example) project.
 
-Example projects provides a simple console application that demonstrates how to use [`StreamStore`] in your application as single database or multitenancy.
+Example projects provides a simple console application that demonstrates how to **configure and use** [`StreamStore`] in your application as single database or multitenancy.
 
-`Single database` examples demonstrates optimistic concurrency control and asynchronous reading and writing operations.  
-`Multitenancy` examples, in turn, demonstrates asynchronous reading and writing operations in isolated tenant storages.
+`Single database` examples demonstrates:
+
+- optimistic concurrency control
+- asynchronous reading and writing operations
+  
+`Multitenancy` examples, in turn, demonstrates asynchronous reading and writing operations in **isolated tenant storage**.
 
 For getting all running options simply run the application with `--help` argument.
 
@@ -311,10 +315,10 @@ to contribute, feel free to [open an issue][issues] or
 [StreamStore.S3.AWS]: ../src/StreamStore.S3.AWS
 [StreamStore.InMemory]: ../src/StreamStore.InMemory
 [StreamStore.Sql.Sqlite]: ../src/StreamStore.Sql.Sqlite
+[StreamStore.Sql.PostgreSql]:https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/
 [`In-Memory`]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.InMemory
 [`Backblaze B2`]: https://www.backblaze.com/b2/cloud-storage.html
 [`Amazon S3`]: https://aws.amazon.com/s3/
 [`SQLite`]: https://www.sqlite.org/index.html
-[StreamStore.Sql.PostgreSql]:https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/
 [`NoSQL`]: https://en.wikipedia.org/wiki/NoSQL
 [`Binary Object`]: https://en.wikipedia.org/wiki/Object_storage
