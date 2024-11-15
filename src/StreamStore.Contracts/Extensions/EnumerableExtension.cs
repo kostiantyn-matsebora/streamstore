@@ -7,7 +7,7 @@ namespace StreamStore.Extensions
     {
         public static string CommaSeparated<T>(this IEnumerable<T> enumerable)
         {
-            return string.Join(", ", enumerable.Select(x => x.ToString()));
+            return string.Join(", ", enumerable.Select(x => x!.ToString()));
         }
     }
 }

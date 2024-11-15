@@ -54,12 +54,10 @@ namespace StreamStore.Sql.Configuration
 
         protected abstract void ApplySpecificDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services);
 
-        IServiceCollection ApplySharedDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
+        void ApplySharedDependencies(SqlDatabaseConfiguration configuration, IServiceCollection services)
         {
             services.AddSingleton(configuration);
             services.AddSingleton(typeof(ISqlExceptionHandler), sqlExceptionHandlerType);
-
-            return services;
         }
     }
 }

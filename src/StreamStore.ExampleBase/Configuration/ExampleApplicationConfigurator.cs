@@ -41,7 +41,7 @@ namespace StreamStore.ExampleBase.Configuration
         }
 
 
-        void RunHost(InvocationContext ctx, HostApplicationBuilder builder)
+        static void RunHost(InvocationContext ctx, HostApplicationBuilder builder)
         {
             Console.WriteLine("Mode: {0}", ctx.Mode);
             Console.WriteLine("Database backend: {0}", ctx.Database);
