@@ -1,30 +1,16 @@
-﻿using System;
-
-namespace StreamStore.Exceptions
+﻿namespace StreamStore.Exceptions
 {
     public sealed class OptimisticConcurrencyException : ConcurrencyException
     {
-        public int? ExpectedRevision { get; set; }
-        public int? ActualRevision { get; set; }
-
-        public int? DuplicateRevision { get; set; }
-
-        public Id StreamId { get; }
+        public Revision? ExpectedRevision { get; set; }
+        public Revision? ActualRevision { get; set; }
 
 
-        public OptimisticConcurrencyException(int duplicateRevision, Id streamId) :
-            base($"Stream has been already changed, revision {duplicateRevision} is already exists.")
-        {
-            DuplicateRevision = duplicateRevision;
-            StreamId = streamId;
-        }
-
-        public OptimisticConcurrencyException(int expectedRevision, int actualRevision, Id streamId) :
-            base("Stream has been already changed, your version is stale.")
+        public OptimisticConcurrencyException(Revision expectedRevision, Revision actualRevision, Id streamId) :
+            base(streamId, $"Stream has been already changed, your revision {expectedRevision} is stale, actual revision is {actualRevision}.")
         {
             ExpectedRevision = expectedRevision;
             ActualRevision = actualRevision;
-            StreamId = streamId;
         }
     }
 }

@@ -1,14 +1,9 @@
-﻿using System;
-
-namespace StreamStore.Exceptions
+﻿namespace StreamStore.Exceptions
 {
     public class StreamNotFoundException : StreamStoreException
     {
-        public string StreamId { get; set; }
-
-        public StreamNotFoundException(string id) : base($"Stream {id} is not found.")
+        public StreamNotFoundException(Id streamId) : base(streamId, $"Stream {streamId} is not found.")
         {
-            StreamId = id;
         }
     }
 }

@@ -5,17 +5,77 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.11.0] - 2024-11-15
+
+### Added
+
+- Multitenancy support for SQL backends.
+
+### Changed
+
+- Unified configuration of storage by separating concerns and creating separate implementation for database backends, serialization and storage configurations.
+  
+## [0.10.0] - 2024-11-11
+
+### Added
+
+- Added support for PostgreSQL backend.
+
+### Fixed
+
+- Fixed bug in extensions when AggregateException was thrown instead of the original exception.
+
+## [0.9.0] - 2024-11-09
+
+### Added
+
+- Added fluent API for appending events to the stream.
+
+## [0.8.0] - 2024-11-08
+
+### Changed
+
+- Changed reading of events, now it is done asynchronously, and implemented as `IAsyncEnumerable`.
+- Changed the way how unit tests are built, now they are scenario-based, using BDD approach.
+
+## [0.7.0] - 2024-10-20
+
+### Added
+
+- Added support for SQLite backend.
+
+## [0.6.0] - 2024-10-18
+
+### Changed
+
+- Serialization is changed the way to support binary serialization.
+
+### Added
+
+- Added protobuf-net library based serializer to support binary serialization.
+- Added benchmarks for serialization and in-memory store.
+- Added optional compression for event serialization.
+
+## [0.5.0]
+
+### Changed
+
+- Changed public interfaces signatures to asynchronous methods.
+
+### Added
+
+- Added Revision value object.
+
 ## [0.4.0] - 2024-10-08
 
-[Changed]
+### Changed
 
 - Changed signature of IStreamUnitOfWork interface, so now it calculates stream revision automatically.
 - Changed persistence of S3 database backend, now persistent and transient data are fully separated.
   
-[Added]
+### Added
 
 - Added test for IStreamUnitOfWork implementations.
-
 
 ## [0.3.0] - 2024-10-08
 

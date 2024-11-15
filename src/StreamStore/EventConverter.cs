@@ -1,7 +1,4 @@
-﻿using System.Linq;
-
-
-namespace StreamStore
+﻿namespace StreamStore
 {
     class EventConverter
     {
@@ -12,19 +9,13 @@ namespace StreamStore
             this.serializer = serializer;
         }
 
-        public StreamEntity ConvertToEntity(StreamRecord record)
-        {
-            var eventEntities = record.Events.Select(ConvertToEntity);
-            return new StreamEntity(record.Id, eventEntities);
-        }
-
-        public EventEntity ConvertToEntity(EventRecord record)
+        public StreamEvent ConvertToEvent(EventRecord record)
         {
             var data = serializer.Deserialize(record.Data!);
-            return new EventEntity(record.Id, record.Revision, record.Timestamp, data);
+            return new StreamEvent(record.Id, record.Revision, record.Timestamp, data);
         }
 
-        public string ConvertToString(object @event)
+        public byte[] ConvertToByteArray(object @event)
         {
             return serializer.Serialize(@event);
         }

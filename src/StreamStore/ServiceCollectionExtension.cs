@@ -1,15 +1,15 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Serialization;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace StreamStore
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection ConfigureStreamStore(this IServiceCollection services)
+        public static IServiceCollection ConfigureStreamStore(this IServiceCollection services, Action<StreamStoreConfigurator>? configure = default)
         {
-            services.AddSingleton<IStreamStore, StreamStore>();
-            services.AddSingleton<IEventSerializer, EventSerializer>();
-            return services;
+            var configurator = new StreamStoreConfigurator();
+            configure?.Invoke(configurator);
+            return configurator.Configure(services);
         }
     }
 }

@@ -1,83 +1,64 @@
 ﻿using System;
-
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Database;
+using StreamStore.Exceptions;
 using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
-using StreamStore.S3.Models;
-using StreamStore.S3.Operations;
+using StreamStore.S3.Storage;
 
 
 namespace StreamStore.S3
 {
-    public sealed class S3StreamDatabase : IStreamDatabase
+    internal sealed class S3StreamDatabase : StreamDatabaseBase
     {
-        readonly IS3Factory factory;
-        public S3StreamDatabase(IS3Factory factory)
+        readonly IS3LockFactory lockFactory;
+        private readonly IS3StorageFactory storageFactory;
+
+        public S3StreamDatabase(IS3LockFactory lockFactory, IS3StorageFactory storageFactory)
         {
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this.lockFactory = lockFactory ?? throw new ArgumentNullException(nameof(lockFactory));
+            this.storageFactory = storageFactory ?? throw new ArgumentNullException(nameof(storageFactory));
         }
 
-        public IStreamUnitOfWork BeginAppend(string streamId, int expectedStreamVersion = 0)
+        protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-            return new S3StreamUnitOfWork(streamId, expectedStreamVersion, factory);
+            var storage = storageFactory.CreateStorage();
+            var container = await storage.LoadPersistentContainerAsync(streamId, startFrom, count, token);
+            if (container.State == S3ObjectState.DoesNotExist) throw new StreamNotFoundException(streamId);
+            return container.Events!.Select(e => e.Event!).ToArray();
         }
 
-        public async Task DeleteAsync(string streamId, CancellationToken cancellationToken)
+        protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
         {
-            using var transaction = 
-                await S3StreamTransaction
-                .BeginAsync(S3TransactionContext.New(streamId), factory);
+            var storage = storageFactory.CreateStorage();
 
-            await TryDeleteAsync(streamId, transaction, cancellationToken);
+            await storage.DeletePersistentContainerAsync(streamId, token);
         }
 
-     
-
-        public async Task<StreamRecord?> FindAsync(string streamId, CancellationToken cancellationToken)
+        protected override async Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
-            S3Stream? stream;
-            await using (var client = factory.CreateClient())
-            stream = await S3StreamLoader
-                    .New(S3StreamContext.Persistent(streamId), client)
-                    .LoadAsync(cancellationToken);
-
-            if (stream == null) return null;
-
-            return new StreamRecord(streamId, stream.Events);
+            var context = new S3StreamContext(streamId, expectedStreamVersion, storageFactory.CreateStorage());
+            await context.Initialize(token);
+            return new S3StreamUnitOfWork(lockFactory, context);
         }
 
-        public async Task<StreamMetadataRecord?> FindMetadataAsync(string streamId, CancellationToken cancellationToken)
+        protected override async Task<EventMetadataRecordCollection?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default)
         {
-            S3StreamMetadata? metadata;
-            await using (var client = factory.CreateClient())
-                metadata = await S3StreamMetadataLoader
-                        .New(S3StreamContext.Persistent(streamId), client)
-                        .LoadAsync(cancellationToken);
+            var storage = storageFactory.CreateStorage();
 
-            if (metadata == null) return null;
+            var metadata = await storage.LoadPersistentMetadataAsync(streamId);
 
-            return  metadata.ToRecord();
+            if (metadata!.State == S3ObjectState.DoesNotExist) return null;
+
+            return metadata.Events;
         }
 
-        async Task TryDeleteAsync(string streamId, S3StreamTransaction transaction, CancellationToken cancellationToken)
+        protected override async Task<int> GetActualRevision(Id streamId, CancellationToken token = default)
         {
-            try
-            {
-                await using (var client = factory.CreateClient())
-                    await
-                        S3StreamDeleter
-                        .New(S3StreamContext.Persistent(streamId), client)
-                        .DeleteAsync(cancellationToken);
-
-                await transaction.CommitAsync(cancellationToken);
-
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var metadata = await FindMetadataAsyncInternal(streamId, token);
+            return metadata?.MaxRevision ?? 0;
         }
     }
 }

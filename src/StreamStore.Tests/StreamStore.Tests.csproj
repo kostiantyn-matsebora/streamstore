@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -16,6 +16,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.2" />
@@ -28,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
     <ProjectReference Include="..\StreamStore.InMemory\StreamStore.InMemory.csproj" />
+    <ProjectReference Include="..\StreamStore.Serialization.Protobuf\StreamStore.Serialization.Protobuf.csproj" />
     <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" />
     <ProjectReference Include="..\StreamStore.Testing\StreamStore.Testing.csproj" />
     <ProjectReference Include="..\StreamStore\StreamStore.csproj" />

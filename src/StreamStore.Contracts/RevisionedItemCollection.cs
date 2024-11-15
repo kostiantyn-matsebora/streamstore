@@ -7,9 +7,9 @@ namespace StreamStore
 {
     public class RevisionedItemCollection<T>: IEnumerable<T> where T: IHasRevision
     {
-        readonly SortedList<int, T> items = new SortedList<int, T>();
+        readonly SortedList<Revision, T> items = new SortedList<Revision, T>();
 
-        public int MaxRevision => items.Any()? items.Last().Key : 0;
+        public Revision MaxRevision => items.Any()? items.Last().Key : Revision.Zero;
 
         public RevisionedItemCollection(): this(Enumerable.Empty<T>())
         {

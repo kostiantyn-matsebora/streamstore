@@ -1,11 +1,9 @@
-﻿using System;
-
-
+﻿
 namespace StreamStore.Exceptions
 {
-    public abstract class ConcurrencyException : Exception
+    public abstract class ConcurrencyException : StreamStoreException
     {
-        protected ConcurrencyException(string message) : base(message)
+        protected ConcurrencyException(Id streamId, string message) : base(streamId, message)
         {
         }
     }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.S3.Client;
+using StreamStore.S3.Storage;
 
 
 
@@ -14,9 +15,12 @@ namespace StreamStore.S3.B2
         public B2DatabaseConfigurator(IServiceCollection services)
         {
             this.services = services;
-            services.AddSingleton<IS3Factory, B2S3Factory>();
-            services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
+            services.AddSingleton<IS3LockFactory, B2S3Factory>();
+            services.AddSingleton<IS3ClientFactory, B2S3Factory>();
             services.AddSingleton<IStorageClientFactory, BackblazeClientFactory>();
+            services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
+            services.AddSingleton<IStreamReader, S3StreamDatabase>();
+            services.AddSingleton<IS3StorageFactory, S3StorageFactory>();
         }
 
         public override IServiceCollection Configure()
@@ -32,11 +36,9 @@ namespace StreamStore.S3.B2
             if (section == null)
                 throw new InvalidOperationException("streamStore:b2 configuration section not found.");
 
-            WithCredentials(
-            section!.GetSection("applicationKeyId").Value!,
-            section.GetSection("applicationKey").Value!)
-                 .WithBucketId(section.GetSection("bucketId").Value!)
-                 .WithBucketName(section.GetSection("bucketName").Value!);
+             WithCredential(section!.GetSection("applicationKeyId").Value!, section!.GetSection("applicationKey").Value!)
+            .WithBucketId(section.GetSection("bucketId").Value!)
+            .WithBucketName(section.GetSection("bucketName").Value!);
 
             var settings = Build();
             services.AddSingleton(settings);

@@ -1,32 +1,62 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 
 namespace StreamStore.Serialization
 {
-    class TypeRegistry
+    public sealed class TypeRegistry : ITypeRegistry
     {
-        public static readonly TypeRegistry Instance = new TypeRegistry();
-
         readonly ConcurrentDictionary<string, Type> types = new ConcurrentDictionary<string, Type>();
+        readonly ConcurrentDictionary<Type, string> names = new ConcurrentDictionary<Type, string>();
 
-        public string ByType(Type type)
+        public TypeRegistry()
         {
-            var name = ComposeName(type);
-
-            types.GetOrAdd(ComposeName(type), type);
-
-            return name;
+            Initialize();
         }
 
-        public Type ByName(string name)
+        public string ResolveNameByType(Type type)
+        {
+            return names.GetOrAdd(type, _ => ComposeName(_));
+        }
+
+        public Type ResolveTypeByName(string name)
         {
             return types.GetOrAdd(name, _ => Type.GetType(_));
+        }
+
+        void Initialize()
+        {
+            // no-op
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies)
+            {
+                foreach (var type in GetLoadableTypes(assembly))
+                {
+                    var name = ComposeName(type);
+                    types.GetOrAdd(name, type);
+                    names.GetOrAdd(type, name);
+                }
+            }
         }
 
         static string ComposeName(Type type)
         {
             return $"{type.FullName}, {type.Assembly.GetName().Name}";
+        }
+
+        static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
+        {
+            try
+            {
+                return assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                return e.Types.Where(t => t != null);
+            }
         }
     }
 }

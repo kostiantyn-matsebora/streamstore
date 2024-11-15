@@ -2,7 +2,7 @@
 
 [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)
 
-[Amazon S3] backend database for [StreamStore] event stream library.
+[Amazon S3] backend database for [StreamStore] asynchronous event sourcing library.
 
 ## Installation
 
@@ -42,18 +42,12 @@ or you can provide the configuration in code, see section below.
 ### Register in DI container
 
 ```csharp
-   // Adding StreamStore
-   services.ConfigureStreamStore();
-
-   // Adding AWS S3 database 
-   services.ConfigureS3AmazonStreamStoreDatabase();
-
-  // Or configuring it manually
-  services
-    .UseS3AmazonStreamStoreDatabase()
-      .WithBucketName("your-bucket-name")
-    .Configure();
-
+   services.ConfigureStreamStore(x =>
+      x.WithSingleDatabase(c =>
+         c.UseAWSDatabase(
+            c => c.WithBucketName("bucket-name")) // Bucket name, optional, by default "streamstore"
+      )
+   );
 ```
 
 If you want to use advanced scenarios for configuring the S3 client, you can create and register your own ``IAmazonS3ClientFactory``:
@@ -85,13 +79,13 @@ First, it trying to lock in memory and if it is successful, it tries to exclusiv
       - `[event-id]` - file with event data
     - `__metadata` - file with stream metadata
 - `transient-streams` - uncommitted streams
-    - `[stream-id]` - directory with stream transactions
-      - `[transaction-id]` - directory with transaction data
-        - `events` - directory with events
-          - `[event-id]` - file with event data
-        - `__metadata` - file with transaction metadata
+  - `[stream-id]` - directory with stream transactions
+    - `[transaction-id]` - directory with transaction data
+      - `events` - directory with events
+        - `[event-id]` - file with event data
+      - `__metadata` - file with transaction metadata
 - `locks` - directory with locks
-    - `[stream-id]` - file with lock data
+  - `[stream-id]` - file with lock data
 
 ## Example
 

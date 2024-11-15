@@ -41,18 +41,18 @@ namespace StreamStore.S3.B2
 
             return new ObjectDescriptor
             {
-                FileName = files.Response.Files[0].FileName,
-                FileId = files.Response.Files[0].FileId
+                Key = files.Response.Files[0].FileName,
+                VersionId = files.Response.Files[0].FileId
             };
         }
 
-        public async Task<ListS3ObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token)
+        public async Task<ListS3ObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectKey, CancellationToken token)
         {
             var request = new ListFileVersionRequest(settings.BucketId)
             {
                 Prefix = !string.IsNullOrEmpty(sourcePrefix) ? sourcePrefix : null,
                 MaxFileCount = maxFileCount,
-                StartFileId = !string.IsNullOrEmpty(startObjectName) ? startObjectName : null,
+                StartFileId = !string.IsNullOrEmpty(startObjectKey) ? startObjectKey : null,
                 Delimiter = !string.IsNullOrEmpty(sourcePrefix) ? settings.Delimiter : null,
             };
             var files = await client!.Files.ListVersionsAsync(request);
@@ -64,26 +64,24 @@ namespace StreamStore.S3.B2
             {
                 Objects = files.Response.Files.Select(f => new ObjectDescriptor
                 {
-                    FileName = f.FileName,
-                    FileId = f.FileId
+                    Key = f.FileName,
+                    VersionId = f.FileId
                 }).ToArray(),
-                NextFileName = files.Response.NextFileName
+                NextObjectKey = files.Response.NextFileName
             };
         }
 
 
-        public async Task CopyByFileIdAsync(string sourceFileId, string sourceName, string destinationName, CancellationToken token)
+        public async Task CopyByVersionIdAsync(string sourceVersionId, string sourceKey, string destinationKey, CancellationToken token)
         {
-            var copyRequest = new CopyFileRequest(
-                        sourceFileId,
-                        destinationName);
+            var copyRequest = new CopyFileRequest(sourceVersionId, destinationKey);
 
             await client!.Files.CopyAsync(copyRequest);
         }
 
-        public async Task DeleteObjectByFileIdAsync(string fileId, string key, CancellationToken token)
+        public async Task DeleteObjectByVersionIdAsync(string versionId, string key, CancellationToken token)
         {
-            await client!.Files.DeleteAsync(fileId, key);
+            await client!.Files.DeleteAsync(versionId, key);
             return;
 
         }
@@ -98,8 +96,8 @@ namespace StreamStore.S3.B2
             return new FindObjectResponse
             {
                 Data = stream.ToArray(),
-                Name = file.Response.FileName,
-                FileId = file.Response.FileId
+                Key = file.Response.FileName,
+                VersionId = file.Response.FileId
             };
         }
 
@@ -113,8 +111,8 @@ namespace StreamStore.S3.B2
 
             return new UploadObjectResponse
             {
-                FileId = response.Response.FileId,
-                Name = response.Response.FileName
+                VersionId = response.Response.FileId,
+                Key = response.Response.FileName
             };
         }
 

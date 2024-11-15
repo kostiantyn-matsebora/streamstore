@@ -24,17 +24,17 @@ or from Nuget Package Manager Console:
 
 ## Usage
 
-
 - Register store in DI container
   
 ```csharp
-   // Adding StreamStore
-   services.ConfigureStreamStore();
-   // Adding InMemory database
-   services.AddInMemoryStreamDatabase();
+  services.ConfigureStreamStore(x => 
+      x.WithSingleDatabase(c => 
+        c.UseInMemoryDatabase()
+      )
+  ); // Register StreamStore
 ```
 
-- How to use store in your application you can find in [StreamStore](https://github.com/kostiantyn-matsebora/streamstore/tree/master#usage) documentation
+- How to use store in your application you can find in [StreamStore](https://github.com/kostiantyn-matsebora/streamstore/tree/master#usage) documentation.
 
 ## License
 

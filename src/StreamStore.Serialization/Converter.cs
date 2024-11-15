@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace StreamStore.S3
+namespace StreamStore.Serialization
 {
     public static class Converter
     {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Text;
 using StreamStore.S3.Client;
 
 namespace StreamStore.S3.Tests.InMemory
@@ -9,7 +8,7 @@ namespace StreamStore.S3.Tests.InMemory
 
         static readonly ConcurrentDictionary<string, byte[]> objects = new();
 
-        public Task DeleteObjectByFileIdAsync(string? fileId, string key, CancellationToken token)
+        public Task DeleteObjectByVersionIdAsync(string? versionId, string key, CancellationToken token)
         {
             objects.TryRemove(key, out _);
             return Task.CompletedTask;
@@ -22,8 +21,8 @@ namespace StreamStore.S3.Tests.InMemory
                 return Task.FromResult<FindObjectResponse?>(new FindObjectResponse
                 {
                     Data = data,
-                    Name = key,
-                    FileId = key
+                    Key = key,
+                    VersionId = key
                 });
             }
             return Task.FromResult<FindObjectResponse?>(null);
@@ -31,17 +30,19 @@ namespace StreamStore.S3.Tests.InMemory
 
         public Task<UploadObjectResponse?> UploadObjectAsync(UploadObjectRequest request, CancellationToken token)
         {
+            objects.TryRemove(request.Key!, out _);
             objects.TryAdd(request.Key!, request.Data!);
+            
             return Task.FromResult<UploadObjectResponse?>(new UploadObjectResponse
             {
-                FileId = request.Key,
-                Name = request.Key
+                VersionId = request.Key,
+                Key = request.Key
             });
         }
 
-        public Task<ListS3ObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectName, CancellationToken token)
+        public Task<ListS3ObjectsResponse?> ListObjectsAsync(string sourcePrefix, string? startObjectKey, CancellationToken token)
         {
-            if (startObjectName == null)
+            if (startObjectKey == null)
             {
                 var response = new ListS3ObjectsResponse
                 {
@@ -49,8 +50,8 @@ namespace StreamStore.S3.Tests.InMemory
                             .Where(k => k.StartsWith(sourcePrefix))
                             .Select(k => new ObjectDescriptor
                             {
-                                FileName = k,
-                                FileId = k
+                                Key = k,
+                                VersionId = k
                             }).ToArray()
                 };
 
@@ -60,7 +61,7 @@ namespace StreamStore.S3.Tests.InMemory
             return Task.FromResult<ListS3ObjectsResponse?>(new ListS3ObjectsResponse
             {
                 Objects = Enumerable.Empty<ObjectDescriptor>().ToArray(),
-                NextFileName = Guid.NewGuid().ToString()
+                NextObjectKey = Guid.NewGuid().ToString()
             });
         }
 
@@ -70,24 +71,24 @@ namespace StreamStore.S3.Tests.InMemory
             {
                 return Task.FromResult<ObjectDescriptor?>(new ObjectDescriptor
                 {
-                    FileName = key,
-                    FileId = key
+                    Key = key,
+                    VersionId = key
                 });
             }
             return Task.FromResult<ObjectDescriptor?>(null);
         }
 
-        public Task CopyByFileIdAsync(string sourceFileId, string sourceName, string destinationName, CancellationToken token)
+        public Task CopyByVersionIdAsync(string sourceVersionId, string sourceKey, string destinationKey, CancellationToken token)
         {
             lock (objects)
             {
-                if (objects.TryGetValue(sourceFileId, out var data))
+                if (objects.TryGetValue(sourceVersionId, out var data))
                 {
-                    if (objects.ContainsKey(destinationName))
+                    if (objects.ContainsKey(destinationKey))
                     {
-                        objects.TryRemove(destinationName, out _);
+                        objects.TryRemove(destinationKey, out _);
                     }
-                    objects.TryAdd(destinationName, data);
+                    objects.TryAdd(destinationKey, data);
                 }
             }
             return Task.CompletedTask;

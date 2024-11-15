@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
+using StreamStore.S3.Storage;
 
 
 namespace StreamStore.S3.Lock
@@ -10,16 +11,11 @@ namespace StreamStore.S3.Lock
     class S3FileLockHandle : IS3LockHandle
     {
         bool lockReleased = false;
-        readonly IS3TransactionContext ctx;
-        string? fileId;
-        readonly IS3Factory? factory;
+        readonly IS3Object lockObject;
 
-        public S3FileLockHandle(IS3TransactionContext ctx, string fileId, IS3Factory factory)
+        public S3FileLockHandle(IS3Object lockObject)
         {
-
-            this.ctx = ctx ?? throw new ArgumentNullException(nameof(ctx));
-            this.fileId = fileId;
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this.lockObject = lockObject ?? throw new ArgumentNullException(nameof(lockObject));
         }
 
         public async Task ReleaseAsync(CancellationToken token)
@@ -27,8 +23,7 @@ namespace StreamStore.S3.Lock
             if (!lockReleased)
             {
                 lockReleased = true;
-                await using var client = factory!.CreateClient();
-                await client!.DeleteObjectByFileIdAsync(fileId!, ctx.LockKey, token);
+                await lockObject.DeleteAsync(token);
             }
         }
 
@@ -43,7 +38,6 @@ namespace StreamStore.S3.Lock
             if (disposing)
             {
                 await ReleaseAsync(CancellationToken.None);
-                fileId = null;
             }
         }
     }
