@@ -6,7 +6,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.Sql.Tests.PostgreSql.TenantProvider
 {
-    public class When_providing_database: Scenario<PostgresTenantProviderSuite>
+    public class Providing_database: Scenario<PostgresTenantProviderSuite>
     {
         [Fact]
         public void When_any_argument_is_not_degined()
@@ -19,7 +19,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.TenantProvider
         }
 
         [Fact]
-        public void When_providing_postgres_database()
+        public void When_database_for_tenant_exists()
         {
             // Arrange
             var configurationProvider = Suite.MockSqlConfigurationProvider;
