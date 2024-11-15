@@ -96,7 +96,7 @@ or from NuGet Package Manager Console:
       x.EnableSchemaProvisioning()                  // Optional. Enable schema provisioning, default: false.
       
       // Register single database implementation, see details in documentation for particular database
-      x.WithSingleDatabase(c => ...                 
+      x.WithSingleDatabase(c =>                 
           c.UseSqliteDatabase(x =>                  // For instance, SQLite database backend
               x.ConfigureDatabase(c =>
                 c.WithConnectionString(connectionString)
@@ -104,9 +104,9 @@ or from NuGet Package Manager Console:
           )
       )
       // Or enable multitenancy, see details in documentation for particular database.
-      x.WithMultitenancy(c => ...
+      x.WithMultitenancy(c => 
           c.UseInMemoryDatabase()                   // For instance, InMemory database backend
-          x.UseTenantProvider<MyTenantProvider>()   // Optional. Register your  ITenantProvider implementation.
+           .UseTenantProvider<MyTenantProvider>()   // Optional. Register your  ITenantProvider implementation.
                                                     // Required if you want schema to be provisioned for each tenant.
       )
     ); 
