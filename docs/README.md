@@ -18,7 +18,7 @@ Despite the fact that component implements a logical layer for storing and query
 
 ## Storage packages
 
-  | Package                | Description                                                                            |        Multitenancy        |                                                                                                                                 |
+  | Package                | Description                                                                            |        Multitenancy        |  Package   |
   | ---------------------------- | ------------------------------------------------------------------------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
   | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) implementation | :white_check_mark: | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
   | [StreamStore.Sql.Sqlite]     | [`SQLite`](https://www.sqlite.org/index.html) implementation | :white_check_mark: | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
@@ -92,9 +92,25 @@ or from NuGet Package Manager Console:
 - Register store in DI container
   
 ```csharp
-       services.ConfigureStreamStore(x =>  // Register StreamStore
-          x.UseSqliteDatabase(x => ...);   // Register database implementation,
-                                           // more details you can fing in particular implementation documentation
+       services.ConfigureStreamStore(x =>               // Register StreamStore
+          x.EnableSchemaProvisioning()                  // Enable schema provisioning, optional. Default: false.
+          
+
+          x.WithSingleDatabase(c => ...                 // Register single database implementation,
+                                                        // see details in documentation for particular database
+
+              c.UseSqliteDatabase(x =>                  // For instance, SQLite database backend
+                 x.WithConnectionString(connectionString)
+              )
+          )
+         
+          x.WithMultitenancy(c => ...                   // Or enable multitenancy, 
+                                                        // see details in documentation for particular database
+              x.UseTenantProvider<MyTenantProvider>()   // Register your  ITenantProvider implementation, optional.
+                                                        // Required if you want schema to be provisioned for each tenant.
+
+              c.UseInMemoryDatabase()                   // For instance, InMemory database backend
+          )
         ); 
 ```
 
@@ -102,7 +118,7 @@ or from NuGet Package Manager Console:
 
 ```csharp
 
-   // Inject IStreamStore in your service
+   // Inject IStreamStore in your service or controller for single database implementation
     public class MyService
     {
         private readonly IStreamStore store;
@@ -113,6 +129,17 @@ or from NuGet Package Manager Console:
         }
     }
  
+  // Or IStreamStoreFactory for multitenancy
+    public class MyService
+    {
+        private readonly IStreamStoreFactory storeFactory;
+  
+        public MyService(IStreamStoreFactory storeFactory)
+        {
+            this.storeFactory = storeFactory;
+        }
+    }
+
   // Append events to stream or create a new stream if it does not exist
   // EventObject property is where you store your event
   var events = new Event[]  {

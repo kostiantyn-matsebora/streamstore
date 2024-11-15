@@ -18,11 +18,22 @@ Taking into account that events needs to be deserialized to original type, seria
 
 ## Usage
 
-### SystemTextJsonSerializer
-
 ```csharp
-  // Register serializer in DI container
-  services.UseSystemTextJsonSerializer(compression: true); // by default compression is disabled
+  // Register configure serialization in DI container, all configuration is optional
+
+  services.ConfigureStreamStore(c =>
+  {
+    c => c.ConfigureSerialization(s =>
+    {
+          s.EnableCompression();                                // Enable compression. Default: false
+          s.UseTypeRegistry<MyCustomTypeRegistry>();            // Custom type registry. Default: TypeRegistry
+
+          // Register serializer. Default is Newtonsoft.Json
+          s.UseSystemTextJsonSerializer(compression: true);     // SystemTextJson
+          s.UseProtobufSerializer(compression: true);           // Protobuf 
+          s.UseSerializer<YourCustomEventSerializer>();         // Custom serializer
+    });
+  });
 ```
 
 ### ProtobufEventSerializer
@@ -31,13 +42,6 @@ Taking into account that events needs to be deserialized to original type, seria
 
 ```dotnetcli
   dotnet add package StreamStore.Serialization.Protobuf
-```
-
-* Register serializer in DI container
-  
-```csharp
-  // Register serializer in DI container
-  services.UseProtobufSerializer(compression: true); // by default compression is disabled
 ```
 
 ## Customization
