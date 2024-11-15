@@ -1,7 +1,7 @@
 ﻿using StreamStore.Testing.StreamStore;
-using StreamStore.InMemory;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Stream;
+using StreamStore.InMemory.Extensions;
 
 
 namespace StreamStore.Tests.Enumerator
@@ -27,7 +27,7 @@ namespace StreamStore.Tests.Enumerator
         protected override void ConfigureStreamStore(IStreamStoreConfigurator configurator)
         {
             configurator.WithReadingMode(mode);
-            configurator.UseInMemoryDatabase();
+            configurator.WithSingleDatabse(x => x.UseInMemoryDatabase());
         }
     }
 }

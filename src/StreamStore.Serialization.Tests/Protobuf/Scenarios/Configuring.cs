@@ -3,6 +3,7 @@ using StreamStore.Serialization.Protobuf;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.InMemory;
 using FluentAssertions;
+using StreamStore.Configuration;
 
 namespace StreamStore.Serialization.Tests.Protobuf
 {
@@ -14,13 +15,11 @@ namespace StreamStore.Serialization.Tests.Protobuf
         {
 
             // Arrange
-            var configurator = new StreamStoreConfigurator();
-            var collection = new ServiceCollection();
+            var configurator = new SerializationConfigurator();
 
             // Act
-            configurator.WithProtobufSerializer(true);
-            configurator.WithDatabase<InMemoryStreamDatabase>();
-            configurator.Configure(collection);
+           var collection = configurator.WithProtobufSerializer(true).Configure();
+         
 
             // Assert
             collection.Should().ContainSingle(x => x.ServiceType == typeof(IEventSerializer) && x.ImplementationType == typeof(ProtobufEventSerializer));

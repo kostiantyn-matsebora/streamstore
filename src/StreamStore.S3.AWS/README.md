@@ -43,8 +43,10 @@ or you can provide the configuration in code, see section below.
 
 ```csharp
    services.ConfigureStreamStore(x =>
-      x.UseAWSDatabase(
-        c => c.WithBucketName("bucket-name")) // Bucket name, optional, by default "streamstore"
+      x.WithSingleDatabase(c =>
+         c.UseAWSDatabase(
+            c => c.WithBucketName("bucket-name")) // Bucket name, optional, by default "streamstore"
+      )
    );
 ```
 

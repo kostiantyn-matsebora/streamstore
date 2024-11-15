@@ -29,7 +29,7 @@ namespace StreamStore.Tests.ExceptionHandling
             var aggregateException = new AggregateException(new AggregateException(new AggregateException(exception)));
 
             // Act
-            var act = () => FuncExtension.ThrowOriginalExceptionIfOccured(() => { throw aggregateException; return true; });
+            var act = () => FuncExtension.ThrowOriginalExceptionIfOccured<bool>(() => { throw aggregateException; });
 
             // Assert
             act.Should().Throw<Exception>().WithMessage("Non-aggregate exception");
@@ -43,7 +43,7 @@ namespace StreamStore.Tests.ExceptionHandling
             var exception = new Exception("Non-aggregate exception");
 
             // Act
-            var act = () => FuncExtension.ThrowOriginalExceptionIfOccured(() => { throw exception; return true; });
+            var act = () => FuncExtension.ThrowOriginalExceptionIfOccured<bool>(() => { throw exception; });
 
             // Assert
             act.Should().Throw<Exception>().WithMessage("Non-aggregate exception");

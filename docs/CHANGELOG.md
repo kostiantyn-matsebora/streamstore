@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.11.0] - 2024-11-15
+
+### Added
+
+- Multitenancy support for SQL backends.
+
+### Changed
+
+- Unified configuration of storage by separating concerns and creating separate implementation for database backends, serialization and storage configurations.
+  
 ## [0.10.0] - 2024-11-11
 
 ### Added

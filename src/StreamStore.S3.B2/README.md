@@ -52,15 +52,21 @@ or you can provide the configuration in code, see section below.
 
 ```csharp
    // Adding B2 database with configuration from appsettings.json
-   services.ConfigureStreamStore(x => x.UseB2Database(Configuration));
+   services.ConfigureStreamStore(x => 
+      x => x.WithSingleDatabase(c =>
+              c.UseB2Database(Configuration)
+            )
+   );
 
   // Or configuring it manually
    services.ConfigureStreamStore(x =>
-      x.UseB2Database(c => {
-           x.WithBucketId("your-bucket-id");
-           x.WithBucketName("your-bucket-name");
-           x.WithCredential("your-access-key-id","your-access-key");
-      })
+      x => x.WithSingleDatabase(c =>
+         c.UseB2Database(c => {
+            c.WithBucketId("your-bucket-id");
+            c.WithBucketName("your-bucket-name");
+            c.WithCredential("your-access-key-id","your-access-key");
+        })
+      )
    );
 
 ```
@@ -97,7 +103,6 @@ To be able to run tests from [StreamStore.S3.Tests](../StreamStore.S3.Tests/) pr
 ## License
 
 [`MIT License`](../../LICENSE)
-
 
 [Backblaze B2]: https://www.backblaze.com/b2/cloud-storage.html
 [StreamStore]: https://github.com/kostiantyn-matsebora/streamstore/tree/master

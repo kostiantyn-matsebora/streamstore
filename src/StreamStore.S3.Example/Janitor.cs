@@ -7,6 +7,7 @@ namespace StreamStore.S3.Example
     {
         readonly ILogger<Janitor> logger;
         readonly IStreamStore store;
+        const string streamId = "stream-1";
 
         public Janitor(ILogger<Janitor> logger, IStreamStore store, IHostApplicationLifetime appLifetime)
         {
@@ -22,7 +23,7 @@ namespace StreamStore.S3.Example
 
         private void OnStopped() {
             logger.LogInformation("Cleaning up...");
-            store.DeleteAsync(WriterBase.StreamId, CancellationToken.None).Wait();
+            store.DeleteAsync(streamId, CancellationToken.None).Wait();
         }
     }
 }

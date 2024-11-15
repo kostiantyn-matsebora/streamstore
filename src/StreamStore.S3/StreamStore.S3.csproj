@@ -1,9 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>0.3.0</Version>
     <Authors>kostiantyn-matsebora</Authors>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <IsPackable>false</IsPackable>

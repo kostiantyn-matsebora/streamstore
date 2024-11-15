@@ -36,7 +36,5 @@ namespace StreamStore.Sql.Database
         string AppendEvent => $"INSERT INTO {configuration.FullTableName} (Id, StreamId, Revision, Timestamp, Data) VALUES (@Id, @StreamId, @Revision, @Timestamp, @Data)";
 
         string GetStreamActualRevision => $"SELECT MAX(Revision) FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
-
-
     }
 }

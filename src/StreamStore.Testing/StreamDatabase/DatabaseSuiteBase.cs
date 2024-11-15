@@ -16,17 +16,12 @@ namespace StreamStore.Testing.StreamDatabase
 
         protected override sealed void RegisterServices(IServiceCollection services)
         {
-            RegisterDependencies(services);
-            var configurator = new StreamStoreConfigurator();
-            ConfigureDatabase(configurator);
-            configurator.Configure(services);
+            new StreamStoreConfigurator()
+                .WithSingleDatabse(ConfigureDatabase)
+                .Configure(services);
         }
 
-        protected virtual void RegisterDependencies(IServiceCollection services)
-        {
-        }
-
-        protected abstract void ConfigureDatabase(IStreamStoreConfigurator configurator);
+        protected abstract void ConfigureDatabase(ISingleTenantConfigurator configurator);
 
         protected override void SetUp()
         {

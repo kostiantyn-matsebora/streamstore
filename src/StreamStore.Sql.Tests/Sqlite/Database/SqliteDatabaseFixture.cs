@@ -10,9 +10,11 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
         {
         }
 
-        public override void ConfigureDatabase(IStreamStoreConfigurator configurator)
+        public override void ConfigureDatabase(ISingleTenantConfigurator configurator)
         {
-            configurator.UseSqliteDatabase(c => c.WithConnectionString(connectionString));
+               configurator.UseSqliteDatabase(
+                    c => c.ConfigureDatabase(
+                        x => x.WithConnectionString(connectionString)));
         }
     }
 }

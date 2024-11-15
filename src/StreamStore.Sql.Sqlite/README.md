@@ -53,7 +53,7 @@ You can define configuration of the library in `appsettings.json` file:
 ```json
 {
   "ConnectionStrings": {
-    "StreamStore": "Data Source=streamstore.db" // Required
+    "StreamStore": "Data Source=streamstore.db" // Required for single tenant configuration
   },
   "StreamStore": { // Optional
     "Sqlite": {
@@ -68,20 +68,28 @@ You can define configuration of the library in `appsettings.json` file:
 ### Register in DI container
 
 ```csharp
-   // Adding StreamStore
-   services.ConfigureStreamStore();
- // Adding SQLite database with configuration from appsettings.json, requires ConnectionStrings:StreamStore
-   services.ConfigureStreamStore(x => x.UseSqliteDatabase(Configuration));
+services.ConfigureStreamStore(x =>...
 
-  // Or configuring it manually
-   services.ConfigureStreamStore(x =>
-      x.UseSqliteDatabase(c => {
-           x.WithConnectionString("your-connection-string") // Connection string
-           x.WithSchema("your-schema-name");                // Schema name, optional, default is "main"
-           x.WithTableName("your-table-name");              // Table name, optional, default is "Events"
-           x.ProvisionSchema(false);                        // Provision schema, optional, default is true
-      })
-   );
+  // Register single database implementation
+  x.WithSingleDatabase(c => ...
+      c.UseSqliteDatabase(x =>
+          c => c.ConfigureDatabase(x =>                        // Configure database options.
+            x.WithConnectionString("your-connection-string")   // Required. Connection string.
+            x.WithSchema("your-schema-name");                  // Optional. Schema name, default is "main".
+            x.WithTableName("your-table-name");                // Optional. Table name, default is "Events".
+      )
+  )
+
+  // Or enable multitenancy
+  x.WithMultitenancy(c => ...
+      c.UseSqliteDatabase(x => 
+          x.WithConnectionStringProvider<Provider>()          // Required. Register your 
+                                                              // ISqlTenantConnectionStringProvider implementation.
+          c => c.ConfigureDatabase(x =>...)                   // Optional. Configure database options will be used as 
+                                                              // template for tenant database configuration, optional.
+      )
+  )
+); 
 ```
 
 ### Use in application code

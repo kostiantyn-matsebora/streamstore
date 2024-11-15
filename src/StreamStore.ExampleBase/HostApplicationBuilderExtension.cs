@@ -1,35 +1,21 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.CommandLine;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
+using StreamStore.ExampleBase.Configuration;
+
 
 namespace StreamStore.ExampleBase
 {
     [ExcludeFromCodeCoverage]
     public static class HostApplicationBuilderExtension
     {
-
-        public static IHostApplicationBuilder ConfigureExampleApplication(this IHostApplicationBuilder builder)
+        public static RootCommand ConfigureExampleApplication(this HostApplicationBuilder builder, Action<ExampleApplicationConfigurator> configure)
         {
-            builder.Logging
-             .AddSimpleConsole(configure =>
-             {
-                 configure.SingleLine = true;
-                 configure.ColorBehavior = LoggerColorBehavior.Enabled;
-                 configure.IncludeScopes = true;
-             });
+            var appConfigurator = new ExampleApplicationConfigurator();
+            configure(appConfigurator);
 
-
-            builder.Services
-                .AddHostedService<Writer1>()
-                .AddHostedService<Writer2>()
-                .AddHostedService<Writer3>()
-                .AddHostedService<Reader1>()
-                .AddHostedService<Reader2>()
-                .AddHostedService<Reader3>()
-                .AddHostedService<ReaderToEnd1>();
-            return builder;
+            return appConfigurator.ConfigureCommand(builder);
         }
     }
 }

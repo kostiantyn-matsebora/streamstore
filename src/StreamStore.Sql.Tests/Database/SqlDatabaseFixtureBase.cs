@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Provisioning;
 using StreamStore.Sql.API;
 using StreamStore.Testing;
 
@@ -26,21 +27,21 @@ namespace StreamStore.Sql.Tests.Database
             IsDatabaseReady = true;
         }
 
-        public abstract void ConfigureDatabase(IStreamStoreConfigurator configurator);
+        public abstract void ConfigureDatabase(ISingleTenantConfigurator configurator);
 
         ServiceProvider BuildServiceProvider()
         {
             var serviceCollection = new ServiceCollection();
             var configurator = new StreamStoreConfigurator();
-
-            ConfigureDatabase(configurator);
-            configurator.Configure(serviceCollection);
+            configurator
+                .WithSingleDatabse(ConfigureDatabase)
+                .Configure(serviceCollection);
             return serviceCollection.BuildServiceProvider();
         }
 
         static void ProvisionSchema(IServiceProvider provider)
         {
-            var provisioner = provider.GetRequiredService<ISqlSchemaProvisioner>();
+            var provisioner = provider.GetRequiredService<ISchemaProvisioner>();
             provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
         }
 
