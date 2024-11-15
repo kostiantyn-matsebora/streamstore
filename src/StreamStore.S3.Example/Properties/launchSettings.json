@@ -12,6 +12,10 @@
     },
     "B2 + single tenant": {
       "commandName": "Project"
+    },
+    "Help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json"
