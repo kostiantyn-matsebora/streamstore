@@ -1,4 +1,5 @@
 ﻿using System;
+using StreamStore.Database;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 
@@ -13,15 +14,15 @@ namespace StreamStore.Sql.Database
             this.configuration = configuration.ThrowIfNull(nameof(configuration));
         }
 
-        public string GetQuery(SqlQueryType queryType) => queryType switch
+        public string GetQuery(DatabaseOperation operation) => operation switch
         {
-            SqlQueryType.DeleteStream => DeleteStream,
-            SqlQueryType.AppendEvent => AppendEvent,
-            SqlQueryType.GetEvents => GetEvents,
-            SqlQueryType.GetStreamActualRevision => GetStreamActualRevision,
-            SqlQueryType.GetStreamEventCount => GetStreamEventCount,
-            SqlQueryType.GetStreamMetadata => GetStreamMetadata,
-            _ => throw new ArgumentOutOfRangeException(nameof(queryType), $"Not expected query type value: {queryType}"),
+            DatabaseOperation.DeleteStream => DeleteStream,
+            DatabaseOperation.AppendEvent => AppendEvent,
+            DatabaseOperation.GetEvents => GetEvents,
+            DatabaseOperation.GetStreamActualRevision => GetStreamActualRevision,
+            DatabaseOperation.GetStreamEventCount => GetStreamEventCount,
+            DatabaseOperation.GetStreamMetadata => GetStreamMetadata,
+            _ => throw new ArgumentOutOfRangeException(nameof(operation), $"Not expected query type value: {operation}"),
         };
 
         string GetStreamMetadata => $"SELECT Id, Revision, Timestamp FROM {configuration.FullTableName} WHERE StreamId = @StreamId";

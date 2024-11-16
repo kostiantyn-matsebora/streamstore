@@ -1,4 +1,6 @@
 using StreamStore.NoSql.Cassandra;
+using StreamStore.NoSql.Cassandra.Configuration;
+using StreamStore.NoSql.Cassandra.Database;
 using StreamStore.Testing;
 
 namespace StreamStore.NoSql.Tests.Cassandra.ClusterBuilder
@@ -6,15 +8,19 @@ namespace StreamStore.NoSql.Tests.Cassandra.ClusterBuilder
     public class Building_cluster_definition: Scenario
     {
         [Fact]
-        public void Build_cluster()
+        public async Task Build_cluster()
         {
-            var builder = new CassandraClusterBuilder();
-            var cluster = builder.Build();
-            
-            var session = cluster.Connect();
-            session.Execute("CREATE KEYSPACE IF NOT EXISTS test WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };");
+            var clusterConfig = new CassandraClusterConfiguration();
+            var dbConfig = new CassandraDatabaseConfiguration();
+            var builder = new CassandraClusterBuilder(clusterConfig);
+            var db = new CassandraTestDatabase(builder, dbConfig);
+            var schemaProvisioner = 
+                new CassandraSchemaProvisioner(
+                    new CassandraSessionFactory(builder, dbConfig), 
+                    new DataContextFactory(new TypeMapFactory(dbConfig)));
 
-            session.Execute("CREATE TABLE IF NOT EXISTS test.streams (stream_id uuid, stream_version int, message_id timeuuid, type text, position int, data blob, metadata blob, PRIMARY KEY (stream_id, stream_version));");
+            db.EnsureExists();
+            await schemaProvisioner.ProvisionSchemaAsync(CancellationToken.None);
         }
     }
 }

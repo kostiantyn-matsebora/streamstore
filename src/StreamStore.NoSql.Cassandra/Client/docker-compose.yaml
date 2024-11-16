@@ -1,0 +1,22 @@
+version: '3'
+services:
+  cassandra-web:
+    image: ipushc/cassandra-web
+    container_name: cassandra-web
+    networks:
+      - cassandra-net
+    environment:
+      HOST_PORT: ":80"
+      CASSANDRA_HOST: 172.20.0.2
+      CASSANDRA_PORT: 9042
+      CASSANDRA_USERNAME: cassandra
+      CASSANDRA_PASSWORD: cassandra
+    ports:
+    - 3000:80
+networks:
+  cassandra-net:
+    name: cassandra-net
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
+

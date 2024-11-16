@@ -3,6 +3,8 @@ services:
     image: cassandra:latest
     container_name: cassandra1
     hostname: cassandra1
+    networks:
+      - cassandra-net
     ports:
       - "9042:9042"
     environment: &cassandra_config
@@ -17,6 +19,8 @@ services:
     image: cassandra:latest
     container_name: cassandra2
     hostname: cassandra2
+    networks:
+      - cassandra-net
     ports:
       - "9043:9042"
     environment: *cassandra_config
@@ -28,13 +32,17 @@ services:
     image: cassandra:latest
     container_name: cassandra3
     hostname: cassandra3
+    networks:
+      - cassandra-net
     ports:
       - "9044:9042"
     environment: *cassandra_config
     depends_on:
       cassandra2:
         condition: service_started
-
 networks:
   cassandra-net:
+    name: cassandra-net
     driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
