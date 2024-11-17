@@ -30,7 +30,7 @@ namespace StreamStore.S3.Tests.AWS.Configurator
             var collection = new ServiceCollection();
 
             // Act
-            collection.ConfigureStreamStore(x => x.WithSingleDatabse(x => x.UseAWSDatabase()));
+            collection.ConfigureStreamStore(x => x.WithSingleDatabase(x => x.UseAWSDatabase()));
 
             // Assert
             Suite.MockRepository.VerifyAll();
