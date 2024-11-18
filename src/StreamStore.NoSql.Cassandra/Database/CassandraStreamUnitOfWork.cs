@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Cassandra;
+using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Models;
 
 namespace StreamStore.NoSql.Cassandra.Database

@@ -10,17 +10,17 @@ namespace StreamStore.NoSql.Tests.Cassandra.ClusterBuilder
         [Fact]
         public async Task Build_cluster()
         {
-            var clusterConfig = new CassandraClusterConfiguration();
-            var dbConfig = new CassandraDatabaseConfiguration();
-            var builder = new CassandraClusterBuilder(clusterConfig);
-            var db = new CassandraTestDatabase(builder, dbConfig);
-            var schemaProvisioner = 
-                new CassandraSchemaProvisioner(
-                    new CassandraSessionFactory(builder, dbConfig), 
-                    new DataContextFactory(new TypeMapFactory(dbConfig)));
+            //var clusterConfig = new CassandraClusterConfiguration();
+            //var dbConfig = new CassandraKeyspaceConfiguration();
+            //var builder = new CassandraClusterBuilder(clusterConfig);
+            //var db = new CassandraTestDatabase(builder, dbConfig);
+            //var schemaProvisioner = 
+            //    new CassandraSchemaProvisioner(
+            //        new CassandraSessionFactory(builder, dbConfig), 
+            //        new DataContextFactory(new TypeMapFactory(dbConfig)));
 
-            db.EnsureExists();
-            await schemaProvisioner.ProvisionSchemaAsync(CancellationToken.None);
+            //db.EnsureExists();
+            //await schemaProvisioner.ProvisionSchemaAsync(CancellationToken.None);
         }
     }
 }

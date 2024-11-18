@@ -6,9 +6,9 @@ namespace StreamStore.NoSql.Cassandra.Database
 {
     internal class TypeMapFactory
     {
-        readonly CassandraDatabaseConfiguration config;
+        readonly CassandraKeyspaceConfiguration config;
 
-        public TypeMapFactory(CassandraDatabaseConfiguration config)
+        public TypeMapFactory(CassandraKeyspaceConfiguration config)
         {
             this.config = config;
         }

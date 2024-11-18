@@ -1,5 +1,4 @@
 ﻿using Cassandra.Data.Linq;
-using StreamStore.NoSql.Cassandra;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.Testing.Framework;
 
@@ -9,9 +8,9 @@ namespace StreamStore.NoSql.Tests.Cassandra
     {
         readonly CassandraClusterBuilder clusterBuilder;
 
-        readonly CassandraDatabaseConfiguration configuration;
+        readonly CassandraKeyspaceConfiguration configuration;
 
-        public CassandraTestDatabase(CassandraClusterBuilder clusterBuilder, CassandraDatabaseConfiguration configuration)
+        public CassandraTestDatabase(CassandraClusterBuilder clusterBuilder, CassandraKeyspaceConfiguration configuration)
         {
             this.clusterBuilder = clusterBuilder.ThrowIfNull(nameof(clusterBuilder));
              this.configuration = configuration.ThrowIfNull(nameof(configuration));
