@@ -7,13 +7,13 @@ services:
       - cassandra-net
     ports:
       - "9042:9042"
-    # environment: &cassandra_config
-    #   #CASSANDRA_SEEDS: "cassandra1"
-    #   CASSANDRA_CLUSTER_NAME: MyCluster
-    #   CASSANDRA_DC: datacenter1
-    #   CASSANDRA_RACK: rack1
-    #   #CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
-    #   CASSANDRA_NUM_TOKENS: 128
+  #   environment: &cassandra_config
+  #     CASSANDRA_SEEDS: "cassandra1"
+  #     CASSANDRA_CLUSTER_NAME: MyCluster
+  #     CASSANDRA_DC: datacenter1
+  #     CASSANDRA_RACK: rack1
+  #     CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+  #     CASSANDRA_NUM_TOKENS: 128
 
   # cassandra2:
   #   image: cassandra:latest
@@ -44,5 +44,3 @@ networks:
   cassandra-net:
     name: cassandra-net
     driver: bridge
-    driver_opts:
-      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"

@@ -52,17 +52,22 @@ namespace StreamStore.Sql.Tests.PostgreSql.Database
             {
                 if (disposing)
                 {
-                    using (var connection = new Npgsql.NpgsqlConnection(serverConnectionString))
+                    try
                     {
-                        connection.Open();
-                        using (var command = connection.CreateCommand())
+                        using (var connection = new Npgsql.NpgsqlConnection(serverConnectionString))
                         {
-                            command.CommandText = $"DROP DATABASE {databaseName};";
-                            command.ExecuteNonQuery();
+                            connection.Open();
+                            using (var command = connection.CreateCommand())
+                            {
+                                command.CommandText = $"DROP DATABASE {databaseName};";
+                                command.ExecuteNonQuery();
+                            }
                         }
+                    } catch (Npgsql.NpgsqlException)
+                    {
+                        // ignored
                     }
                 }
-
 
                 disposedValue = true;
             }

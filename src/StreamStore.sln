@@ -58,9 +58,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.Sql.PostgreSql"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NoSQL", "NoSQL", "{B088C377-25AC-4BA6-AF83-33DC2733BE97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.NoSql.Cassandra", "StreamStore.NoSql.Cassandra\StreamStore.NoSql.Cassandra.csproj", "{2659C1AB-E659-440C-BB15-F1DF33385F76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.NoSql.Cassandra", "StreamStore.NoSql.Cassandra\StreamStore.NoSql.Cassandra.csproj", "{2659C1AB-E659-440C-BB15-F1DF33385F76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.NoSql.Tests", "StreamStore.NoSQL.Tests\StreamStore.NoSql.Tests.csproj", "{D39E9075-E36B-4DFA-8BD7-27430865F09F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.NoSql.Tests", "StreamStore.NoSQL.Tests\StreamStore.NoSql.Tests.csproj", "{D39E9075-E36B-4DFA-8BD7-27430865F09F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.NoSql.Example", "StreamStore.NoSql.Example\StreamStore.NoSql.Example.csproj", "{0364ACFC-A846-407D-AE6D-93BC2BD6BD95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -156,6 +158,10 @@ Global
 		{D39E9075-E36B-4DFA-8BD7-27430865F09F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D39E9075-E36B-4DFA-8BD7-27430865F09F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D39E9075-E36B-4DFA-8BD7-27430865F09F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0364ACFC-A846-407D-AE6D-93BC2BD6BD95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0364ACFC-A846-407D-AE6D-93BC2BD6BD95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0364ACFC-A846-407D-AE6D-93BC2BD6BD95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0364ACFC-A846-407D-AE6D-93BC2BD6BD95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -178,6 +184,7 @@ Global
 		{92656745-ED2D-4C8F-8BD2-A34BC1BBA2E8} = {002945CF-F758-43CE-A5B3-E43A27D550CA}
 		{2659C1AB-E659-440C-BB15-F1DF33385F76} = {B088C377-25AC-4BA6-AF83-33DC2733BE97}
 		{D39E9075-E36B-4DFA-8BD7-27430865F09F} = {B088C377-25AC-4BA6-AF83-33DC2733BE97}
+		{0364ACFC-A846-407D-AE6D-93BC2BD6BD95} = {B088C377-25AC-4BA6-AF83-33DC2733BE97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B91B9475-41C6-4A0C-8FA4-2894665CE39D}

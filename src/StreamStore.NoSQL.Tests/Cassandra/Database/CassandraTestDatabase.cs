@@ -27,19 +27,25 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
             {
                 using (var session = cluster.Connect())
                 {
-                    session.Execute($"CREATE KEYSPACE IF NOT EXISTS {config.Keyspace} WITH REPLICATION = {{ 'class' : 'SimpleStrategy', 'replication_factor' : 1 }};");
+                    session.Execute(
+                        @$"CREATE KEYSPACE {config.Keyspace}
+                              WITH REPLICATION = {{ 
+                               'class' : 'SimpleStrategy', 
+                               'replication_factor' : 1 
+                              }};");
                     return true;
                 }
             }
             catch
             {
+                // ignored
                 return false;
             }
         }
 
         void ConfigureCluster(Builder builder)
         {
-            builder.AddContactPoint("localhost");
+            builder.AddContactPoint("localhost").WithQueryTimeout(10000);
         }
 
         private void Dispose(bool disposing)
@@ -48,11 +54,17 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
             {
                 if (disposing)
                 {
-                    using (var session = cluster.Connect())
+                    try
                     {
-                        session.Execute($"DROP KEYSPACE IF  EXISTS {config.Keyspace} ;");
+                        using (var session = cluster.Connect())
+                        {
+                            session.Execute($"DROP KEYSPACE IF  EXISTS {config.Keyspace} ;");
+                        }
                     }
-
+                    catch
+                    {
+                        // ignored
+                    }
                 }
                 disposedValue = true;
             }

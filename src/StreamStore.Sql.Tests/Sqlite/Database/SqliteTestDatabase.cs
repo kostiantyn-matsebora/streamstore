@@ -29,7 +29,13 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
             {
                 if (disposing)
                 {
-                    File.Delete(databaseName);
+                    try
+                    {
+                        File.Delete(databaseName);
+                    } catch
+                    {
+                        // ignored
+                    }
                 }
                 disposedValue = true;
             }

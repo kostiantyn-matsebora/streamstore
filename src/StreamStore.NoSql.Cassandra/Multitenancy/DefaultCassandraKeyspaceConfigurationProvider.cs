@@ -14,8 +14,6 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
             this.prototype = prototype.ThrowIfNull(nameof(prototype));
         }
 
-        
-
         public CassandraKeyspaceConfiguration GetKeyspaceConfiguration(Id tenanId)
         {
             var config = (CassandraKeyspaceConfiguration)prototype.Clone();
