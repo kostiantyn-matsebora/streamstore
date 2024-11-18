@@ -20,7 +20,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         protected override async Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
         {
-            using (var session = sessionFactory.CreateSession())
+            using (var session = sessionFactory.Open())
             {
                 var statement = new BatchStatement();
                 statement.SetConsistencyLevel(ConsistencyLevel.Quorum);

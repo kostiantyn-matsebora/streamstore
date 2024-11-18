@@ -17,7 +17,7 @@ namespace StreamStore.NoSql.Cassandra
             this.config = config.ThrowIfNull(nameof(config));
         }
 
-        public ISession CreateSession()
+        public ISession Open()
         {
            return cluster.Connect(config.Keyspace);
         }

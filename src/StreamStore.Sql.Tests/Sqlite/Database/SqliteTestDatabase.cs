@@ -4,7 +4,7 @@ using StreamStore.Sql.Tests.Database;
 
 namespace StreamStore.Sql.Tests.Sqlite.Database
 {
-    public class SqliteTestDatabase: ITestDatabase
+    public class SqliteTestDatabase: ISqlTestDatabase
     {
         readonly string databaseName;
 

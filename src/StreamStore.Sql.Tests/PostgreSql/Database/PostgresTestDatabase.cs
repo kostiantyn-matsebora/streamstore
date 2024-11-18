@@ -2,7 +2,7 @@
 
 namespace StreamStore.Sql.Tests.PostgreSql.Database
 {
-    public class PostgresTestDatabase: ITestDatabase
+    public class PostgresTestDatabase: ISqlTestDatabase
     {
         const string defaultConnectionString = "Host=localhost;Port=5432;Username=streamstore;Password=streamstore";
         readonly string serverConnectionString;

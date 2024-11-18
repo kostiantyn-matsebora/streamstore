@@ -19,7 +19,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             return this;
         }
 
-        public CassandraConfiguratorBase WithKeyspaceConfiguration(Action<CassandraKeyspaceConfigurationBuilder> configure)
+        public CassandraConfiguratorBase ConfigureKeyspace(Action<CassandraKeyspaceConfigurationBuilder> configure)
         {
             var builder = new CassandraKeyspaceConfigurationBuilder();
             configure(builder);

@@ -53,5 +53,7 @@ namespace StreamStore.Testing
         }
 
         public static T Object<T>() => new Fixture().Create<T>();
+
+        public static string DatabaseName => "test_" + new Fixture().Create<string>().Replace("-", "_");
     }
 }

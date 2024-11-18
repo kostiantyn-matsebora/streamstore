@@ -6,7 +6,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
     {
         readonly CassandraKeyspaceConfiguration config = new CassandraKeyspaceConfiguration() { Keyspace = "streamstore" };
 
-        public CassandraKeyspaceConfigurationBuilder WithKeyspace(string keyspace)
+        public CassandraKeyspaceConfigurationBuilder WithKeyspaceName(string keyspace)
         {
             config.Keyspace = keyspace.ThrowIfNullOrEmpty(nameof(keyspace));
             return this;

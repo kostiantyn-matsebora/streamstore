@@ -98,7 +98,7 @@ namespace StreamStore.Sql.Example
                                      .WithConnectionString(tenant3, connectionString3))));
         }
 
-        static string EnsureDatabaseExists(ITestDatabase database)
+        static string EnsureDatabaseExists(ISqlTestDatabase database)
         {
             var result = database.EnsureExists();
             if (result == false)

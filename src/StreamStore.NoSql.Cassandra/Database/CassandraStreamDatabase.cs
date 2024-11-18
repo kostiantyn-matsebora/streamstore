@@ -28,7 +28,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
         {
-            using (var session = sessionFactory.CreateSession())
+            using (var session = sessionFactory.Open())
             {
                 var ctx = contextFactory.Create(session);
 
@@ -38,7 +38,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         protected override async Task<EventMetadataRecordCollection?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default)
         {
-            using (var session = sessionFactory.CreateSession())
+            using (var session = sessionFactory.Open())
             {
               var ctx  = contextFactory.Create(session);
              
@@ -50,7 +50,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         protected override Task<int> GetActualRevision(Id streamId, CancellationToken token = default)
         {
-            using (var session = sessionFactory.CreateSession())
+            using (var session = sessionFactory.Open())
             {
                 var ctx = contextFactory.Create(session);
 
@@ -66,7 +66,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-            using (var session = sessionFactory.CreateSession())
+            using (var session = sessionFactory.Open())
             {
                 var ctx = contextFactory.Create(session);
 

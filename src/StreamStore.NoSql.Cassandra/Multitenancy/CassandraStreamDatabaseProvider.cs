@@ -26,7 +26,6 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
                     clusterRegistry.GetCluster(tenantId),
                     configProvider.GetKeyspaceConfiguration(tenantId));
             return new CassandraStreamDatabase(sessionFactory, contextFactory);
-
         }
     }
 }

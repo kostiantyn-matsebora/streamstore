@@ -3,12 +3,12 @@ using StreamStore.Testing.StreamDatabase;
 
 namespace StreamStore.Sql.Tests.Database
 {
-    public abstract class SqlTestSuiteBase : DatabaseSuiteBase {
+    public abstract class SqlTestSuiteBase<TDatabase> : DatabaseSuiteBase where TDatabase: ISqlTestDatabase {
 
-        protected readonly SqlDatabaseFixtureBase fixture;
+        protected readonly SqlDatabaseFixtureBase<TDatabase> fixture;
 
        
-        protected SqlTestSuiteBase(SqlDatabaseFixtureBase fixture)
+        protected SqlTestSuiteBase(SqlDatabaseFixtureBase<TDatabase> fixture)
         {
             this.fixture = fixture.ThrowIfNull(nameof(fixture));
         }
