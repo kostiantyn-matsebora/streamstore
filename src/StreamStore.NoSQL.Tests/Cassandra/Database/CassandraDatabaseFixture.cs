@@ -22,5 +22,10 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
                        x.AddContactPoint("localhost"))
                         .ConfigureKeyspace(k => k.WithKeyspaceName(testDatabase.Keyspace)));
         }
+
+        protected override MemoryDatabase CreateContainer()
+        {
+            return new MemoryDatabase(new MemoryDatabaseOptions { Capacity = 1, EventPerStream = 5 });
+        }
     }
 }

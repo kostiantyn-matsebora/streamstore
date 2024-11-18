@@ -19,5 +19,9 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
         {
             fixture.ConfigureDatabase(configurator);
         }
+
+        protected override void SetUp()
+        {
+        }
     }
 }

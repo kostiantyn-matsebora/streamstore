@@ -24,6 +24,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             return new Map<EventEntity>()
                      .TableName(config.EventsTableName)
                      .PartitionKey(e => e.StreamId)
+                     .ClusteringKey(e => e.Revision)
                      .Column(e => e.StreamId, cm => cm.WithName("stream_id"))
                      .Column(e => e.Revision, cm => cm.WithName("revision"))
                      .Column(e => e.Id, cm => cm.WithName("id"))

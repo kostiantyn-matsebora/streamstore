@@ -23,6 +23,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             using (var session = sessionFactory.Open())
             {
                 var statement = new BatchStatement();
+                statement.SetBatchType(BatchType.Logged);
                 statement.SetConsistencyLevel(ConsistencyLevel.Quorum);
 
                 var ctx = contextFactory.Create(session);

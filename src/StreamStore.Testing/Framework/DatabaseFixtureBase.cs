@@ -11,6 +11,7 @@ namespace StreamStore.Testing.Framework
 
         protected DatabaseFixtureBase(TDatabase testDatabase)
         {
+            Container = CreateContainer();
             this.testDatabase = testDatabase.ThrowIfNull(nameof(testDatabase));
 
             var exists = testDatabase.EnsureExists();
@@ -24,6 +25,11 @@ namespace StreamStore.Testing.Framework
             FillDatabase(provider);
 
             IsDatabaseReady = true;
+        }
+
+        protected virtual MemoryDatabase CreateContainer()
+        {
+            return new MemoryDatabase();
         }
 
         public abstract void ConfigureDatabase(ISingleTenantConfigurator configurator);
