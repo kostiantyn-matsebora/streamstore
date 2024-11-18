@@ -3,11 +3,12 @@ using StreamStore.Provisioning;
 
 namespace StreamStore.Testing.Framework
 {
-    public abstract class DatabaseFixtureBase<TDatabase>: IDatabaseFixture where TDatabase : ITestDatabase
+    public abstract class DatabaseFixtureBase<TDatabase>: IDatabaseFixture, IDisposable where TDatabase : ITestDatabase
     {
         
         readonly bool isDatabaseReady = false;
         protected readonly  TDatabase testDatabase;
+        private bool disposedValue;
 
         public MemoryDatabase Container { get; }
 
@@ -58,6 +59,25 @@ namespace StreamStore.Testing.Framework
         {
             var database = provider.GetRequiredService<IStreamDatabase>();
             Container.CopyTo(database);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    testDatabase.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

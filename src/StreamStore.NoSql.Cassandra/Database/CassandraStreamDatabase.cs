@@ -59,14 +59,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             using (var session = sessionFactory.Open())
             {
                 var ctx = contextFactory.Create(session);
-                string id = (string)streamId;
-                var revisions = (await ctx.StreamRevisions.Where(er => er.StreamId == id).Select(er => er.Revision).ExecuteAsync()).ToArray();
-                if (!revisions.Any())
-                {
-                    return Revision.Zero;
-                }
-
-                return revisions.Max();
+                return await CassandraStreamActualRevisionResolver.Resolve(ctx, streamId);
             }
         }
 

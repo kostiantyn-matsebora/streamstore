@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using Moq;
 using StreamStore.Serialization;
+using UuidExtensions;
 
 
 namespace StreamStore.Testing
@@ -54,6 +55,6 @@ namespace StreamStore.Testing
 
         public static T Object<T>() => new Fixture().Create<T>();
 
-        public static string DatabaseName => "test_" + new Fixture().Create<string>().Replace("-", "_");
+        public static string DatabaseName => "test_" + Uuid7.String().Replace("-","_");
     }
 }

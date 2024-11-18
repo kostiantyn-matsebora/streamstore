@@ -38,27 +38,9 @@ namespace StreamStore.NoSql.Cassandra.Database
                      .Column(e => e.Timestamp, cm => cm.WithName("timestamp"));
         }
 
-        public Map<RevisionPerStreamEntity> CreateRevisionPerStreamMap()
+        public Map<RevisionStreamEntity> CreateStreamRevisionMap()
         {
-            return new Map<RevisionPerStreamEntity>()
-                     .TableName(config.RevisionPerStreamTableName)
-                     .PartitionKey(e => e.StreamId, e => e.Revision)
-                     .Column(e => e.StreamId, cm => cm.WithName("stream_id"))
-                     .Column(e => e.Revision, cm => cm.WithName("revision"));
-        }
-
-        public Map<EventPerStreamEntity> CreateEventPerStreamMap()
-        {
-            return new Map<EventPerStreamEntity>()
-                .TableName(config.EventPerStreamTableName)
-                        .PartitionKey(e => e.StreamId, e => e.Id)
-                        .Column(e => e.StreamId, cm => cm.WithName("stream_id"))
-                        .Column(e => e.Id, cm => cm.WithName("id"));
-        }
-
-        public Map<RevisionPerStreamEntity> CreateStreamRevisionMap()
-        {
-            return new Map<RevisionPerStreamEntity>()
+            return new Map<RevisionStreamEntity>()
                      .TableName(config.EventsTableName)
                      .PartitionKey(e => e.StreamId)
                      .ClusteringKey(e => e.Revision)

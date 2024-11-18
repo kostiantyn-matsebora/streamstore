@@ -12,7 +12,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         Cluster? cluster;
         DelegateTenantClusterConfigurator clusterConfigurator = new DelegateTenantClusterConfigurator();
         Type keyspaceConfigurationProvider = typeof(DefaultCassandraKeyspaceConfigurationProvider);
-        Type keyspaceProvider;
+        Type? keyspaceProvider;
 
         public CassandraMultitenantConfigurator ConfigureKeyspacePrototype(Action<CassandraKeyspaceConfiguration> configure)
         {

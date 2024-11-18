@@ -1,6 +1,9 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Cassandra;
+using Cassandra.Data.Linq;
+using StreamStore.Exceptions;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Models;
 
@@ -22,19 +25,40 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
             using (var session = sessionFactory.Open())
             {
-                var statement = new BatchStatement();
-                statement.SetBatchType(BatchType.Logged);
-                statement.SetConsistencyLevel(ConsistencyLevel.Quorum);
-
+                var batch = new BatchStatement();
+                batch.SetConsistencyLevel(ConsistencyLevel.All);
+                batch.SetSerialConsistencyLevel(ConsistencyLevel.Serial);
+                batch.SetBatchType(BatchType.Logged);
                 var ctx = contextFactory.Create(session);
                 foreach (var record in uncommited)
                 {
-
-                    statement.Add(ctx.Events.Insert(record.ToEntity(streamId)));
-                    statement.Add(ctx.RevisionPerStream.Insert(new RevisionPerStreamEntity { Revision = record.Revision, StreamId = streamId }));
-                    statement.Add(ctx.EventPerStream.Insert(new EventPerStreamEntity { StreamId = streamId, Id = record.Id }));
+                    var statement =
+                        ctx.Events.Insert(record.ToEntity(streamId))
+                        .IfNotExists()
+                        .SetConsistencyLevel(ConsistencyLevel.Quorum)
+                        .SetSerialConsistencyLevel(ConsistencyLevel.Serial);
+                 
+                    var result = await session.ExecuteAsync(statement);
+                    await ValidateResult(ctx, result);
                 }
-                await session.ExecuteAsync(statement);
+            }
+        }
+
+        private async Task ValidateResult(DataContext ctx, RowSet result)
+        {
+            if (result.Columns.Any(c => c.Name == "[applied]"))
+            {
+                var row = result.FirstOrDefault();
+                if (row !=  default)
+                {
+                    var applied = row.GetValue<bool>("[applied]");
+                    if (!applied)
+                    {
+                        var actualRevision = await CassandraStreamActualRevisionResolver.Resolve(ctx, streamId);
+                        throw new OptimisticConcurrencyException(expectedRevision, expectedRevision, streamId);
+                    }
+                }
+               
             }
         }
     }

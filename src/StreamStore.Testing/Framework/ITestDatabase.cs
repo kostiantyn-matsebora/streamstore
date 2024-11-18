@@ -1,6 +1,6 @@
 ﻿namespace StreamStore.Testing.Framework
 {
-    public interface ITestDatabase
+    public interface ITestDatabase: IDisposable
     {
         bool EnsureExists();
     }

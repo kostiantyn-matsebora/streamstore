@@ -4,9 +4,10 @@ using StreamStore.Sql.Tests.Database;
 
 namespace StreamStore.Sql.Tests.Sqlite.Database
 {
-    public class SqliteTestDatabase: ISqlTestDatabase
+    public sealed class SqliteTestDatabase: ISqlTestDatabase
     {
         readonly string databaseName;
+        private bool disposedValue;
 
         public string ConnectionString { get; }
 
@@ -20,6 +21,24 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
         {
             SQLiteConnection.CreateFile(databaseName);
             return true;
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    File.Delete(databaseName);
+                }
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

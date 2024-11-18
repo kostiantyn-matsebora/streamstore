@@ -4,11 +4,12 @@ using StreamStore.Testing.Framework;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Database
 {
-    public class CassandraTestDatabase : ITestDatabase
+    public sealed class CassandraTestDatabase : ITestDatabase
     {
         readonly Cluster cluster;
         readonly CassandraKeyspaceConfiguration config;
         public readonly string Keyspace;
+        private bool disposedValue;
 
         public CassandraTestDatabase(string keyspace, Action<Builder>? configureCluster = null)
         {
@@ -39,6 +40,29 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
         void ConfigureCluster(Builder builder)
         {
             builder.AddContactPoint("localhost");
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    using (var session = cluster.Connect())
+                    {
+                        session.Execute($"DROP KEYSPACE IF  EXISTS {config.Keyspace} ;");
+                    }
+
+                }
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -23,8 +23,6 @@ namespace StreamStore.NoSql.Cassandra
            using (var session = sessionFactory.Open())
             {
                 var ctx = dataContextFactory.Create(session);
-                await ctx.EventPerStream.CreateIfNotExistsAsync();
-                await ctx.RevisionPerStream.CreateIfNotExistsAsync();
                 await ctx.Events.CreateIfNotExistsAsync();
             }
         }

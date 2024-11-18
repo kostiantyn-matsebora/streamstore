@@ -2,8 +2,6 @@
 using Bytewizer.Backblaze.Models;
 using FluentAssertions;
 using Moq;
-using Newtonsoft.Json.Linq;
-using StreamStore.S3.B2;
 using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.B2.Client
@@ -106,9 +104,9 @@ namespace StreamStore.S3.Tests.B2.Client
             files.Setup(
                 m => m.ListVersionsAsync(
                     It.Is<ListFileVersionRequest>(r =>
-                        (r.BucketId == Suite.Settings.BucketId)
-                        .And(r.Prefix == sourcePrefix)
-                        .And(r.StartFileId == startObjectName)),
+                        r.BucketId == Suite.Settings.BucketId
+                        && r.Prefix == sourcePrefix
+                        && r.StartFileId == startObjectName),
                     It.IsAny<TimeSpan>()))
                 .ReturnsAsync(apiResults.Object);
 
