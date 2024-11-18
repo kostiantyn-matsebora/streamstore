@@ -2,23 +2,17 @@
 
 namespace StreamStore.NoSql.Tests.Cassandra.Database
 {
-    public class CassandraTestSuite : DatabaseSuiteBase
+    public class CassandraTestSuite : DatabaseFixtureSuiteBase
     {
-        readonly CassandraDatabaseFixture fixture;
 
         public CassandraTestSuite() : this(new CassandraDatabaseFixture())
         {
         }
 
-        public CassandraTestSuite(CassandraDatabaseFixture fixture)
+        public CassandraTestSuite(CassandraDatabaseFixture fixture): base(fixture)
         {
-            this.fixture = fixture.ThrowIfNull(nameof(fixture));
         }
 
-        protected override void ConfigureDatabase(ISingleTenantConfigurator configurator)
-        {
-            fixture.ConfigureDatabase(configurator);
-        }
 
         protected override void SetUp()
         {

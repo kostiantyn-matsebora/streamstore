@@ -3,11 +3,15 @@ using StreamStore.Provisioning;
 
 namespace StreamStore.Testing.Framework
 {
-    public abstract class DatabaseFixtureBase<TDatabase> where TDatabase : ITestDatabase
+    public abstract class DatabaseFixtureBase<TDatabase>: IDatabaseFixture where TDatabase : ITestDatabase
     {
-        public readonly MemoryDatabase Container = new MemoryDatabase();
-        public readonly bool IsDatabaseReady = false;
+        
+        readonly bool isDatabaseReady = false;
         protected readonly  TDatabase testDatabase;
+
+        public MemoryDatabase Container { get; }
+
+        public bool IsDatabaseReady => isDatabaseReady;
 
         protected DatabaseFixtureBase(TDatabase testDatabase)
         {
@@ -24,7 +28,7 @@ namespace StreamStore.Testing.Framework
 
             FillDatabase(provider);
 
-            IsDatabaseReady = true;
+            isDatabaseReady = true;
         }
 
         protected virtual MemoryDatabase CreateContainer()

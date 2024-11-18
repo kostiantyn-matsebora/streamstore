@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
@@ -38,7 +38,14 @@ namespace StreamStore.Database
            if (startFrom <= 0)
                 throw new ArgumentOutOfRangeException(nameof(startFrom), "Revision must be equal or greater 1.");
 
-           return new EventRecordCollection(await ReadAsyncInternal(streamId, startFrom, count, token));
+           var actualRevision = await GetActualRevision(streamId);
+
+            if (actualRevision == Revision.Zero)
+                throw new StreamNotFoundException(streamId);
+
+            var records = await ReadAsyncInternal(streamId, startFrom, count, token);
+
+            return new EventRecordCollection(await ReadAsyncInternal(streamId, startFrom, count, token));
         }
 
         protected abstract Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default);

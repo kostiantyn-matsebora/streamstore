@@ -21,8 +21,8 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         protected override Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
-         return Task.FromResult<IStreamUnitOfWork>(
-             new CassandraStreamUnitOfWork(streamId, expectedStreamVersion, null, sessionFactory, contextFactory));
+            return Task.FromResult<IStreamUnitOfWork>(
+                new CassandraStreamUnitOfWork(streamId, expectedStreamVersion, null, sessionFactory, contextFactory));
         }
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
@@ -40,12 +40,17 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
             using (var session = sessionFactory.Open())
             {
-              var ctx  = contextFactory.Create(session);
-             
-              string id = (string)streamId;
-              var metadata = await ctx.Metadata.Where(er => er.StreamId == id).ExecuteAsync();
-              
-               return new EventMetadataRecordCollection(metadata.ToArray().ToRecords());
+                var ctx = contextFactory.Create(session);
+
+                string id = (string)streamId;
+                var metadata = (await ctx.Metadata.Where(er => er.StreamId == id).ExecuteAsync()).ToArray();
+
+                if (!metadata.Any())
+                {
+                    return null;
+                }
+
+                return new EventMetadataRecordCollection(metadata.ToArray().ToRecords());
             }
         }
 
@@ -55,7 +60,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             {
                 var ctx = contextFactory.Create(session);
                 string id = (string)streamId;
-                var revisions = (await ctx.Metadata.Where(er => er.StreamId == id).Select(er => er.Revision).ExecuteAsync()).ToArray();
+                var revisions = (await ctx.StreamRevisions.Where(er => er.StreamId == id).Select(er => er.Revision).ExecuteAsync()).ToArray();
                 if (!revisions.Any())
                 {
                     return Revision.Zero;
@@ -72,7 +77,7 @@ namespace StreamStore.NoSql.Cassandra.Database
                 var ctx = contextFactory.Create(session);
                 string id = (string)streamId;
                 int revision = (int)startFrom;
-                var events = await ctx.Events.Where(er => er.StreamId == (string)id && er.Revision >= (int)revision).Take(count).ExecuteAsync();
+                var events = await ctx.Events.Where(er => er.StreamId == id && er.Revision >= revision).Take(count).ExecuteAsync();
 
                 return events.ToArray().ToRecords();
             }
