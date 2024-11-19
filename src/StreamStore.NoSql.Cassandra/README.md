@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS events
     );
 ```
 
-### Configuration
+### Getting started
 
 Since the library [CassandraCSharpDriver] as well as [Apache Cassandra] itself provides a lot of configuration options, it is not possible to cover all of them in the library configuration.  
 In this regards, decision has been made to provide ability to configure connectivity options via original
@@ -88,6 +88,8 @@ services.ConfigureStreamStore(x =>...
   )
 ); 
 ```
+
+Full list of configuration options you can find in the [Configuration options](#Configuration-options) section.
 
 ### Use in application code
 
