@@ -69,8 +69,8 @@ services.ConfigureStreamStore(x =>...
   // Register single tenant implementation
   x.WithSingleDatabase(c => ...
       c.UseCassandra(x =>
-          c => c.ConfigureCluster(x =>               // Required. Configure cluster options.
-                  x.AddContactPoint("localhost"))    // Configure contact points.
+          x.ConfigureCluster(c =>                    // Required. Configure cluster options.
+              c.AddContactPoint("localhost"))        // Configure contact points.
       )
   )
 
@@ -80,8 +80,8 @@ services.ConfigureStreamStore(x =>...
                                                       // Required if you want schema to be provisioned for each tenant.
       c.UseCassandra(x => 
           x.WithKeyspaceProvider<Provider>()          // Required. Register your  ITenantKeyspaceProvider implementation.
-            ConfigureDefaultCluster(x =>              // Required. Configure cluster options.
-                  x.AddContactPoint("localhost"))     // Configure contact points.
+            ConfigureDefaultCluster(c =>              // Required. Configure cluster options.
+                  c.AddContactPoint("localhost"))     // Configure contact points.
       
       )
   )
