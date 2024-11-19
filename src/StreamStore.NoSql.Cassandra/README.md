@@ -137,8 +137,7 @@ Below you can find the list of configuration options that can be used to configu
                     x.AddContactPoint("localhost"));                            // Configure contact points at least.
                                                                                 // There is much more cluster options available.
             x.ConfigureStoragePrototype(c =>                                    // Optional. Configure storage options as prototype for tenant storage configuration.
-                    c.WithKeyspaceName("keyspacename")                          // Optional. Keyspace name. Default is streamstore.
-                     .WithEventsTableName("tablename")                          // Optional. Table name. Default is events.
+                    c.WithEventsTableName("tablename")                          // Optional. Table name. Default is events.
                      .WithReadConsistencyLevel(ConsistencyLevel.Quorum)         // Optional. Read consistency level. Default is All.
                      .WithWriteConsistencyLevel(ConsistencyLevel.Quorum)        // Optional. Write consistency level. Default is All.
                      .WithSerialConsistencyLevel(ConsistencyLevel.SerialLocal)  // Optional. Serial consistency level. Default is Serial.
