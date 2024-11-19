@@ -79,9 +79,8 @@ services.ConfigureStreamStore(x =>...
       c.UseTenantProvider<MyTenantProvider>()         // Optional. Register your  ITenantProvider implementation.
                                                       // Required if you want schema to be provisioned for each tenant.
       c.UseCassandra(x => 
-          x.WithKeyspaceProvider<Provider>()          // Required. Register your 
-                                                      // ITenantKeyspaceProvider implementation.
-           c => c.ConfigureDefaultCluster(x =>        // Required. Configure cluster options.
+          x.WithKeyspaceProvider<Provider>()          // Required. Register your  ITenantKeyspaceProvider implementation.
+            ConfigureDefaultCluster(x =>              // Required. Configure cluster options.
                   x.AddContactPoint("localhost"))     // Configure contact points.
       
       )
@@ -133,7 +132,7 @@ Below you can find the list of configuration options that can be used to configu
                                                                                 // More information about multitenancy configuration you can find in the StreamStore.
      c.UseCassandra(x => 
          {
-            x.WithKeyspaceProvider<Provider>()                                  // Required. Register your ITenantKeyspaceProvider implementation.
+            x.WithKeyspaceProvider<Provider>();                                 // Required. Register your ITenantKeyspaceProvider implementation.
 
             x.ConfigureDefaultCluster(x =>                                      // Required. Configure default cluster options.
                     x.AddContactPoint("localhost"));                            // Configure contact points at least.
