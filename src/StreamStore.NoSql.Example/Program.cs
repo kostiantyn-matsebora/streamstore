@@ -41,7 +41,12 @@ namespace StreamStore.Sql.Example
                      .WithSingleDatabse(c =>
                         c.UseCassandra(x => 
                             x.ConfigureCluster(c => 
-                                c.AddContactPoint("localhost")))));
+                                c.AddContactPoint("localhost")
+                                 .WithQueryTimeout(10_000)
+                            )
+                        )
+                    )
+                 );
         }
 
         static void ConfigureCassandraMultitenancy(IHostApplicationBuilder builder)
@@ -58,7 +63,10 @@ namespace StreamStore.Sql.Example
                      .WithMultitenancy(c =>
                             c.WithTenants(tenant1, tenant2, tenant3)
                              .UseCassandra(x =>
-                                x.ConfigureDefaultCluster(c => c.AddContactPoint("localhost"))
+                                x.ConfigureDefaultCluster(c => 
+                                    c.AddContactPoint("localhost")
+                                     .WithQueryTimeout(10_000)
+                                  )
                                  .AddKeyspace(tenant1, tenant1)
                                  .AddKeyspace(tenant2, tenant2)
                                  .AddKeyspace(tenant3, tenant3)

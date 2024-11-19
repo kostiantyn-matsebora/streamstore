@@ -1,6 +1,7 @@
 ﻿using System;
 using Cassandra;
 using Microsoft.Extensions.DependencyInjection;
+using StreamStore.NoSql.Cassandra.Database;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
 {
@@ -26,6 +27,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         {
           if (cluster == null) throw new InvalidOperationException("Cluster not configured");
           services.AddSingleton(cluster);
+          services.AddSingleton<CassandraStatementConfigurator>();
         }
     }
 }

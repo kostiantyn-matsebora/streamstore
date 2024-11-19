@@ -7,7 +7,7 @@ services:
       - cassandra-net
     environment:
       HOST_PORT: ":80"
-      CASSANDRA_HOST: 172.20.0.2
+      CASSANDRA_HOST: 172.22.0.2
       CASSANDRA_PORT: 9042
       CASSANDRA_USERNAME: cassandra
       CASSANDRA_PASSWORD: cassandra

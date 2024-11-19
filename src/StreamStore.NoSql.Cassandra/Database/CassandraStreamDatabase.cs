@@ -12,17 +12,22 @@ namespace StreamStore.NoSql.Cassandra.Database
     {
         readonly ICassandraSessionFactory sessionFactory;
         readonly DataContextFactory contextFactory;
+        private readonly CassandraStatementConfigurator configurator;
 
-        public CassandraStreamDatabase(ICassandraSessionFactory sessionFactory, DataContextFactory contextFactory)
+        public CassandraStreamDatabase(
+            ICassandraSessionFactory sessionFactory, 
+            DataContextFactory contextFactory, 
+            CassandraStatementConfigurator configurator)
         {
             this.sessionFactory = sessionFactory.ThrowIfNull(nameof(sessionFactory));
             this.contextFactory = contextFactory.ThrowIfNull(nameof(contextFactory));
+            this.configurator = configurator.ThrowIfNull(nameof(configurator));
         }
 
         protected override Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
             return Task.FromResult<IStreamUnitOfWork>(
-                new CassandraStreamUnitOfWork(streamId, expectedStreamVersion, null, sessionFactory, contextFactory));
+                new CassandraStreamUnitOfWork(streamId, expectedStreamVersion, null, sessionFactory, contextFactory, configurator));
         }
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
@@ -43,7 +48,7 @@ namespace StreamStore.NoSql.Cassandra.Database
                 var ctx = contextFactory.Create(session);
 
                 string id = (string)streamId;
-                var metadata = (await ctx.Metadata.Where(er => er.StreamId == id).ExecuteAsync()).ToArray();
+                var metadata = (await configurator.ConfigureQuery(ctx.Metadata.Where(er => er.StreamId == id)).ExecuteAsync()).ToArray();
 
                 if (!metadata.Any())
                 {
@@ -59,7 +64,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             using (var session = sessionFactory.Open())
             {
                 var ctx = contextFactory.Create(session);
-                return await CassandraStreamActualRevisionResolver.Resolve(ctx, streamId);
+                return await CassandraStreamActualRevisionResolver.Resolve(configurator, ctx, streamId);
             }
         }
 
@@ -70,7 +75,7 @@ namespace StreamStore.NoSql.Cassandra.Database
                 var ctx = contextFactory.Create(session);
                 string id = (string)streamId;
                 int revision = (int)startFrom;
-                var events = await ctx.Events.Where(er => er.StreamId == id && er.Revision >= revision).Take(count).ExecuteAsync();
+                var events = await configurator.ConfigureQuery(ctx.Events.Where(er => er.StreamId == id && er.Revision >= revision).Take(count)).ExecuteAsync();
 
                 return events.ToArray().ToRecords();
             }

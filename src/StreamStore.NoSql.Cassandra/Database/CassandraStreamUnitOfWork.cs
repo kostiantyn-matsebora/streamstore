@@ -13,31 +13,32 @@ namespace StreamStore.NoSql.Cassandra.Database
     {
         readonly ICassandraSessionFactory sessionFactory;
         readonly DataContextFactory contextFactory;
+        private readonly CassandraStatementConfigurator configurator;
 
-        public CassandraStreamUnitOfWork(Id streamId, Revision expectedRevision, EventRecordCollection? events, ICassandraSessionFactory sessionFactory, DataContextFactory contextFactory)
+        public CassandraStreamUnitOfWork(
+            Id streamId, 
+            Revision expectedRevision, 
+            EventRecordCollection? events, 
+            ICassandraSessionFactory sessionFactory, 
+            DataContextFactory contextFactory,
+            CassandraStatementConfigurator configurator)
             : base(streamId, expectedRevision, events)
         {
             this.sessionFactory = sessionFactory.ThrowIfNull(nameof(sessionFactory));
             this.contextFactory = contextFactory.ThrowIfNull(nameof(contextFactory));
+            this.configurator = configurator.ThrowIfNull(nameof(configurator));
         }
 
         protected override async Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
         {
             using (var session = sessionFactory.Open())
             {
-                var batch = new BatchStatement();
-                batch.SetConsistencyLevel(ConsistencyLevel.All);
-                batch.SetSerialConsistencyLevel(ConsistencyLevel.Serial);
-                batch.SetBatchType(BatchType.Logged);
                 var ctx = contextFactory.Create(session);
                 foreach (var record in uncommited)
                 {
                     var statement =
-                        ctx.Events.Insert(record.ToEntity(streamId))
-                        .IfNotExists()
-                        .SetConsistencyLevel(ConsistencyLevel.Quorum)
-                        .SetSerialConsistencyLevel(ConsistencyLevel.Serial);
-                 
+                        configurator.ConfigureInsert(
+                            ctx.Events.Insert(record.ToEntity(streamId)).IfNotExists());
                     var result = await session.ExecuteAsync(statement);
                     await ValidateResult(ctx, result);
                 }
@@ -54,7 +55,7 @@ namespace StreamStore.NoSql.Cassandra.Database
                     var applied = row.GetValue<bool>("[applied]");
                     if (!applied)
                     {
-                        var actualRevision = await CassandraStreamActualRevisionResolver.Resolve(ctx, streamId);
+                        var actualRevision = await CassandraStreamActualRevisionResolver.Resolve(configurator, ctx, streamId);
                         throw new OptimisticConcurrencyException(expectedRevision, expectedRevision, streamId);
                     }
                 }

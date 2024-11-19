@@ -22,10 +22,11 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
 
         public IStreamDatabase GetDatabase(Id tenantId)
         {
+            var storage = configProvider.GetStorageConfiguration(tenantId);
             var sessionFactory = new CassandraSessionFactory(
                     clusterRegistry.GetCluster(tenantId),
-                    configProvider.GetStorageConfiguration(tenantId));
-            return new CassandraStreamDatabase(sessionFactory, contextFactory);
+                    storage);
+            return new CassandraStreamDatabase(sessionFactory, contextFactory, new CassandraStatementConfigurator(storage));
         }
     }
 }
