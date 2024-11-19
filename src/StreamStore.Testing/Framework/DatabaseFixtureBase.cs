@@ -44,7 +44,7 @@ namespace StreamStore.Testing.Framework
             var serviceCollection = new ServiceCollection();
             var configurator = new StreamStoreConfigurator();
             configurator
-                .WithSingleDatabse(ConfigureDatabase)
+                .WithSingleDatabase(ConfigureDatabase)
                 .Configure(serviceCollection);
             return serviceCollection.BuildServiceProvider();
         }

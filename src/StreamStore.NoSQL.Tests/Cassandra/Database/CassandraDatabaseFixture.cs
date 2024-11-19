@@ -19,7 +19,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
         {
             configurator.UseCassandra(c =>
                 c.ConfigureCluster(x =>
-                       x.AddContactPoint("localhost"))
+                       x.AddContactPoint("localhost").WithQueryTimeout(1_000))
                         .ConfigureStorage(k => k.WithKeyspaceName(testDatabase.Keyspace)));
         }
 

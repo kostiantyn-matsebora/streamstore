@@ -38,7 +38,7 @@ namespace StreamStore.Sql.Example
                 .Services
                 .ConfigureStreamStore(x =>
                     x.EnableSchemaProvisioning()
-                     .WithSingleDatabse(c =>
+                     .WithSingleDatabase(c =>
                         c.UseCassandra(x => 
                             x.ConfigureCluster(c => 
                                 c.AddContactPoint("localhost")
