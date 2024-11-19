@@ -34,7 +34,7 @@ namespace StreamStore.Sql.Tests.Configuration.SingleTenant
             var configurator = new StreamStoreConfigurator();
 
             // Act
-            configurator.WithSingleDatabse(x => 
+            configurator.WithSingleDatabase(x => 
                     Suite.UseParticularDatabase(x, c => 
                         c.ConfigureDatabase(x => 
                             x.WithConnectionString("connectionString")
@@ -81,7 +81,7 @@ namespace StreamStore.Sql.Tests.Configuration.SingleTenant
                     .AddInMemoryCollection(appSettings)
                     .Build();
             // Act
-            configurator.WithSingleDatabse(x => Suite.UseParticularDatabaseWithAppSettings(x, config));
+            configurator.WithSingleDatabase(x => Suite.UseParticularDatabaseWithAppSettings(x, config));
 
             configurator.Configure(services);
 

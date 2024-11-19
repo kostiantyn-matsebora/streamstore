@@ -1,4 +1,4 @@
-﻿using StreamStore.Testing.Framework;
+using StreamStore.Testing.Framework;
 
 
 namespace StreamStore.Sql.Tests.Database

@@ -17,7 +17,7 @@ namespace StreamStore.Testing.StreamDatabase
         protected override sealed void RegisterServices(IServiceCollection services)
         {
             new StreamStoreConfigurator()
-                .WithSingleDatabse(ConfigureDatabase)
+                .WithSingleDatabase(ConfigureDatabase)
                 .Configure(services);
         }
 

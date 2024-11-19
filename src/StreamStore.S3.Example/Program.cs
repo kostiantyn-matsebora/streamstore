@@ -26,7 +26,7 @@ namespace StreamStore.S3.Example
             builder
                 .Services
                 .ConfigureStreamStore(x =>
-                    x.WithSingleDatabse(x =>
+                    x.WithSingleDatabase(x =>
                         x.UseAWSDatabase()));
         }
 
@@ -35,7 +35,7 @@ namespace StreamStore.S3.Example
             builder
                 .Services
                 .ConfigureStreamStore(x =>
-                    x.WithSingleDatabse(x =>
+                    x.WithSingleDatabase(x =>
                         x.UseB2Database(builder.Configuration)));
         }
     }

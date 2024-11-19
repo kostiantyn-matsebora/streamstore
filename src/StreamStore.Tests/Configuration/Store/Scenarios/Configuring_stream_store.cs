@@ -38,7 +38,7 @@ namespace StreamStore.Tests.Configuration.Store
             // Act
             configurator.WithReadingPageSize(pageSize);
             configurator.WithReadingMode(mode);
-            configurator.WithSingleDatabse(x => x.UseInMemoryDatabase());
+            configurator.WithSingleDatabase(x => x.UseInMemoryDatabase());
             configurator.EnableSchemaProvisioning();
 
             configurator.Configure(services);

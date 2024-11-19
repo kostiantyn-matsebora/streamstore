@@ -48,7 +48,7 @@ namespace StreamStore
             return this;
         }
 
-        public IStreamStoreConfigurator WithSingleDatabse(Action<ISingleTenantConfigurator> configure)
+        public IStreamStoreConfigurator WithSingleDatabase(Action<ISingleTenantConfigurator> configure)
         {
             var configurator = new SingleTenantConfigurator();
             configure(configurator);
