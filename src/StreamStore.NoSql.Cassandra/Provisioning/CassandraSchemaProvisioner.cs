@@ -5,9 +5,9 @@ using StreamStore.NoSql.Cassandra.Database;
 using StreamStore.Provisioning;
 
 
-namespace StreamStore.NoSql.Cassandra
+namespace StreamStore.NoSql.Cassandra.Provisioning
 {
-    internal class CassandraSchemaProvisioner: ISchemaProvisioner
+    internal class CassandraSchemaProvisioner : ISchemaProvisioner
     {
         readonly ICassandraSessionFactory sessionFactory;
         private readonly DataContextFactory dataContextFactory;
@@ -20,7 +20,7 @@ namespace StreamStore.NoSql.Cassandra
 
         public async Task ProvisionSchemaAsync(CancellationToken token)
         {
-           using (var session = sessionFactory.Open())
+            using (var session = sessionFactory.Open())
             {
                 var ctx = dataContextFactory.Create(session);
                 await ctx.Events.CreateIfNotExistsAsync();

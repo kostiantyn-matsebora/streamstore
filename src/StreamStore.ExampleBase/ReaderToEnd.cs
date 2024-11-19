@@ -23,7 +23,7 @@ namespace StreamStore.ExampleBase
             {
                 var events = await store.ReadToEndAsync(streamId, token);
             }
-
+            logger.LogInformation("Sleeping for {sleepPeriod} miliseconds...", sleepPeriod);
             await Task.Delay(sleepPeriod, token);
         }
     }

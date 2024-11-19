@@ -22,7 +22,10 @@ namespace StreamStore.ExampleBase
             do
             {
                 using (new CodeStopWatch("Taking next event", s => logger.LogInformation(s)))
-                notEmpty = await enumerator.MoveNextAsync();
+                {
+                    notEmpty = await enumerator.MoveNextAsync();
+                }
+                logger.LogInformation("Sleeping for {sleepPeriod} miliseconds...", sleepPeriod);
                 Thread.Sleep(sleepPeriod);
             } while (notEmpty);
         }

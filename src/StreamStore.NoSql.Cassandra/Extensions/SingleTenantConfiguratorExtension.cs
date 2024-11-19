@@ -1,6 +1,7 @@
 ﻿using System;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Database;
+using StreamStore.NoSql.Cassandra.Provisioning;
 
 namespace StreamStore.NoSql.Cassandra
 {

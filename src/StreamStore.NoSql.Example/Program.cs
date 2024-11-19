@@ -13,7 +13,9 @@ namespace StreamStore.Sql.Example
     internal static class Program
     {
         const string singleDatabaseName = "streamstore";
-
+        readonly static Id tenant1 = "tenant_1";
+        readonly static Id tenant2 = "tenant_2";
+        readonly static Id tenant3 = "tenant_3";
 
         static async Task Main(string[] args)
         {
@@ -22,8 +24,8 @@ namespace StreamStore.Sql.Example
                 .ConfigureExampleApplication(c =>
                     c.EnableMultitenancy()
                      .AddDatabase(NoSqlDatabases.Cassandra,
-                                  x =>
-                                    x.WithSingleMode(ConfigureCassandraSingle)))
+                                  x => x.WithSingleMode(ConfigureCassandraSingle)
+                                        .WithMultitenancy(ConfigureCassandraMultitenancy)))
                 .InvokeAsync(args);
         }
 
@@ -44,17 +46,24 @@ namespace StreamStore.Sql.Example
 
         static void ConfigureCassandraMultitenancy(IHostApplicationBuilder builder)
         {
-            var database = new CassandraTestDatabase(singleDatabaseName);
-            database.EnsureExists();
+            new CassandraTestDatabase(tenant1).EnsureExists();
+            new CassandraTestDatabase(tenant2).EnsureExists();
+            new CassandraTestDatabase(tenant3).EnsureExists();
+
 
             builder
                 .Services
                 .ConfigureStreamStore(x =>
                     x.EnableSchemaProvisioning()
-                     .WithSingleDatabse(c =>
-                        c.UseCassandra(x =>
-                            x.ConfigureCluster(c =>
-                                c.AddContactPoint("localhost")))));
+                     .WithMultitenancy(c =>
+                            c.WithTenants(tenant1, tenant2, tenant3)
+                             .UseCassandra(x =>
+                                x.ConfigureDefaultCluster(c => c.AddContactPoint("localhost"))
+                                 .AddKeyspace(tenant1, tenant1)
+                                 .AddKeyspace(tenant2, tenant2)
+                                 .AddKeyspace(tenant3, tenant3)
+                                )));
+
         }
     }
 }

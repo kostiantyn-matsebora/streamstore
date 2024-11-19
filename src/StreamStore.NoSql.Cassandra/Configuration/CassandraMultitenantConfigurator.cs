@@ -8,7 +8,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 {
     public  class CassandraMultitenantConfigurator : CassandraConfiguratorBase
     {
-        Cluster? cluster;
+        Builder? builder;
         DelegateTenantClusterConfigurator clusterConfigurator = new DelegateTenantClusterConfigurator();
         Type storageConfigurationProviderType = typeof(DefaultCassandraStorageConfigurationProvider);
         Type? keyspaceProviderType;
@@ -30,9 +30,8 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         public CassandraMultitenantConfigurator ConfigureDefaultCluster(Action<Builder> configure)
         {
-            var builder = Cluster.Builder();
+            builder = Cluster.Builder();
             configure(builder);
-            cluster = builder.Build();
             return this;
         }
 
@@ -57,7 +56,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         protected override void ApplySpecificDependencies(IServiceCollection services)
         {
-            if (cluster == null) throw new InvalidOperationException("Default cluster not configured");
+            if (builder == null) throw new InvalidOperationException("Default cluster not configured");
 
             if (keyspaceProviderType != null)
             {
@@ -72,9 +71,9 @@ namespace StreamStore.NoSql.Cassandra.Configuration
                 services.AddSingleton(typeof(ICassandraKeyspaceProvider), keyspaceProvider);
             }
 
-            services.AddSingleton(clusterConfigurator);
-            services.AddSingleton(cluster);
             services.AddSingleton(typeof(ICassandraStorageConfigurationProvider), storageConfigurationProviderType);
+            services.AddSingleton(clusterConfigurator);
+            services.AddSingleton(builder);
             services.AddSingleton<CassandraTenantClusterRegistry>();
         }
     }

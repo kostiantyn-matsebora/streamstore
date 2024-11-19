@@ -49,6 +49,7 @@ namespace StreamStore.ExampleBase
                 if (token.IsCancellationRequested) return;
                 logger.LogWarning(ex.Message);
             }
+            logger.LogInformation("Sleeping for {sleepPeriod} miliseconds...", sleepPeriod);
             await Task.Delay(sleepPeriod, token);
         }
 

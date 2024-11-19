@@ -1,19 +1,21 @@
 ﻿using System;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Multitenancy;
+using StreamStore.NoSql.Cassandra.Provisioning;
 
 namespace StreamStore.NoSql.Cassandra
 {
-    internal static class MultitenantConfiguratorExtension
+    public static class MultitenantConfiguratorExtension
     {
-        public static IMultitenancyConfigurator UseCassandra(this IMultitenancyConfigurator configurator, Action<CassandraSingleTenantConfigurator> configure)
+        public static IMultitenancyConfigurator UseCassandra(this IMultitenancyConfigurator configurator, Action<CassandraMultitenantConfigurator> configure)
         {
             configurator
+                .UseSchemaProvisionerFactory<CassandraSchemaProvisionerFactory>()
                 .UseDatabaseProvider<CassandraStreamDatabaseProvider>(services =>
                 {
-                    var singleConfigurator = new CassandraSingleTenantConfigurator();
-                    configure(singleConfigurator);
-                    singleConfigurator.Configure(services);
+                    var multitenancyConfigurator = new CassandraMultitenantConfigurator();
+                    configure(multitenancyConfigurator);
+                    multitenancyConfigurator.Configure(services);
                 });
 
             return configurator;

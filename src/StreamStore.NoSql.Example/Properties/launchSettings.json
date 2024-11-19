@@ -1,0 +1,20 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "Help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    },
+    "Cassandra + single tenant": {
+      "commandName": "Project",
+      "commandLineArgs": "--database cassandra --mode single"
+    },
+    "Cassandra + multitenancy": {
+      "commandName": "Project",
+      "commandLineArgs": "--database cassandra --mode multitenancy"
+    }
+  }
+}

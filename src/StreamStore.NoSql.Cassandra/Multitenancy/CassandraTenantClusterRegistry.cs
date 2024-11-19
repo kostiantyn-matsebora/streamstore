@@ -1,4 +1,5 @@
-﻿using Cassandra;
+﻿using System.Collections.Concurrent;
+using Cassandra;
 
 namespace StreamStore.NoSql.Cassandra.Multitenancy
 {
@@ -6,6 +7,7 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
     {
         readonly Builder builder;
         readonly DelegateTenantClusterConfigurator configurator;
+        readonly ConcurrentDictionary<Id, Cluster> clusters = new ConcurrentDictionary<Id, Cluster>();
 
         public CassandraTenantClusterRegistry(Builder builder, DelegateTenantClusterConfigurator configurator)
         {
@@ -14,6 +16,11 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
         }
 
         public Cluster GetCluster(Id tenantId)
+        {
+            return clusters.GetOrAdd(tenantId, CreateCluster);
+        }
+
+        private Cluster CreateCluster(Id tenantId)
         {
             configurator.Configure(tenantId, builder);
             return builder.Build();
