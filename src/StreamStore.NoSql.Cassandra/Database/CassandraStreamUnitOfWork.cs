@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Cassandra;
-using Cassandra.Data.Linq;
 using Cassandra.Mapping;
 using StreamStore.Exceptions;
 using StreamStore.NoSql.Cassandra.Models;
@@ -11,34 +9,34 @@ namespace StreamStore.NoSql.Cassandra.Database
 {
     internal class CassandraStreamUnitOfWork : StreamUnitOfWorkBase
     {
-        readonly CassandraStreamRepositoryFactory contextFactory;
+        readonly CassandraStreamRepositoryFactory repositoryFactory;
 
         public CassandraStreamUnitOfWork(
             Id streamId, 
             Revision expectedRevision, 
             EventRecordCollection? events, 
-            CassandraStreamRepositoryFactory contextFactory)
+            CassandraStreamRepositoryFactory repositoryFactory)
             : base(streamId, expectedRevision, events)
         {
-            this.contextFactory = contextFactory.ThrowIfNull(nameof(contextFactory));
+            this.repositoryFactory = repositoryFactory.ThrowIfNull(nameof(repositoryFactory));
         }
 
         protected override async Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
         {
-            using (var ctx = contextFactory.Create())
+            using (var repo = repositoryFactory.Create())
             {
-              var result = await ctx.AppendToStream(streamId, uncommited.ToArray());
-              await ValidateResult(ctx, result);
+              var result = await repo.AppendToStream(streamId, uncommited.ToArray());
+              await ValidateResult(repo, result);
             }
         }
 
-        private async Task ValidateResult(CassandraStreamRepository ctx, AppliedInfo<EventEntity> appliedInfo)
+        async Task ValidateResult(CassandraStreamRepository repo, AppliedInfo<EventEntity> appliedInfo)
         {
             if (appliedInfo.Applied)
             {
                 return;
             }
-            var actualRevision = await ctx.GetStreamActualRevision(streamId);
+            var actualRevision = await repo.GetStreamActualRevision(streamId);
             if (actualRevision != expectedRevision)
             {
                 throw new OptimisticConcurrencyException(expectedRevision, actualRevision, streamId);
