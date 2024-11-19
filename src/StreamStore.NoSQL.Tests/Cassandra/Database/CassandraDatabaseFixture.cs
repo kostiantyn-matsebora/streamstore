@@ -25,7 +25,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
 
         protected override MemoryDatabase CreateContainer()
         {
-            return new MemoryDatabase(new MemoryDatabaseOptions { Capacity = 10, EventPerStream = 20 });
+            return new MemoryDatabase(new MemoryDatabaseOptions { Capacity = 100, EventPerStream = 100 });
         }
     }
 }

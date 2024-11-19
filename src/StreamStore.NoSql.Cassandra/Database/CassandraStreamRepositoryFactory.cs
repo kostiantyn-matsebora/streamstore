@@ -4,22 +4,20 @@ using StreamStore.NoSql.Cassandra.Configuration;
 
 namespace StreamStore.NoSql.Cassandra.Database
 {
-    internal class DataContextFactory
+    internal class CassandraStreamRepositoryFactory
     {
-        readonly TypeMapFactory mapFactory;
         readonly ICassandraSessionFactory sessionFactory;
         private readonly CassandraStorageConfiguration config;
 
-        public DataContextFactory(TypeMapFactory mapFactory, ICassandraSessionFactory sessionFactory, CassandraStorageConfiguration config)
+        public CassandraStreamRepositoryFactory(ICassandraSessionFactory sessionFactory, CassandraStorageConfiguration config)
         {
-          this.mapFactory = mapFactory.ThrowIfNull(nameof(mapFactory));
           this.sessionFactory = sessionFactory.ThrowIfNull(nameof(sessionFactory));
           this.config = config.ThrowIfNull(nameof(config));
         }
 
-        public DataContext Create()
+        public CassandraStreamRepository Create()
         {
-            return new DataContext(mapFactory, sessionFactory, config);
+            return new CassandraStreamRepository(sessionFactory, config);
         }
     }
 }

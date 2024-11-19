@@ -4,7 +4,7 @@ using StreamStore.NoSql.Cassandra.API;
 
 namespace StreamStore.NoSql.Cassandra.Multitenancy
 {
-    internal class DefaultCassandraKeyspaceProvider : ICassandraKeyspaceProvider
+    internal class CassandraKeyspaceRegistry : ICassandraKeyspaceProvider
     {
         readonly Dictionary<Id, string> keyspaces = new Dictionary<Id, string>();
 

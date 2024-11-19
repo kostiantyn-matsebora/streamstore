@@ -14,7 +14,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         Type? keyspaceProviderType;
 
 
-        readonly DefaultCassandraKeyspaceProvider keyspaceProvider = new DefaultCassandraKeyspaceProvider();
+        readonly CassandraKeyspaceRegistry keyspaceProvider = new CassandraKeyspaceRegistry();
 
         public CassandraMultitenantConfigurator ConfigureStoragePrototype(Action<CassandraStorageConfigurationBuilder> configure)
         {

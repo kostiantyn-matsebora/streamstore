@@ -3,18 +3,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cassandra;
 using Cassandra.Data.Linq;
+using Cassandra.Mapping;
+using StreamStore.Exceptions;
+using StreamStore.NoSql.Cassandra.Models;
 
 namespace StreamStore.NoSql.Cassandra.Database
 {
     internal class CassandraStreamUnitOfWork : StreamUnitOfWorkBase
     {
-        readonly DataContextFactory contextFactory;
+        readonly CassandraStreamRepositoryFactory contextFactory;
 
         public CassandraStreamUnitOfWork(
             Id streamId, 
             Revision expectedRevision, 
             EventRecordCollection? events, 
-            DataContextFactory contextFactory)
+            CassandraStreamRepositoryFactory contextFactory)
             : base(streamId, expectedRevision, events)
         {
             this.contextFactory = contextFactory.ThrowIfNull(nameof(contextFactory));
@@ -24,28 +27,21 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
             using (var ctx = contextFactory.Create())
             {
-                foreach (var record in uncommited)
-                {
-                    var result = await ctx.AppendToStream(streamId, record).ExecuteAsync();
-                    await ValidateResult(ctx, result);
-                }
+              var result = await ctx.AppendToStream(streamId, uncommited.ToArray());
+              await ValidateResult(ctx, result);
             }
         }
 
-        private async Task ValidateResult(DataContext ctx, RowSet result)
+        private async Task ValidateResult(CassandraStreamRepository ctx, AppliedInfo<EventEntity> appliedInfo)
         {
-            if (result.Columns.Any(c => c.Name == "[applied]"))
+            if (appliedInfo.Applied)
             {
-                var row = result.FirstOrDefault();
-                if (row !=  default)
-                {
-                    var applied = row.GetValue<bool>("[applied]");
-                    if (!applied)
-                    {
-                        var actualRevision = (await ctx.GetStreamRevisions(streamId).ExecuteAsync()).Max();
-                    }
-                }
-               
+                return;
+            }
+            var actualRevision = await ctx.GetStreamActualRevision(streamId);
+            if (actualRevision != expectedRevision)
+            {
+                throw new OptimisticConcurrencyException(expectedRevision, actualRevision, streamId);
             }
         }
     }

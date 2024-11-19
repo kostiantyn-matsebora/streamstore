@@ -8,9 +8,9 @@ namespace StreamStore.NoSql.Cassandra.Database
 {
     internal class CassandraStreamDatabase : StreamDatabaseBase
     {
-        readonly DataContextFactory contextFactory;
+        readonly CassandraStreamRepositoryFactory contextFactory;
 
-        public CassandraStreamDatabase(DataContextFactory contextFactory)
+        public CassandraStreamDatabase(CassandraStreamRepositoryFactory contextFactory)
         {
             this.contextFactory = contextFactory.ThrowIfNull(nameof(contextFactory));
 
@@ -26,7 +26,7 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
             using (var ctx = contextFactory.Create())
             {
-                await ctx.DeleteStream(streamId).ExecuteAsync();
+                await ctx.DeleteStream(streamId);
             }
         }
 
@@ -34,14 +34,14 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
             using (var ctx = contextFactory.Create())
             {
-                var metadata = (await ctx.FindMetadata(streamId).ExecuteAsync()).ToArray();
+                var metadata = (await ctx.FindMetadata(streamId)).ToArray();
 
                 if (!metadata.Any())
                 {
                     return null;
                 }
 
-                return new EventMetadataRecordCollection(metadata.ToArray().ToRecords());
+                return new EventMetadataRecordCollection(metadata.ToRecords());
             }
         }
 
@@ -49,13 +49,7 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
             using (var ctx = contextFactory.Create())
             {
-                var revisions =  await ctx.GetStreamRevisions(streamId).ExecuteAsync();
-                if (!revisions.Any())
-                {
-                    return Revision.Zero;
-                }
-
-                return revisions.Max();
+                return await ctx.GetStreamActualRevision(streamId);
             }
         }
 
@@ -63,7 +57,7 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
             using (var ctx = contextFactory.Create())
             {
-                var events = await ctx.GetEvents(streamId, startFrom, count).ExecuteAsync();
+                var events = await ctx.GetEvents(streamId, startFrom, count);
                 return events.ToArray().ToRecords();
             }
         }

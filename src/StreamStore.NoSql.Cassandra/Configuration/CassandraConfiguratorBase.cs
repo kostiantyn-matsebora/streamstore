@@ -38,7 +38,6 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         void ApplySharedDependencies(IServiceCollection services)
         {
             services.AddSingleton(storageConfig);
-            services.AddSingleton<TypeMapFactory>();
             services.AddSingleton(typeof(ICassandraSessionFactory), sessionFactory);
         }
     }

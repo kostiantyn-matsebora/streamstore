@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace StreamStore.NoSql.Cassandra.Models
+﻿namespace StreamStore.NoSql.Cassandra.Models
 {
     public static class EventRecordExtension
     {

@@ -9,7 +9,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
         readonly Cluster cluster;
         readonly CassandraStorageConfiguration config;
         public readonly string Keyspace;
-        private bool disposedValue;
+        bool disposedValue;
 
         public CassandraTestDatabase(string keyspace, Action<Builder>? configureCluster = null)
         {

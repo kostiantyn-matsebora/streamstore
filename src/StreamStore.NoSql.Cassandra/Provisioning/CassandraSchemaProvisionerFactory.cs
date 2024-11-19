@@ -9,22 +9,20 @@ namespace StreamStore.NoSql.Cassandra.Provisioning
     {
         readonly ICassandraStorageConfigurationProvider configProvider;
         readonly CassandraTenantClusterRegistry clusterRegistry;
-        readonly TypeMapFactory typeMapFactory;
 
         public CassandraSchemaProvisionerFactory(
             ICassandraStorageConfigurationProvider configProvider, 
-            CassandraTenantClusterRegistry clusterRegistry,
-            TypeMapFactory typeMapFactory)
+            CassandraTenantClusterRegistry clusterRegistry)
         {
             this.configProvider = configProvider.ThrowIfNull(nameof(configProvider));
             this.clusterRegistry = clusterRegistry.ThrowIfNull(nameof(clusterRegistry));
-            this.typeMapFactory = typeMapFactory.ThrowIfNull(nameof(typeMapFactory));
         }
 
         public ISchemaProvisioner Create(Id tenantId)
         {
-            var sessionFactory = new CassandraSessionFactory(clusterRegistry.GetCluster(tenantId), configProvider.GetStorageConfiguration(tenantId));
-            var contextFactory = new DataContextFactory(typeMapFactory, sessionFactory, configProvider.GetStorageConfiguration(tenantId));
+            var configuration = configProvider.GetStorageConfiguration(tenantId);
+            var sessionFactory = new CassandraSessionFactory(clusterRegistry.GetCluster(tenantId), configuration);
+            var contextFactory = new CassandraStreamRepositoryFactory(sessionFactory, configuration);
             return new CassandraSchemaProvisioner(contextFactory);
         }
     }

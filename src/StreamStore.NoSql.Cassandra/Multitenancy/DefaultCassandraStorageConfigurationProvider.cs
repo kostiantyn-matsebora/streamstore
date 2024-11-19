@@ -10,7 +10,7 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
 
         public DefaultCassandraStorageConfigurationProvider(ICassandraKeyspaceProvider keyspaceProvider, CassandraStorageConfiguration prototype)
         {
-            this.keyspaceProvider = keyspaceProvider.ThrowIfNull(nameof(keyspaceProvider));  
+            this.keyspaceProvider = keyspaceProvider.ThrowIfNull(nameof(keyspaceProvider));
             this.prototype = prototype.ThrowIfNull(nameof(prototype));
         }
 
