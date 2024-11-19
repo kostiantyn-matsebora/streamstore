@@ -1,54 +1,40 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Cassandra.Data.Linq;
 using StreamStore.Database;
-using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Models;
 
 namespace StreamStore.NoSql.Cassandra.Database
 {
     internal class CassandraStreamDatabase : StreamDatabaseBase
     {
-        readonly ICassandraSessionFactory sessionFactory;
         readonly DataContextFactory contextFactory;
-        private readonly CassandraStatementConfigurator configurator;
 
-        public CassandraStreamDatabase(
-            ICassandraSessionFactory sessionFactory, 
-            DataContextFactory contextFactory, 
-            CassandraStatementConfigurator configurator)
+        public CassandraStreamDatabase(DataContextFactory contextFactory)
         {
-            this.sessionFactory = sessionFactory.ThrowIfNull(nameof(sessionFactory));
             this.contextFactory = contextFactory.ThrowIfNull(nameof(contextFactory));
-            this.configurator = configurator.ThrowIfNull(nameof(configurator));
+
         }
 
         protected override Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
             return Task.FromResult<IStreamUnitOfWork>(
-                new CassandraStreamUnitOfWork(streamId, expectedStreamVersion, null, sessionFactory, contextFactory, configurator));
+                new CassandraStreamUnitOfWork(streamId, expectedStreamVersion, null, contextFactory));
         }
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
         {
-            using (var session = sessionFactory.Open())
+            using (var ctx = contextFactory.Create())
             {
-                var ctx = contextFactory.Create(session);
-
-                string id = (string)streamId;
-                await ctx.Metadata.Where(er => er.StreamId == id).Delete().ExecuteAsync();
+                await ctx.DeleteStream(streamId).ExecuteAsync();
             }
         }
 
         protected override async Task<EventMetadataRecordCollection?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default)
         {
-            using (var session = sessionFactory.Open())
+            using (var ctx = contextFactory.Create())
             {
-                var ctx = contextFactory.Create(session);
-
-                string id = (string)streamId;
-                var metadata = (await configurator.ConfigureQuery(ctx.Metadata.Where(er => er.StreamId == id)).ExecuteAsync()).ToArray();
+                var metadata = (await ctx.FindMetadata(streamId).ExecuteAsync()).ToArray();
 
                 if (!metadata.Any())
                 {
@@ -61,22 +47,23 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         protected override async Task<int> GetActualRevision(Id streamId, CancellationToken token = default)
         {
-            using (var session = sessionFactory.Open())
+            using (var ctx = contextFactory.Create())
             {
-                var ctx = contextFactory.Create(session);
-                return await CassandraStreamActualRevisionResolver.Resolve(configurator, ctx, streamId);
+                var revisions =  await ctx.GetStreamRevisions(streamId).ExecuteAsync();
+                if (!revisions.Any())
+                {
+                    return Revision.Zero;
+                }
+
+                return revisions.Max();
             }
         }
 
         protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-            using (var session = sessionFactory.Open())
+            using (var ctx = contextFactory.Create())
             {
-                var ctx = contextFactory.Create(session);
-                string id = (string)streamId;
-                int revision = (int)startFrom;
-                var events = await configurator.ConfigureQuery(ctx.Events.Where(er => er.StreamId == id && er.Revision >= revision).Take(count)).ExecuteAsync();
-
+                var events = await ctx.GetEvents(streamId, startFrom, count).ExecuteAsync();
                 return events.ToArray().ToRecords();
             }
         }

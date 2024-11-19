@@ -8,25 +8,24 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
     {
         readonly CassandraTenantClusterRegistry clusterRegistry;
         readonly ICassandraStorageConfigurationProvider configProvider;
-        readonly DataContextFactory contextFactory;
+        readonly TypeMapFactory typeMapFactory;
 
         public CassandraStreamDatabaseProvider(
             CassandraTenantClusterRegistry clusterRegistry,
             ICassandraStorageConfigurationProvider configProvider,
-            DataContextFactory contextFactory)
+            TypeMapFactory typeMapFactory)
         {
             this.clusterRegistry = clusterRegistry.ThrowIfNull(nameof(clusterRegistry));
             this.configProvider = configProvider.ThrowIfNull(nameof(configProvider)); 
-            this.contextFactory = contextFactory.ThrowIfNull(nameof(contextFactory));
+            this.typeMapFactory = typeMapFactory.ThrowIfNull(nameof(typeMapFactory));
         }
 
         public IStreamDatabase GetDatabase(Id tenantId)
         {
-            var storage = configProvider.GetStorageConfiguration(tenantId);
-            var sessionFactory = new CassandraSessionFactory(
-                    clusterRegistry.GetCluster(tenantId),
-                    storage);
-            return new CassandraStreamDatabase(sessionFactory, contextFactory, new CassandraStatementConfigurator(storage));
+            var config = configProvider.GetStorageConfiguration(tenantId);
+            var sessionFactory = new CassandraSessionFactory(clusterRegistry.GetCluster(tenantId),config);
+            var contextFactory = new DataContextFactory(typeMapFactory, sessionFactory, config);
+            return new CassandraStreamDatabase(contextFactory);
         }
     }
 }
