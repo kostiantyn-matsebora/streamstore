@@ -9,9 +9,9 @@ namespace StreamStore.NoSql.Cassandra
     {
         
         readonly Cluster cluster;
-        readonly CassandraKeyspaceConfiguration config;
+        readonly CassandraStorageConfiguration config;
 
-        public CassandraSessionFactory(Cluster cluster, CassandraKeyspaceConfiguration config)
+        public CassandraSessionFactory(Cluster cluster, CassandraStorageConfiguration config)
         {
             this.cluster = cluster;
             this.config = config.ThrowIfNull(nameof(config));

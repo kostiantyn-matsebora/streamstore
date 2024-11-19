@@ -41,5 +41,20 @@ namespace StreamStore.Sql.Example
                             x.ConfigureCluster(c => 
                                 c.AddContactPoint("localhost")))));
         }
+
+        static void ConfigureCassandraMultitenancy(IHostApplicationBuilder builder)
+        {
+            var database = new CassandraTestDatabase(singleDatabaseName);
+            database.EnsureExists();
+
+            builder
+                .Services
+                .ConfigureStreamStore(x =>
+                    x.EnableSchemaProvisioning()
+                     .WithSingleDatabse(c =>
+                        c.UseCassandra(x =>
+                            x.ConfigureCluster(c =>
+                                c.AddContactPoint("localhost")))));
+        }
     }
 }

@@ -16,6 +16,12 @@ namespace StreamStore.NoSql.Cassandra.Configuration
            return this;
         }
 
+        public CassandraConfiguratorBase ConfigureStorage(Action<CassandraStorageConfigurationBuilder> configure)
+        {
+           ConfigureStorageInstance(configure);
+           return this;
+        }
+
         protected override void ApplySpecificDependencies(IServiceCollection services)
         {
           if (cluster == null) throw new InvalidOperationException("Cluster not configured");

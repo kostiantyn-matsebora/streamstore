@@ -20,7 +20,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
             configurator.UseCassandra(c =>
                 c.ConfigureCluster(x =>
                        x.AddContactPoint("localhost"))
-                        .ConfigureKeyspace(k => k.WithKeyspaceName(testDatabase.Keyspace)));
+                        .ConfigureStorage(k => k.WithKeyspaceName(testDatabase.Keyspace)));
         }
 
         protected override MemoryDatabase CreateContainer()

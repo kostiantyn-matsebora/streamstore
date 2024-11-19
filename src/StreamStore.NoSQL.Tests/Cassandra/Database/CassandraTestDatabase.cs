@@ -7,14 +7,14 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
     public sealed class CassandraTestDatabase : ITestDatabase
     {
         readonly Cluster cluster;
-        readonly CassandraKeyspaceConfiguration config;
+        readonly CassandraStorageConfiguration config;
         public readonly string Keyspace;
         private bool disposedValue;
 
         public CassandraTestDatabase(string keyspace, Action<Builder>? configureCluster = null)
         {
             Keyspace = keyspace;
-            config = new CassandraKeyspaceConfigurationBuilder().WithKeyspaceName(keyspace).Build();
+            config = new CassandraStorageConfigurationBuilder().WithKeyspaceName(keyspace).Build();
             var configurator = configureCluster ?? ConfigureCluster;
             var builder = Cluster.Builder();
             configurator(builder);

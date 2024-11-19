@@ -8,16 +8,18 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 {
     public  class CassandraMultitenantConfigurator : CassandraConfiguratorBase
     {
-        readonly CassandraKeyspaceConfiguration prototype = new CassandraKeyspaceConfiguration();
         Cluster? cluster;
         DelegateTenantClusterConfigurator clusterConfigurator = new DelegateTenantClusterConfigurator();
-        Type keyspaceConfigurationProvider = typeof(DefaultCassandraKeyspaceConfigurationProvider);
-        Type? keyspaceProvider;
+        Type storageConfigurationProviderType = typeof(DefaultCassandraStorageConfigurationProvider);
+        Type? keyspaceProviderType;
 
-        public CassandraMultitenantConfigurator ConfigureKeyspacePrototype(Action<CassandraKeyspaceConfiguration> configure)
+
+        readonly DefaultCassandraKeyspaceProvider keyspaceProvider = new DefaultCassandraKeyspaceProvider();
+
+        public CassandraMultitenantConfigurator ConfigureStoragePrototype(Action<CassandraStorageConfigurationBuilder> configure)
         {
-           configure(prototype);
-           return this;
+            ConfigureStorageInstance(configure);
+            return this;
         }
 
         public CassandraMultitenantConfigurator WithTenantClusterConfigurator(Action<Id, Builder> configurator)
@@ -34,36 +36,46 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             return this;
         }
 
-        public CassandraMultitenantConfigurator WithKeyspaceConfigurationProvider<TKeyspaceConfigurationProvider>() where TKeyspaceConfigurationProvider : ICassandraKeyspaceConfigurationProvider
+        public CassandraMultitenantConfigurator WithStorageConfigurationProvider<TStorageConfigurationProvider>() where TStorageConfigurationProvider : ICassandraStorageConfigurationProvider
         {
-            keyspaceConfigurationProvider = typeof(TKeyspaceConfigurationProvider);
+            storageConfigurationProviderType = typeof(TStorageConfigurationProvider);
             return this;
         }
 
         public CassandraMultitenantConfigurator WithKeyspaceProvider<TKeyspaceProvider>() where TKeyspaceProvider : ICassandraKeyspaceProvider
         {
-            keyspaceProvider = typeof(TKeyspaceProvider);
+            keyspaceProviderType = typeof(TKeyspaceProvider);
             return this;
         }
+
+        public CassandraMultitenantConfigurator AddKeyspace(Id tenantId, string keyspace)
+        {
+            keyspaceProvider.AddKeyspace(tenantId, keyspace);
+            return this;
+        }
+
 
         protected override void ApplySpecificDependencies(IServiceCollection services)
         {
             if (cluster == null) throw new InvalidOperationException("Default cluster not configured");
 
-            if (keyspaceProvider == null && keyspaceConfigurationProvider ==  typeof(DefaultCassandraKeyspaceConfigurationProvider)) 
+            if (keyspaceProviderType != null)
             {
-                throw new InvalidOperationException("Either ICassandraKeyspaceProvider or ICassandraKeyspaceConfigurationProvider must be configured.");
+                services.AddSingleton(typeof(ICassandraKeyspaceProvider), keyspaceProviderType);
             }
-
-            services.AddSingleton(prototype);
-            services.AddSingleton(clusterConfigurator);
-            services.AddSingleton(cluster);
-            services.AddSingleton(typeof(ICassandraKeyspaceConfigurationProvider), keyspaceConfigurationProvider);
-            services.AddSingleton<CassandraTenantClusterRegistry>();
-            if (keyspaceProvider != null)
+            else
             {
+                if (!keyspaceProvider.Any)
+                {
+                    throw new InvalidOperationException("Neither ICassandraKeyspaceProvider nor tenant keyspaces provided.");
+                }
                 services.AddSingleton(typeof(ICassandraKeyspaceProvider), keyspaceProvider);
             }
+
+            services.AddSingleton(clusterConfigurator);
+            services.AddSingleton(cluster);
+            services.AddSingleton(typeof(ICassandraStorageConfigurationProvider), storageConfigurationProviderType);
+            services.AddSingleton<CassandraTenantClusterRegistry>();
         }
     }
 }

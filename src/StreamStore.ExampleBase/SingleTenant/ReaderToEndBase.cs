@@ -11,11 +11,11 @@ namespace StreamStore.ExampleBase.SingleTenant
     [ExcludeFromCodeCoverage]
     public abstract class ReaderToEndBase : BackgroundService
     {
-        readonly ILogger<ReaderToEndBase> logger;
+        readonly ILogger logger;
         readonly IStreamStore store;
         const string streamId = "stream-1";
 
-        protected ReaderToEndBase(ILogger<ReaderToEndBase> logger, IStreamStore store)
+        protected ReaderToEndBase(ILogger logger, IStreamStore store)
         {
             this.logger = logger;
             this.store = store;

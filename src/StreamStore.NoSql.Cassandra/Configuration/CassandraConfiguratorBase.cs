@@ -1,9 +1,8 @@
 ﻿using System;
-using Cassandra;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Database;
-using StreamStore.Provisioning;
+
 
 namespace StreamStore.NoSql.Cassandra.Configuration
 {
@@ -11,7 +10,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
     {
         Type sessionFactory = typeof(CassandraSessionFactory);
 
-        CassandraKeyspaceConfiguration keyspaceConfiguration = new CassandraKeyspaceConfiguration();
+        CassandraStorageConfiguration storageConfig = new CassandraStorageConfiguration();
 
         public CassandraConfiguratorBase WithSessionFactory<TSessionFactory>() where TSessionFactory : ICassandraSessionFactory
         {
@@ -19,12 +18,11 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             return this;
         }
 
-        public CassandraConfiguratorBase ConfigureKeyspace(Action<CassandraKeyspaceConfigurationBuilder> configure)
+        protected void ConfigureStorageInstance(Action<CassandraStorageConfigurationBuilder> configure)
         {
-            var builder = new CassandraKeyspaceConfigurationBuilder();
+            var builder = new CassandraStorageConfigurationBuilder();
             configure(builder);
-            keyspaceConfiguration = builder.Build();
-            return this;
+            storageConfig = builder.Build();
         }
 
         internal void Configure(IServiceCollection services)
@@ -37,7 +35,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         void ApplySharedDependencies(IServiceCollection services)
         {
-            services.AddSingleton(keyspaceConfiguration);
+            services.AddSingleton(storageConfig);
             services.AddSingleton<TypeMapFactory>();
             services.AddSingleton<DataContextFactory>();
             services.AddSingleton(typeof(ICassandraSessionFactory), sessionFactory);

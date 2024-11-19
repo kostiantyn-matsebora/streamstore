@@ -7,12 +7,12 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
     internal class CassandraStreamDatabaseProvider : ITenantStreamDatabaseProvider
     {
         readonly CassandraTenantClusterRegistry clusterRegistry;
-        readonly ICassandraKeyspaceConfigurationProvider configProvider;
+        readonly ICassandraStorageConfigurationProvider configProvider;
         readonly DataContextFactory contextFactory;
 
         public CassandraStreamDatabaseProvider(
             CassandraTenantClusterRegistry clusterRegistry,
-            ICassandraKeyspaceConfigurationProvider configProvider,
+            ICassandraStorageConfigurationProvider configProvider,
             DataContextFactory contextFactory)
         {
             this.clusterRegistry = clusterRegistry.ThrowIfNull(nameof(clusterRegistry));
@@ -24,7 +24,7 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
         {
             var sessionFactory = new CassandraSessionFactory(
                     clusterRegistry.GetCluster(tenantId),
-                    configProvider.GetKeyspaceConfiguration(tenantId));
+                    configProvider.GetStorageConfiguration(tenantId));
             return new CassandraStreamDatabase(sessionFactory, contextFactory);
         }
     }
