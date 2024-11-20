@@ -26,6 +26,10 @@ Despite the fact that component implements a logical layer for storing and query
   | [StreamStore.S3.AWS]         | [`Amazon S3`] implementation                                                         | :x: |[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
   | [StreamStore.S3.B2]          | [`Backblaze B2`] implementation                                                      | :x: |[![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
 
+## Concepts
+
+About basic concepts you can read in [CONCEPTS.md](../docs/CONCEPTS.md).
+
 ## Features
 
 The general idea is to highlight the common characteristics and features of event sourcing storage:
@@ -42,7 +46,7 @@ The general idea is to highlight the common characteristics and features of even
 
 ## Storages
 
-Also add implementations of particular storage backends, such as:
+Also add implementations of particular storage, such as:
 
 - [x] [`In-Memory`] - for testing purposes.
 - [x] [`Binary Object`] storages:
@@ -61,7 +65,6 @@ Also add implementations of particular storage backends, such as:
 - [ ] Custom event properties (?).
 - [ ] External transaction support (?).
 - [ ] Transactional outbox pattern implementation (?).
-
 
 ## Installation
 
@@ -196,104 +199,6 @@ Example projects provides a simple console application that demonstrates how to 
 
 For getting all running options simply run the application with `--help` argument.
 
-## Good to know
-
-- _[`Id`][Id]  is a value object (immutable class) that has implicit conversion from and to string_.  
-
-  Thus you don't need to create [Id] object explicitly and use `ToString()` to convert to string back.  
-  Also implements `IEquatable`  for [itself][Id] and for `String`.
-- _[`Revision`][Revision] is a value object (immutable class) that represents a revision of the stream._  
-  It is used for optimistic concurrency control and event ordering.
-  It has implicit conversion from and to `Int32` type.  
-  Also implements `IEquatable` and `IComparable` for itself and for `Int32`.
-
-- You can read from any stream starting from the provided revision.
-
-- _`ReadToEnd` method  returns collection of events from the stream starting from the provided revision_:
-  - Contains only **unique events ordered by revision**.
-  - Contains only **events that were committed**.
-  
-- _Stream revision is always the revision of an event with maximum revision value_.
-
-- _Idempotency of reading and deletion fully depends on particular database implementation._
-
-- _You don't need to retrieve stream  to add events to it_.  
-  Appending to stream and getting stream  are separate operations.
-
-- _Despite the fact that reading is declared as asynchronous and iterative operation, for the sake of performance it is implemented as paginated operation._
-
-  You can define the page size by using `WithReadingPageSize` method of store configuration, by default it is 10 events.
-
-- _Reading and writing operations are not thread-safe_.  
- Thus, it is not recommended to use the same instances of `IStreamWriter` or `IAsyncEnumerable<StreamEvent>` in multiple threads simultaneously.
-
-## Customization
-
-To implement your own database you do not need StreamStore package, all necessary interfaces are located in StreamStore.Contracts package from command line:
-
-```dotnetcli
-  dotnet add package StreamStore.Contracts
-```
-
-or from NuGet Package Manager Console:
-
-```powershell
-  Install-Package StreamStore.Contracts
-```
-
-### Serialization
-
-About serialization you can read in [SERIALIZATION.md](SERIALIZATION.md) file.
-
-### Create your own database implementation
-
-To create your own database implementation, you need to implement the following interfaces:
-
-- [`IStreamDatabase`][IStreamDatabase] - provides methods for working with streams.
-  Create your own implementation based on [`StreamDatabaseBase`](../src/StreamStore.Contracts/Database/StreamDatabaseBase.cs) abstract class.
-
-- [`IStreamUnitOfWork`][IStreamUnitOfWork] - provides methods for appending events to the stream and saving changes.  
-  Create your own implementation based on [`StreamUnitOfWorkBase`](../src/StreamStore.Contracts/Database/StreamUnitOfWorkBase.cs)
-  and override following methods:
-
-  ```csharp
-    class MyStreamUnitOfWork: StreamUnitOfWorkBase
-    {
-      protected override Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
-      {
-        // Implement saving logic
-      }
-  
-      protected override Task OnEventAdded(EventRecord @event, CancellationToken token)
-      {
-            // Optionally implement logic for handling event added, 
-            // such as instance logging, puting event to outbox or temporary storage etc.
-      }
-
-     protected override void Dispose(bool disposing)
-     {
-        // Optionally implement disposing logic
-     }
-    }
-  ```
-
-  Default serializer is using `Newtonsoft.Json` library, so you can create your own using `System.Text.Json` or any other, by
-  implementing [`IEventSerializer`](../src/StreamStore.Contracts/Serialization/IEventSerializer.cs) interface.
-
-### Considerations
-
-- To implement your own database you do not need StreamStore package, all necessary interfaces are located in [StreamStore.Contracts](https://www.nuget.org/packages/StreamStore.Contracts/) package.
-- _You can register your own database implementation in the DI container using any kind of lifetime (i.e. Singleton, Transient, Scoped, etc.)_  
-
-  However, if you register it as a singleton, you should be aware that it should be thread-safe and preferably stateless.
-
-- _Solution already provides optimistic concurrency and event duplication control mechanisms, as a **pre-check** during stream opening_.  
-
-  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation.  
-  For instance, you can use a transaction mechanism supported by `ACID compliant DBMS`.
-
-- _Get and Delete operations must be implemented as idempotent by their nature._
-
 ## Contributing
 
 If you experience any issues, have a question or a suggestion, or if you wish
@@ -307,10 +212,6 @@ to contribute, feel free to [open an issue][issues] or
 [`StreamStore`]: https://github.com/kostiantyn-matsebora/streamstore/
 [issues]: https://github.com/kostiantyn-matsebora/streamstore/issues
 [discussions]: https://github.com/kostiantyn-matsebora/streamstore/discussions
-[Id]: ../src/StreamStore.Contracts/Id.cs
-[Revision]: ../src/StreamStore.Contracts/Revision.cs
-[IStreamUnitOfWork]: ../src/StreamStore.Contracts/Database/IStreamUnitOfWork.cs
-[IStreamDatabase]: ../src/StreamStore.Contracts/Database/IStreamDatabase.cs
 [StreamStore.S3.B2]: ../src/StreamStore.S3.B2
 [StreamStore.S3.AWS]: ../src/StreamStore.S3.AWS
 [StreamStore.InMemory]: ../src/StreamStore.InMemory

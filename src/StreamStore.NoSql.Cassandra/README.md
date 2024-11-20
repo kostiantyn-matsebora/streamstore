@@ -6,7 +6,7 @@
 
 ## ACID compliance and considerations
 
-Despite the fact that Cassandra is not ACID compliant, library provides ACID guarantees for the operations that are performed within a single partition key - stream identifier.  
+Despite the fact that [Apache Cassandra] is not ACID compliant DBMS, library provides ACID guarantees for the operations that are performed within a single partition key - stream identifier.  
 
 Such guarantees are achieved by using  following features:
 
@@ -93,7 +93,6 @@ Full list of configuration options you can find in the [Configuration options](#
 ### Use in application code
 
 How to use [StreamStore] in your application code you can find on StreamStore [page][Usage].
-
 
 ## Example
 
