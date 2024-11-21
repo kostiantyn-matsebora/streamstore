@@ -38,7 +38,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
             sessionFactory.Should().BeOfType<FakeSessionFactory>();
             var config = provider.GetRequiredService<CassandraStorageConfiguration>();
             config.Keyspace.Should().Be("keyspace");
-            provider.GetRequiredService<CassandraStreamRepositoryFactory>().Should().NotBeNull();
+            provider.GetRequiredService<ICassandraStreamRepositoryFactory>().Should().NotBeNull();
             
         }
 

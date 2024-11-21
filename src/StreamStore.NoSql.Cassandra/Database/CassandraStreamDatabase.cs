@@ -8,9 +8,9 @@ namespace StreamStore.NoSql.Cassandra.Database
 {
     internal class CassandraStreamDatabase : StreamDatabaseBase
     {
-        readonly CassandraStreamRepositoryFactory repositoryFactory;
+        readonly ICassandraStreamRepositoryFactory repositoryFactory;
 
-        public CassandraStreamDatabase(CassandraStreamRepositoryFactory repositoryFactory)
+        public CassandraStreamDatabase(ICassandraStreamRepositoryFactory repositoryFactory)
         {
             this.repositoryFactory = repositoryFactory.ThrowIfNull(nameof(repositoryFactory));
         }

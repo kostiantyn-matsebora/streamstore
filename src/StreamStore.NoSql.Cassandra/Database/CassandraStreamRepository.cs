@@ -11,7 +11,7 @@ using StreamStore.NoSql.Cassandra.Models;
 
 namespace StreamStore.NoSql.Cassandra.Database
 {
-    internal class CassandraStreamRepository: IDisposable
+    internal sealed class CassandraStreamRepository : ICassandraStreamRepository
     {
         readonly CassandraStorageConfiguration config;
         readonly Table<EventEntity> events;
@@ -37,7 +37,7 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
             var id = (string)streamId;
 
-            var revisions =(await ConfigureQuery(
+            var revisions = (await ConfigureQuery(
                 streamRevisions
                       .Where(er => er.StreamId == id)
                       .Select(er => er.Revision))
@@ -67,7 +67,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             var mapper = new Mapper(session, mappingConfig);
             var batch = mapper.CreateBatch(BatchType.Logged);
 
-            var options = 
+            var options =
                 new CqlQueryOptions()
                     .SetConsistencyLevel(config.WriteConsistencyLevel)
                     .SetSerialConsistencyLevel(config.SerialConsistencyLevel);
@@ -85,7 +85,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             string id = (string)streamId;
             int revision = (int)startFrom;
 
-            return await  
+            return await
                 ConfigureQuery(
                     events
                         .Where(er => er.StreamId == id && er.Revision >= revision)
@@ -116,13 +116,13 @@ namespace StreamStore.NoSql.Cassandra.Database
                 .SetSerialConsistencyLevel(config.SerialConsistencyLevel);
         }
 
-        protected virtual void Dispose(bool disposing)
+        void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
                 if (disposing)
                 {
-                   session.Dispose();
+                    session.Dispose();
                 }
                 disposedValue = true;
             }

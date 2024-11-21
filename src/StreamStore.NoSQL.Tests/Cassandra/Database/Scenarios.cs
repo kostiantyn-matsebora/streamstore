@@ -5,35 +5,35 @@ using Xunit.Abstractions;
 namespace StreamStore.NoSql.Tests.Cassandra.Database
 {
     [Collection("Reading Cassandra")]
-    public class Finding_stream_metadata : Find_stream_data<CassandraTestSuite>
+    public class Finding_stream_metadata : Find_stream_data<CassandraDatabaseTestSuite>
     {
-        public Finding_stream_metadata(CassandraDatabaseFixture fixture) : base(new CassandraTestSuite(fixture))
+        public Finding_stream_metadata(CassandraDatabaseFixture fixture) : base(new CassandraDatabaseTestSuite(fixture))
         {
         }
     }
 
     [Collection("Reading Cassandra")]
 
-    public class Reading_from_database : Reading_from_database<CassandraTestSuite>
+    public class Reading_from_database : Reading_from_database<CassandraDatabaseTestSuite>
     {
-        public Reading_from_database(CassandraDatabaseFixture fixture, ITestOutputHelper output) : base(new CassandraTestSuite(fixture), output)
+        public Reading_from_database(CassandraDatabaseFixture fixture, ITestOutputHelper output) : base(new CassandraDatabaseTestSuite(fixture), output)
         {
         }
     }
 
 
     [Collection("Deleting Cassandra")]
-    public class Deleting_from_database : Deleting_from_database<CassandraTestSuite>
+    public class Deleting_from_database : Deleting_from_database<CassandraDatabaseTestSuite>
     {
-        public Deleting_from_database(CassandraDatabaseFixture fixture) : base(new CassandraTestSuite(fixture))
+        public Deleting_from_database(CassandraDatabaseFixture fixture) : base(new CassandraDatabaseTestSuite(fixture))
         {
         }
     }
 
     [Collection("Writing Cassandra")]
-    public class Writing_to_database : Writing_to_database<CassandraTestSuite>
+    public class Writing_to_database : Writing_to_database<CassandraDatabaseTestSuite>
     {
-        public Writing_to_database(CassandraDatabaseFixture fixture) : base(new CassandraTestSuite(fixture))
+        public Writing_to_database(CassandraDatabaseFixture fixture) : base(new CassandraDatabaseTestSuite(fixture))
         {
         }
     }

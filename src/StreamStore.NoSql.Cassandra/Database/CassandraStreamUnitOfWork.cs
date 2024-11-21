@@ -9,13 +9,13 @@ namespace StreamStore.NoSql.Cassandra.Database
 {
     internal class CassandraStreamUnitOfWork : StreamUnitOfWorkBase
     {
-        readonly CassandraStreamRepositoryFactory repositoryFactory;
+        readonly ICassandraStreamRepositoryFactory repositoryFactory;
 
         public CassandraStreamUnitOfWork(
             Id streamId, 
             Revision expectedRevision, 
-            EventRecordCollection? events, 
-            CassandraStreamRepositoryFactory repositoryFactory)
+            EventRecordCollection? events,
+            ICassandraStreamRepositoryFactory repositoryFactory)
             : base(streamId, expectedRevision, events)
         {
             this.repositoryFactory = repositoryFactory.ThrowIfNull(nameof(repositoryFactory));
@@ -30,7 +30,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             }
         }
 
-        async Task ValidateResult(CassandraStreamRepository repo, AppliedInfo<EventEntity> appliedInfo)
+        async Task ValidateResult(ICassandraStreamRepository repo, AppliedInfo<EventEntity> appliedInfo)
         {
             if (appliedInfo.Applied)
             {
