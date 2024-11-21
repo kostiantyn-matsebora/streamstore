@@ -37,4 +37,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Cassandra\Configuration\MultitenantConfigurator\Scenarios\" />
+  </ItemGroup>
+
 </Project>

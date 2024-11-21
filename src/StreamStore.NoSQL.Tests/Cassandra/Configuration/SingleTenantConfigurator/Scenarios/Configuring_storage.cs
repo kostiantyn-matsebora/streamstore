@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Cassandra;
+﻿using Cassandra;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Database;
-using StreamStore.NoSql.Cassandra.Multitenancy;
 using StreamStore.Testing;
 
-namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurator.Scenarios
+namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurator
 {
     public class Configuring_storage: Scenario
     {
@@ -32,14 +26,14 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
             var provider = services.BuildServiceProvider();
             
             // Assert
-            var cluster = provider.GetRequiredService<Cluster>();
-            cluster.Configuration.ClientOptions.DefaultKeyspace.Should().Be("default_keyspace");
-            var sessionFactory = provider.GetRequiredService<ICassandraSessionFactory>();
-            sessionFactory.Should().BeOfType<FakeSessionFactory>();
-            var config = provider.GetRequiredService<CassandraStorageConfiguration>();
-            config.Keyspace.Should().Be("keyspace");
-            provider.GetRequiredService<ICassandraStreamRepositoryFactory>().Should().NotBeNull();
-            
+            provider.GetRequiredService<Cluster>().Configuration.ClientOptions.DefaultKeyspace
+                    .Should().Be("default_keyspace");
+            provider.GetRequiredService<ICassandraSessionFactory>()
+                    .Should().BeOfType<FakeSessionFactory>();
+            provider.GetRequiredService<CassandraStorageConfiguration>().Keyspace
+                    .Should().Be("keyspace");
+            provider.GetRequiredService<ICassandraStreamRepositoryFactory>()
+                    .Should().NotBeNull();
         }
 
         [Fact]
