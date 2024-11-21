@@ -75,7 +75,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             foreach (var record in records)
             {
                 batch.InsertIfNotExists(record.ToEntity(streamId), options);
-            };
+            }
 
             return await mapper.ExecuteConditionalAsync<EventEntity>(batch);
         }
@@ -98,7 +98,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             await events.CreateIfNotExistsAsync();
         }
 
-        MappingConfiguration ConfigureMapping(CassandraStorageConfiguration config)
+        static MappingConfiguration ConfigureMapping(CassandraStorageConfiguration config)
         {
             return new MappingConfiguration().Define(new CassandraStreamMapping(config));
         }

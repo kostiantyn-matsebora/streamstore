@@ -43,8 +43,6 @@ namespace StreamStore.Database
             if (actualRevision == Revision.Zero)
                 throw new StreamNotFoundException(streamId);
 
-            var records = await ReadAsyncInternal(streamId, startFrom, count, token);
-
             return new EventRecordCollection(await ReadAsyncInternal(streamId, startFrom, count, token));
         }
 

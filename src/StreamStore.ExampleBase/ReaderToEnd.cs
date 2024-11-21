@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using System.Linq;
+
 using System.Diagnostics.CodeAnalysis;
 using StopwatchTimer;
 
@@ -21,7 +21,7 @@ namespace StreamStore.ExampleBase
         {
             using (new CodeStopWatch("Reading stream to end", s => logger.LogInformation(s)))
             {
-                var events = await store.ReadToEndAsync(streamId, token);
+                await store.ReadToEndAsync(streamId, token);
             }
             logger.LogInformation("Sleeping for {sleepPeriod} miliseconds...", sleepPeriod);
             await Task.Delay(sleepPeriod, token);

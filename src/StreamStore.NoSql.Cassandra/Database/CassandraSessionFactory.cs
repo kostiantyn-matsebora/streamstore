@@ -3,11 +3,11 @@ using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Configuration;
 
 
-namespace StreamStore.NoSql.Cassandra
+namespace StreamStore.NoSql.Cassandra.Database
 {
     internal class CassandraSessionFactory : ICassandraSessionFactory
     {
-        
+
         readonly Cluster cluster;
         readonly CassandraStorageConfiguration config;
 
@@ -19,7 +19,7 @@ namespace StreamStore.NoSql.Cassandra
 
         public ISession Open()
         {
-           return cluster.Connect(config.Keyspace);
+            return cluster.Connect(config.Keyspace);
         }
     }
 }

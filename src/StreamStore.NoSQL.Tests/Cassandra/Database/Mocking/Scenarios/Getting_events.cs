@@ -14,7 +14,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
         {
             // Arrange
             var streamId = Generated.Id;
-            Suite.StreamRepository.Setup(x => x.FindMetadata(streamId)).ReturnsAsync(new EventMetadataEntity[0]);
+            Suite.StreamRepository.Setup(x => x.FindMetadata(streamId)).ReturnsAsync(Array.Empty<EventMetadataEntity>());
 
             // Act
             var result = await Suite.StreamDatabase.FindMetadataAsync(streamId);
