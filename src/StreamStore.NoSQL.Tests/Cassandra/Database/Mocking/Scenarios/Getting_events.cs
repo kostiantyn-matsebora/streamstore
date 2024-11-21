@@ -4,9 +4,9 @@ using Moq;
 using StreamStore.NoSql.Cassandra.Models;
 using StreamStore.Testing;
 
-namespace StreamStore.NoSql.Tests.Cassandra.Database.Scenarios
+namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
 {
-    public class Getting_events: Scenario<CassandraMockTestSuite>
+    public class Getting_events : Scenario<CassandraMockTestSuite>
     {
 
         [Fact]

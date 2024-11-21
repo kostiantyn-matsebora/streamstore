@@ -1,5 +1,4 @@
-﻿
-using StreamStore.Testing.StreamDatabase.Scenarios;
+﻿using StreamStore.Testing.StreamDatabase.Scenarios;
 using Xunit.Abstractions;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Database

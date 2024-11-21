@@ -2,9 +2,9 @@
 using StreamStore.NoSql.Cassandra.Database;
 using StreamStore.Testing.Framework;
 
-namespace StreamStore.NoSql.Tests.Cassandra.Database
+namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
 {
-    public class CassandraMockTestSuite: TestSuite
+    public class CassandraMockTestSuite : TestSuite
     {
 
         internal readonly Mock<ICassandraStreamRepositoryFactory> StreamRepositoryFactory;
