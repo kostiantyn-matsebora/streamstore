@@ -8,7 +8,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurator
 {
-    public class Configuring_storage: Scenario
+    public class Configuring_storage : Scenario
     {
 
         [Fact]
@@ -24,7 +24,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
             configurator.WithSessionFactory<FakeSessionFactory>();
             configurator.Configure(services);
             var provider = services.BuildServiceProvider();
-            
+
             // Assert
             provider.GetRequiredService<Cluster>().Configuration.ClientOptions.DefaultKeyspace
                     .Should().Be("default_keyspace");
@@ -45,7 +45,6 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
 
             // Act
             var act = () => configurator.Configure(services);
-
 
             // Assert
             act.Should().Throw<InvalidOperationException>();
