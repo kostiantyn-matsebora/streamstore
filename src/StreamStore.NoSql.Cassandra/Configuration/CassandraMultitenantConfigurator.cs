@@ -73,7 +73,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             services.AddSingleton(typeof(ICassandraStorageConfigurationProvider), storageConfigurationProviderType);
             services.AddSingleton(typeof(ITenantClusterConfigurator), tenantClusterConfigurator);
             services.AddSingleton(typeof(IClusterConfigurator), clusterConfigurator);
-            services.AddSingleton<CassandraTenantClusterRegistry>();
+            services.AddSingleton<ICassandraTenantClusterRegistry, CassandraTenantClusterRegistry>();
         }
     }
 }

@@ -18,14 +18,14 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking.UnitOfWork
             // Arrange
             var uow = new CassandraStreamUnitOfWork(Generated.Id, Generated.Revision, null, Suite.StreamRepositoryFactory.Object);
 
-            Suite.StreamRepository.Setup(x => x.AppendToStream(Generated.AnyArg<Id>())).ReturnsAsync(new AppliedInfo<EventEntity>(true));
+            Suite.StreamRepository.Setup(x => x.AppendToStream(It.IsAny<Id>())).ReturnsAsync(new AppliedInfo<EventEntity>(true));
 
 
             // Act
-            var act = async () => await uow.SaveChangesAsync(CancellationToken.None);
+            await uow.SaveChangesAsync(CancellationToken.None);
 
             // Assert
-            await act.Should().NotThrowAsync();
+            Suite.MockRepository.VerifyAll();
         }
 
         [Fact]
@@ -34,14 +34,15 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking.UnitOfWork
             // Arrange
             var uow = new CassandraStreamUnitOfWork(Generated.Id, Generated.Revision, null, Suite.StreamRepositoryFactory.Object);
 
-            Suite.StreamRepository.Setup(x => x.AppendToStream(Generated.AnyArg<Id>())).ReturnsAsync(new AppliedInfo<EventEntity>(false));
+            Suite.StreamRepository.Setup(x => x.AppendToStream(It.IsAny<Id>())).ReturnsAsync(new AppliedInfo<EventEntity>(false));
 
-            Suite.StreamRepository.Setup(x => x.GetStreamActualRevision(Generated.AnyArg<Id>())).ReturnsAsync(10);
+            Suite.StreamRepository.Setup(x => x.GetStreamActualRevision(It.IsAny<Id>())).ReturnsAsync(10);
             // Act
             var act = async () => await uow.SaveChangesAsync(CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
+            Suite.MockRepository.VerifyAll();
         }
     }
 }

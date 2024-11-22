@@ -6,11 +6,11 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
 {
     internal class CassandraStreamDatabaseProvider : ITenantStreamDatabaseProvider
     {
-        readonly CassandraTenantClusterRegistry clusterRegistry;
+        readonly ICassandraTenantClusterRegistry clusterRegistry;
         readonly ICassandraStorageConfigurationProvider configProvider;
 
         public CassandraStreamDatabaseProvider(
-            CassandraTenantClusterRegistry clusterRegistry,
+            ICassandraTenantClusterRegistry clusterRegistry,
             ICassandraStorageConfigurationProvider configProvider)
         {
             this.clusterRegistry = clusterRegistry.ThrowIfNull(nameof(clusterRegistry));

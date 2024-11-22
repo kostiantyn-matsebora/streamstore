@@ -3,7 +3,7 @@ using Cassandra;
 
 namespace StreamStore.NoSql.Cassandra.Multitenancy
 {
-    internal class CassandraTenantClusterRegistry
+    internal class CassandraTenantClusterRegistry : ICassandraTenantClusterRegistry
     {
 
         readonly IClusterConfigurator clusterConfigurator;
