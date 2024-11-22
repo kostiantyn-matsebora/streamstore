@@ -4,7 +4,7 @@ using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Database;
 using StreamStore.Testing;
 
-namespace StreamStore.NoSql.Tests.Cassandra.Database.StatementConfigurator
+namespace StreamStore.NoSql.Tests.Cassandra.Database.QueryConfigurator
 {
     public class Configuring_query : Scenario
     {

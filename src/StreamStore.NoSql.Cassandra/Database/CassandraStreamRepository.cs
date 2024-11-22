@@ -20,12 +20,14 @@ namespace StreamStore.NoSql.Cassandra.Database
         readonly ISession session;
         readonly MappingConfiguration mappingConfig;
         readonly CassandraStatementConfigurator queryConfigurator;
+        readonly ICassandraPredicateProvider predicateProvider;
         bool disposedValue;
 
-        public CassandraStreamRepository(ICassandraSessionFactory sessionFactory, CassandraStorageConfiguration config)
+        public CassandraStreamRepository(ICassandraSessionFactory sessionFactory, ICassandraPredicateProvider predicateProvider, CassandraStorageConfiguration config)
         {
             session = sessionFactory.ThrowIfNull(nameof(session)).Open();
             queryConfigurator = new CassandraStatementConfigurator(config);
+            this.predicateProvider = predicateProvider.ThrowIfNull(nameof(predicateProvider));
             mappingConfig = ConfigureMapping(config);
             events = CreateTable<EventEntity>(session);
             metadata = CreateTable<EventMetadataEntity>(session);
@@ -40,7 +42,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             var revisions = (
                 await queryConfigurator.ConfigureQuery<CqlQuery<int>>(
                 streamRevisions
-                      .Where(er => er.StreamId == id)
+                      .Where(predicateProvider.StreamRevisions(streamId))
                       .Select(er => er.Revision))
                 .ExecuteAsync()).ToArray();
 
@@ -53,14 +55,13 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         public async Task DeleteStream(Id streamId)
         {
-            var id = (string)streamId;
-            await events.Where(er => er.StreamId == id).Delete().ExecuteAsync();
+            await events.Where(predicateProvider.StreamEvents(streamId)).Delete().ExecuteAsync();
         }
 
         public async Task<IEnumerable<EventMetadataEntity>> FindMetadata(Id streamId)
         {
-            var id = (string)streamId;
-            return await queryConfigurator.ConfigureQuery<CqlQuery<EventMetadataEntity>>(metadata.Where(er => er.StreamId == id)).ExecuteAsync();
+            return await queryConfigurator.ConfigureQuery<CqlQuery<EventMetadataEntity>>(
+                            metadata.Where(predicateProvider.StreamMetadata(streamId))).ExecuteAsync();
         }
 
         public async Task<AppliedInfo<EventEntity>> AppendToStream(Id streamId, params EventRecord[] records)
@@ -84,7 +85,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
             return await queryConfigurator.ConfigureQuery<CqlQuery<EventEntity>>(
                     events
-                        .Where(er => er.StreamId == id && er.Revision >= revision)
+                        .Where(predicateProvider.StreamEvents(streamId, startFrom))
                         .Take(count))
                 .ExecuteAsync();
         }

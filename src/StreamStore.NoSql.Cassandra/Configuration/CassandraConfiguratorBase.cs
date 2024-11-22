@@ -39,6 +39,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         {
             services.AddSingleton(storageConfig);
             services.AddSingleton(typeof(ICassandraSessionFactory), sessionFactory);
+            services.AddSingleton<ICassandraPredicateProvider, CassandraPredicateProvider>();
         }
     }
 }
