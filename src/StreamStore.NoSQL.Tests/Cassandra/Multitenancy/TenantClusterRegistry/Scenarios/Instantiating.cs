@@ -12,13 +12,13 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.TenantClusterRegistry
         {
 
             // Act
-            var act = () => new CassandraTenantClusterRegistry(Cluster.Builder(), null);
+            var act = () => new CassandraTenantClusterRegistry(new DelegateClusterConfigurator((builder) => { }), null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
 
             // Act
-            act = () => new CassandraTenantClusterRegistry(null, new DelegateTenantClusterConfigurator());
+            act = () => new CassandraTenantClusterRegistry(null!, new DelegateTenantClusterConfigurator());
 
             // Assert
             act.Should().Throw<ArgumentNullException>();

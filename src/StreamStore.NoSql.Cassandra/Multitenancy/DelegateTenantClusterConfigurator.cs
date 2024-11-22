@@ -3,11 +3,12 @@ using Cassandra;
 
 namespace StreamStore.NoSql.Cassandra.Multitenancy
 {
-    internal class DelegateTenantClusterConfigurator
+
+    internal class DelegateTenantClusterConfigurator: ITenantClusterConfigurator
     {
         readonly Action<Id, Builder> configure;
 
-        public DelegateTenantClusterConfigurator(): this((tenantId, builder) => { })
+        public DelegateTenantClusterConfigurator() : this((tenantId, builder) => { })
         {
         }
 

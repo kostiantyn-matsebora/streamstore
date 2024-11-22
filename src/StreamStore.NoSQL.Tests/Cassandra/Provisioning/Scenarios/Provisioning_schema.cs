@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Moq;
 using StreamStore.NoSql.Cassandra.Database;
 using StreamStore.NoSql.Cassandra.Provisioning;
 using StreamStore.Testing;
@@ -25,6 +24,7 @@ public class Provisioning_schema: Scenario<SchemaProvisionerSuite>
         var repoFactory = Suite.RepositoryFactory;
         var repo = Suite.MockRepository.Create<ICassandraStreamRepository>();
         repo.Setup(x => x.CreateSchemaIfNotExistsAsync()).Returns(Task.CompletedTask);
+        repo.Setup(x => x.Dispose());
         repoFactory.Setup(x => x.Create()).Returns(repo.Object);
         var provisioner = new CassandraSchemaProvisioner(repoFactory.Object);
         

@@ -8,18 +8,18 @@ namespace StreamStore.NoSql.Cassandra.Provisioning
 {
     internal class CassandraSchemaProvisioner : ISchemaProvisioner
     {
-        readonly ICassandraStreamRepositoryFactory contextFactory;
+        readonly ICassandraStreamRepositoryFactory repoFactory;
 
         public CassandraSchemaProvisioner(ICassandraStreamRepositoryFactory contextFactory)
         {
-            this.contextFactory = contextFactory.ThrowIfNull(nameof(contextFactory));
+            this.repoFactory = contextFactory.ThrowIfNull(nameof(contextFactory));
         }
 
         public async Task ProvisionSchemaAsync(CancellationToken token)
         {
-            using (var ctx = contextFactory.Create())
+            using (var repo = repoFactory.Create())
             {
-                await ctx.CreateSchemaIfNotExistsAsync();
+                await repo.CreateSchemaIfNotExistsAsync();
             }
         }
     }

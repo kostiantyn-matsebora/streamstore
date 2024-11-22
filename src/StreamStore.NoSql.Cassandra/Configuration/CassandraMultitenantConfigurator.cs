@@ -8,8 +8,8 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 {
     public  class CassandraMultitenantConfigurator : CassandraConfiguratorBase
     {
-        Builder? builder;
-        DelegateTenantClusterConfigurator clusterConfigurator = new DelegateTenantClusterConfigurator();
+        DelegateTenantClusterConfigurator tenantClusterConfigurator = new DelegateTenantClusterConfigurator();
+        DelegateClusterConfigurator? clusterConfigurator;
         Type storageConfigurationProviderType = typeof(DefaultCassandraStorageConfigurationProvider);
         Type? keyspaceProviderType;
 
@@ -24,14 +24,13 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         public CassandraMultitenantConfigurator WithTenantClusterConfigurator(Action<Id, Builder> configurator)
         {
-           clusterConfigurator = new DelegateTenantClusterConfigurator(configurator);
+           tenantClusterConfigurator = new DelegateTenantClusterConfigurator(configurator);
            return this;
         }
 
         public CassandraMultitenantConfigurator ConfigureDefaultCluster(Action<Builder> configure)
         {
-            builder = Cluster.Builder();
-            configure(builder);
+            clusterConfigurator = new DelegateClusterConfigurator(configure);
             return this;
         }
 
@@ -56,7 +55,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         protected override void ApplySpecificDependencies(IServiceCollection services)
         {
-            if (builder == null) throw new InvalidOperationException("Default cluster not configured");
+            if (clusterConfigurator == null) throw new InvalidOperationException("Default cluster is not configured");
 
             if (keyspaceProviderType != null)
             {
@@ -72,8 +71,8 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             }
 
             services.AddSingleton(typeof(ICassandraStorageConfigurationProvider), storageConfigurationProviderType);
-            services.AddSingleton(clusterConfigurator);
-            services.AddSingleton(builder);
+            services.AddSingleton(typeof(ITenantClusterConfigurator), tenantClusterConfigurator);
+            services.AddSingleton(typeof(IClusterConfigurator), clusterConfigurator);
             services.AddSingleton<CassandraTenantClusterRegistry>();
         }
     }

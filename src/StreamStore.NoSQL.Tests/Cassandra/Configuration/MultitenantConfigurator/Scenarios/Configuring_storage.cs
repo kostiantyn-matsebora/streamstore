@@ -41,7 +41,9 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.MultitenantConfigurato
             var provider = services.BuildServiceProvider();
 
             // Assert
-            var builder = provider.GetRequiredService<Builder>();
+            var clusterConfigurator = provider.GetRequiredService<IClusterConfigurator>();
+            var builder = Cluster.Builder();
+            clusterConfigurator.Configure(builder);
             var cluster = builder.Build();
             cluster.Configuration.ClientOptions.DefaultKeyspace
                     .Should().Be("default_keyspace");
@@ -80,8 +82,8 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.MultitenantConfigurato
             var provider = services.BuildServiceProvider();
 
             // Assert
-            provider.GetRequiredService<Builder>().Should().NotBeNull();
-            provider.GetRequiredService<DelegateTenantClusterConfigurator>().Should().NotBeNull();
+            provider.GetRequiredService<IClusterConfigurator>().Should().NotBeNull();
+            provider.GetRequiredService<ITenantClusterConfigurator>().Should().NotBeNull();
             provider.GetService<ICassandraKeyspaceProvider>()
                     .Should().NotBeNull()
                     .And.BeOfType<FakeKeyspaceProvider>();
