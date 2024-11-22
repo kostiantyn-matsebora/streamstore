@@ -8,9 +8,9 @@ namespace StreamStore.NoSql.Cassandra.Provisioning
 {
     internal class CassandraSchemaProvisioner : ISchemaProvisioner
     {
-        private readonly CassandraStreamRepositoryFactory contextFactory;
+        readonly ICassandraStreamRepositoryFactory contextFactory;
 
-        public CassandraSchemaProvisioner(CassandraStreamRepositoryFactory contextFactory)
+        public CassandraSchemaProvisioner(ICassandraStreamRepositoryFactory contextFactory)
         {
             this.contextFactory = contextFactory.ThrowIfNull(nameof(contextFactory));
         }
