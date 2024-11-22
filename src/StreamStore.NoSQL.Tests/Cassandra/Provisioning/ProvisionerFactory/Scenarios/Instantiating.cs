@@ -20,7 +20,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Provisioning.ProvisionerFactory
             act.Should().Throw<ArgumentNullException>();
 
             // Act
-            act = () => new CassandraSchemaProvisionerFactory(Generated.MockOf<ICassandraStorageConfigurationProvider>().Object, null);
+            act = () => new CassandraSchemaProvisionerFactory(Generated.MockOf<ICassandraStorageConfigurationProvider>().Object, null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();

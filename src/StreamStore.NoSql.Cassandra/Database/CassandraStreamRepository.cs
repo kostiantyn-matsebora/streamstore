@@ -13,19 +13,19 @@ namespace StreamStore.NoSql.Cassandra.Database
 {
     internal sealed class CassandraStreamRepository : ICassandraStreamRepository
     {
-        readonly CassandraStorageConfiguration config;
+
         readonly Table<EventEntity> events;
         readonly Table<EventMetadataEntity> metadata;
         readonly Table<RevisionStreamEntity> streamRevisions;
         readonly ISession session;
         readonly MappingConfiguration mappingConfig;
+        readonly CassandraStatementConfigurator queryConfigurator;
         bool disposedValue;
 
         public CassandraStreamRepository(ICassandraSessionFactory sessionFactory, CassandraStorageConfiguration config)
         {
             session = sessionFactory.ThrowIfNull(nameof(session)).Open();
-            this.config = config.ThrowIfNull(nameof(config));
-
+            queryConfigurator = new CassandraStatementConfigurator(config);
             mappingConfig = ConfigureMapping(config);
             events = CreateTable<EventEntity>(session);
             metadata = CreateTable<EventMetadataEntity>(session);
@@ -37,7 +37,8 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
             var id = (string)streamId;
 
-            var revisions = (await ConfigureQuery(
+            var revisions = (
+                await queryConfigurator.ConfigureQuery<CqlQuery<int>>(
                 streamRevisions
                       .Where(er => er.StreamId == id)
                       .Select(er => er.Revision))
@@ -59,18 +60,14 @@ namespace StreamStore.NoSql.Cassandra.Database
         public async Task<IEnumerable<EventMetadataEntity>> FindMetadata(Id streamId)
         {
             var id = (string)streamId;
-            return await ConfigureQuery(metadata.Where(er => er.StreamId == id)).ExecuteAsync();
+            return await queryConfigurator.ConfigureQuery<CqlQuery<EventMetadataEntity>>(metadata.Where(er => er.StreamId == id)).ExecuteAsync();
         }
 
         public async Task<AppliedInfo<EventEntity>> AppendToStream(Id streamId, params EventRecord[] records)
         {
             var mapper = new Mapper(session, mappingConfig);
             var batch = mapper.CreateBatch(BatchType.Logged);
-
-            var options =
-                new CqlQueryOptions()
-                    .SetConsistencyLevel(config.WriteConsistencyLevel)
-                    .SetSerialConsistencyLevel(config.SerialConsistencyLevel);
+            var options = queryConfigurator.ConfigureInsert(new CqlQueryOptions());
 
             foreach (var record in records)
             {
@@ -85,8 +82,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             string id = (string)streamId;
             int revision = (int)startFrom;
 
-            return await
-                ConfigureQuery(
+            return await queryConfigurator.ConfigureQuery<CqlQuery<EventEntity>>(
                     events
                         .Where(er => er.StreamId == id && er.Revision >= revision)
                         .Take(count))
@@ -108,13 +104,6 @@ namespace StreamStore.NoSql.Cassandra.Database
             return new Table<T>(session, mappingConfig);
         }
 
-
-        CqlQuery<TEntity> ConfigureQuery<TEntity>(CqlQuery<TEntity> query)
-        {
-            return query
-                .SetConsistencyLevel(config.ReadConsistencyLevel)
-                .SetSerialConsistencyLevel(config.SerialConsistencyLevel);
-        }
 
         void Dispose(bool disposing)
         {

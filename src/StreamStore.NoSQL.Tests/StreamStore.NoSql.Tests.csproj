@@ -31,7 +31,4 @@
   <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Cassandra\Database\NewFolder\" />
-  </ItemGroup>
 </Project>
