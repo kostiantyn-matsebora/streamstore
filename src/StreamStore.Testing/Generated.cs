@@ -61,5 +61,10 @@ namespace StreamStore.Testing
         {
             return new Fixture().CreateMany<T>(count).ToArray();
         }
+
+        public static T AnyArg<T>()
+        {
+            return It.IsAny<T>();
+        }
     }
 }

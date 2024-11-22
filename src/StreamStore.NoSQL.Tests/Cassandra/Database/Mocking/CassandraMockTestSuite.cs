@@ -11,6 +11,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
         internal readonly Mock<ICassandraStreamRepository> StreamRepository;
         internal readonly CassandraStreamDatabase StreamDatabase;
 
+
         public CassandraMockTestSuite()
         {
             StreamRepositoryFactory = MockRepository.Create<ICassandraStreamRepositoryFactory>();
