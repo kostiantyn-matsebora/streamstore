@@ -1,5 +1,4 @@
 ﻿using Cassandra;
-using Cassandra.Data.Linq;
 using Cassandra.Mapping;
 using StreamStore.NoSql.Cassandra.Configuration;
 
@@ -13,19 +12,19 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
            this.config = config.ThrowIfNull(nameof(config));
         }
-        public TStatement ConfigureQuery<TStatement>(IStatement statement) where TStatement : IStatement
+        public TStatement Query<TStatement>(IStatement statement) where TStatement : IStatement
         {
             return (TStatement)statement
                 .SetConsistencyLevel(config.ReadConsistencyLevel)
                 .SetSerialConsistencyLevel(config.SerialConsistencyLevel);
         }
 
-        public CqlQueryOptions ConfigureInsert(CqlQueryOptions options)
+        public ICqlBatch Batch(ICqlBatch batch)
         {
-            return options
-                .SetConsistencyLevel(config.WriteConsistencyLevel)
-                .SetSerialConsistencyLevel(config.SerialConsistencyLevel);
+            return batch
+                .WithOptions(o =>
+                    o.SetConsistencyLevel(config.WriteConsistencyLevel)
+                     .SetSerialConsistencyLevel(config.SerialConsistencyLevel));
         }
-
     }
 }

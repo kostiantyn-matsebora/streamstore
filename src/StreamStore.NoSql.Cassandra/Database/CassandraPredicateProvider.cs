@@ -13,7 +13,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             return er => er.StreamId == streamId;
         }
 
-        public Expression<Func<EventEntity, bool>> StreamEvents(Id streamId)
+        public Expression<Func<EventEntity, bool>> StreamEvents(string streamId)
         {
             return er => er.StreamId == streamId;
         }

@@ -19,32 +19,27 @@ namespace StreamStore.NoSql.Cassandra.Database
         readonly Table<RevisionStreamEntity> streamRevisions;
         readonly ISession session;
         readonly MappingConfiguration mappingConfig;
-        readonly CassandraStatementConfigurator queryConfigurator;
-        readonly ICassandraPredicateProvider predicateProvider;
+        readonly CassandraStatementProvider statements;
+        readonly CassandraStatementConfigurator configure;
         bool disposedValue;
 
         public CassandraStreamRepository(ICassandraSessionFactory sessionFactory, ICassandraPredicateProvider predicateProvider, CassandraStorageConfiguration config)
         {
             session = sessionFactory.ThrowIfNull(nameof(session)).Open();
-            queryConfigurator = new CassandraStatementConfigurator(config);
-            this.predicateProvider = predicateProvider.ThrowIfNull(nameof(predicateProvider));
+            predicateProvider.ThrowIfNull(nameof(predicateProvider));
+            config.ThrowIfNull(nameof(config));
+            configure = new CassandraStatementConfigurator(config); 
             mappingConfig = ConfigureMapping(config);
             events = CreateTable<EventEntity>(session);
             metadata = CreateTable<EventMetadataEntity>(session);
             streamRevisions = CreateTable<RevisionStreamEntity>(session);
+            statements = new CassandraStatementProvider(configure, predicateProvider);
         }
 
 
         public async Task<int> GetStreamActualRevision(Id streamId)
         {
-            var id = (string)streamId;
-
-            var revisions = (
-                await queryConfigurator.ConfigureQuery<CqlQuery<int>>(
-                streamRevisions
-                      .Where(predicateProvider.StreamRevisions(streamId))
-                      .Select(er => er.Revision))
-                .ExecuteAsync()).ToArray();
+            var revisions = await statements.StreamRevisions(streamRevisions, streamId).ExecuteAsync();
 
             if (!revisions.Any())
             {
@@ -55,24 +50,23 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         public async Task DeleteStream(Id streamId)
         {
-            await events.Where(predicateProvider.StreamEvents(streamId)).Delete().ExecuteAsync();
+            await statements.DeleteStream(events, streamId).ExecuteAsync();
         }
 
         public async Task<IEnumerable<EventMetadataEntity>> FindMetadata(Id streamId)
         {
-            return await queryConfigurator.ConfigureQuery<CqlQuery<EventMetadataEntity>>(
-                            metadata.Where(predicateProvider.StreamMetadata(streamId))).ExecuteAsync();
+            return await statements.FindMetadata(metadata, streamId).ExecuteAsync();
         }
 
         public async Task<AppliedInfo<EventEntity>> AppendToStream(Id streamId, params EventRecord[] records)
         {
             var mapper = new Mapper(session, mappingConfig);
-            var batch = mapper.CreateBatch(BatchType.Logged);
-            var options = queryConfigurator.ConfigureInsert(new CqlQueryOptions());
+            var batch = configure.Batch(mapper.CreateBatch(BatchType.Logged));
+              
 
             foreach (var record in records)
             {
-                batch.InsertIfNotExists(record.ToEntity(streamId), options);
+                batch.InsertIfNotExists(record.ToEntity(streamId));
             }
 
             return await mapper.ExecuteConditionalAsync<EventEntity>(batch);
@@ -80,14 +74,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         public async Task<IEnumerable<EventEntity>> GetEvents(Id streamId, Revision startFrom, int count)
         {
-            string id = (string)streamId;
-            int revision = (int)startFrom;
-
-            return await queryConfigurator.ConfigureQuery<CqlQuery<EventEntity>>(
-                    events
-                        .Where(predicateProvider.StreamEvents(streamId, startFrom))
-                        .Take(count))
-                .ExecuteAsync();
+            return await statements.StreamEvents(events, streamId, startFrom, count).ExecuteAsync();
         }
 
         public async Task CreateSchemaIfNotExistsAsync()

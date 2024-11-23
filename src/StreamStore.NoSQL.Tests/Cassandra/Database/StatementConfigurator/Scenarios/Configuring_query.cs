@@ -33,7 +33,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.QueryConfigurator
             var configurator = new CassandraStatementConfigurator(config);
 
             // Act
-            configurator.ConfigureQuery<SimpleStatement>(statement);
+            configurator.Query<SimpleStatement>(statement);
 
             // Assert
             statement.ConsistencyLevel.Should().Be(config.ReadConsistencyLevel);
