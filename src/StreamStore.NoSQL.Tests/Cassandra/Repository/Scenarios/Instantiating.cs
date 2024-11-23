@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using Cassandra.Mapping;
+using FluentAssertions;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Database;
@@ -12,22 +13,23 @@ namespace StreamStore.NoSql.Tests.Cassandra.Repository
         public void When_any_parameter_is_not_set()
         {
             // Act
-            var act = () => new CassandraStreamRepository(null!, Generated.MockOf<ICassandraPredicateProvider>().Object, new CassandraStorageConfiguration());
+            var act = () => new CassandraStreamRepository(null!,  new CassandraStorageConfiguration(), new MappingConfiguration());
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
 
             // Act
-            act = () => new CassandraStreamRepository(Generated.MockOf<ICassandraSessionFactory>().Object, null! , new CassandraStorageConfiguration());
+            act = () => new CassandraStreamRepository(Generated.MockOf<ICassandraSessionFactory>().Object, null!, new MappingConfiguration());
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
 
             // Act
-            act = () => new CassandraStreamRepository(Generated.MockOf<ICassandraSessionFactory>().Object, Generated.MockOf<ICassandraPredicateProvider>().Object, null!);
+            act = () => new CassandraStreamRepository(Generated.MockOf<ICassandraSessionFactory>().Object, new CassandraStorageConfiguration(), null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
+
         }
     }
 }

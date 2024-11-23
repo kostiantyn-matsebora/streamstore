@@ -1,4 +1,5 @@
 ﻿using Cassandra;
+using Cassandra.Mapping;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Configuration;
 
@@ -7,19 +8,19 @@ namespace StreamStore.NoSql.Cassandra.Database
     internal class CassandraStreamRepositoryFactory : ICassandraStreamRepositoryFactory
     {
         readonly ICassandraSessionFactory sessionFactory;
-        readonly ICassandraPredicateProvider predicateProvider;
         readonly CassandraStorageConfiguration config;
+        private readonly MappingConfiguration mapping;
 
-        public CassandraStreamRepositoryFactory(ICassandraSessionFactory sessionFactory, ICassandraPredicateProvider predicateProvider, CassandraStorageConfiguration config)
+        public CassandraStreamRepositoryFactory(ICassandraSessionFactory sessionFactory, CassandraStorageConfiguration config, MappingConfiguration mapping)
         {
             this.sessionFactory = sessionFactory.ThrowIfNull(nameof(sessionFactory));
-            this.predicateProvider = predicateProvider.ThrowIfNull(nameof(predicateProvider));
             this.config = config.ThrowIfNull(nameof(config));
+            this.mapping = mapping.ThrowIfNull(nameof(mapping));
         }
 
         public ICassandraStreamRepository Create()
         {
-            return new CassandraStreamRepository(sessionFactory, predicateProvider, config);
+            return new CassandraStreamRepository(sessionFactory, config, mapping);
         }
     }
 }

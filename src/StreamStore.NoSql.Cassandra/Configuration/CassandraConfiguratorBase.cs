@@ -1,4 +1,5 @@
 ﻿using System;
+using Cassandra.Mapping;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Database;
@@ -39,7 +40,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         {
             services.AddSingleton(storageConfig);
             services.AddSingleton(typeof(ICassandraSessionFactory), sessionFactory);
-            services.AddSingleton<ICassandraPredicateProvider, CassandraPredicateProvider>();
+            services.AddSingleton(new MappingConfiguration().Define(new CassandraStreamMapping(storageConfig)));
         }
     }
 }

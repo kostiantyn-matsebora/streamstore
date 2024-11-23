@@ -30,8 +30,6 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
                     .Should().Be("default_keyspace");
             provider.GetRequiredService<ICassandraSessionFactory>()
                     .Should().BeOfType<FakeSessionFactory>();
-            provider.GetRequiredService<ICassandraPredicateProvider>()
-                .Should().NotBeNull();
             provider.GetRequiredService<CassandraStorageConfiguration>().Keyspace
                     .Should().Be("keyspace");
             provider.GetRequiredService<ICassandraStreamRepositoryFactory>()

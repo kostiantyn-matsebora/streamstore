@@ -19,6 +19,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         public ISession Open()
         {
+            var session = cluster.Connect(config.Keyspace);
             return cluster.Connect(config.Keyspace);
         }
     }

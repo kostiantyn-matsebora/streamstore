@@ -1,4 +1,5 @@
 ﻿using Cassandra;
+using Cassandra.Mapping;
 using FluentAssertions;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Provisioning;
@@ -15,7 +16,7 @@ public class Creating_provisioner : Scenario<ProvisionerFactorySuite>
         var tenantId = Generated.Id;
         Suite.ConfigurationProvider.Setup(x => x.GetStorageConfiguration(tenantId)).Returns(new CassandraStorageConfiguration());
         Suite.TenantClusterRegistry.Setup(x => x.GetCluster(tenantId)).Returns(Cluster.Builder().AddContactPoint("localhost").Build());
-        var provisionerFactory = new CassandraSchemaProvisionerFactory(Suite.ConfigurationProvider.Object, Suite.PredicateProvider.Object, Suite.TenantClusterRegistry.Object);
+        var provisionerFactory = new CassandraSchemaProvisionerFactory(Suite.ConfigurationProvider.Object, Suite.TenantClusterRegistry.Object, new MappingConfiguration());
 
         // Act
         var provisioner = provisionerFactory.Create(tenantId);

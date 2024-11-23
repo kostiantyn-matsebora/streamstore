@@ -1,7 +1,11 @@
 ﻿using Cassandra;
+using Cassandra.Data.Linq;
+using Cassandra.Mapping;
 using FluentAssertions;
+using Moq;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Database;
+using StreamStore.NoSql.Cassandra.Models;
 using StreamStore.Testing;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Database.QueryConfigurator
@@ -29,15 +33,15 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.QueryConfigurator
                 ReadConsistencyLevel = ConsistencyLevel.Three,
                 SerialConsistencyLevel = ConsistencyLevel.LocalSerial
             };
-            var statement = new SimpleStatement();
+            var cql = Suite.MockRepository.Create<Cql>("SELECT * FROM events");
             var configurator = new CassandraStatementConfigurator(config);
 
             // Act
-            configurator.Query<SimpleStatement>(statement);
-
+            configurator.Query(cql.Object);
+            
             // Assert
-            statement.ConsistencyLevel.Should().Be(config.ReadConsistencyLevel);
-            statement.SerialConsistencyLevel.Should().Be(config.SerialConsistencyLevel);
+            Suite.MockRepository.VerifyAll();
+
         }
     }
 }

@@ -12,11 +12,12 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
            this.config = config.ThrowIfNull(nameof(config));
         }
-        public TStatement Query<TStatement>(IStatement statement) where TStatement : IStatement
+        public Cql Query(Cql cql) 
         {
-            return (TStatement)statement
-                .SetConsistencyLevel(config.ReadConsistencyLevel)
-                .SetSerialConsistencyLevel(config.SerialConsistencyLevel);
+            return cql
+                  .WithOptions(o =>
+                    o.SetConsistencyLevel(config.ReadConsistencyLevel)
+                     .SetSerialConsistencyLevel(config.SerialConsistencyLevel));
         }
 
         public ICqlBatch Batch(ICqlBatch batch)

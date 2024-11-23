@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Cassandra;
-using Cassandra.Data.Linq;
 using Cassandra.Mapping;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Configuration;
@@ -13,54 +11,48 @@ namespace StreamStore.NoSql.Cassandra.Database
 {
     internal sealed class CassandraStreamRepository : ICassandraStreamRepository
     {
-
-        readonly Table<EventEntity> events;
-        readonly Table<EventMetadataEntity> metadata;
-        readonly Table<RevisionStreamEntity> streamRevisions;
         readonly ISession session;
-        readonly MappingConfiguration mappingConfig;
-        readonly CassandraStatementProvider statements;
         readonly CassandraStatementConfigurator configure;
+        readonly Mapper mapper;
+        readonly CassandraStorageConfiguration config;
         bool disposedValue;
 
-        public CassandraStreamRepository(ICassandraSessionFactory sessionFactory, ICassandraPredicateProvider predicateProvider, CassandraStorageConfiguration config)
+        public CassandraStreamRepository(ICassandraSessionFactory sessionFactory, CassandraStorageConfiguration config, MappingConfiguration mapping)
         {
             session = sessionFactory.ThrowIfNull(nameof(session)).Open();
-            predicateProvider.ThrowIfNull(nameof(predicateProvider));
-            config.ThrowIfNull(nameof(config));
+            this.config = config.ThrowIfNull(nameof(config));
             configure = new CassandraStatementConfigurator(config); 
-            mappingConfig = ConfigureMapping(config);
-            events = CreateTable<EventEntity>(session);
-            metadata = CreateTable<EventMetadataEntity>(session);
-            streamRevisions = CreateTable<RevisionStreamEntity>(session);
-            statements = new CassandraStatementProvider(configure, predicateProvider);
+            mapper = new Mapper(session, mapping.ThrowIfNull(nameof(mapping)));
         }
 
 
         public async Task<int> GetStreamActualRevision(Id streamId)
         {
-            var revisions = await statements.StreamRevisions(streamRevisions, streamId).ExecuteAsync();
-
-            if (!revisions.Any())
+            var cql = new Cql($"SELECT MAX(revision) FROM {config.EventsTableName} WHERE stream_id = ?", (string)streamId);
+            var revision = await mapper.SingleAsync<int?>(cql);
+            if (revision == null)
             {
                 return Revision.Zero;
             }
-            return revisions.Max();
+            return revision.Value;
         }
 
         public async Task DeleteStream(Id streamId)
         {
-            await statements.DeleteStream(events, streamId).ExecuteAsync();
+            var cql = new Cql($"DELETE FROM {config.EventsTableName} WHERE stream_id = ?", (string)streamId);
+            await mapper.ExecuteAsync(configure.Query(cql));
         }
 
         public async Task<IEnumerable<EventMetadataEntity>> FindMetadata(Id streamId)
         {
-            return await statements.FindMetadata(metadata, streamId).ExecuteAsync();
+            var cql = new Cql($"SELECT id, stream_id, timestamp, revision  FROM {config.EventsTableName} WHERE stream_id = ?", (string)streamId);
+
+            return await mapper.FetchAsync<EventMetadataEntity>(configure.Query(cql));
         }
 
         public async Task<AppliedInfo<EventEntity>> AppendToStream(Id streamId, params EventRecord[] records)
         {
-            var mapper = new Mapper(session, mappingConfig);
+                       
             var batch = configure.Batch(mapper.CreateBatch(BatchType.Logged));
               
 
@@ -74,24 +66,10 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         public async Task<IEnumerable<EventEntity>> GetEvents(Id streamId, Revision startFrom, int count)
         {
-            return await statements.StreamEvents(events, streamId, startFrom, count).ExecuteAsync();
-        }
+            var cql = new Cql($"SELECT *  FROM {config.EventsTableName} WHERE stream_id = ? AND revision >=? LIMIT ?", (string)streamId, (int)startFrom, count);
 
-        public async Task CreateSchemaIfNotExistsAsync()
-        {
-            await events.CreateIfNotExistsAsync();
+            return await mapper.FetchAsync<EventEntity>(configure.Query(cql));
         }
-
-        static MappingConfiguration ConfigureMapping(CassandraStorageConfiguration config)
-        {
-            return new MappingConfiguration().Define(new CassandraStreamMapping(config));
-        }
-
-        Table<T> CreateTable<T>(ISession session)
-        {
-            return new Table<T>(session, mappingConfig);
-        }
-
 
         void Dispose(bool disposing)
         {
