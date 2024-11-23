@@ -48,7 +48,6 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         public async Task<AppliedInfo<EventEntity>> AppendToStream(Id streamId, params EventRecord[] records)
         {
-                       
             var batch = configure.Batch(mapper.CreateBatch(BatchType.Logged));
               
 
