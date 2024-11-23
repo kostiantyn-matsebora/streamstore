@@ -14,22 +14,21 @@ namespace StreamStore.NoSql.Cassandra.Database
         readonly ISession session;
         readonly CassandraStatementConfigurator configure;
         readonly Mapper mapper;
-        readonly CassandraStorageConfiguration config;
+        readonly CassandraCqlQueries queries;
         bool disposedValue;
 
         public CassandraStreamRepository(ICassandraSessionFactory sessionFactory, CassandraStorageConfiguration config, MappingConfiguration mapping)
         {
             session = sessionFactory.ThrowIfNull(nameof(session)).Open();
-            this.config = config.ThrowIfNull(nameof(config));
             configure = new CassandraStatementConfigurator(config); 
             mapper = new Mapper(session, mapping.ThrowIfNull(nameof(mapping)));
+            queries = new CassandraCqlQueries(config);
         }
 
 
         public async Task<int> GetStreamActualRevision(Id streamId)
         {
-            var cql = new Cql($"SELECT MAX(revision) FROM {config.EventsTableName} WHERE stream_id = ?", (string)streamId);
-            var revision = await mapper.SingleAsync<int?>(cql);
+            var revision = await mapper.SingleAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
             if (revision == null)
             {
                 return Revision.Zero;
@@ -39,15 +38,12 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         public async Task DeleteStream(Id streamId)
         {
-            var cql = new Cql($"DELETE FROM {config.EventsTableName} WHERE stream_id = ?", (string)streamId);
-            await mapper.ExecuteAsync(configure.Query(cql));
+            await mapper.ExecuteAsync(configure.Query(queries.DeleteStream(streamId)));
         }
 
         public async Task<IEnumerable<EventMetadataEntity>> FindMetadata(Id streamId)
         {
-            var cql = new Cql($"SELECT id, stream_id, timestamp, revision  FROM {config.EventsTableName} WHERE stream_id = ?", (string)streamId);
-
-            return await mapper.FetchAsync<EventMetadataEntity>(configure.Query(cql));
+            return await mapper.FetchAsync<EventMetadataEntity>(configure.Query(queries.FindMetadata(streamId)));
         }
 
         public async Task<AppliedInfo<EventEntity>> AppendToStream(Id streamId, params EventRecord[] records)
@@ -66,9 +62,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         public async Task<IEnumerable<EventEntity>> GetEvents(Id streamId, Revision startFrom, int count)
         {
-            var cql = new Cql($"SELECT *  FROM {config.EventsTableName} WHERE stream_id = ? AND revision >=? LIMIT ?", (string)streamId, (int)startFrom, count);
-
-            return await mapper.FetchAsync<EventEntity>(configure.Query(cql));
+            return await mapper.FetchAsync<EventEntity>(configure.Query(queries.GetEvents(streamId, startFrom, count)));
         }
 
         void Dispose(bool disposing)
