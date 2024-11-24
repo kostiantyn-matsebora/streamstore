@@ -9,18 +9,18 @@ namespace StreamStore.NoSql.Cassandra.Database
     {
         readonly ICassandraSessionFactory sessionFactory;
         readonly CassandraStorageConfiguration config;
-        private readonly MappingConfiguration mapping;
+        readonly ICassandraMapperFactory mapperFactory;
 
-        public CassandraStreamRepositoryFactory(ICassandraSessionFactory sessionFactory, CassandraStorageConfiguration config, MappingConfiguration mapping)
+        public CassandraStreamRepositoryFactory(ICassandraSessionFactory sessionFactory, ICassandraMapperFactory mapperFactory, CassandraStorageConfiguration config)
         {
             this.sessionFactory = sessionFactory.ThrowIfNull(nameof(sessionFactory));
             this.config = config.ThrowIfNull(nameof(config));
-            this.mapping = mapping.ThrowIfNull(nameof(mapping));
+            this.mapperFactory = mapperFactory.ThrowIfNull(nameof(mapperFactory));
         }
 
         public ICassandraStreamRepository Create()
         {
-            return new CassandraStreamRepository(sessionFactory, config, mapping);
+            return new CassandraStreamRepository(sessionFactory, mapperFactory, config);
         }
     }
 }

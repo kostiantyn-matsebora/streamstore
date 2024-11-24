@@ -40,6 +40,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         {
             services.AddSingleton(storageConfig);
             services.AddSingleton(typeof(ICassandraSessionFactory), sessionFactory);
+            services.AddSingleton(typeof(ICassandraMapperFactory), typeof(CassandraMapperFactory));
             services.AddSingleton(new MappingConfiguration().Define(new CassandraStreamMapping(storageConfig)));
         }
     }

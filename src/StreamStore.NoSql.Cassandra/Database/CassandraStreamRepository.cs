@@ -13,16 +13,20 @@ namespace StreamStore.NoSql.Cassandra.Database
     {
         readonly ISession session;
         readonly CassandraStatementConfigurator configure;
-        readonly Mapper mapper;
         readonly CassandraCqlQueries queries;
         bool disposedValue;
+        private IMapper mapper;
 
-        public CassandraStreamRepository(ICassandraSessionFactory sessionFactory, CassandraStorageConfiguration config, MappingConfiguration mapping)
+        public CassandraStreamRepository(ICassandraSessionFactory sessionFactory, ICassandraMapperFactory mapperFactory, CassandraStorageConfiguration config)
         {
-            session = sessionFactory.ThrowIfNull(nameof(session)).Open();
-            configure = new CassandraStatementConfigurator(config); 
-            mapper = new Mapper(session, mapping.ThrowIfNull(nameof(mapping)));
+            sessionFactory.ThrowIfNull(nameof(sessionFactory));
+            config.ThrowIfNull(nameof(config));
+            mapperFactory.ThrowIfNull(nameof(mapperFactory));
+
+            session = sessionFactory.Open();
+            configure = new CassandraStatementConfigurator(config);
             queries = new CassandraCqlQueries(config);
+            mapper = mapperFactory.CreateMapper(session);
         }
 
 

@@ -5,15 +5,15 @@ using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Database;
 using StreamStore.Testing;
 
-namespace StreamStore.NoSql.Tests.Cassandra.Repository
+namespace StreamStore.NoSql.Tests.Cassandra.Database.Repository
 {
     public class Instantiating : Scenario
     {
         [Fact]
-        public void When_any_parameter_is_not_set()
+        public void When_any_argument_is_not_set()
         {
             // Act
-            var act = () => new CassandraStreamRepository(null!,  Generated.MockOf<ICassandraMapperFactory>().Object, new CassandraStorageConfiguration());
+            var act = () => new CassandraStreamRepository(null!, Generated.MockOf<ICassandraMapperFactory>().Object, new CassandraStorageConfiguration());
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
@@ -29,7 +29,6 @@ namespace StreamStore.NoSql.Tests.Cassandra.Repository
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
-
         }
     }
 }
