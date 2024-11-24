@@ -87,7 +87,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.MultitenantConfigurato
             provider.GetService<ICassandraKeyspaceProvider>()
                     .Should().NotBeNull()
                     .And.BeOfType<FakeKeyspaceProvider>();
-            provider.GetRequiredService<ICassandraStorageConfigurationProvider>()
+            provider.GetRequiredService<ICassandraTenantStorageConfigurationProvider>()
                    .Should().NotBeNull()
                    .And.BeOfType<FakeStorageConfigurationProvider>();
             provider.GetRequiredService<CassandraStorageConfiguration>().Keyspace
@@ -127,9 +127,9 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.MultitenantConfigurato
             }
         }
 
-        class FakeStorageConfigurationProvider : ICassandraStorageConfigurationProvider
+        class FakeStorageConfigurationProvider : ICassandraTenantStorageConfigurationProvider
         {
-            public CassandraStorageConfiguration GetStorageConfiguration(Id tenanId)
+            public CassandraStorageConfiguration GetConfiguration(Id tenanId)
             {
                 throw new NotImplementedException();
             }

@@ -11,15 +11,9 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 {
     public abstract class CassandraConfiguratorBase
     {
-        Type sessionFactory = typeof(CassandraSessionFactory);
 
-        CassandraStorageConfiguration storageConfig = new CassandraStorageConfiguration();
 
-        public CassandraConfiguratorBase WithSessionFactory<TSessionFactory>() where TSessionFactory : ICassandraSessionFactory
-        {
-            sessionFactory = typeof(TSessionFactory);
-            return this;
-        }
+        protected CassandraStorageConfiguration storageConfig = new CassandraStorageConfiguration();
 
         protected void ConfigureStorageInstance(Action<CassandraStorageConfigurationBuilder> configure)
         {
@@ -39,9 +33,6 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         void ApplySharedDependencies(IServiceCollection services)
         {
             services.AddSingleton(storageConfig);
-            services.AddSingleton(typeof(ICassandraSessionFactory), sessionFactory);
-            services.AddSingleton(typeof(ICassandraMapperFactory), typeof(CassandraMapperFactory));
-            services.AddSingleton(new MappingConfiguration().Define(new CassandraStreamMapping(storageConfig)));
         }
     }
 }

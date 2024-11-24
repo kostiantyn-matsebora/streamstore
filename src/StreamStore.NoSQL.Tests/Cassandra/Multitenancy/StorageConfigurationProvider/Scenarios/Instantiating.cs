@@ -13,13 +13,13 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.StorageConfigurationPro
         {
 
             // Act
-            var act = () => new DefaultCassandraStorageConfigurationProvider(null!, new CassandraStorageConfiguration());
+            var act = () => new CassandraStorageConfigurationProvider(null!, new CassandraStorageConfiguration());
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
 
             // Act
-            act = () => new DefaultCassandraStorageConfigurationProvider(Generated.MockOf<ICassandraKeyspaceProvider>().Object, null!);
+            act = () => new CassandraStorageConfigurationProvider(Generated.MockOf<ICassandraKeyspaceProvider>().Object, null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();

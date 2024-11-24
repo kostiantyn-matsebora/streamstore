@@ -8,13 +8,13 @@ namespace StreamStore.NoSql.Tests.Cassandra.Provisioning.ProvisionerFactory
     public class ProvisionerFactorySuite : TestSuite
     {
 
-        internal readonly Mock<ICassandraStorageConfigurationProvider> ConfigurationProvider;
-        internal readonly Mock<ICassandraTenantClusterRegistry> TenantClusterRegistry;
+        internal readonly Mock<ICassandraTenantStorageConfigurationProvider> ConfigurationProvider;
+        internal readonly Mock<ICassandraTenantMapperProvider> TenantMapperProvider;
 
         public ProvisionerFactorySuite()
         {
-            TenantClusterRegistry = MockRepository.Create<ICassandraTenantClusterRegistry>();
-            ConfigurationProvider = MockRepository.Create<ICassandraStorageConfigurationProvider>();
+            TenantMapperProvider = MockRepository.Create<ICassandraTenantMapperProvider>();
+            ConfigurationProvider = MockRepository.Create<ICassandraTenantStorageConfigurationProvider>();
         }
     }
 }

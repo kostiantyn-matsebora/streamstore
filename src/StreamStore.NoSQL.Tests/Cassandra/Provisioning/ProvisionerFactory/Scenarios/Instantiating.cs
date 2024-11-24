@@ -15,18 +15,13 @@ namespace StreamStore.NoSql.Tests.Cassandra.Provisioning.ProvisionerFactory
         {
 
             // Act
-            var act = () => new CassandraSchemaProvisionerFactory(null!, Generated.MockOf<ICassandraTenantClusterRegistry>().Object, new MappingConfiguration());
+            var act = () => new CassandraSchemaProvisionerFactory(null!, Generated.MockOf<ICassandraTenantMapperProvider>().Object);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
 
             // Act
-            act = () => new CassandraSchemaProvisionerFactory(Generated.MockOf<ICassandraStorageConfigurationProvider>().Object, null!, new MappingConfiguration());
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>();
-
-            act = () => new CassandraSchemaProvisionerFactory(Generated.MockOf<ICassandraStorageConfigurationProvider>().Object, Generated.MockOf<ICassandraTenantClusterRegistry>().Object, null!);
+            act = () => new CassandraSchemaProvisionerFactory(Generated.MockOf<ICassandraTenantStorageConfigurationProvider>().Object, null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();

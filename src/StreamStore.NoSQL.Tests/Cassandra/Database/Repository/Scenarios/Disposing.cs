@@ -13,13 +13,11 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Repository
         public void When_disposing()
         {
             // Arrange
-            var sessionFactory = Suite.MockRepository.Create<ICassandraSessionFactory>();
-            var session = Suite.MockRepository.Create<ISession>();
-            session.Setup(x => x.Dispose());
-            var mapperFactory = Suite.MockRepository.Create<ICassandraMapperFactory>();
-            mapperFactory.Setup(x => x.CreateMapper(session.Object)).Returns(Suite.MockRepository.Create<IMapper>().Object);
-            sessionFactory.Setup(x => x.Open()).Returns(session.Object);
-            var repository = new CassandraStreamRepository(sessionFactory.Object, mapperFactory.Object, new CassandraStorageConfiguration());
+            var config = new CassandraStorageConfiguration();
+
+            var mapper = Suite.MockRepository.Create<ICassandraMapper>();
+            mapper.Setup(x => x.Dispose());
+            var repository = new CassandraStreamRepository(mapper.Object, config);
 
             // Act
             repository.Dispose();

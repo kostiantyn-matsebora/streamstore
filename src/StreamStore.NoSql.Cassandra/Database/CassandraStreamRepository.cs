@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cassandra;
 using Cassandra.Mapping;
-using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Models;
 
@@ -11,22 +10,17 @@ namespace StreamStore.NoSql.Cassandra.Database
 {
     internal sealed class CassandraStreamRepository : ICassandraStreamRepository
     {
-        readonly ISession session;
         readonly CassandraStatementConfigurator configure;
         readonly CassandraCqlQueries queries;
         bool disposedValue;
-        private IMapper mapper;
+        readonly ICassandraMapper mapper;
 
-        public CassandraStreamRepository(ICassandraSessionFactory sessionFactory, ICassandraMapperFactory mapperFactory, CassandraStorageConfiguration config)
+        public CassandraStreamRepository(ICassandraMapper mapper, CassandraStorageConfiguration config)
         {
-            sessionFactory.ThrowIfNull(nameof(sessionFactory));
             config.ThrowIfNull(nameof(config));
-            mapperFactory.ThrowIfNull(nameof(mapperFactory));
-
-            session = sessionFactory.Open();
+            this.mapper = mapper.ThrowIfNull(nameof(mapper));
             configure = new CassandraStatementConfigurator(config);
             queries = new CassandraCqlQueries(config);
-            mapper = mapperFactory.CreateMapper(session);
         }
 
 
@@ -53,7 +47,7 @@ namespace StreamStore.NoSql.Cassandra.Database
         public async Task<AppliedInfo<EventEntity>> AppendToStream(Id streamId, params EventRecord[] records)
         {
             var batch = configure.Batch(mapper.CreateBatch(BatchType.Logged));
-              
+
 
             foreach (var record in records)
             {
@@ -74,7 +68,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             {
                 if (disposing)
                 {
-                    session.Dispose();
+                    mapper.Dispose();
                 }
                 disposedValue = true;
             }

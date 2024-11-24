@@ -3,18 +3,18 @@ using StreamStore.NoSql.Cassandra.Configuration;
 
 namespace StreamStore.NoSql.Cassandra.Multitenancy
 {
-    internal class DefaultCassandraStorageConfigurationProvider : ICassandraStorageConfigurationProvider
+    internal class CassandraStorageConfigurationProvider : ICassandraTenantStorageConfigurationProvider
     {
         readonly ICassandraKeyspaceProvider keyspaceProvider;
         private readonly CassandraStorageConfiguration prototype;
 
-        public DefaultCassandraStorageConfigurationProvider(ICassandraKeyspaceProvider keyspaceProvider, CassandraStorageConfiguration prototype)
+        public CassandraStorageConfigurationProvider(ICassandraKeyspaceProvider keyspaceProvider, CassandraStorageConfiguration prototype)
         {
             this.keyspaceProvider = keyspaceProvider.ThrowIfNull(nameof(keyspaceProvider));
             this.prototype = prototype.ThrowIfNull(nameof(prototype));
         }
 
-        public CassandraStorageConfiguration GetStorageConfiguration(Id tenanId)
+        public CassandraStorageConfiguration GetConfiguration(Id tenanId)
         {
             var config = (CassandraStorageConfiguration)prototype.Clone();
             config.Keyspace = keyspaceProvider.GetKeyspace(tenanId);

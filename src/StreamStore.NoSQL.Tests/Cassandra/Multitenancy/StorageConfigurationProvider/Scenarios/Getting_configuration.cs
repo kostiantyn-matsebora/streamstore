@@ -25,10 +25,10 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.StorageConfigurationPro
                 .Build();
 
             keyspaceProvider.Setup(x => x.GetKeyspace(tenant)).Returns(keyspace);
-            var provider = new DefaultCassandraStorageConfigurationProvider(Suite.CassandraKeyspaceProvider.Object, configuration);
+            var provider = new CassandraStorageConfigurationProvider(Suite.CassandraKeyspaceProvider.Object, configuration);
 
             // Act
-            var result = provider.GetStorageConfiguration(tenant);
+            var result = provider.GetConfiguration(tenant);
 
             // Assert
             Suite.MockRepository.VerifyAll();

@@ -10,7 +10,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
     {
         DelegateTenantClusterConfigurator tenantClusterConfigurator = new DelegateTenantClusterConfigurator();
         DelegateClusterConfigurator? clusterConfigurator;
-        Type storageConfigurationProviderType = typeof(DefaultCassandraStorageConfigurationProvider);
+        Type storageConfigurationProviderType = typeof(CassandraStorageConfigurationProvider);
         Type? keyspaceProviderType;
 
 
@@ -34,7 +34,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             return this;
         }
 
-        public CassandraMultitenantConfigurator WithStorageConfigurationProvider<TStorageConfigurationProvider>() where TStorageConfigurationProvider : ICassandraStorageConfigurationProvider
+        public CassandraMultitenantConfigurator WithStorageConfigurationProvider<TStorageConfigurationProvider>() where TStorageConfigurationProvider : ICassandraTenantStorageConfigurationProvider
         {
             storageConfigurationProviderType = typeof(TStorageConfigurationProvider);
             return this;
@@ -70,10 +70,12 @@ namespace StreamStore.NoSql.Cassandra.Configuration
                 services.AddSingleton(typeof(ICassandraKeyspaceProvider), keyspaceProvider);
             }
 
-            services.AddSingleton(typeof(ICassandraStorageConfigurationProvider), storageConfigurationProviderType);
+            services.AddSingleton(typeof(ICassandraTenantStorageConfigurationProvider), storageConfigurationProviderType);
+            services.AddSingleton(typeof(ICassandraTenantMapperProvider), typeof(CassandraTenantMapperProvider));
             services.AddSingleton(typeof(ITenantClusterConfigurator), tenantClusterConfigurator);
             services.AddSingleton(typeof(IClusterConfigurator), clusterConfigurator);
             services.AddSingleton<ICassandraTenantClusterRegistry, CassandraTenantClusterRegistry>();
+            services.AddSingleton<ICassandraTenantMappingRegistry, CassandraTenantMappingRegistry>();
         }
     }
 }

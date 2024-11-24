@@ -13,23 +13,16 @@ namespace StreamStore.NoSql.Tests.Cassandra.Repository
         public void When_any_parameter_is_not_set()
         {
             // Act
-            var act = () => new CassandraStreamRepository(null!,  Generated.MockOf<ICassandraMapperFactory>().Object, new CassandraStorageConfiguration());
+            var act = () => new CassandraStreamRepository(null!,  new CassandraStorageConfiguration());
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
 
             // Act
-            act = () => new CassandraStreamRepository(Generated.MockOf<ICassandraSessionFactory>().Object, null!, new CassandraStorageConfiguration());
+            act = () => new CassandraStreamRepository(Generated.MockOf<ICassandraMapper>().Object, null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
-
-            // Act
-            act = () => new CassandraStreamRepository(Generated.MockOf<ICassandraSessionFactory>().Object, Generated.MockOf<ICassandraMapperFactory>().Object, null!);
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>();
-
         }
     }
 }
