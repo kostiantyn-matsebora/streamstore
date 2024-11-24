@@ -43,7 +43,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         public async Task<IEnumerable<EventMetadataEntity>> FindMetadata(Id streamId)
         {
-            return await mapper.FetchAsync<EventMetadataEntity>(configure.Query(queries.FindMetadata(streamId)));
+            return await mapper.FetchAsync<EventMetadataEntity>(configure.Query(queries.StreamMetadata(streamId)));
         }
 
         public async Task<AppliedInfo<EventEntity>> AppendToStream(Id streamId, params EventRecord[] records)
@@ -61,7 +61,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         public async Task<IEnumerable<EventEntity>> GetEvents(Id streamId, Revision startFrom, int count)
         {
-            return await mapper.FetchAsync<EventEntity>(configure.Query(queries.GetEvents(streamId, startFrom, count)));
+            return await mapper.FetchAsync<EventEntity>(configure.Query(queries.StreamEvents(streamId, startFrom, count)));
         }
 
         void Dispose(bool disposing)
