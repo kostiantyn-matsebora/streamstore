@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.13.0] - 2024-11-25
+
+### Added
+
+- Added Apache Cassandra support.
+
 ## [0.12.0] - 2024-11-15
 
 ### Fixed
