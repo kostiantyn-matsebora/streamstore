@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
     <Version>0.7.0</Version>
-    <Description>In-memory database backend for StreamStore asynchronous event sourcing library is provided **for testing and educational purposes only**</Description>
+    <Description>In-memory storage for StreamStore asynchronous event sourcing library is provided **for testing and educational purposes only**</Description>
     <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
@@ -13,6 +13,7 @@
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <IsPackable>true</IsPackable>
+    <Title>In-memory storage for StreamStore asynchronous event sourcing library is provided **for testing and educational purposes only**</Title>
   </PropertyGroup>
 
   <ItemGroup>

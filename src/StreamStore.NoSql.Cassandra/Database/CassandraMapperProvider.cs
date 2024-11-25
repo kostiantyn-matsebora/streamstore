@@ -17,7 +17,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         public ICassandraMapper OpenMapper()
         {
-            return new CassandraMapperDecorator(sessionFactory.Open(), mapping);
+            return new DisposableCassandraMapper(sessionFactory.Open(), mapping);
         }
     }
 }
