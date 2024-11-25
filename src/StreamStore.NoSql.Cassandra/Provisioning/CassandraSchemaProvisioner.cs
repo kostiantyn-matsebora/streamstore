@@ -10,27 +10,20 @@ namespace StreamStore.NoSql.Cassandra.Provisioning
     internal class CassandraSchemaProvisioner : ISchemaProvisioner
     {
         readonly ICassandraMapperProvider mapperProvider;
-        private readonly CassandraStorageConfiguration config;
+        readonly CassandraCqlQueries queries;
 
         public CassandraSchemaProvisioner(ICassandraMapperProvider mapperProvider, CassandraStorageConfiguration config)
         {
 
             this.mapperProvider = mapperProvider.ThrowIfNull(nameof(mapperProvider));
-            this.config = config.ThrowIfNull(nameof(config));
+            this.queries = new CassandraCqlQueries(config.ThrowIfNull(nameof(config)));
         }
 
         public async Task ProvisionSchemaAsync(CancellationToken token)
         {
             using (var mapper = mapperProvider.OpenMapper())
             {
-                await mapper.ExecuteAsync(@$"CREATE TABLE IF NOT EXISTS {config.EventsTableName}
-                        (id text,
-                        stream_id text,
-                        revision int,
-                        timestamp timestamp,
-                        data blob,
-                        PRIMARY KEY(stream_id, revision)
-                        );");
+                await mapper.ExecuteAsync(queries.CreateEventsTable());
             }
         }
     }

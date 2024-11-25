@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Cassandra.Mapping;
 using FluentAssertions;
 using Moq;
 using StreamStore.Testing;
@@ -13,7 +14,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
 
             // Arrange 
             var streamId = Generated.Id;
-            Suite.StreamRepository.Setup(x => x.GetStreamActualRevision(streamId)).ReturnsAsync(0);
+            Suite.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(0);
 
             // Act
             var uow = await Suite.StreamDatabase.BeginAppendAsync(streamId);

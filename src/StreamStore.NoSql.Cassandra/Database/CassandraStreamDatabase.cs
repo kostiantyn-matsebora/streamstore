@@ -2,61 +2,72 @@
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Database;
+using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Models;
 
 namespace StreamStore.NoSql.Cassandra.Database
 {
     internal class CassandraStreamDatabase : StreamDatabaseBase
     {
-        readonly ICassandraStreamRepositoryFactory repositoryFactory;
+        readonly ICassandraMapperProvider mapperProvider;
+        readonly CassandraStatementConfigurator configure;
+        readonly CassandraCqlQueries queries;
 
-        public CassandraStreamDatabase(ICassandraStreamRepositoryFactory repositoryFactory)
+        public CassandraStreamDatabase(ICassandraMapperProvider mapperProvider, CassandraStorageConfiguration config)
         {
-            this.repositoryFactory = repositoryFactory.ThrowIfNull(nameof(repositoryFactory));
+            this.mapperProvider = mapperProvider.ThrowIfNull(nameof(mapperProvider));
+            config = config.ThrowIfNull(nameof(config));
+            configure = new CassandraStatementConfigurator(config);
+            queries = new CassandraCqlQueries(config);
         }
 
         protected override Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
             return Task.FromResult<IStreamUnitOfWork>(
-                new CassandraStreamUnitOfWork(streamId, expectedStreamVersion, null, repositoryFactory));
+                new CassandraStreamUnitOfWork(streamId, expectedStreamVersion, null, mapperProvider, configure, queries));
         }
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
         {
-            using (var repo = repositoryFactory.Create())
+            using (var mapper = mapperProvider.OpenMapper())
             {
-                await repo.DeleteStream(streamId);
+                await mapper.ExecuteAsync(configure.Query(queries.DeleteStream(streamId)));
             }
         }
 
         protected override async Task<EventMetadataRecordCollection?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default)
         {
-            using (var repo = repositoryFactory.Create())
+            using (var mapper = mapperProvider.OpenMapper())
             {
-                var metadata = (await repo.FindMetadata(streamId)).ToArray();
+                var metadata = await mapper.FetchAsync<EventMetadataEntity>(configure.Query(queries.StreamMetadata(streamId)));
 
                 if (!metadata.Any())
                 {
                     return null;
                 }
 
-                return new EventMetadataRecordCollection(metadata.ToRecords());
+                return new EventMetadataRecordCollection(metadata.ToArray().ToRecords());
             }
         }
 
         protected override async Task<int> GetActualRevision(Id streamId, CancellationToken token = default)
         {
-            using (var repo = repositoryFactory.Create())
+            using (var mapper = mapperProvider.OpenMapper())
             {
-                return await repo.GetStreamActualRevision(streamId);
+                var revision = await mapper.SingleAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
+                if (revision == null)
+                {
+                    return Revision.Zero;
+                }
+                return revision.Value;
             }
         }
 
         protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-            using (var repo = repositoryFactory.Create())
+            using (var mapper = mapperProvider.OpenMapper())
             {
-                var events = await repo.GetEvents(streamId, startFrom, count);
+                var events = await mapper.FetchAsync<EventEntity>(configure.Query(queries.StreamEvents(streamId, startFrom, count)));
                 return events.ToArray().ToRecords();
             }
         }

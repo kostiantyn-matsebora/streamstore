@@ -20,10 +20,7 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
 
         public IStreamDatabase GetDatabase(Id tenantId)
         {
-            return new CassandraStreamDatabase(
-                        new CassandraStreamRepositoryFactory(
-                            mapperProvider.GetMapperProvider(tenantId),
-                            configProvider.GetConfiguration(tenantId)));
+            return new CassandraStreamDatabase(mapperProvider.GetMapperProvider(tenantId), configProvider.GetConfiguration(tenantId));
         }
     }
 }

@@ -35,7 +35,6 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         {
           if (cluster == null) throw new InvalidOperationException("Cluster not configured");
           services.AddSingleton(cluster);
-          services.AddSingleton<ICassandraStreamRepositoryFactory, CassandraStreamRepositoryFactory>();
           services.AddSingleton(typeof(ICassandraSessionFactory), sessionFactory);
           services.AddSingleton(typeof(ICassandraMapperProvider), typeof(CassandraMapperProvider));
           services.AddSingleton(new MappingConfiguration().Define(new CassandraStreamMapping(storageConfig)));

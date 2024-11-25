@@ -33,8 +33,6 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
             provider.GetRequiredService<ICassandraMapperProvider>().Should().NotBeNull();
             provider.GetRequiredService<CassandraStorageConfiguration>().Keyspace
                     .Should().Be("keyspace");
-            provider.GetRequiredService<ICassandraStreamRepositoryFactory>()
-                    .Should().NotBeNull();
         }
 
         [Fact]

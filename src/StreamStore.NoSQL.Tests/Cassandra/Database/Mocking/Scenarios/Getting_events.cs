@@ -1,4 +1,5 @@
 ﻿
+using Cassandra.Mapping;
 using FluentAssertions;
 using Moq;
 using StreamStore.NoSql.Cassandra.Models;
@@ -14,7 +15,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
         {
             // Arrange
             var streamId = Generated.Id;
-            Suite.StreamRepository.Setup(x => x.FindMetadata(streamId)).ReturnsAsync(Array.Empty<EventMetadataEntity>());
+            Suite.Mapper.Setup(x => x.FetchAsync<EventMetadataEntity>(It.IsAny<Cql>())).ReturnsAsync(Array.Empty<EventMetadataEntity>());
 
             // Act
             var result = await Suite.StreamDatabase.FindMetadataAsync(streamId);
@@ -31,7 +32,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
             var streamId = Generated.Id;
             var events = Generated.CreateMany<EventMetadataEntity>(10);
 
-            Suite.StreamRepository.Setup(x => x.FindMetadata(streamId)).ReturnsAsync(events);
+            Suite.Mapper.Setup(x => x.FetchAsync<EventMetadataEntity>(It.IsAny<Cql>())).ReturnsAsync(events);
 
             // Act
             var result = await Suite.StreamDatabase.FindMetadataAsync(streamId);
@@ -51,8 +52,8 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
             var startFrom = Generated.Revision;
             var count = 5;
 
-            Suite.StreamRepository.Setup(x => x.GetEvents(streamId, startFrom, count)).ReturnsAsync(events);
-            Suite.StreamRepository.Setup(x => x.GetStreamActualRevision(streamId)).ReturnsAsync(events.Length + startFrom);
+            Suite.Mapper.Setup(x => x.FetchAsync<EventEntity>(It.IsAny<Cql>())).ReturnsAsync(events);
+            Suite.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(15);
             // Act
             var result = await Suite.StreamDatabase.ReadAsync(streamId, startFrom, count, CancellationToken.None);
 
