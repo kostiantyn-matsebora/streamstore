@@ -7,6 +7,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.DatabaseProvider;
 
 public class Instantiating : Scenario
 {
+    [Fact]
     public void When_any_argument_is_not_set()
     {
         // Act

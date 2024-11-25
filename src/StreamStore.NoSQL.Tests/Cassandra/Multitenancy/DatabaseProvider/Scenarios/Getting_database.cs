@@ -10,7 +10,8 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.DatabaseProvider;
 
 public class Getting_database: Scenario
 {
-    
+
+    [Fact]   
     public void When_getting_database() {
         // Arrange
         var tenant = Generated.Id;
@@ -27,5 +28,6 @@ public class Getting_database: Scenario
         
         // Assert
         database.Should().NotBeNull();
+        Suite.MockRepository.VerifyAll();
     }
 }
