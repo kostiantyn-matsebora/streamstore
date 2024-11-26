@@ -200,6 +200,10 @@ Example projects provides a simple console application that demonstrates how to 
 
 For getting all running options simply run the application with `--help` argument.
 
+## Create your own storage implementation
+
+How to create your own storage implementation you can find in [CUSTOMIZATION.md](CUSTOMIZATION.md).
+
 ## Contributing
 
 If you experience any issues, have a question or a suggestion, or if you wish
