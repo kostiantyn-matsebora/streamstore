@@ -2,7 +2,7 @@
 
 namespace StreamStore.Sql.Tests.Sqlite.Database
 {
-    public class SqliteTestSuite : SqlTestSuiteBase
+    public class SqliteTestSuite : SqlTestSuiteBase<SqliteTestDatabase>
     {
         public SqliteTestSuite(): this(new SqliteDatabaseFixture())
         {

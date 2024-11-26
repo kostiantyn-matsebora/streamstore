@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using System.Linq;
+
 using System.Diagnostics.CodeAnalysis;
+using StopwatchTimer;
 
 
 namespace StreamStore.ExampleBase
@@ -18,9 +19,11 @@ namespace StreamStore.ExampleBase
 
         protected override async Task DoWorkAsync(int sleepPeriod, CancellationToken token)
         {
-            var events = await store.ReadToEndAsync(streamId, token);
-            logger.LogInformation("Read {count} events. Waiting {sleepPeriod} miliseconds before next iteration.", events.Count(), sleepPeriod);
-
+            using (new CodeStopWatch("Reading stream to end", s => logger.LogInformation(s)))
+            {
+                await store.ReadToEndAsync(streamId, token);
+            }
+            logger.LogInformation("Sleeping for {sleepPeriod} miliseconds...", sleepPeriod);
             await Task.Delay(sleepPeriod, token);
         }
     }

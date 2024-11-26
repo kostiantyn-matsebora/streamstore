@@ -128,9 +128,9 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
                   .SaveChangesAsync();
 
             // Assert
-            var metadata = await Database.FindMetadataAsync(streamId);
-            metadata.Should().NotBeNull();
-            metadata!.MaxRevision.Should().Be(revision + 2);
+            var actualRevision = await Database.GetActualRevision(streamId);
+            actualRevision.Should().NotBeNull();
+            actualRevision!.Should().Be(revision + 2);
 
             // Act
             await Database.BeginAppendAsync(streamId, revision + 2)
@@ -138,9 +138,9 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
                    .SaveChangesAsync();
 
             // Assert
-            metadata = await Database.FindMetadataAsync(streamId);
-            metadata.Should().NotBeNull();
-            metadata!.MaxRevision.Should().Be(revision + 2 + 1);
+            actualRevision = await Database.GetActualRevision(streamId);
+            actualRevision.Should().NotBeNull();
+            actualRevision!.Should().Be(revision + 2 + 1);
 
             // Act
             await Database.BeginAppendAsync(streamId, revision + 2 + 1)
@@ -152,9 +152,9 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
                   .SaveChangesAsync();
 
             // Assert
-            metadata = await Database.FindMetadataAsync(streamId);
-            metadata.Should().NotBeNull();
-            metadata!.MaxRevision.Should().Be(revision + 2 + 1 + 5);
+            actualRevision = await Database.GetActualRevision(streamId);
+            actualRevision.Should().NotBeNull();
+            actualRevision!.Should().Be(revision + 2 + 1 + 5);
         }
     }
 }

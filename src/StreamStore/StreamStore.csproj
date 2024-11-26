@@ -11,7 +11,7 @@
     <Authors>kostiantyn-matsebora</Authors>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>StreamStore</PackageId>
-    <Version>0.12.0</Version>
+    <Version>0.13.0</Version>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>event sourcing; streams; stream store; stream; async</PackageTags>

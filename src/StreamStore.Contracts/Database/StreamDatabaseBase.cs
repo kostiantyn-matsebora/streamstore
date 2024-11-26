@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
@@ -14,9 +14,10 @@ namespace StreamStore.Database
             if (expectedStreamVersion < 0)
                 throw new ArgumentOutOfRangeException(nameof(expectedStreamVersion), "Expected stream version must be equal or greater than 0.");
 
-            var actualRevision = await GetActualRevision(streamId);
+            var actualRevision = await GetActualRevisionInternal(streamId);
+            if (actualRevision == null) actualRevision = Revision.Zero;
             if (actualRevision != expectedStreamVersion)
-                throw new OptimisticConcurrencyException(expectedStreamVersion, actualRevision, streamId);
+                throw new OptimisticConcurrencyException(expectedStreamVersion, actualRevision.Value, streamId);
             
             return await BeginAppendAsyncInternal(streamId, expectedStreamVersion, token);
         }
@@ -27,10 +28,11 @@ namespace StreamStore.Database
             await DeleteAsyncInternal(streamId, token);
         }
 
-        public async Task<EventMetadataRecordCollection?> FindMetadataAsync(Id streamId, CancellationToken token = default)
+        public async Task<Revision?> GetActualRevision(Id streamId, CancellationToken token = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
-            return await FindMetadataAsyncInternal(streamId, token);
+            var actualRevision = await GetActualRevisionInternal(streamId);
+            return actualRevision == Revision.Zero ? null : (Revision?)actualRevision;
         }
 
         public async Task<EventRecordCollection> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
@@ -38,14 +40,18 @@ namespace StreamStore.Database
            if (startFrom <= 0)
                 throw new ArgumentOutOfRangeException(nameof(startFrom), "Revision must be equal or greater 1.");
 
-           return new EventRecordCollection(await ReadAsyncInternal(streamId, startFrom, count, token));
+           var actualRevision = await GetActualRevisionInternal(streamId);
+
+            if (actualRevision == null || actualRevision == Revision.Zero)
+                throw new StreamNotFoundException(streamId);
+
+            return new EventRecordCollection(await ReadAsyncInternal(streamId, startFrom, count, token));
         }
 
         protected abstract Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default);
         protected abstract Task DeleteAsyncInternal(Id streamId, CancellationToken token = default);
         protected abstract Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default);
-        protected abstract Task<EventMetadataRecordCollection?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default);
-        protected abstract Task<int> GetActualRevision(Id streamId, CancellationToken token = default);
+        protected abstract Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default);
 
     }
 }

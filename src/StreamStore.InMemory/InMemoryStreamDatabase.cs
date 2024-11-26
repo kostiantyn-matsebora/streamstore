@@ -35,12 +35,12 @@ namespace StreamStore.InMemory
             return Task.CompletedTask;
         }
 
-        public Task<EventMetadataRecordCollection?> FindMetadataAsync(Id streamId, CancellationToken token = default)
+        public Task<Revision?> GetActualRevision(Id streamId, CancellationToken token = default)
         {
             if (!store.TryGetValue(streamId, out var record))
-                return Task.FromResult<EventMetadataRecordCollection?>(null);
+                return Task.FromResult<Revision?>(null!);
 
-            return Task.FromResult<EventMetadataRecordCollection?>(new EventMetadataRecordCollection(record));
+            return Task.FromResult<Revision?>(new EventMetadataRecordCollection(record).MaxRevision);
         }
 
         public Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)

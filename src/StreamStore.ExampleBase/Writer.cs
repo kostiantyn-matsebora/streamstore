@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using Microsoft.Extensions.Logging;
+using StopwatchTimer;
 using StreamStore.Exceptions;
 
 namespace StreamStore.ExampleBase
@@ -23,14 +24,15 @@ namespace StreamStore.ExampleBase
         {
             try
             {
-                actualRevision =
+                using (new CodeStopWatch("Writing 3 events to stream", s => logger.LogInformation(s)))
+                {
+                    actualRevision =
                     await store.BeginWriteAsync(streamId, actualRevision, token)
                                     .AppendEventAsync(CreateEvent(), token)
                                     .AppendEventAsync(CreateEvent(), token)
                                     .AppendEventAsync(CreateEvent(), token)
                                 .CommitAsync(token);
-
-                logger.LogInformation("Added 3 events to stream.");
+                }
             }
             catch (OptimisticConcurrencyException ex)
             {
@@ -47,7 +49,7 @@ namespace StreamStore.ExampleBase
                 if (token.IsCancellationRequested) return;
                 logger.LogWarning(ex.Message);
             }
-            logger.LogInformation("Waiting {sleepPeriod} miliseconds before next iteration.", sleepPeriod);
+            logger.LogInformation("Sleeping for {sleepPeriod} miliseconds...", sleepPeriod);
             await Task.Delay(sleepPeriod, token);
         }
 

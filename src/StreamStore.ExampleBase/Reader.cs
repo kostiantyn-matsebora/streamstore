@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using StopwatchTimer;
 
 namespace StreamStore.ExampleBase
 {
@@ -15,17 +16,18 @@ namespace StreamStore.ExampleBase
 
         protected override async Task DoWorkAsync(int sleepPeriod, CancellationToken token)
         {
-            logger.LogInformation("Start reading stream");
-            await foreach (var @event in await store.BeginReadAsync(streamId))
+            logger.LogInformation("Start iterating stream");
+            var enumerator = (await store.BeginReadAsync(streamId, token)).GetAsyncEnumerator();
+            bool notEmpty = false;
+            do
             {
-                if (token.IsCancellationRequested) break;
-
-                logger.LogInformation(
-                    "Read event with id: {id}, revision: {revision}. Waiting {sleepPeriod} miliseconds before next iteration.", 
-                    @event.EventId, @event.Revision, sleepPeriod);
-
-                await Task.Delay(sleepPeriod, token);
-            }
+                using (new CodeStopWatch("Taking next event", s => logger.LogInformation(s)))
+                {
+                    notEmpty = await enumerator.MoveNextAsync();
+                }
+                logger.LogInformation("Sleeping for {sleepPeriod} miliseconds...", sleepPeriod);
+                Thread.Sleep(sleepPeriod);
+            } while (notEmpty);
         }
     }
 }

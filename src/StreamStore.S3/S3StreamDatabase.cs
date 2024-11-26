@@ -44,21 +44,17 @@ namespace StreamStore.S3
             return new S3StreamUnitOfWork(lockFactory, context);
         }
 
-        protected override async Task<EventMetadataRecordCollection?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default)
+        protected override async Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default)
         {
+
             var storage = storageFactory.CreateStorage();
 
             var metadata = await storage.LoadPersistentMetadataAsync(streamId);
 
             if (metadata!.State == S3ObjectState.DoesNotExist) return null;
 
-            return metadata.Events;
-        }
+            return new EventMetadataRecordCollection(metadata.Events).MaxRevision;
 
-        protected override async Task<int> GetActualRevision(Id streamId, CancellationToken token = default)
-        {
-            var metadata = await FindMetadataAsyncInternal(streamId, token);
-            return metadata?.MaxRevision ?? 0;
         }
     }
 }
