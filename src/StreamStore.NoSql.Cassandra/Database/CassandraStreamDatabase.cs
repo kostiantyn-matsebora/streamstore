@@ -39,14 +39,17 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
             using (var mapper = mapperProvider.OpenMapper())
             {
-                var metadata = await mapper.FetchAsync<EventMetadataEntity>(configure.Query(queries.StreamMetadata(streamId)));
+                var cql = configure.Query(queries.StreamMetadata(streamId));
+                cql.WithOptions(o => o.SetPageSize(1000));
+                
+                var metadata = (await mapper.FetchAsync<EventMetadataEntity>(configure.Query(queries.StreamMetadata(streamId)))).ToArray();
 
                 if (!metadata.Any())
                 {
                     return null;
                 }
 
-                return new EventMetadataRecordCollection(metadata.ToArray().ToRecords());
+                return new EventMetadataRecordCollection(metadata.ToRecords());
             }
         }
 
