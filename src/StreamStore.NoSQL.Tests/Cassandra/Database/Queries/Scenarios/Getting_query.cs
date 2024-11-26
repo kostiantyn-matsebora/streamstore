@@ -35,23 +35,6 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Queries
         }
 
         [Fact]
-        public void When_getting_stream_metadata_query()
-        {
-
-            // Arrange
-            var queries = new CassandraCqlQueries(new CassandraStorageConfiguration());
-            var streamId = Generated.String;
-
-            // Act
-            var cql = queries.StreamMetadata(streamId);
-
-            // Assert
-            cql.Should().NotBeNull();
-            cql.Statement.Should().NotBeNullOrWhiteSpace();
-            cql.Arguments.Should().Contain(streamId);
-        }
-
-        [Fact]
         public void When_getting_delete_stream_query()
         {
 

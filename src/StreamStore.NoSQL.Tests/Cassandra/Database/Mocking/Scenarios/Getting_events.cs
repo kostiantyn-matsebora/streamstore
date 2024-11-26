@@ -1,5 +1,4 @@
-﻿
-using Cassandra.Mapping;
+﻿using Cassandra.Mapping;
 using FluentAssertions;
 using Moq;
 using StreamStore.NoSql.Cassandra.Models;
@@ -11,14 +10,14 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
     {
 
         [Fact]
-        public async Task When_stream_metadata_is_not_found()
+        public async Task When_stream_is_not_found()
         {
             // Arrange
             var streamId = Generated.Id;
-            Suite.Mapper.Setup(x => x.FetchAsync<EventMetadataEntity>(It.IsAny<Cql>())).ReturnsAsync(Array.Empty<EventMetadataEntity>());
+            Suite.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync((int?)null);
 
             // Act
-            var result = await Suite.StreamDatabase.FindMetadataAsync(streamId);
+            var result = await Suite.StreamDatabase.GetActualRevision(streamId);
 
             // Assert
             Suite.MockRepository.VerifyAll();
@@ -26,21 +25,20 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
         }
 
         [Fact]
-        public async Task When_stream_metadata_is_found()
+        public async Task When_stream_is_found()
         {
             // Arrange
             var streamId = Generated.Id;
-            var events = Generated.CreateMany<EventMetadataEntity>(10);
 
-            Suite.Mapper.Setup(x => x.FetchAsync<EventMetadataEntity>(It.IsAny<Cql>())).ReturnsAsync(events);
+            Suite.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(10);
 
             // Act
-            var result = await Suite.StreamDatabase.FindMetadataAsync(streamId);
+            var result = await Suite.StreamDatabase.GetActualRevision(streamId);
 
             // Assert
             Suite.MockRepository.VerifyAll();
-            result.Should().NotBeEmpty();
-            result.Should().HaveCount(events.Length);
+            result.Should().NotBeNull();
+            result.Should().Be(10);
         }
 
         [Fact]

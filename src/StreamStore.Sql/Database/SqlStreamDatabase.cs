@@ -41,24 +41,7 @@ namespace StreamStore.Sql.Database
             }
         }
 
-        protected override async Task<EventMetadataRecordCollection?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default)
-        {
-            using (var connection = connectionFactory.GetConnection())
-            {
-                await connection.OpenAsync(token);
-
-                EventEntity[] entities = (await connection.QueryAsync<EventEntity>(commandFactory.CreateGetStreamMetadataCommand(streamId))).ToArray();
-
-                if (!entities.Any())
-                {
-                    return null;
-                }
-
-                return new EventMetadataRecordCollection(entities.ToRecords());
-            }
-        }
-
-        protected override async Task<int> GetActualRevision(Id streamId, CancellationToken token = default)
+        protected override async Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default)
         {
             using (var connection = connectionFactory.GetConnection())
             {

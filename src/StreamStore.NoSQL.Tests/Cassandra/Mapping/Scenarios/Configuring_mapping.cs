@@ -21,19 +21,15 @@ namespace StreamStore.NoSql.Tests.Cassandra.Mapping
 
             // Assert
             mapping.Get<EventEntity>().TableName.Should().Be(config.EventsTableName);
-            mapping.Get<EventMetadataEntity>().TableName.Should().Be(config.EventsTableName);
             mapping.Get<RevisionStreamEntity>().TableName.Should().Be(config.EventsTableName);
+
             mapping.Get<EventEntity>().PartitionKeys.Should().Contain("stream_id");
             mapping.Get<EventEntity>().GetColumnDefinition(typeof(EventEntity).GetProperty(nameof(EventEntity.StreamId))).Should().NotBeNull();
             mapping.Get<EventEntity>().GetColumnDefinition(typeof(EventEntity).GetProperty(nameof(EventEntity.Id))).Should().NotBeNull();
             mapping.Get<EventEntity>().GetColumnDefinition(typeof(EventEntity).GetProperty(nameof(EventEntity.Revision))).Should().NotBeNull();
             mapping.Get<EventEntity>().GetColumnDefinition(typeof(EventEntity).GetProperty(nameof(EventEntity.Data))).Should().NotBeNull();
             mapping.Get<EventEntity>().GetColumnDefinition(typeof(EventEntity).GetProperty(nameof(EventEntity.Timestamp))).Should().NotBeNull();
-            mapping.Get<EventMetadataEntity>().PartitionKeys.Should().Contain("stream_id");
-            mapping.Get<EventMetadataEntity>().GetColumnDefinition(typeof(EventEntity).GetProperty(nameof(EventMetadataEntity.StreamId))).Should().NotBeNull();
-            mapping.Get<EventMetadataEntity>().GetColumnDefinition(typeof(EventEntity).GetProperty(nameof(EventMetadataEntity.Id))).Should().NotBeNull();
-            mapping.Get<EventMetadataEntity>().GetColumnDefinition(typeof(EventEntity).GetProperty(nameof(EventMetadataEntity.Revision))).Should().NotBeNull();
-            mapping.Get<EventEntity>().GetColumnDefinition(typeof(EventEntity).GetProperty(nameof(EventMetadataEntity.Timestamp))).Should().NotBeNull();
+           
             mapping.Get<RevisionStreamEntity>().PartitionKeys.Should().Contain("stream_id");
             mapping.Get<RevisionStreamEntity>().GetColumnDefinition(typeof(EventEntity).GetProperty(nameof(RevisionStreamEntity.StreamId))).Should().NotBeNull();
             mapping.Get<RevisionStreamEntity>().GetColumnDefinition(typeof(EventEntity).GetProperty(nameof(RevisionStreamEntity.Revision))).Should().NotBeNull();

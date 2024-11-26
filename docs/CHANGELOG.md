@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning].
 
 - Added Apache Cassandra support.
 
+### Changed
+
+- Optimized database implementation by getting rid of metadata retrieval for each event and replacing it with getting max revision for the stream.
+
 ## [0.12.0] - 2024-11-15
 
 ### Fixed

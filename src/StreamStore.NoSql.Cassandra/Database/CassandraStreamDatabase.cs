@@ -35,34 +35,11 @@ namespace StreamStore.NoSql.Cassandra.Database
             }
         }
 
-        protected override async Task<EventMetadataRecordCollection?> FindMetadataAsyncInternal(Id streamId, CancellationToken token = default)
+        protected override async Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default)
         {
             using (var mapper = mapperProvider.OpenMapper())
             {
-                var cql = configure.Query(queries.StreamMetadata(streamId));
-                cql.WithOptions(o => o.SetPageSize(1000));
-                
-                var metadata = (await mapper.FetchAsync<EventMetadataEntity>(configure.Query(queries.StreamMetadata(streamId)))).ToArray();
-
-                if (!metadata.Any())
-                {
-                    return null;
-                }
-
-                return new EventMetadataRecordCollection(metadata.ToRecords());
-            }
-        }
-
-        protected override async Task<int> GetActualRevision(Id streamId, CancellationToken token = default)
-        {
-            using (var mapper = mapperProvider.OpenMapper())
-            {
-                var revision = await mapper.SingleAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
-                if (revision == null)
-                {
-                    return Revision.Zero;
-                }
-                return revision.Value;
+               return await mapper.SingleAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
             }
         }
 
