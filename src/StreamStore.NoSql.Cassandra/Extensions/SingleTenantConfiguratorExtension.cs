@@ -20,5 +20,19 @@ namespace StreamStore.NoSql.Cassandra
             return configurator;
 
         }
+
+        public static ISingleTenantConfigurator UseCosmosDbCassandra(this ISingleTenantConfigurator configurator, Action<CosmosDbSingleTenantConfigurator> configure)
+        {
+            configurator
+                .UseSchemaProvisioner<CassandraSchemaProvisioner>()
+                .UseDatabase<CassandraStreamDatabase>(services =>
+                {
+                    var singleConfigurator = new CosmosDbSingleTenantConfigurator();
+                    configure(singleConfigurator);
+                    singleConfigurator.Configure(services);
+                });
+            return configurator;
+
+        }
     }
 }

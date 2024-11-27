@@ -1,10 +1,7 @@
 ﻿using System;
-using Cassandra.Mapping;
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Database;
-using StreamStore.NoSql.Cassandra.Provisioning;
-using StreamStore.Provisioning;
+
 
 
 namespace StreamStore.NoSql.Cassandra.Configuration
@@ -12,6 +9,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
     public abstract class CassandraConfiguratorBase
     {
 
+        internal CassandraMode mode = CassandraMode.Cassandra;
 
         protected CassandraStorageConfiguration storageConfig = new CassandraStorageConfiguration();
 

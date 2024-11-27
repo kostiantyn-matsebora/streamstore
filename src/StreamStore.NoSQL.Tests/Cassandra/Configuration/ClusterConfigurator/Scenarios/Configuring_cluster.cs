@@ -6,23 +6,15 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.ClusterConfigurator
 {
     public class Configuring_cluster: Scenario
     {
-        [Fact]
-        public void When_configuration_delegate_not_set()
-        {
 
-            // Act
-            var act = () => new DelegateClusterConfigurator(null!);
-
-            // Assert
-            act.Should().Throw<ArgumentNullException>();
-        }
 
         [Fact]
         public void When_configuration_delegate_set()
         {
             // Arrange
             Action<Builder> configure = (builder) => builder.AddContactPoint("localhost").WithDefaultKeyspace("default_keyspace");
-            var configurator = new DelegateClusterConfigurator(configure);
+            var configurator = new DelegateClusterConfigurator();
+            configurator.AddConfigurator(configure);
             var builder = Cluster.Builder();
 
             // Act

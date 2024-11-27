@@ -20,8 +20,11 @@ public class Getting_database: Scenario
 
         var tenantStorageConfigurationProvider = Generated.MockOf<ICassandraTenantStorageConfigurationProvider>();
         tenantStorageConfigurationProvider.Setup(x => x.GetConfiguration(tenant)).Returns(new CassandraStorageConfiguration());
-        
-        var databaseProvider = new CassandraStreamDatabaseProvider(tenantMapperProvider.Object, tenantStorageConfigurationProvider.Object);
+
+        var cqlQueriesProvider = Generated.MockOf<ICassandraCqlQueriesProvider>();
+        cqlQueriesProvider.Setup(x => x.GetCqlQueries(It.IsAny<CassandraStorageConfiguration>())).Returns(Generated.MockOf<ICassandraCqlQueries>().Object);
+
+        var databaseProvider = new CassandraStreamDatabaseProvider(tenantMapperProvider.Object, tenantStorageConfigurationProvider.Object, cqlQueriesProvider.Object);
 
         // Act
         var database = databaseProvider.GetDatabase(tenant);

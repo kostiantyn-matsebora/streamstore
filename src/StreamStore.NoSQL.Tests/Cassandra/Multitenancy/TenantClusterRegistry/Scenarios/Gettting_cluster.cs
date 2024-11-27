@@ -14,7 +14,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.TenantClusterRegistry
 
             // Arrange
             Action<Builder> configure = (builder) => builder.AddContactPoint("localhost").WithDefaultKeyspace("default_keyspace");
-            var registry = new CassandraTenantClusterRegistry(new DelegateClusterConfigurator(configure), new DelegateTenantClusterConfigurator());
+            var registry = new CassandraTenantClusterRegistry(new DelegateClusterConfigurator().AddConfigurator(configure), new DelegateTenantClusterConfigurator());
 
             // Act
             var cluster = registry.GetCluster(Generated.Id);
@@ -40,7 +40,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.TenantClusterRegistry
                 }
             );
 
-            var registry = new CassandraTenantClusterRegistry(new DelegateClusterConfigurator(configure), configurator);
+            var registry = new CassandraTenantClusterRegistry(new DelegateClusterConfigurator().AddConfigurator(configure), configurator);
 
             // Act
             var cluster = registry.GetCluster(tenant);

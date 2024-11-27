@@ -1,5 +1,4 @@
-﻿using Cassandra;
-using FluentAssertions;
+﻿using FluentAssertions;
 using StreamStore.NoSql.Cassandra.Multitenancy;
 using StreamStore.Testing;
 
@@ -12,7 +11,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.TenantClusterRegistry
         {
 
             // Act
-            var act = () => new CassandraTenantClusterRegistry(new DelegateClusterConfigurator((builder) => { }), null!);
+            var act = () => new CassandraTenantClusterRegistry(new DelegateClusterConfigurator(), null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();

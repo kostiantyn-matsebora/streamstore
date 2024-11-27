@@ -1,62 +1,68 @@
 ﻿using System;
+using System.Reflection;
 using Cassandra;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.API;
+using StreamStore.NoSql.Cassandra.Database;
 using StreamStore.NoSql.Cassandra.Multitenancy;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
 {
-    public  class CassandraMultitenantConfigurator : CassandraConfiguratorBase
+    public  class CassandraMultitenantConfigurator<TConfigurator> : CassandraConfiguratorBase where TConfigurator : CassandraMultitenantConfigurator<TConfigurator>
     {
         DelegateTenantClusterConfigurator tenantClusterConfigurator = new DelegateTenantClusterConfigurator();
-        DelegateClusterConfigurator? clusterConfigurator;
+        readonly internal DelegateClusterConfigurator clusterConfigurator = new DelegateClusterConfigurator();
         Type storageConfigurationProviderType = typeof(CassandraStorageConfigurationProvider);
         Type? keyspaceProviderType;
 
 
         readonly CassandraKeyspaceRegistry keyspaceProvider = new CassandraKeyspaceRegistry();
 
-        public CassandraMultitenantConfigurator ConfigureStoragePrototype(Action<CassandraStorageConfigurationBuilder> configure)
+        public TConfigurator ConfigureStoragePrototype(Action<CassandraStorageConfigurationBuilder> configure)
         {
             ConfigureStorageInstance(configure);
-            return this;
+            return (TConfigurator)this;
         }
 
-        public CassandraMultitenantConfigurator WithTenantClusterConfigurator(Action<Id, Builder> configurator)
+        public TConfigurator WithTenantClusterConfigurator(Action<Id, Builder> configurator)
         {
            tenantClusterConfigurator = new DelegateTenantClusterConfigurator(configurator);
-           return this;
+           return (TConfigurator)this;
         }
 
-        public CassandraMultitenantConfigurator ConfigureDefaultCluster(Action<Builder> configure)
+        public TConfigurator WithCredentials(string username, string password)
         {
-            clusterConfigurator = new DelegateClusterConfigurator(configure);
-            return this;
+            clusterConfigurator.AddConfigurator(builder => builder.WithCredentials(username, password));
+            return (TConfigurator)this;
         }
 
-        public CassandraMultitenantConfigurator WithStorageConfigurationProvider<TStorageConfigurationProvider>() where TStorageConfigurationProvider : ICassandraTenantStorageConfigurationProvider
+
+        public TConfigurator ConfigureDefaultCluster(Action<Builder> configure)
+        {
+            clusterConfigurator!.AddConfigurator(configure);
+            return (TConfigurator)this;
+        }
+
+        public TConfigurator WithStorageConfigurationProvider<TStorageConfigurationProvider>() where TStorageConfigurationProvider : ICassandraTenantStorageConfigurationProvider
         {
             storageConfigurationProviderType = typeof(TStorageConfigurationProvider);
-            return this;
+            return (TConfigurator)this;
         }
 
-        public CassandraMultitenantConfigurator WithKeyspaceProvider<TKeyspaceProvider>() where TKeyspaceProvider : ICassandraKeyspaceProvider
+        public TConfigurator WithKeyspaceProvider<TKeyspaceProvider>() where TKeyspaceProvider : ICassandraKeyspaceProvider
         {
             keyspaceProviderType = typeof(TKeyspaceProvider);
-            return this;
+            return (TConfigurator)this;
         }
 
-        public CassandraMultitenantConfigurator AddKeyspace(Id tenantId, string keyspace)
+        public TConfigurator AddKeyspace(Id tenantId, string keyspace)
         {
             keyspaceProvider.AddKeyspace(tenantId, keyspace);
-            return this;
+            return (TConfigurator)this;
         }
-
 
         protected override void ApplySpecificDependencies(IServiceCollection services)
         {
-            if (clusterConfigurator == null) throw new InvalidOperationException("Default cluster is not configured");
-
             if (keyspaceProviderType != null)
             {
                 services.AddSingleton(typeof(ICassandraKeyspaceProvider), keyspaceProviderType);
@@ -76,6 +82,12 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             services.AddSingleton(typeof(IClusterConfigurator), clusterConfigurator);
             services.AddSingleton<ICassandraTenantClusterRegistry, CassandraTenantClusterRegistry>();
             services.AddSingleton<ICassandraTenantMappingRegistry, CassandraTenantMappingRegistry>();
+            services.AddSingleton<ICassandraCqlQueriesProvider>(new CassandraCqlQueriesProvider(mode));
         }
+    }
+
+
+    public class CassandraMultitenantConfigurator: CassandraMultitenantConfigurator<CassandraMultitenantConfigurator>
+    {
     }
 }

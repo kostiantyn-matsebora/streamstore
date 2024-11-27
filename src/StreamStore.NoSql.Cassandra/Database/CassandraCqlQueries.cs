@@ -3,15 +3,15 @@ using StreamStore.NoSql.Cassandra.Configuration;
 
 namespace StreamStore.NoSql.Cassandra.Database
 {
-    internal class CassandraCqlQueries
+    internal class CassandraCqlQueries: ICassandraCqlQueries
     {
-        readonly CassandraStorageConfiguration config;
+        protected readonly CassandraStorageConfiguration config;
 
         public CassandraCqlQueries(CassandraStorageConfiguration config)
         {
             this.config = config.ThrowIfNull(nameof(config));
         }
-        public Cql StreamActualRevision(string streamId)
+        public virtual Cql StreamActualRevision(string streamId)
         {
             return new Cql($"SELECT MAX(revision) FROM {config.EventsTableName} WHERE stream_id = ?", streamId);
         }
