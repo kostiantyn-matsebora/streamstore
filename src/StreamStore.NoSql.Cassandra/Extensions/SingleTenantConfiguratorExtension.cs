@@ -2,6 +2,7 @@
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Database;
 using StreamStore.NoSql.Cassandra.Provisioning;
+using Microsoft.Extensions.Configuration;
 
 namespace StreamStore.NoSql.Cassandra
 {
@@ -14,20 +15,6 @@ namespace StreamStore.NoSql.Cassandra
                 .UseDatabase<CassandraStreamDatabase>(services =>
                 {
                     var singleConfigurator = new CassandraSingleTenantConfigurator();
-                    configure(singleConfigurator);
-                    singleConfigurator.Configure(services);
-                });
-            return configurator;
-
-        }
-
-        public static ISingleTenantConfigurator UseCosmosDbCassandra(this ISingleTenantConfigurator configurator, Action<CosmosDbSingleTenantConfigurator> configure)
-        {
-            configurator
-                .UseSchemaProvisioner<CassandraSchemaProvisioner>()
-                .UseDatabase<CassandraStreamDatabase>(services =>
-                {
-                    var singleConfigurator = new CosmosDbSingleTenantConfigurator();
                     configure(singleConfigurator);
                     singleConfigurator.Configure(services);
                 });

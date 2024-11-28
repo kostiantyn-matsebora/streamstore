@@ -14,7 +14,8 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
 
             // Arrange 
             var streamId = Generated.Id;
-            Suite.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(0);
+            Suite.Mapper.Setup(x => x.SingleOrDefaultAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(0);
+            Suite.Queries.Setup(x => x.StreamActualRevision(It.IsAny<string>())).Returns(new Cql(Generated.String));
 
             // Act
             var uow = await Suite.StreamDatabase.BeginAppendAsync(streamId);

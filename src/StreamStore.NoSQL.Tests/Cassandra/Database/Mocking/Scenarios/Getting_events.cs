@@ -14,7 +14,8 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
         {
             // Arrange
             var streamId = Generated.Id;
-            Suite.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync((int?)null);
+            Suite.Mapper.Setup(x => x.SingleOrDefaultAsync<int?>(It.IsAny<Cql>())).ReturnsAsync((int?)null);
+            Suite.Queries.Setup(x => x.StreamActualRevision(It.IsAny<string>())).Returns(new Cql(Generated.String));
 
             // Act
             var result = await Suite.StreamDatabase.GetActualRevision(streamId);
@@ -30,7 +31,8 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
             // Arrange
             var streamId = Generated.Id;
 
-            Suite.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(10);
+            Suite.Mapper.Setup(x => x.SingleOrDefaultAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(10);
+            Suite.Queries.Setup(x => x.StreamActualRevision(It.IsAny<string>())).Returns(new Cql(Generated.String));
 
             // Act
             var result = await Suite.StreamDatabase.GetActualRevision(streamId);
@@ -51,7 +53,10 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
             var count = 5;
 
             Suite.Mapper.Setup(x => x.FetchAsync<EventEntity>(It.IsAny<Cql>())).ReturnsAsync(events);
-            Suite.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(15);
+            Suite.Mapper.Setup(x => x.SingleOrDefaultAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(15);
+            Suite.Queries.Setup(x => x.StreamActualRevision(It.IsAny<string>())).Returns(new Cql(Generated.String));
+            Suite.Queries.Setup(x => x.StreamEvents(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).Returns(new Cql(Generated.String));
+
             // Act
             var result = await Suite.StreamDatabase.ReadAsync(streamId, startFrom, count, CancellationToken.None);
 

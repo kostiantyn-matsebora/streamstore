@@ -42,7 +42,7 @@ namespace StreamStore.NoSql.Cassandra.Database
                return await mapper.SingleOrDefaultAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
             }
         }
-
+        
         protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
             using (var mapper = mapperProvider.OpenMapper())

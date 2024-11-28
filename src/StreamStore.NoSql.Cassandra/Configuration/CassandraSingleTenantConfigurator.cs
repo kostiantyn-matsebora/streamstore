@@ -1,16 +1,18 @@
 ﻿using System;
 using Cassandra;
 using Cassandra.Mapping;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Database;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
 {
-    public class CassandraSingleTenantConfigurator<TConfigurator>: CassandraConfiguratorBase where TConfigurator: CassandraSingleTenantConfigurator<TConfigurator>
+    public class CassandraSingleTenantConfigurator: CassandraConfiguratorBase
     {
         protected Builder builder = Cluster.Builder();
         Type sessionFactory = typeof(CassandraSessionFactory);
+
 
 
         public CassandraConfiguratorBase WithSessionFactory<TSessionFactory>() where TSessionFactory : ICassandraSessionFactory
@@ -19,23 +21,36 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             return this;
         }
 
-        public TConfigurator ConfigureCluster(Action<Builder> configure)
+        public CassandraSingleTenantConfigurator ConfigureCluster(Action<Builder> configure)
         {
            configure(builder);
-           return (TConfigurator)this;
+           return this;
         }
 
-        public TConfigurator WithCredentials(string username, string password)
+        public CassandraSingleTenantConfigurator WithCredentials(string username, string password)
         {
             builder.WithCredentials(username, password);
-            return (TConfigurator)this;
+            return (this;
         }
 
-        public TConfigurator ConfigureStorage(Action<CassandraStorageConfigurationBuilder> configure)
+        public CassandraSingleTenantConfigurator ConfigureStorage(Action<CassandraStorageConfigurationBuilder> configure)
         {
            ConfigureStorageInstance(configure);
-           return (TConfigurator)this;
+           return this;
         }
+
+        public CassandraSingleTenantConfigurator UseCosmosDb()
+        {
+            mode = CassandraMode.CosmosDbCassandra;
+            return this;
+        }
+
+        public CassandraSingleTenantConfigurator UseAppConfig(IConfiguration configuration, string connectionStringName = "StreamStore")
+        {
+            UseAppConfig(configuration, connectionStringName, builder);
+            return this;
+        }
+
 
         protected override void ApplySpecificDependencies(IServiceCollection services)
         {
@@ -45,9 +60,5 @@ namespace StreamStore.NoSql.Cassandra.Configuration
           services.AddSingleton(new MappingConfiguration().Define(new CassandraStreamMapping(storageConfig)));
           services.AddSingleton<ICassandraCqlQueries>(new CassandraCqlQueriesProvider(mode).GetCqlQueries(storageConfig));
         }
-    }
-
-    public class CassandraSingleTenantConfigurator : CassandraSingleTenantConfigurator<CassandraSingleTenantConfigurator>
-    {
     }
 }

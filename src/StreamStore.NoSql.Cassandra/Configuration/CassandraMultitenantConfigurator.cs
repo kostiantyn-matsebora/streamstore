@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Cassandra;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Database;
@@ -8,7 +9,7 @@ using StreamStore.NoSql.Cassandra.Multitenancy;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
 {
-    public  class CassandraMultitenantConfigurator<TConfigurator> : CassandraConfiguratorBase where TConfigurator : CassandraMultitenantConfigurator<TConfigurator>
+    public  class CassandraMultitenantConfigurator : CassandraConfiguratorBase
     {
         DelegateTenantClusterConfigurator tenantClusterConfigurator = new DelegateTenantClusterConfigurator();
         readonly internal DelegateClusterConfigurator clusterConfigurator = new DelegateClusterConfigurator();
@@ -18,47 +19,59 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         readonly CassandraKeyspaceRegistry keyspaceProvider = new CassandraKeyspaceRegistry();
 
-        public TConfigurator ConfigureStoragePrototype(Action<CassandraStorageConfigurationBuilder> configure)
+        public CassandraMultitenantConfigurator ConfigureStoragePrototype(Action<CassandraStorageConfigurationBuilder> configure)
         {
             ConfigureStorageInstance(configure);
-            return (TConfigurator)this;
+            return this;
         }
 
-        public TConfigurator WithTenantClusterConfigurator(Action<Id, Builder> configurator)
+        public CassandraMultitenantConfigurator WithTenantClusterConfigurator(Action<Id, Builder> configurator)
         {
            tenantClusterConfigurator = new DelegateTenantClusterConfigurator(configurator);
-           return (TConfigurator)this;
+           return this;
         }
 
-        public TConfigurator WithCredentials(string username, string password)
+        public CassandraMultitenantConfigurator WithCredentials(string username, string password)
         {
             clusterConfigurator.AddConfigurator(builder => builder.WithCredentials(username, password));
-            return (TConfigurator)this;
+            return this;
         }
 
 
-        public TConfigurator ConfigureDefaultCluster(Action<Builder> configure)
+        public CassandraMultitenantConfigurator ConfigureDefaultCluster(Action<Builder> configure)
         {
             clusterConfigurator!.AddConfigurator(configure);
-            return (TConfigurator)this;
+            return (this;
         }
 
-        public TConfigurator WithStorageConfigurationProvider<TStorageConfigurationProvider>() where TStorageConfigurationProvider : ICassandraTenantStorageConfigurationProvider
+        public CassandraMultitenantConfigurator WithStorageConfigurationProvider<TStorageConfigurationProvider>() where TStorageConfigurationProvider : ICassandraTenantStorageConfigurationProvider
         {
             storageConfigurationProviderType = typeof(TStorageConfigurationProvider);
-            return (TConfigurator)this;
+            return this;
         }
 
-        public TConfigurator WithKeyspaceProvider<TKeyspaceProvider>() where TKeyspaceProvider : ICassandraKeyspaceProvider
+        public CassandraMultitenantConfigurator WithKeyspaceProvider<TKeyspaceProvider>() where TKeyspaceProvider : ICassandraKeyspaceProvider
         {
             keyspaceProviderType = typeof(TKeyspaceProvider);
-            return (TConfigurator)this;
+            return this;
         }
 
-        public TConfigurator AddKeyspace(Id tenantId, string keyspace)
+        public CassandraMultitenantConfigurator AddKeyspace(Id tenantId, string keyspace)
         {
             keyspaceProvider.AddKeyspace(tenantId, keyspace);
-            return (TConfigurator)this;
+            return this;
+        }
+
+        public CassandraMultitenantConfigurator UseCosmosDb()
+        {
+            mode = CassandraMode.CosmosDbCassandra;
+            return this;
+        }
+
+        public CassandraMultitenantConfigurator UseAppConfig(IConfiguration configuration, string connectionStringName = "StreamStore")
+        {
+            clusterConfigurator.AddConfigurator(builder => UseAppConfig(configuration, connectionStringName, builder));
+            return this;
         }
 
         protected override void ApplySpecificDependencies(IServiceCollection services)

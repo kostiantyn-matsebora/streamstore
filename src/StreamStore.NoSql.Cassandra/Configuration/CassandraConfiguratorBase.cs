@@ -1,4 +1,6 @@
 ﻿using System;
+using Cassandra;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.Database;
 
@@ -24,6 +26,17 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         {
             ApplySharedDependencies(services);
             ApplySpecificDependencies(services);
+        }
+
+        internal void UseAppConfig(IConfiguration configuration, string connectionStringName,  Builder builder)
+        {
+            var connectionString = configuration.GetConnectionString(connectionStringName);
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new InvalidOperationException($"Connection string '{connectionStringName}' not found.");
+            }
+
+            builder.WithConnectionString(connectionString);
         }
 
         protected abstract void ApplySpecificDependencies(IServiceCollection services);

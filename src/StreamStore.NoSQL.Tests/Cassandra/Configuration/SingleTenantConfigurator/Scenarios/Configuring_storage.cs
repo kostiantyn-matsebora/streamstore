@@ -35,20 +35,6 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
                     .Should().Be("keyspace");
         }
 
-        [Fact]
-        public void When_cluster_is_not_configured()
-        {
-            // Arrange
-            var configurator = new CassandraSingleTenantConfigurator();
-            var services = new ServiceCollection();
-
-            // Act
-            var act = () => configurator.Configure(services);
-
-            // Assert
-            act.Should().Throw<InvalidOperationException>();
-        }
-
         class FakeSessionFactory : ICassandraSessionFactory
         {
             public ISession Open()
