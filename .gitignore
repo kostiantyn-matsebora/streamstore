@@ -368,3 +368,4 @@ FodyWeavers.xsd
 /output
 
 *.cmd
+/src/StreamStore.NoSql.Example/appsettings.Debug.json
