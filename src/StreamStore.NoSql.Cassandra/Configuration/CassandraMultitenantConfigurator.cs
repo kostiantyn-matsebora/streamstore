@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Database;
+using StreamStore.NoSql.Cassandra.Extensions;
 using StreamStore.NoSql.Cassandra.Multitenancy;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
@@ -41,7 +42,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         public CassandraMultitenantConfigurator ConfigureDefaultCluster(Action<Builder> configure)
         {
             clusterConfigurator!.AddConfigurator(configure);
-            return (this;
+            return this;
         }
 
         public CassandraMultitenantConfigurator WithStorageConfigurationProvider<TStorageConfigurationProvider>() where TStorageConfigurationProvider : ICassandraTenantStorageConfigurationProvider
@@ -70,7 +71,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         public CassandraMultitenantConfigurator UseAppConfig(IConfiguration configuration, string connectionStringName = "StreamStore")
         {
-            clusterConfigurator.AddConfigurator(builder => UseAppConfig(configuration, connectionStringName, builder));
+            clusterConfigurator.AddConfigurator(builder => builder.UseAppConfig(configuration, connectionStringName));
             return this;
         }
 
@@ -99,8 +100,4 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         }
     }
 
-
-    public class CassandraMultitenantConfigurator: CassandraMultitenantConfigurator<CassandraMultitenantConfigurator>
-    {
-    }
 }

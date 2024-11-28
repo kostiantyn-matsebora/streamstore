@@ -28,17 +28,6 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             ApplySpecificDependencies(services);
         }
 
-        internal void UseAppConfig(IConfiguration configuration, string connectionStringName,  Builder builder)
-        {
-            var connectionString = configuration.GetConnectionString(connectionStringName);
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new InvalidOperationException($"Connection string '{connectionStringName}' not found.");
-            }
-
-            builder.WithConnectionString(connectionString);
-        }
-
         protected abstract void ApplySpecificDependencies(IServiceCollection services);
 
         void ApplySharedDependencies(IServiceCollection services)

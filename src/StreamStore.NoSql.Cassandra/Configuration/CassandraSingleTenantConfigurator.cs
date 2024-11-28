@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Database;
+using StreamStore.NoSql.Cassandra.Extensions;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
 {
@@ -30,7 +31,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         public CassandraSingleTenantConfigurator WithCredentials(string username, string password)
         {
             builder.WithCredentials(username, password);
-            return (this;
+            return this;
         }
 
         public CassandraSingleTenantConfigurator ConfigureStorage(Action<CassandraStorageConfigurationBuilder> configure)
@@ -47,7 +48,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         public CassandraSingleTenantConfigurator UseAppConfig(IConfiguration configuration, string connectionStringName = "StreamStore")
         {
-            UseAppConfig(configuration, connectionStringName, builder);
+            builder.UseAppConfig(configuration, connectionStringName);
             return this;
         }
 
