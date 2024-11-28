@@ -16,19 +16,22 @@ namespace StreamStore.NoSql.Cassandra.Extensions
 
             var connectionBuilder = new DbConnectionStringBuilder();
             connectionBuilder.ConnectionString = connectionString;
-
-            var contactPoint = connectionBuilder["hostname"].ThrowIfNull("hostname").ToString();
+            if (!connectionBuilder.TryGetValue("hostname", out var hostName))
+                throw new ArgumentException("Connection string does not contain hostname.");
+            if (!connectionBuilder.TryGetValue("username", out var userName))
+                throw new ArgumentException("Connection string does not contain username.");
+            if (!connectionBuilder.TryGetValue("password", out var password))
+                throw new ArgumentException("Connection string does not contain password.");
+            if (!connectionBuilder.TryGetValue("port", out var port))
+                throw new ArgumentException("Connection string does not contain port.");
 
             var options = new SSLOptions(SslProtocols.Tls12, true, remoteCertValidationCallback ?? ValidateServerCertificate);
-
-            options.SetHostNameResolver((ipAddress) => contactPoint);
+            options.SetHostNameResolver((ipAddress) => hostName.ToString());
 
             builder
-                .WithCredentials(
-                    username: connectionBuilder["username"].ThrowIfNull("username").ToString(),
-                    password: connectionBuilder["password"].ThrowIfNull("password").ToString())
-                .WithPort(Convert.ToInt32(connectionBuilder["port"].ThrowIfNull("port")))
-                .AddContactPoint(contactPoint)
+                .WithCredentials(userName.ToString(), password.ToString())
+                .WithPort(Convert.ToInt32(port))
+                .AddContactPoint(hostName.ToString())
                 .WithSSL(options);
 
             return builder;

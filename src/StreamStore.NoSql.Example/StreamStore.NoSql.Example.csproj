@@ -9,7 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.ExampleBase\StreamStore.ExampleBase.csproj" />
     <ProjectReference Include="..\StreamStore.NoSql.Cassandra\StreamStore.NoSql.Cassandra.csproj" />
-    <ProjectReference Include="..\StreamStore.NoSQL.Tests\StreamStore.NoSql.Tests.csproj" />
+    <ProjectReference Include="..\StreamStore.NoSql.Tests\StreamStore.NoSql.Tests.csproj" />
     <ProjectReference Include="..\StreamStore.Testing\StreamStore.Testing.csproj" />
   </ItemGroup>
   <ItemGroup>

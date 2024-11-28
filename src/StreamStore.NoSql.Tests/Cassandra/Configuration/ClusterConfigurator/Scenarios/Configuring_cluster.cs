@@ -6,8 +6,6 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.ClusterConfigurator
 {
     public class Configuring_cluster: Scenario
     {
-
-
         [Fact]
         public void When_configuration_delegate_set()
         {
