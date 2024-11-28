@@ -105,7 +105,7 @@ You can find an example of usage in the [StreamStore.NoSql.Example](https://gith
 
 ### Testing
 
-In order to run tests placed in [StreamStore.NoSql.Tests/Cassandra/Database](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.NoSql.Tests/Cassandra/Database), you need to have a running Cassandra cluster. You can use docker-compose [docker-compose.yaml](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.NoSql.Cassandra/docker-compose.yaml) to run it.
+In order to run tests placed in [StreamStore.NoSql.Tests/Cassandra/Database](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.NoSql.Tests/Cassandra/Database), you need to have a running Cassandra cluster. You can use docker-compose [docker-compose.yaml](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.NoSql.Tests/Cassandra/Database/docker-compose.yaml) to run it.
 
 ## Configuration options
 
@@ -118,10 +118,10 @@ Below you can find the list of configuration options that can be used to configu
          {
             x.UseCosmosDb(connectionString);                                    // Optional. Required  if you want to use Azure Cosmos DB for Apache Cassandra.
             x.UseCosmosDb(Configuration, connectionStringName);                 // You can also provide IConfiguration and connection string name to Cosmos DB, by default "StreamStore".
-            x.ConfigureCluster(x =>                                             // Required. Configure cluster options. Optional if you decided to use CosmosDB (see above).
+            x.ConfigureCluster(c =>                                             // Required. Configure cluster options. Optional if you decided to use CosmosDB (see above).
                     c.AddContactPoint("localhost"));                            // Configure contact points at least.
                                                                                 // There is much more cluster options available.
-            x.ConfigureStorage(x =>                                             // Optional. Configure storage options.
+            x.ConfigureStorage(c =>                                             // Optional. Configure storage options.
                     c.WithKeyspaceName("keyspacename")                          // Optional. Keyspace name. Default is streamstore.
                      .WithEventsTableName("tablename")                          // Optional. Table name. Default is events.
                      .WithReadConsistencyLevel(ConsistencyLevel.Quorum)         // Optional. Read consistency level. Default is All.
@@ -139,9 +139,10 @@ Below you can find the list of configuration options that can be used to configu
      c.UseCassandra(x => 
          {
             x.WithKeyspaceProvider<Provider>();                                 // Required. Register your ITenantKeyspaceProvider implementation.
-
-            x.ConfigureDefaultCluster(x =>                                      // Required. Configure default cluster options.
-                    x.AddContactPoint("localhost"));                            // Configure contact points at least.
+            x.UseCosmosDb(connectionString);                                    // Optional. Required if you want to use Azure Cosmos DB for Apache Cassandra.
+            x.UseCosmosDb(Configuration, connectionStringName);                 // You can also provide IConfiguration and connection string name to Cosmos DB, by default "StreamStore".
+            x.ConfigureDefaultCluster(c =>                                      // Required. Configure default cluster options. Optional if you decided to use CosmosDB (see above).
+                    c.AddContactPoint("localhost"));                            // Configure contact points at least.
                                                                                 // There is much more cluster options available.
             x.ConfigureStoragePrototype(c =>                                    // Optional. Configure storage options as prototype for tenant storage configuration.
                     c.WithEventsTableName("tablename")                          // Optional. Table name. Default is events.
@@ -149,8 +150,8 @@ Below you can find the list of configuration options that can be used to configu
                      .WithWriteConsistencyLevel(ConsistencyLevel.Quorum)        // Optional. Write consistency level. Default is All.
                      .WithSerialConsistencyLevel(ConsistencyLevel.SerialLocal)  // Optional. Serial consistency level. Default is Serial.
             );
-            x.WithTenantClusterConfigurator(c => ...)                           // Optional. Register delegate for configuring tenant cluster configuration based on default cluster.
-            x.WithStorageConfigurationProvider<TProvider>()                     // Optional. Register your ITenantStorageConfigurationProvider implementation.  
+            x.WithTenantClusterConfigurator(c => ...);                          // Optional. Register delegate for configuring tenant cluster configuration based on default cluster.
+            x.WithStorageConfigurationProvider<TProvider>();                    // Optional. Register your ITenantStorageConfigurationProvider implementation.
           }
       )
   )

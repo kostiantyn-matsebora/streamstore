@@ -20,7 +20,7 @@ Despite the fact that component implements a logical layer for storing and query
 
   | Package                | Description                                                                            |        Multitenancy        |  Package   |
   | ---------------------------- | ------------------------------------------------------------------------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | [StreamStore.NoSql.Cassandra] | [`Apache Cassandra`](https://cassandra.apache.org/_/index.html) port | :white_check_mark: | [![NuGet version (StreamStore.NoSql.Cassandra)](https://img.shields.io/nuget/v/StreamStore.NoSql.Cassandra.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.NoSql.Cassandra/)  
+  | [StreamStore.NoSql.Cassandra] | [`Apache Cassandra`] and [`Azure Cosmos DB for Apache Cassandra`] port | :white_check_mark: | [![NuGet version (StreamStore.NoSql.Cassandra)](https://img.shields.io/nuget/v/StreamStore.NoSql.Cassandra.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.NoSql.Cassandra/)  
   | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) port | :white_check_mark: | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
   | [StreamStore.Sql.Sqlite]     | [`SQLite`](https://www.sqlite.org/index.html) port | :white_check_mark: | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
   | [StreamStore.InMemory]       | `In-memory` port is provided **for testing and educational purposes only** | :white_check_mark: | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
@@ -59,7 +59,8 @@ Also add implementations of particular storage, such as:
   - [ ] [`Azure SQL`](https://azure.microsoft.com/en-us/services/sql-database/)
   - [ ] [`MySQL`](https://www.mysql.com/)
 - [ ]  [`NoSQL`] based DBMS:
-  - [x] [`Apache Cassandra`](https://cassandra.apache.org/_/index.html) - distributed storage.
+  - [x] [`Apache Cassandra`]
+  - [x] [`Azure Cosmos DB for Apache Cassandra`]
 
 ## Roadmap
 
@@ -229,3 +230,5 @@ to contribute, feel free to [open an issue][issues] or
 [`SQLite`]: https://www.sqlite.org/index.html
 [`NoSQL`]: https://en.wikipedia.org/wiki/NoSQL
 [`Binary Object`]: https://en.wikipedia.org/wiki/Object_storage
+[`Apache Cassandra`]: https://cassandra.apache.org/_/index.html
+[`Azure Cosmos DB for Apache Cassandra`]: https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/introduction
