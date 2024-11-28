@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Reflection;
+using System.Net.Security;
 using Cassandra;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,13 +32,6 @@ namespace StreamStore.NoSql.Cassandra.Configuration
            return this;
         }
 
-        public CassandraMultitenantConfigurator WithCredentials(string username, string password)
-        {
-            clusterConfigurator.AddConfigurator(builder => builder.WithCredentials(username, password));
-            return this;
-        }
-
-
         public CassandraMultitenantConfigurator ConfigureDefaultCluster(Action<Builder> configure)
         {
             clusterConfigurator!.AddConfigurator(configure);
@@ -63,15 +56,19 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             return this;
         }
 
-        public CassandraMultitenantConfigurator UseCosmosDb()
+        public CassandraMultitenantConfigurator UseCosmosDb(IConfiguration configuration, string connectionStringName = "StreamStore", RemoteCertificateValidationCallback? remoteCertValidationCallback = null)
         {
-            mode = CassandraMode.CosmosDbCassandra;
-            return this;
+            var connectionString = configuration.GetConnectionString(connectionStringName);
+            if (connectionString == null) throw new InvalidOperationException($"Connection string {connectionStringName} is not found");
+
+            return UseCosmosDb(connectionString, remoteCertValidationCallback);
         }
 
-        public CassandraMultitenantConfigurator UseAppConfig(IConfiguration configuration, string connectionStringName = "StreamStore")
+        public CassandraMultitenantConfigurator UseCosmosDb(string? connectionString = null, RemoteCertificateValidationCallback? remoteCertValidationCallback = null)
         {
-            clusterConfigurator.AddConfigurator(builder => builder.UseAppConfig(configuration, connectionStringName));
+            mode = CassandraMode.CosmosDbCassandra;
+            if (connectionString != null) 
+                clusterConfigurator.AddConfigurator(builder => builder.WithCosmosDbConnectionString(connectionString, remoteCertValidationCallback));
             return this;
         }
 

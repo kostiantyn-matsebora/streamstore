@@ -1,16 +1,15 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using StreamStore.ExampleBase;
-
 using System.CommandLine;
+using Microsoft.Extensions.Hosting;
+
+using StreamStore.ExampleBase;
 using StreamStore.NoSql.Example;
 using StreamStore.NoSql.Tests.Cassandra.Database;
 using StreamStore.NoSql.Cassandra;
 using StreamStore.NoSql.Cassandra.Extensions;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
+
 using Cassandra;
+using Microsoft.Extensions.Configuration;
 
 namespace StreamStore.Sql.Example
 {
@@ -52,7 +51,7 @@ namespace StreamStore.Sql.Example
                         c.UseCassandra(x =>
                             x.ConfigureCluster(c =>
                                 c.AddContactPoint("localhost")
-                                 .WithQueryTimeout(10_000)
+                                 .WithQueryTimeout(30_000)
                             )
                         )
                     )
@@ -76,13 +75,12 @@ namespace StreamStore.Sql.Example
                              .UseCassandra(x =>
                                 x.ConfigureDefaultCluster(c =>
                                     c.AddContactPoint("localhost")
-                                     .WithQueryTimeout(10_000)
+                                     .WithQueryTimeout(30_000)
                                   )
                                  .AddKeyspace(tenant1, tenant1)
                                  .AddKeyspace(tenant2, tenant2)
                                  .AddKeyspace(tenant3, tenant3)
                                 )));
-
         }
 
         static void ConfigureCosmosDbSingle(IHostApplicationBuilder appBuilder)
@@ -97,8 +95,7 @@ namespace StreamStore.Sql.Example
                     x.EnableSchemaProvisioning()
                         .WithSingleDatabase(c =>
                             c.UseCassandra(x =>
-                                x.UseCosmosDb()
-                                .UseAppConfig(appBuilder.Configuration, "StreamStore_CassandraCosmosDb")
+                                x.UseCosmosDb(appBuilder.Configuration, "StreamStore_CassandraCosmosDb")
                         )
                     )
                 );
@@ -119,18 +116,19 @@ namespace StreamStore.Sql.Example
                      .WithMultitenancy(c =>
                             c.WithTenants(tenant1, tenant2, tenant3)
                              .UseCassandra(x =>
-                                 x.UseCosmosDb()
-                                  .UseAppConfig(appBuilder.Configuration, "StreamStore_CassandraCosmosDb")
+                                 x.UseCosmosDb(appBuilder.Configuration, "StreamStore_CassandraCosmosDb")
                                   .AddKeyspace(tenant1, tenant1)
                                   .AddKeyspace(tenant2, tenant2)
                                   .AddKeyspace(tenant3, tenant3)
                                 )));
-
         }
 
         static void ConfigureCosmosDbBuilder(IHostApplicationBuilder appBuilder, Builder builder)
         {
-            builder.UseAppConfig(appBuilder.Configuration, "StreamStore_CassandraCosmosDb");
+            var connectionString = appBuilder.Configuration.GetConnectionString("StreamStore_CassandraCosmosDb");
+            if (connectionString == null) throw new InvalidOperationException("Connection string StreamStore_CassandraCosmosDb is not found");
+
+            builder.WithCosmosDbConnectionString(connectionString);
         }
     }
 }
