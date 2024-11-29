@@ -21,6 +21,14 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
 
             //Assert
             act.Should().Throw<ArgumentException>();
+
+            //Act
+            act = () => configurator.UseCosmosDb((string)null!);
+
+            //Assert
+            act.Should().Throw<ArgumentException>();
+
+
         }
 
 
@@ -28,9 +36,11 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
         public void When_connection_string_is_defined()
         {
             // Arrange
+            var connectionString = "HostName=azure.com;Username=streamstore;Password=xxxxxxxxxxx;Port=10350";
+
             var inMemoryConfig = new Dictionary<string, string?>()
                 {
-                    { "ConnectionStrings:StreamStore", "HostName=azure.com;Username=streamstore;Password=xxxxxxxxxxx;Port=10350" },
+                    { "ConnectionStrings:StreamStore", connectionString },
                 };
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemoryConfig).Build();
             var configurator = new CassandraSingleTenantConfigurator();
@@ -42,6 +52,18 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
 
             //Assert
             var cluster = serviceProvider.GetRequiredService<Cluster>();
+            cluster.Should().NotBeNull();
+
+            // Arrange
+            configurator = new CassandraSingleTenantConfigurator();
+            services = new ServiceCollection();
+
+            // Act
+            configurator.UseCosmosDb(connectionString).Configure(services);
+            serviceProvider = services.BuildServiceProvider();
+
+            //Assert
+            cluster = serviceProvider.GetRequiredService<Cluster>();
             cluster.Should().NotBeNull();
         }
     }
