@@ -201,6 +201,8 @@ Example projects provides a simple console application that demonstrates how to 
 
 For getting all running options simply run the application with `--help` argument.
 
+For configuring application via configuration file, create `appsettings.Debug.json` file.
+
 ## Create your own storage implementation
 
 How to create your own storage implementation you can find in [CUSTOMIZATION.md](CUSTOMIZATION.md).
