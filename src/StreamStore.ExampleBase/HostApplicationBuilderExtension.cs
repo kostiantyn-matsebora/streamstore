@@ -15,7 +15,7 @@ namespace StreamStore.ExampleBase
         {
             builder.Configuration
                     .AddJsonFile("appsettings.json", true)
-                    .AddJsonFile("appsettings.Debug.json", true);
+                    .AddJsonFile("appsettings.Development.json", true);
 
             var appConfigurator = new ExampleApplicationConfigurator();
             configure(appConfigurator);

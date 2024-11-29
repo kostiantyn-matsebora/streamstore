@@ -13,7 +13,7 @@
     <ProjectReference Include="..\StreamStore.Testing\StreamStore.Testing.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="appsettings.Debug.json">
+    <None Update="appsettings.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="appsettings.json">

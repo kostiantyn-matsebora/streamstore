@@ -361,10 +361,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-**/*/*.Development.json
+
 /.sonarqube/conf
 /sonar/scanner
 /output
 
 *.cmd
-/src/StreamStore.NoSql.Example/appsettings.Debug.json
+**/*.Debug.json
+**/*.Development.json
