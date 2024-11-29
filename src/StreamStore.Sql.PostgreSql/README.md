@@ -53,7 +53,7 @@ You can define configuration of the library in `appsettings.json` file:
 ```json
 {
   "ConnectionStrings": {
-    "StreamStore": "Host=localhost;Port=5432;Database=streamstore;Username=streamstore;Password=streamstore" // Required
+    "StreamStore": "Host=localhost;Port=5432;Database=streamstore;Username=streamstore;Password=streamstore" // Required for single tenant configuration
   },
   "StreamStore": {             // Optional
     "PostgreSql": {
@@ -68,20 +68,28 @@ You can define configuration of the library in `appsettings.json` file:
 ### Register in DI container
 
 ```csharp
-   // Adding StreamStore
-   services.ConfigureStreamStore();
- // Adding PostgreSQL database with configuration from appsettings.json, requires ConnectionStrings:StreamStore
-   services.ConfigureStreamStore(x => x.UsePostgresDatabase(Configuration));
+services.ConfigureStreamStore(x =>...
+  
+  // Register single database implementation
+  x.WithSingleDatabase(c => ...
+      c.UsePostgresDatabase(x =>
+          c => c.ConfigureDatabase(x =>                        // Configure database options.
+            x.WithConnectionString("your-connection-string")   // Required. Connection string.
+            x.WithSchema("your-schema-name");                  // Optional. Schema name, default is "public".
+            x.WithTableName("your-table-name");                // Optional. Table name, default is "Events".
+      )
+  )
 
-  // Or configuring it manually
-   services.ConfigureStreamStore(x =>
-      x.UsePostgresDatabase(c => {
-           x.WithConnectionString("your-connection-string") // Connection string, required.
-           x.WithSchema("your-schema-name");                // Schema name, optional, default is "public"
-           x.WithTableName("your-table-name");              // Table name, optional, default is "Events"
-           x.ProvisionSchema(false);                        // Provision schema, optional, default is true
-      })
-   );
+  // Or enable multitenancy
+  x.WithMultitenancy(c => ...
+      c.UsePostgresDatabase(x => 
+          x.WithConnectionStringProvider<Provider>()          // Required. Register your 
+                                                              // ISqlTenantConnectionStringProvider implementation.
+          c => c.ConfigureDatabase(x =>...)                   // Optional. Configure database options will be used as 
+                                                              // template for tenant database configuration, optional.
+      )
+  )
+); 
 ```
 
 ### Use in application code

@@ -3,15 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>0.7.0</Version>
+    <Version>0.10.0</Version>
     <Authors>kostiantyn-matsebora</Authors>
-    <Description>Backblaze B2 backend database for [StreamStore] asynchronous event sourcing library.</Description>
+    <Description>Backblaze B2 storage for [StreamStore] asynchronous event sourcing library.</Description>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
     <PackageTags>event sourcing; streams; stream store; stream; b2; backblaze; s3; async</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Title>Backblaze B2 storage for [StreamStore] asynchronous event sourcing library.</Title>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,7 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
-    <ProjectReference Include="..\StreamStore.S3\StreamStore.S3.csproj" />
+    <ProjectReference Include="..\StreamStore.S3\StreamStore.S3.csproj"  PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,5 +40,24 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+    <ItemGroup>
+      <!-- Filter out unnecessary files -->
+      <_ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')->WithMetadataValue('PrivateAssets', 'All'))"/>
+    </ItemGroup>
+
+    <!-- Print batches for debug purposes -->
+    <Message Text="Batch for .nupkg: ReferenceCopyLocalPaths = @(_ReferenceCopyLocalPaths), ReferenceCopyLocalPaths.DestinationSubDirectory = %(_ReferenceCopyLocalPaths.DestinationSubDirectory) Filename = %(_ReferenceCopyLocalPaths.Filename) Extension = %(_ReferenceCopyLocalPaths.Extension)" Importance="High" Condition="'@(_ReferenceCopyLocalPaths)' != ''" />
+
+    <ItemGroup>
+      <!-- Add file to package with consideration of sub folder. If empty, the root folder is chosen. -->
+      <BuildOutputInPackage Include="@(_ReferenceCopyLocalPaths)" TargetPath="%(_ReferenceCopyLocalPaths.DestinationSubDirectory)"/>
+    </ItemGroup>
+  </Target>
 
 </Project>

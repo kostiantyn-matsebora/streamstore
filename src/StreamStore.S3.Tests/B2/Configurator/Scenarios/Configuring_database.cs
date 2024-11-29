@@ -78,7 +78,7 @@ namespace StreamStore.S3.Tests.B2.Configurator
             var collection = new ServiceCollection();
 
             // Act
-            collection.ConfigureStreamStore(x => x.UseB2Database(section.Object));
+            collection.ConfigureStreamStore(x => x.WithSingleDatabase(x => x.UseB2Database(section.Object)));
 
             // Assert
             Suite.MockRepository.VerifyAll();
@@ -92,7 +92,7 @@ namespace StreamStore.S3.Tests.B2.Configurator
             var collection = new ServiceCollection();
 
             // Act
-            collection.ConfigureStreamStore(x => x.UseB2Database(c => c.WithCredential(Generated.String, Generated.String).WithBucketId(Generated.String)));
+            collection.ConfigureStreamStore(x => x.WithSingleDatabase(x => x.UseB2Database(c => c.WithCredential(Generated.String, Generated.String).WithBucketId(Generated.String))));
 
             // Assert
             Suite.MockRepository.VerifyAll();

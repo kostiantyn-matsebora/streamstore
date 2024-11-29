@@ -1,6 +1,6 @@
 # StreamStore
 
-[![Build](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/streamstore.yml/badge.svg)](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/streamstore.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kostiantyn-matsebora_streamstore&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kostiantyn-matsebora_streamstore)
+[![Build](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/build.yml/badge.svg)](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/build.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kostiantyn-matsebora_streamstore&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kostiantyn-matsebora_streamstore)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kostiantyn-matsebora_streamstore&metric=coverage)](https://sonarcloud.io/summary/new_code?id=kostiantyn-matsebora_streamstore)
 [![NuGet version (StreamStore)](https://img.shields.io/nuget/v/StreamStore.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore/)
 
@@ -16,44 +16,58 @@ Designed to be easily extended with custom database backends.
 Despite the fact that component implements a logical layer for storing and querying events as a stream,
  `it does not provide functionality of DDD aggregate`, such as state mutation, conflict resolution etc., but serves more as `persistence layer`  for it.
 
-## Databases
+## Storage packages
 
-  | Package                | Description                                                                            |                                                                                                                                                                            |
-  | ------------------------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) implementation | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
-  | [StreamStore.Sql.Sqlite] | [`SQLite`](https://www.sqlite.org/index.html) implementation | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
-  | [StreamStore.InMemory]   | `In-memory` implementation is provided **for testing and educational purposes only** | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
-  | [StreamStore.S3.AWS]     | [`Amazon S3`] implementation                                                         | [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
-  | [StreamStore.S3.B2]      | [`Backblaze B2`] implementation                                                      | [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
+  | Package                | Description                                                                            |        Multitenancy        |  Package   |
+  | ---------------------------- | ------------------------------------------------------------------------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | [StreamStore.NoSql.Cassandra] | [`Apache Cassandra`] and [`Azure Cosmos DB for Apache Cassandra`] port | :white_check_mark: | [![NuGet version (StreamStore.NoSql.Cassandra)](https://img.shields.io/nuget/v/StreamStore.NoSql.Cassandra.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.NoSql.Cassandra/)  
+  | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) port | :white_check_mark: | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
+  | [StreamStore.Sql.Sqlite]     | [`SQLite`](https://www.sqlite.org/index.html) port | :white_check_mark: | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
+  | [StreamStore.InMemory]       | `In-memory` port is provided **for testing and educational purposes only** | :white_check_mark: | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
+  | [StreamStore.S3.AWS]         | [`Amazon S3`] port                                                         | :x: |[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
+  | [StreamStore.S3.B2]          | [`Backblaze B2`] port                                                      | :x: |[![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
+
+## Concepts
+
+About basic concepts you can read in [CONCEPTS.md](../docs/CONCEPTS.md).
 
 ## Features
 
 The general idea is to highlight the common characteristics and features of event sourcing storage:
 
 - [x] Asynchronous read and write operations.
+- [x] Multitenancy support.
+- [x] Automatic provisioning of storage schema.
 - [x] Event ordering.
 - [x] Serialization/deserialization of events.
 - [x] Optimistic concurrency control.
 - [x] Event duplication detection based on event ID.
 - [x] Database agnostic test framework, including benchmarking test scenarios.
 - [x] Binary serialization support.
-- [ ] Custom event properties (?).
-- [ ] External transaction support (?).
-- [ ] Transactional outbox pattern implementation (?).
-- [ ] Multitenancy support.
-- [x] Automatic provisioning of storage schema.
 
-Also add implementations of particular storage backends, such as:
+## Storages
+
+Also add implementations of particular storage, such as:
 
 - [x] [`In-Memory`] - for testing purposes.
-- [x] [`Backblaze B2`] - Backblaze B2.
-- [x] [`Amazon S3`] - Amazon S3.
+- [x] [`Binary Object`] storages:
+  - [x] [`Backblaze B2`] - Backblaze B2.
+  - [x] [`Amazon S3`] - Amazon S3.
 - [x] [`SQL`](https://github.com/DapperLib/Dapper) based DBMS:
   - [x] [`SQLite`]
   - [x] [`PostgreSQL`](https://www.postgresql.org/)
   - [ ] [`Azure SQL`](https://azure.microsoft.com/en-us/services/sql-database/)
   - [ ] [`MySQL`](https://www.mysql.com/)
-- [ ] [`Cassandra DB`](https://cassandra.apache.org/_/index.html) - distributed storage.
+- [x]  [`NoSQL`] based DBMS:
+  - [x] [`Apache Cassandra`]
+  - [x] [`Azure Cosmos DB for Apache Cassandra`]
+
+## Roadmap
+
+- [ ] Composite stream identifier
+- [ ] Custom event properties (?).
+- [ ] External transaction support (?).
+- [ ] Transactional outbox pattern implementation (?).
 
 ## Installation
 
@@ -84,17 +98,30 @@ or from NuGet Package Manager Console:
 - Register store in DI container
   
 ```csharp
-       services.ConfigureStreamStore(x =>  // Register StreamStore
-          x.UseSqliteDatabase(x => ...);   // Register database implementation,
-                                           // more details you can fing in particular implementation documentation
-        ); 
+    services.ConfigureStreamStore(x =>              // Register StreamStore
+      x.EnableSchemaProvisioning()                  // Optional. Enable schema provisioning, default: false.
+      
+      // Register single database implementation, see details in documentation for particular database
+      x.WithSingleDatabase(c =>                 
+          c.UseSqliteDatabase(x =>                  // For instance, SQLite database backend
+              x.ConfigureDatabase(c =>
+                c.WithConnectionString(connectionString)
+              )
+          )
+      )
+      // Or enable multitenancy, see details in documentation for particular database.
+      x.WithMultitenancy(c => 
+          c.UseInMemoryDatabase()                   // For instance, InMemory database backend
+           .UseTenantProvider<MyTenantProvider>()   // Optional. Register your  ITenantProvider implementation.
+                                                    // Required if you want schema to be provisioned for each tenant.
+      )
+    ); 
 ```
 
 - Use store in your application
 
 ```csharp
-
-   // Inject IStreamStore in your service
+   // Inject IStreamStore in your service or controller for single database implementation
     public class MyService
     {
         private readonly IStreamStore store;
@@ -105,6 +132,17 @@ or from NuGet Package Manager Console:
         }
     }
  
+  // Or IStreamStoreFactory for multitenancy
+    public class MyService
+    {
+        private readonly IStreamStoreFactory storeFactory;
+  
+        public MyService(IStreamStoreFactory storeFactory)
+        {
+            this.storeFactory = storeFactory;
+        }
+    }
+
   // Append events to stream or create a new stream if it does not exist
   // EventObject property is where you store your event
   var events = new Event[]  {
@@ -149,103 +187,26 @@ or from NuGet Package Manager Console:
 
 More examples of reading and writing events you can find in test scenarios of [StreamStore.Testing](../src/StreamStore.Testing/StreamStore/Scenarios/) project.
 
-## Good to know
+## Example
 
-- _[`Id`][Id]  is a value object (immutable class) that has implicit conversion from and to string_.  
+Each type of storage has its own example project, for instance, you can find an example of usage in the [StreamStore.Sql.Example](../src/StreamStore.Sql.Example) project.
 
-  Thus you don't need to create [Id] object explicitly and use `ToString()` to convert to string back.  
-  Also implements `IEquatable`  for [itself][Id] and for `String`.
-- _[`Revision`][Revision] is a value object (immutable class) that represents a revision of the stream._  
-  It is used for optimistic concurrency control and event ordering.
-  It has implicit conversion from and to `Int32` type.  
-  Also implements `IEquatable` and `IComparable` for itself and for `Int32`.
+Example projects provides a simple console application that demonstrates how to **configure and use** [`StreamStore`] in your application as single database or multitenancy.
 
-- You can read from any stream starting from the provided revision.
+`Single database` examples demonstrates:
 
-- _`ReadToEnd` method  returns collection of events from the stream starting from the provided revision_:
-  - Contains only **unique events ordered by revision**.
-  - Contains only **events that were committed**.
+- optimistic concurrency control
+- asynchronous reading and writing operations
   
-- _Stream revision is always the revision of an event with maximum revision value_.
+`Multitenancy` examples, in turn, demonstrates asynchronous reading and writing operations in **isolated tenant storage**.
 
-- _Idempotency of reading and deletion fully depends on particular database implementation._
+For getting all running options simply run the application with `--help` argument.
 
-- _You don't need to retrieve stream  to add events to it_.  
-  Appending to stream and getting stream  are separate operations.
+For configuring application via configuration file, create `appsettings.Development.json` file.
 
-- _Despite the fact that reading is declared as asynchronous and iterative operation, for the sake of performance it is implemented as paginated operation._
+## Create your own storage implementation
 
-  You can define the page size by using `WithReadingPageSize` method of store configuration, by default it is 10 events.
-
-- _Reading and writing operations are not thread-safe_.  
- Thus, it is not recommended to use the same instances of `IStreamWriter` or `IAsyncEnumerable<StreamEvent>` in multiple threads simultaneously.
-
-## Customization
-
-To implement your own database you do not need StreamStore package, all necessary interfaces are located in StreamStore.Contracts package from command line:
-
-```dotnetcli
-  dotnet add package StreamStore.Contracts
-```
-
-or from NuGet Package Manager Console:
-
-```powershell
-  Install-Package StreamStore.Contracts
-```
-
-### Serialization
-
-About serialization you can read in [SERIALIZATION.md](SERIALIZATION.md) file.
-
-### Create your own database implementation
-
-To create your own database implementation, you need to implement the following interfaces:
-
-- [`IStreamDatabase`][IStreamDatabase] - provides methods for working with streams.
-  Create your own implementation based on [`StreamDatabaseBase`](../src/StreamStore.Contracts/Database/StreamDatabaseBase.cs) abstract class.
-
-- [`IStreamUnitOfWork`][IStreamUnitOfWork] - provides methods for appending events to the stream and saving changes.  
-  Create your own implementation based on [`StreamUnitOfWorkBase`](../src/StreamStore.Contracts/Database/StreamUnitOfWorkBase.cs)
-  and override following methods:
-
-  ```csharp
-    class MyStreamUnitOfWork: StreamUnitOfWorkBase
-    {
-      protected override Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
-      {
-        // Implement saving logic
-      }
-  
-      protected override Task OnEventAdded(EventRecord @event, CancellationToken token)
-      {
-            // Optionally implement logic for handling event added, 
-            // such as instance logging, puting event to outbox or temporary storage etc.
-      }
-
-     protected override void Dispose(bool disposing)
-     {
-        // Optionally implement disposing logic
-     }
-    }
-  ```
-
-  Default serializer is using `Newtonsoft.Json` library, so you can create your own using `System.Text.Json` or any other, by
-  implementing [`IEventSerializer`](../src/StreamStore.Contracts/Serialization/IEventSerializer.cs) interface.
-
-### Considerations
-
-- To implement your own database you do not need StreamStore package, all necessary interfaces are located in [StreamStore.Contracts](https://www.nuget.org/packages/StreamStore.Contracts/) package.
-- _You can register your own database implementation in the DI container using any kind of lifetime (i.e. Singleton, Transient, Scoped, etc.)_  
-
-  However, if you register it as a singleton, you should be aware that it should be thread-safe and preferably stateless.
-
-- _Solution already provides optimistic concurrency and event duplication control mechanisms, as a **pre-check** during stream opening_.  
-
-  However, if you need consistency guaranteed, you should implement your own mechanisms as a part of [IStreamUnitOfWork] implementation.  
-  For instance, you can use a transaction mechanism supported by `ACID compliant DBMS`.
-
-- _Get and Delete operations must be implemented as idempotent by their nature._
+How to create your own storage implementation you can find in [CUSTOMIZATION.md](CUSTOMIZATION.md).
 
 ## Contributing
 
@@ -257,18 +218,20 @@ to contribute, feel free to [open an issue][issues] or
 
 [`MIT License`](../LICENSE)
 
+[`StreamStore`]: https://github.com/kostiantyn-matsebora/streamstore/
 [issues]: https://github.com/kostiantyn-matsebora/streamstore/issues
 [discussions]: https://github.com/kostiantyn-matsebora/streamstore/discussions
-[Id]: ../src/StreamStore.Contracts/Id.cs
-[Revision]: ../src/StreamStore.Contracts/Revision.cs
-[IStreamUnitOfWork]: ../src/StreamStore.Contracts/Database/IStreamUnitOfWork.cs
-[IStreamDatabase]: ../src/StreamStore.Contracts/Database/IStreamDatabase.cs
-[StreamStore.S3.B2]: ../src/StreamStore.S3.B2
-[StreamStore.S3.AWS]: ../src/StreamStore.S3.AWS
-[StreamStore.InMemory]: ../src/StreamStore.InMemory
-[StreamStore.Sql.Sqlite]: ../src/StreamStore.Sql.Sqlite
+[StreamStore.S3.B2]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.B2
+[StreamStore.S3.AWS]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS
+[StreamStore.InMemory]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.InMemory
+[StreamStore.Sql.Sqlite]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Sql.Sqlite
+[StreamStore.Sql.PostgreSql]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Sql.PostgreSql
+[StreamStore.NoSql.Cassandra]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.NoSql.Cassandra
 [`In-Memory`]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.InMemory
 [`Backblaze B2`]: https://www.backblaze.com/b2/cloud-storage.html
 [`Amazon S3`]: https://aws.amazon.com/s3/
 [`SQLite`]: https://www.sqlite.org/index.html
-[StreamStore.Sql.PostgreSql]:https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/
+[`NoSQL`]: https://en.wikipedia.org/wiki/NoSQL
+[`Binary Object`]: https://en.wikipedia.org/wiki/Object_storage
+[`Apache Cassandra`]: https://cassandra.apache.org/_/index.html
+[`Azure Cosmos DB for Apache Cassandra`]: https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/introduction

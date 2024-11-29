@@ -1,11 +1,11 @@
 ﻿using System;
-using Newtonsoft.Json.Linq;
+
 
 namespace StreamStore.Serialization
 {
     public sealed class NewtonsoftEventSerializer : StringEventSerializerBase
     {
-        public NewtonsoftEventSerializer(ITypeRegistry registry, StreamStoreConfiguration configuration) : base(registry, configuration.Compression)
+        public NewtonsoftEventSerializer(ITypeRegistry registry, SerializationConfiguration configuration) : base(registry, configuration.CompressionEnabled)
         {
         }
 

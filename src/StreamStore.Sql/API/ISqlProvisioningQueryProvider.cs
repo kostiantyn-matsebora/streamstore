@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace StreamStore.Sql.API
+﻿namespace StreamStore.Sql.API
 {
     public interface ISqlProvisioningQueryProvider
     {

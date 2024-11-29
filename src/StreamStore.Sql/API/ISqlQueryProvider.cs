@@ -1,8 +1,10 @@
 ﻿
+using StreamStore.Database;
+
 namespace StreamStore.Sql.API
 {
     public interface ISqlQueryProvider
     {
-        public string GetQuery(SqlQueryType queryType);
+        public string GetQuery(DatabaseOperation operation);
     }
 }

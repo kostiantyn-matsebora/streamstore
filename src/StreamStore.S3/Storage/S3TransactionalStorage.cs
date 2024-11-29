@@ -11,11 +11,12 @@ namespace StreamStore.S3.Storage
         readonly S3StreamStorage transient;
         readonly S3LockStorage locks;
 
-        public S3TransactionalStorage(IS3ClientFactory factory)
+        public S3TransactionalStorage(IS3ClientFactory factory, S3ContainerPath? root = null)
         {
-            persistent = new S3StreamStorage(S3ContainerPath.Root.Combine("persistent-streams"), factory);
-            transient = new S3StreamStorage(S3ContainerPath.Root.Combine("transient-streams"), factory);
-            locks = new S3LockStorage(S3ContainerPath.Root.Combine("locks"), factory);
+            var rootPath = root ?? S3ContainerPath.Root;
+            persistent = new S3StreamStorage(rootPath.Combine("persistent-streams"), factory);
+            transient = new S3StreamStorage(rootPath.Combine("transient-streams"), factory);
+            locks = new S3LockStorage(rootPath.Combine("locks"), factory);
         }
 
         public async Task<S3MetadataObject> LoadPersistentMetadataAsync(Id streamId, CancellationToken token = default)

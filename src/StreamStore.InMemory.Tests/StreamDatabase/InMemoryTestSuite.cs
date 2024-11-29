@@ -1,4 +1,5 @@
-﻿using StreamStore.Testing.StreamDatabase;
+﻿using StreamStore.InMemory.Extensions;
+using StreamStore.Testing.StreamDatabase;
 
 namespace StreamStore.InMemory.Tests.StreamDatabase
 {
@@ -8,7 +9,7 @@ namespace StreamStore.InMemory.Tests.StreamDatabase
         {
         }
 
-        protected override void ConfigureDatabase(IStreamStoreConfigurator configurator)
+        protected override void ConfigureDatabase(ISingleTenantConfigurator configurator)
         {
             configurator.UseInMemoryDatabase();
         }

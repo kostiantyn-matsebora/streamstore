@@ -3,9 +3,9 @@ using Xunit.Abstractions;
 
 namespace StreamStore.InMemory.Tests.StreamDatabase
 {
-    public class Finding_stream_metadata : Find_stream_data<InMemoryTestSuite>
+    public class Getting_actual_revision : Get_actual_revision<InMemoryTestSuite>
     {
-        public Finding_stream_metadata() : base(new InMemoryTestSuite())
+        public Getting_actual_revision() : base(new InMemoryTestSuite())
         {
         }
     }

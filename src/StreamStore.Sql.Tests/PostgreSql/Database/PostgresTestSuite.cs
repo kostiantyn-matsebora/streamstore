@@ -3,7 +3,7 @@
 
 namespace StreamStore.Sql.Tests.PostgreSql.Database
 {
-    public class PostgresTestSuite : SqlTestSuiteBase
+    public class PostgresTestSuite : SqlTestSuiteBase<PostgresTestDatabase>
     {
         public PostgresTestSuite() : this(new PostgresDatabaseFixture())
         {
