@@ -11,7 +11,7 @@
     <Authors>kostiantyn-matsebora</Authors>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>StreamStore</PackageId>
-    <Version>0.10.0</Version>
+    <Version>0.14.0</Version>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>event sourcing; streams; stream store; stream; async</PackageTags>
@@ -24,8 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
-    <ProjectReference Include="..\StreamStore.InMemory\StreamStore.InMemory.csproj" />
-    <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" />
+    <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">
@@ -38,7 +37,29 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+    <ItemGroup>
+      <!-- Filter out unnecessary files -->
+      <_ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;WithMetadataValue('PrivateAssets', 'All'))" />
+    </ItemGroup>
+
+    <!-- Print batches for debug purposes -->
+    <Message Text="Batch for .nupkg: ReferenceCopyLocalPaths = @(_ReferenceCopyLocalPaths), ReferenceCopyLocalPaths.DestinationSubDirectory = %(_ReferenceCopyLocalPaths.DestinationSubDirectory) Filename = %(_ReferenceCopyLocalPaths.Filename) Extension = %(_ReferenceCopyLocalPaths.Extension)" Importance="High" Condition="'@(_ReferenceCopyLocalPaths)' != ''" />
+
+    <ItemGroup>
+      <!-- Add file to package with consideration of sub folder. If empty, the root folder is chosen. -->
+      <BuildOutputInPackage Include="@(_ReferenceCopyLocalPaths)" TargetPath="%(_ReferenceCopyLocalPaths.DestinationSubDirectory)" />
+    </ItemGroup>
+  </Target>
+  
 </Project>

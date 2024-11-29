@@ -25,6 +25,5 @@ namespace StreamStore.Testing.StreamStore
         }
 
         protected abstract void ConfigureStreamStore(IStreamStoreConfigurator configurator);
-
     }
 }

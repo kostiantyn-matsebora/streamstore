@@ -22,7 +22,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             // Assert
             await act.Should().NotThrowAsync();
 
-            var stream = await Database.FindMetadataAsync(streamId);
+            var stream = await Database.GetActualRevision(streamId);
             stream.Should().BeNull();
         }
 
@@ -34,15 +34,15 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             // Arrange
             var stream = Container.PeekStream();
 
-            var existingStream = await Database.FindMetadataAsync(stream.Id);
-            existingStream.Should().NotBeNull();
+            var actualRevision = await Database.GetActualRevision(stream.Id);
+            actualRevision.Should().NotBeNull();
 
             // Act
             await Database.DeleteAsync(stream.Id);
 
             // Assert
-            var metadata = await Database.FindMetadataAsync(stream.Id);
-            metadata.Should().BeNull();
+            actualRevision = await Database.GetActualRevision(stream.Id);
+            actualRevision.Should().BeNull();
         }
 
         [SkippableFact]
@@ -53,29 +53,29 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             // Arrange
             var stream = Container.PeekStream();
 
-            var existingStream = await Database.FindMetadataAsync(stream.Id);
-            existingStream.Should().NotBeNull();
+            var actualRevision = await Database.GetActualRevision(stream.Id);
+            actualRevision.Should().NotBeNull();
 
             // Act
             await Database.DeleteAsync(stream.Id);
 
             // Assert
-            var metadata = await Database.FindMetadataAsync(stream.Id);
-            metadata.Should().BeNull();
+            actualRevision = await Database.GetActualRevision(stream.Id);
+            actualRevision.Should().BeNull();
 
             // Act
             await Database.DeleteAsync(stream.Id);
 
             // Assert
-            metadata = await Database.FindMetadataAsync(stream.Id);
-            metadata.Should().BeNull();
+            actualRevision = await Database.GetActualRevision(stream.Id);
+            actualRevision.Should().BeNull();
 
             // Act
             await Database.DeleteAsync(stream.Id);
 
             // Assert
-            metadata = await Database.FindMetadataAsync(stream.Id);
-            metadata.Should().BeNull();
+            actualRevision = await Database.GetActualRevision(stream.Id);
+            actualRevision.Should().BeNull();
         }
     }
 }

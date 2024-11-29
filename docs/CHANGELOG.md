@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.14.0] - 2024-11-29
+
+### Added
+
+- Support of Azure CosmosDB for Apache Cassandra
+
+### Changed
+
+- Minor improvement and fixes
+
+## [0.13.0] - 2024-11-25
+
+### Added
+
+- Added Apache Cassandra support.
+
+### Changed
+
+- Optimized database implementation by getting rid of metadata retrieval for each event and replacing it with getting max revision for the stream.
+
+## [0.12.0] - 2024-11-15
+
+### Fixed
+
+- Fixed typo in ConfigureSingleDatabase method name.
+
+## [0.11.0] - 2024-11-15
+
+### Added
+
+- Multitenancy support for SQL backends.
+
+### Changed
+
+- Unified configuration of storage by separating concerns and creating separate implementation for database backends, serialization and storage configurations.
+  
 ## [0.10.0] - 2024-11-11
 
 ### Added

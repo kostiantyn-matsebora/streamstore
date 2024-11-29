@@ -27,7 +27,11 @@ or from Nuget Package Manager Console:
 - Register store in DI container
   
 ```csharp
-  services.ConfigureStreamStore(x =>  x.UseInMemoryDatabase());// Register StreamStore
+  services.ConfigureStreamStore(x => 
+      x.WithSingleDatabase(c => 
+        c.UseInMemoryDatabase()
+      )
+  ); // Register StreamStore
 ```
 
 - How to use store in your application you can find in [StreamStore](https://github.com/kostiantyn-matsebora/streamstore/tree/master#usage) documentation.

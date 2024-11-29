@@ -39,11 +39,11 @@ namespace StreamStore
             if (startFrom < Revision.One)
                 throw new ArgumentOutOfRangeException(nameof(startFrom), "startFrom must be greater than or equal to 1.");
 
-            var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
-            if (metadata == null) throw new StreamNotFoundException(streamId);
+            var revision = await database.GetActualRevision(streamId, cancellationToken);
+            if (revision == null) throw new StreamNotFoundException(streamId);
 
-            if (metadata.MaxRevision < startFrom)
-                throw new InvalidStartFromException(streamId, startFrom, metadata.MaxRevision);
+            if (revision.Value < startFrom)
+                throw new InvalidStartFromException(streamId, startFrom, revision.Value);
 
             var parameters = new StreamReadingParameters(streamId, startFrom, pageSize);
 
@@ -54,13 +54,13 @@ namespace StreamStore
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
 
-            var metadata = await database.FindMetadataAsync(streamId, cancellationToken);
+            var revision = await database.GetActualRevision(streamId, cancellationToken);
             
-            if (metadata == null) metadata = new EventMetadataRecordCollection();
+            if (revision == null) revision = Revision.Zero;
 
 
-            if (expectedRevision != metadata.MaxRevision)
-                throw new OptimisticConcurrencyException(expectedRevision, metadata.MaxRevision, streamId);
+            if (expectedRevision != revision.Value)
+                throw new OptimisticConcurrencyException(expectedRevision, revision.Value, streamId);
 
             var uow = await database.BeginAppendAsync(streamId, expectedRevision);
 
