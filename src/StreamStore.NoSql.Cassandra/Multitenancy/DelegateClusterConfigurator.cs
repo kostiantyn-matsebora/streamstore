@@ -1,20 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using Cassandra;
 
 namespace StreamStore.NoSql.Cassandra.Multitenancy
 {
     internal class DelegateClusterConfigurator : IClusterConfigurator
     {
-        readonly Action<Builder> configure;
+        readonly List<Action<Builder>> configureActions = new List<Action<Builder>>();
 
-        public DelegateClusterConfigurator(Action<Builder> configure)
+        public DelegateClusterConfigurator AddConfigurator(Action<Builder> configure)
         {
-            this.configure = configure.ThrowIfNull(nameof(configure));
+            configureActions.Add(configure.ThrowIfNull(nameof(configure)));
+            return this;
         }
-
         public void Configure(Builder builder)
         {
-            configure(builder);
+            foreach (var configure in configureActions)
+                configure(builder);
         }
     }
 }

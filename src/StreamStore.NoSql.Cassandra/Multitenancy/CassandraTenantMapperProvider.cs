@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using StreamStore.NoSql.Cassandra.API;
+﻿using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Database;
 
 namespace StreamStore.NoSql.Cassandra.Multitenancy

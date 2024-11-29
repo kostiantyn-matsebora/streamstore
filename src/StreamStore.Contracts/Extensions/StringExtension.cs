@@ -4,7 +4,7 @@ namespace StreamStore
 {
     public static class StringExtension
     {
-        public static string ThrowIfNullOrEmpty(this string value, string name)
+        public static string ThrowIfNullOrEmpty(this string? value, string name)
         {
             if (string.IsNullOrEmpty(value))
             {

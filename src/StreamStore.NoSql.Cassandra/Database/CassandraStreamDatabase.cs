@@ -11,14 +11,14 @@ namespace StreamStore.NoSql.Cassandra.Database
     {
         readonly ICassandraMapperProvider mapperProvider;
         readonly CassandraStatementConfigurator configure;
-        readonly CassandraCqlQueries queries;
+        readonly ICassandraCqlQueries queries;
 
-        public CassandraStreamDatabase(ICassandraMapperProvider mapperProvider, CassandraStorageConfiguration config)
+        public CassandraStreamDatabase(ICassandraMapperProvider mapperProvider, ICassandraCqlQueries queries, CassandraStorageConfiguration config)
         {
             this.mapperProvider = mapperProvider.ThrowIfNull(nameof(mapperProvider));
             config = config.ThrowIfNull(nameof(config));
             configure = new CassandraStatementConfigurator(config);
-            queries = new CassandraCqlQueries(config);
+            this.queries = queries.ThrowIfNull(nameof(queries));
         }
 
         protected override Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
@@ -39,10 +39,10 @@ namespace StreamStore.NoSql.Cassandra.Database
         {
             using (var mapper = mapperProvider.OpenMapper())
             {
-               return await mapper.SingleAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
+               return await mapper.SingleOrDefaultAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
             }
         }
-
+        
         protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
             using (var mapper = mapperProvider.OpenMapper())

@@ -15,6 +15,14 @@
     "Cassandra + multitenancy": {
       "commandName": "Project",
       "commandLineArgs": "--database cassandra --mode multitenancy"
+    },
+    "CosmosDB Cassandra API + single tenant": {
+      "commandName": "Project",
+      "commandLineArgs": "--database cosmosdbcassandra --mode single"
+    },
+    "CosmosDB Cassandra API + multitenancy": {
+      "commandName": "Project",
+      "commandLineArgs": "--database cosmosdbcassandra --mode multitenancy"
     }
   }
 }

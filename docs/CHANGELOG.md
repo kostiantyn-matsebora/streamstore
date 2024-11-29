@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.14.0] - 2024-11-29
+
+### Added
+
+- Support of Azure CosmosDB for Apache Cassandra
+
+### Changed
+
+- Minor improvement and fixes
+
 ## [0.13.0] - 2024-11-25
 
 ### Added

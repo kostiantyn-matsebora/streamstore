@@ -2,6 +2,7 @@
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Database;
 using StreamStore.NoSql.Cassandra.Provisioning;
+using Microsoft.Extensions.Configuration;
 
 namespace StreamStore.NoSql.Cassandra
 {

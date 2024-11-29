@@ -8,19 +8,22 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
     {
         private readonly ICassandraTenantMapperProvider mapperProvider;
         readonly ICassandraTenantStorageConfigurationProvider configProvider;
-
+        private readonly ICassandraCqlQueriesProvider cqlQueriesProvider;
 
         public CassandraStreamDatabaseProvider(
             ICassandraTenantMapperProvider mapperProvider,
-            ICassandraTenantStorageConfigurationProvider configProvider)
+            ICassandraTenantStorageConfigurationProvider configProvider,
+            ICassandraCqlQueriesProvider cqlQueriesProvider)
         {
             this.mapperProvider = mapperProvider.ThrowIfNull(nameof(mapperProvider));
             this.configProvider = configProvider.ThrowIfNull(nameof(configProvider));
+            this.cqlQueriesProvider = cqlQueriesProvider.ThrowIfNull(nameof(cqlQueriesProvider));
         }
 
         public IStreamDatabase GetDatabase(Id tenantId)
         {
-            return new CassandraStreamDatabase(mapperProvider.GetMapperProvider(tenantId), configProvider.GetConfiguration(tenantId));
+            var config = configProvider.GetConfiguration(tenantId);
+            return new CassandraStreamDatabase(mapperProvider.GetMapperProvider(tenantId), cqlQueriesProvider.GetCqlQueries(config), config);
         }
     }
 }

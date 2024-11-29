@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Net.Security;
 using Cassandra;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.API;
+using StreamStore.NoSql.Cassandra.Database;
+using StreamStore.NoSql.Cassandra.Extensions;
 using StreamStore.NoSql.Cassandra.Multitenancy;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
@@ -9,7 +13,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
     public  class CassandraMultitenantConfigurator : CassandraConfiguratorBase
     {
         DelegateTenantClusterConfigurator tenantClusterConfigurator = new DelegateTenantClusterConfigurator();
-        DelegateClusterConfigurator? clusterConfigurator;
+        readonly internal DelegateClusterConfigurator clusterConfigurator = new DelegateClusterConfigurator();
         Type storageConfigurationProviderType = typeof(CassandraStorageConfigurationProvider);
         Type? keyspaceProviderType;
 
@@ -30,7 +34,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         public CassandraMultitenantConfigurator ConfigureDefaultCluster(Action<Builder> configure)
         {
-            clusterConfigurator = new DelegateClusterConfigurator(configure);
+            clusterConfigurator!.AddConfigurator(configure);
             return this;
         }
 
@@ -52,11 +56,29 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             return this;
         }
 
+        public CassandraMultitenantConfigurator UseCosmosDb(IConfiguration configuration, string connectionStringName = "StreamStore", RemoteCertificateValidationCallback? remoteCertValidationCallback = null)
+        {
+            var connectionString = configuration.GetConnectionString(connectionStringName);
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentException($"Connection string {connectionStringName} is not found in configuration", nameof(configuration));
+            }
+
+            return UseCosmosDb(connectionString, remoteCertValidationCallback);
+        }
+
+        public CassandraMultitenantConfigurator UseCosmosDb(string? connectionString = null, RemoteCertificateValidationCallback? remoteCertValidationCallback = null)
+        {
+            mode = CassandraMode.CosmosDbCassandra;
+            if (connectionString != null)
+            {
+                clusterConfigurator.AddConfigurator(builder => builder.WithCosmosDbConnectionString(connectionString, remoteCertValidationCallback));
+            }
+            return this;
+        }
 
         protected override void ApplySpecificDependencies(IServiceCollection services)
         {
-            if (clusterConfigurator == null) throw new InvalidOperationException("Default cluster is not configured");
-
             if (keyspaceProviderType != null)
             {
                 services.AddSingleton(typeof(ICassandraKeyspaceProvider), keyspaceProviderType);
@@ -76,6 +98,8 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             services.AddSingleton(typeof(IClusterConfigurator), clusterConfigurator);
             services.AddSingleton<ICassandraTenantClusterRegistry, CassandraTenantClusterRegistry>();
             services.AddSingleton<ICassandraTenantMappingRegistry, CassandraTenantMappingRegistry>();
+            services.AddSingleton<ICassandraCqlQueriesProvider>(new CassandraCqlQueriesProvider(mode));
         }
     }
+
 }

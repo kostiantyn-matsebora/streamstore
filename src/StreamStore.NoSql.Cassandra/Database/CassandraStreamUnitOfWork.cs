@@ -13,7 +13,7 @@ namespace StreamStore.NoSql.Cassandra.Database
     {
         readonly ICassandraMapperProvider mapperProvider;
         readonly CassandraStatementConfigurator configure;
-        private readonly CassandraCqlQueries queries;
+        private readonly ICassandraCqlQueries queries;
 
         public CassandraStreamUnitOfWork(
             Id streamId, 
@@ -21,7 +21,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             EventRecordCollection? events,
             ICassandraMapperProvider mapperProvider,
             CassandraStatementConfigurator configure,
-            CassandraCqlQueries queries)
+            ICassandraCqlQueries queries)
             : base(streamId, expectedRevision, events)
         {
             this.mapperProvider = mapperProvider.ThrowIfNull(nameof(mapperProvider));
