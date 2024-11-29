@@ -119,20 +119,19 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.MultitenantConfigurato
             act.Should().Throw<InvalidOperationException>();
         }
 
-        class FakeKeyspaceProvider : ICassandraKeyspaceProvider
-        {
-            public string GetKeyspace(Id tenantId)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         class FakeStorageConfigurationProvider : ICassandraTenantStorageConfigurationProvider
         {
             public CassandraStorageConfiguration GetConfiguration(Id tenanId)
             {
                 throw new NotImplementedException();
             }
+        }
+    }
+    class FakeKeyspaceProvider : ICassandraKeyspaceProvider
+    {
+        public string GetKeyspace(Id tenantId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

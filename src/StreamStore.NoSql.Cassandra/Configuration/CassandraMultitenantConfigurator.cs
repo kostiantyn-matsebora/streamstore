@@ -59,7 +59,10 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         public CassandraMultitenantConfigurator UseCosmosDb(IConfiguration configuration, string connectionStringName = "StreamStore", RemoteCertificateValidationCallback? remoteCertValidationCallback = null)
         {
             var connectionString = configuration.GetConnectionString(connectionStringName);
-            if (connectionString == null) throw new InvalidOperationException($"Connection string {connectionStringName} is not found");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentException($"Connection string {connectionStringName} is not found in configuration", nameof(configuration));
+            }
 
             return UseCosmosDb(connectionString, remoteCertValidationCallback);
         }
@@ -67,8 +70,10 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         public CassandraMultitenantConfigurator UseCosmosDb(string? connectionString = null, RemoteCertificateValidationCallback? remoteCertValidationCallback = null)
         {
             mode = CassandraMode.CosmosDbCassandra;
-            if (connectionString != null) 
+            if (connectionString != null)
+            {
                 clusterConfigurator.AddConfigurator(builder => builder.WithCosmosDbConnectionString(connectionString, remoteCertValidationCallback));
+            }
             return this;
         }
 
