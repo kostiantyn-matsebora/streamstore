@@ -58,12 +58,13 @@ Also add implementations of particular storage, such as:
   - [x] [`PostgreSQL`](https://www.postgresql.org/)
   - [ ] [`Azure SQL`](https://azure.microsoft.com/en-us/services/sql-database/)
   - [ ] [`MySQL`](https://www.mysql.com/)
-- [ ]  [`NoSQL`] based DBMS:
+- [x]  [`NoSQL`] based DBMS:
   - [x] [`Apache Cassandra`]
   - [x] [`Azure Cosmos DB for Apache Cassandra`]
 
 ## Roadmap
 
+- [ ] Composite stream identifier
 - [ ] Custom event properties (?).
 - [ ] External transaction support (?).
 - [ ] Transactional outbox pattern implementation (?).
@@ -201,7 +202,7 @@ Example projects provides a simple console application that demonstrates how to 
 
 For getting all running options simply run the application with `--help` argument.
 
-For configuring application via configuration file, create `appsettings.Debug.json` file.
+For configuring application via configuration file, create `appsettings.Development.json` file.
 
 ## Create your own storage implementation
 

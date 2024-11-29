@@ -102,6 +102,7 @@ How to use [StreamStore] in your application code you can find on StreamStore [p
 ## Example
 
 You can find an example of usage in the [StreamStore.NoSql.Example](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.NoSql.Example) project.
+More informatio about how example application works you can find in [StreamStore](https://github.com/kostiantyn-matsebora/streamstore/tree/master/#example) documentation.
 
 ### Testing
 
