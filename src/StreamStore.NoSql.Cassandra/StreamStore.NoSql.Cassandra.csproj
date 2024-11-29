@@ -4,14 +4,14 @@
     <Nullable>enable</Nullable>
     <Version>0.2.0</Version>
     <Company>kostiantyn-matsebora</Company>
-    <Description>Apache Cassandra storage for StreamStore asynchronous event sourcing library.</Description>
+    <Description>Apache Cassandra and Azure CosmosDB fort Appache Cassandra storage for StreamStore asynchronous event sourcing library.</Description>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Title>Apache Cassandra storage for StreamStore asynchronous event sourcing library.</Title>
-    <PackageTags>event sourcing; streams; stream store; stream; NoSQL; Cassandra; async</PackageTags>
+    <Title>Apache Cassandra and Azure CosmosDB for Appache Cassandra storage for StreamStore asynchronous event sourcing library.</Title>
+    <PackageTags>event sourcing; streams; stream store; stream; NoSQL; Cassandra; async; CosmosDB</PackageTags>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\LICENSE">
@@ -38,7 +38,7 @@
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
     <ItemGroup>
       <!-- Filter out unnecessary files -->
-      <_ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')->WithMetadataValue('PrivateAssets', 'All'))" />
+      <_ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;WithMetadataValue('PrivateAssets', 'All'))" />
     </ItemGroup>
     <!-- Print batches for debug purposes -->
     <Message Text="Batch for .nupkg: ReferenceCopyLocalPaths = @(_ReferenceCopyLocalPaths), ReferenceCopyLocalPaths.DestinationSubDirectory = %(_ReferenceCopyLocalPaths.DestinationSubDirectory) Filename = %(_ReferenceCopyLocalPaths.Filename) Extension = %(_ReferenceCopyLocalPaths.Extension)" Importance="High" Condition="'@(_ReferenceCopyLocalPaths)' != ''" />
