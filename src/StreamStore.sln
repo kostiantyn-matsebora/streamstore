@@ -60,7 +60,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NoSQL", "NoSQL", "{B088C377
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.NoSql.Cassandra", "StreamStore.NoSql.Cassandra\StreamStore.NoSql.Cassandra.csproj", "{2659C1AB-E659-440C-BB15-F1DF33385F76}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.NoSql.Tests", "StreamStore.NoSQL.Tests\StreamStore.NoSql.Tests.csproj", "{D39E9075-E36B-4DFA-8BD7-27430865F09F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamStore.NoSql.Tests", "StreamStore.NoSql.Tests\StreamStore.NoSql.Tests.csproj", "{D39E9075-E36B-4DFA-8BD7-27430865F09F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.NoSql.Example", "StreamStore.NoSql.Example\StreamStore.NoSql.Example.csproj", "{0364ACFC-A846-407D-AE6D-93BC2BD6BD95}"
 EndProject

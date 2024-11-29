@@ -30,12 +30,6 @@ namespace StreamStore.NoSql.Cassandra.Configuration
            return this;
         }
 
-        public CassandraSingleTenantConfigurator WithCredentials(string username, string password)
-        {
-            builder.WithCredentials(username, password);
-            return this;
-        }
-
         public CassandraSingleTenantConfigurator ConfigureStorage(Action<CassandraStorageConfigurationBuilder> configure)
         {
            ConfigureStorageInstance(configure);
@@ -45,15 +39,20 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         public CassandraSingleTenantConfigurator UseCosmosDb(IConfiguration configuration, string connectionStringName = "StreamStore", RemoteCertificateValidationCallback? remoteCertValidationCallback = null)
         {
             var connectionString = configuration.GetConnectionString(connectionStringName);
-            if (connectionString == null) throw new InvalidOperationException($"Connection string {connectionStringName} is not found");
+
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentException($"Connection string {connectionStringName} is not found in configuration", nameof(configuration));
+            }
 
             return UseCosmosDb(connectionString, remoteCertValidationCallback);
         }
 
         public CassandraSingleTenantConfigurator UseCosmosDb(string? connectionString = null, RemoteCertificateValidationCallback? remoteCertValidationCallback = null)
         {
+            connectionString.ThrowIfNullOrEmpty(nameof(connectionString));
+            builder.WithCosmosDbConnectionString(connectionString!, remoteCertValidationCallback);
             mode = CassandraMode.CosmosDbCassandra;
-            if (connectionString != null) builder.WithCosmosDbConnectionString(connectionString, remoteCertValidationCallback);
             return this;
         }
 
