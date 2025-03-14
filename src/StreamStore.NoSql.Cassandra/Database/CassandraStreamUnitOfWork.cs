@@ -11,7 +11,7 @@ namespace StreamStore.NoSql.Cassandra.Database
 {
     internal class CassandraStreamUnitOfWork : StreamUnitOfWorkBase
     {
-        readonly ICassandraMapper mapper;
+        readonly IMapper mapper;
         readonly CassandraStatementConfigurator configure;
         readonly ICassandraCqlQueries queries;
 
@@ -20,7 +20,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             Id streamId, 
             Revision expectedRevision, 
             EventRecordCollection? events,
-            ICassandraMapper mapper,
+            IMapper mapper,
             CassandraStatementConfigurator configure,
             ICassandraCqlQueries queries)
             : base(streamId, expectedRevision, events)
@@ -45,7 +45,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             await ValidateResult(mapper, result);
         }
 
-        async Task ValidateResult(ICassandraMapper mapper, AppliedInfo<EventEntity> appliedInfo)
+        async Task ValidateResult(IMapper mapper, AppliedInfo<EventEntity> appliedInfo)
         {
             if (appliedInfo.Applied)
             {
@@ -58,7 +58,7 @@ namespace StreamStore.NoSql.Cassandra.Database
             }
         }
 
-        async Task<int> GetActualRevision(ICassandraMapper mapper)
+        async Task<int> GetActualRevision(IMapper mapper)
         {
             var revision = await mapper.SingleAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
             if (revision == null)

@@ -38,7 +38,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
                     return true;
                 }
             }
-            catch(Exception ex)
+            catch
             {
                 // ignored
                 return false;

@@ -15,9 +15,9 @@ namespace StreamStore.NoSql.Cassandra.Database
             this.mapping = mapping.ThrowIfNull(nameof(mapping));
         }
 
-        public ICassandraMapper OpenMapper()
+        public IMapper OpenMapper()
         {
-            return new DisposableCassandraMapper(sessionFactory.Open(), mapping);
+            return new Mapper(sessionFactory.Open(), mapping);
         }
     }
 }

@@ -1,3 +1,4 @@
+using Cassandra.Mapping;
 using FluentAssertions;
 using Moq;
 using StreamStore.NoSql.Cassandra.API;
@@ -16,8 +17,10 @@ public class Getting_database: Scenario
         // Arrange
         var tenant = Generated.Id;
         var tenantMapperProvider = Suite.MockRepository.Create<ICassandraTenantMapperProvider>();
-        tenantMapperProvider.Setup(x => x.GetMapperProvider(tenant)).Returns(Suite.MockRepository.Create<ICassandraMapperProvider>().Object);
-
+        var mapperProvider = Suite.MockRepository.Create<ICassandraMapperProvider>();
+        tenantMapperProvider.Setup(x => x.GetMapperProvider(tenant)).Returns(mapperProvider.Object);
+        mapperProvider.Setup(x => x.OpenMapper()).Returns(Suite.MockRepository.Create<IMapper>().Object);
+        
         var tenantStorageConfigurationProvider = Generated.MockOf<ICassandraTenantStorageConfigurationProvider>();
         tenantStorageConfigurationProvider.Setup(x => x.GetConfiguration(tenant)).Returns(new CassandraStorageConfiguration());
 
