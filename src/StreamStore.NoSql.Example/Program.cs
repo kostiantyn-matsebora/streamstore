@@ -59,6 +59,7 @@ namespace StreamStore.Sql.Example
         {
             // You can add your custom configuration here
         }
+
         static void ConfigureCassandraMultitenancy(IHostApplicationBuilder builder)
         {
             // Provision the tenant keyspaces
