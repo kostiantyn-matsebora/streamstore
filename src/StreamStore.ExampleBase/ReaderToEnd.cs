@@ -1,30 +1,38 @@
 ﻿using System.Threading.Tasks;
 using System.Threading;
-using Microsoft.Extensions.Logging;
 
 using System.Diagnostics.CodeAnalysis;
-using StopwatchTimer;
+using StreamStore.Exceptions;
+using System.Diagnostics;
+using StreamStore.ExampleBase.Progress;
+
 
 
 namespace StreamStore.ExampleBase
 {
     [ExcludeFromCodeCoverage]
-    internal class ReaderToEnd: WorkerBase
+    internal class ReaderToEnd : WorkerBase
     {
         protected override int InitialSleepPeriod => 5_000;
+        readonly ReadToEndProgressTracker progressTracker;
 
-        public ReaderToEnd(ILogger logger, IStreamStore store, Id streamId): base(logger, store, streamId)
+        public ReaderToEnd(IStreamStore store, Id streamId, ReadToEndProgressTracker progressTracker) : base(store, streamId, progressTracker)
         {
+            this.progressTracker = progressTracker;
         }
 
-        protected override async Task DoWorkAsync(int sleepPeriod, CancellationToken token)
+        protected override async Task DoWorkAsync(CancellationToken token)
         {
-            using (new CodeStopWatch("Reading stream to end", s => logger.LogInformation(s)))
+            progressTracker.StartReading();
+
+            try
             {
-                await store.ReadToEndAsync(streamId, token);
+                var result = await store.ReadToEndAsync(streamId, token);
+                progressTracker.ReadEnded(result.MaxRevision);
             }
-            logger.LogInformation("Sleeping for {sleepPeriod} miliseconds...", sleepPeriod);
-            await Task.Delay(sleepPeriod, token);
+            catch (StreamNotFoundException)
+            {
+            }
         }
     }
 }

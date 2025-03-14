@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using StreamStore.ExampleBase.Multitenancy;
+using StreamStore.ExampleBase.Progress;
 using StreamStore.ExampleBase.SingleTenant;
 
 
@@ -90,24 +91,27 @@ namespace StreamStore.ExampleBase.Configuration
 
         static void ConfigureSingleMode(IHostApplicationBuilder builder)
         {
+
             builder.Services
+                .AddSingleton<ProgressTrackerFactory>()
                 .AddHostedService<Writer1>()
                 .AddHostedService<Writer2>()
                 .AddHostedService<Writer3>()
                 .AddHostedService<Reader1>()
                 .AddHostedService<Reader2>()
                 .AddHostedService<Reader3>()
-                .AddHostedService<ReaderToEnd1>();
+                .AddHostedService<ReaderToEnd1>()
+                ;
         }
 
         static void ConfigureMultitenancy(IHostApplicationBuilder builder)
         {
             builder.Services
+                .AddSingleton<ProgressTrackerFactory>()
                 .AddHostedService<MultitenantWriter>()
                 .AddHostedService<MultitenantReader>()
-                .AddHostedService<MultitenantReaderToEnd>();
+                .AddHostedService<MultitenantReaderToEnd>()
+                ;
         }
-
-
     }
 }

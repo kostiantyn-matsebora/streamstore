@@ -7,23 +7,24 @@ using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 using Fare;
 using System;
+using StreamStore.ExampleBase.Progress;
 
 namespace StreamStore.ExampleBase.Multitenancy
 {
     [ExcludeFromCodeCoverage]
-    internal abstract class MultitenantServiceBase<TWorker>: BackgroundService where TWorker: WorkerBase
+    internal abstract class MultitenantServiceBase<TWorker> : BackgroundService where TWorker : WorkerBase
     {
-        readonly ILoggerFactory loggerFactory;
+        protected readonly ProgressTrackerFactory trackerFactory;
         readonly ITenantStreamStoreFactory storeFactory;
         readonly ITenantProvider tenantProvider;
         readonly Id streamId = "stream-1";
 
         protected MultitenantServiceBase(
-            ILoggerFactory loggerFactory, 
-            ITenantStreamStoreFactory storeFactory, 
+            ProgressTrackerFactory trackerFactory,
+            ITenantStreamStoreFactory storeFactory,
             ITenantProvider tenantProvider)
         {
-            this.loggerFactory = loggerFactory;
+            this.trackerFactory = trackerFactory;
             this.storeFactory = storeFactory;
             this.tenantProvider = tenantProvider;
         }
@@ -42,15 +43,18 @@ namespace StreamStore.ExampleBase.Multitenancy
 
         void DoWork(Id tenantId, ref int position, CancellationToken stoppingToken)
         {
-            var logger = loggerFactory.CreateLogger(LoggerCategory(tenantId));
             var store = storeFactory.Create(tenantId);
-            var worker = (TWorker)Activator.CreateInstance(typeof(TWorker), logger!, store!, streamId);
+            var worker = (TWorker)Activator.CreateInstance(typeof(TWorker), store!, streamId, CreateTracker(tenantId));
             worker.BeginWorkAsync(++position * SleepPeriodDelta, stoppingToken).ConfigureAwait(false);
         }
+
+
+        protected abstract ProgressTracker CreateTracker(Id tenantId);
+
 
         protected abstract int SleepPeriodDelta { get; }
         protected abstract string Role { get; }
 
-        string LoggerCategory(Id tenantId) => $"{tenantId}/{Role}".ToLowerInvariant();
+        protected string Identifier(Id tenantId) => $"{tenantId} {Role}".ToLowerInvariant();
     }
 }

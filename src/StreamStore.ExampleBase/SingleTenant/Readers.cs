@@ -1,12 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Logging;
+using StreamStore.ExampleBase.Progress;
+
 
 namespace StreamStore.ExampleBase.SingleTenant
 {
     [ExcludeFromCodeCoverage]
     public class Reader1 : ReaderBase
     {
-        public Reader1(ILoggerFactory loggerFactory, IStreamStore store) : base(loggerFactory.CreateLogger(nameof(Reader1)), store)
+        public Reader1(IStreamStore store, ProgressTrackerFactory trackerFactory) : base(store, trackerFactory)
         {
         }
     }
@@ -14,7 +15,7 @@ namespace StreamStore.ExampleBase.SingleTenant
     [ExcludeFromCodeCoverage]
     public class Reader2 : ReaderBase
     {
-        public Reader2(ILoggerFactory loggerFactory, IStreamStore store) : base(loggerFactory.CreateLogger(nameof(Reader2)), store)
+        public Reader2(IStreamStore store, ProgressTrackerFactory trackerFactory) : base(store, trackerFactory)
         {
         }
     }
@@ -22,7 +23,7 @@ namespace StreamStore.ExampleBase.SingleTenant
     [ExcludeFromCodeCoverage]
     public class Reader3 : ReaderBase
     {
-        public Reader3(ILoggerFactory loggerFactory, IStreamStore store) : base(loggerFactory.CreateLogger(nameof(Reader3)), store)
+        public Reader3(IStreamStore store, ProgressTrackerFactory trackerFactory) : base(store, trackerFactory)
         {
         }
     }
@@ -30,7 +31,7 @@ namespace StreamStore.ExampleBase.SingleTenant
     [ExcludeFromCodeCoverage]
     public class ReaderToEnd1 : ReaderToEndBase
     {
-        public ReaderToEnd1(ILoggerFactory loggerFactory, IStreamStore store) : base(loggerFactory.CreateLogger(nameof(ReaderToEnd1)), store)
+        public ReaderToEnd1(IStreamStore store, ProgressTrackerFactory trackerFactory) : base(store, trackerFactory)
         {
         }
     }

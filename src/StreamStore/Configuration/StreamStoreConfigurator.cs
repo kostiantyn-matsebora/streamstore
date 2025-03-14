@@ -18,7 +18,7 @@ namespace StreamStore
         readonly ISerializationConfigurator serializationConfigurator = new SerializationConfigurator();
 
         bool schemaProvisioningEnabled = false;
-        int pageSize = 10;
+        int pageSize = 1000;
 
         public StreamStoreConfigurator()
         {
@@ -90,7 +90,7 @@ namespace StreamStore
 
 
 
-         StreamStoreConfiguration CreateConfiguration()
+        StreamStoreConfiguration CreateConfiguration()
         {
             return new StreamStoreConfiguration
             {
@@ -108,7 +108,7 @@ namespace StreamStore
                 .AddSingleton<IStreamStore, StreamStore>();
         }
 
-        #pragma warning disable S1172 // Unused method parameters should be removed
+#pragma warning disable S1172 // Unused method parameters should be removed
         void RegisterModeDependencies(IServiceCollection services, SingleTenantConfigurator configurator)
         {
             if (schemaProvisioningEnabled) services.AddHostedService<SchemaProvisioningService>();
@@ -118,8 +118,8 @@ namespace StreamStore
 
         {
             services.AddSingleton<ITenantStreamStoreFactory, TenantStreamStoreFactory>();
-            if (schemaProvisioningEnabled)  services.AddHostedService<TenantSchemaProvisioningService>();
+            if (schemaProvisioningEnabled) services.AddHostedService<TenantSchemaProvisioningService>();
         }
-        #pragma warning restore S1172 // Unused method parameters should be removed
+#pragma warning restore S1172 // Unused method parameters should be removed
     }
 }

@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.15.0] - 2025-03-14
+
+### Changed
+
+- Changed default page size to 1000
+- Updated example application, beautify output
+
+### Fixed
+
+- Fixed issue when page size was not taken into account when reading events from the stream
+
+### Added
+
+- Added editor config file
+
 ## [0.14.0] - 2024-11-29
 
 ### Added
