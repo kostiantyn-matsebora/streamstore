@@ -10,13 +10,18 @@ namespace StreamStore.ExampleBase.Multitenancy
     internal class MultitenantReader : MultitenantServiceBase<Reader>
     {
 
-        public MultitenantReader(ILoggerFactory loggerFactory, ITenantStreamStoreFactory storeFactory, ITenantProvider tenantProvider):
-            base(loggerFactory, storeFactory, tenantProvider)
+        public MultitenantReader(ProgressTrackerFactory trackerFactory, ITenantStreamStoreFactory storeFactory, ITenantProvider tenantProvider) :
+            base(trackerFactory, storeFactory, tenantProvider)
         {
         }
 
         protected override string Role => nameof(Reader);
 
         protected override int SleepPeriodDelta => 2_000;
+
+        protected override ProgressTracker CreateTracker(Id tenantId)
+        {
+            return trackerFactory.SpawnReadTracker(Identifier(tenantId));
+        }
     }
 }

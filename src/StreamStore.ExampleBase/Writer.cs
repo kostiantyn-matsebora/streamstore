@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using Microsoft.Extensions.Logging;
-using StopwatchTimer;
+
 using StreamStore.Exceptions;
 
 namespace StreamStore.ExampleBase
@@ -13,26 +13,28 @@ namespace StreamStore.ExampleBase
     internal class Writer : WorkerBase
     {
         Revision actualRevision = Revision.Zero;
-
         protected override int InitialSleepPeriod => 0;
+        readonly WriteProgressTracker progressTracker;
 
-        public Writer(ILogger logger, IStreamStore store, Id streamId) : base(logger, store, streamId)
+        public Writer(IStreamStore store, Id streamId, WriteProgressTracker progressTracker) : base(store, streamId, progressTracker)
         {
+            this.progressTracker = progressTracker;
+
         }
 
-        protected override async Task DoWorkAsync(int sleepPeriod, CancellationToken token)
+        protected override async Task DoWorkAsync(CancellationToken token)
         {
             try
             {
-                using (new CodeStopWatch("Writing 3 events to stream", s => logger.LogInformation(s)))
-                {
-                    actualRevision =
-                    await store.BeginWriteAsync(streamId, actualRevision, token)
-                                    .AppendEventAsync(CreateEvent(), token)
-                                    .AppendEventAsync(CreateEvent(), token)
-                                    .AppendEventAsync(CreateEvent(), token)
-                                .CommitAsync(token);
-                }
+                progressTracker.StartWriting();
+                actualRevision =
+                await store.BeginWriteAsync(streamId, actualRevision, token)
+                                .AppendEventAsync(CreateEvent(), token)
+                                .AppendEventAsync(CreateEvent(), token)
+                                .AppendEventAsync(CreateEvent(), token)
+                            .CommitAsync(token);
+                progressTracker.WriteSucceeded(actualRevision, 3);
+
             }
             catch (OptimisticConcurrencyException ex)
             {
@@ -40,17 +42,15 @@ namespace StreamStore.ExampleBase
 
                 if (ex.ActualRevision != null)
                 {
-                    logger.LogWarning(ex.Message);
                     actualRevision = ex.ActualRevision!.Value;
+                    progressTracker.WriteFailed(actualRevision, ex.Message);
                 }
             }
             catch (StreamLockedException ex)
             {
                 if (token.IsCancellationRequested) return;
-                logger.LogWarning(ex.Message);
+                progressTracker.WriteFailed(actualRevision, ex.Message);
             }
-            logger.LogInformation("Sleeping for {sleepPeriod} miliseconds...", sleepPeriod);
-            await Task.Delay(sleepPeriod, token);
         }
 
         static Event CreateEvent()

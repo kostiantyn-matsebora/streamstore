@@ -39,7 +39,7 @@ namespace StreamStore.Sql.Example
         static void ConfigureCassandraSingle(IHostApplicationBuilder builder)
         {
             // Provision the keyspace
-            var database = new CassandraTestDatabase(singleDatabaseName);
+            var database = new CassandraTestDatabase(singleDatabaseName, ConfigureCluster);
             database.EnsureExists();
 
             // Configure the StreamStore
@@ -49,15 +49,16 @@ namespace StreamStore.Sql.Example
                     x.EnableSchemaProvisioning()
                      .WithSingleDatabase(c =>
                         c.UseCassandra(x =>
-                            x.ConfigureCluster(c =>
-                                c.AddContactPoint("localhost")
-                                 .WithQueryTimeout(30_000)
-                            )
+                            x.ConfigureCluster(ConfigureCluster)
                         )
                     )
                  );
         }
 
+        static void ConfigureCluster(Builder builder)
+        {
+            // You can add your custom configuration here
+        }
         static void ConfigureCassandraMultitenancy(IHostApplicationBuilder builder)
         {
             // Provision the tenant keyspaces
@@ -73,10 +74,7 @@ namespace StreamStore.Sql.Example
                      .WithMultitenancy(c =>
                             c.WithTenants(tenant1, tenant2, tenant3)
                              .UseCassandra(x =>
-                                x.ConfigureDefaultCluster(c =>
-                                    c.AddContactPoint("localhost")
-                                     .WithQueryTimeout(30_000)
-                                  )
+                                x.ConfigureDefaultCluster(ConfigureCluster)
                                  .AddKeyspace(tenant1, tenant1)
                                  .AddKeyspace(tenant2, tenant2)
                                  .AddKeyspace(tenant3, tenant3)

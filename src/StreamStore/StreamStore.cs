@@ -13,7 +13,7 @@ namespace StreamStore
     {
         readonly IStreamDatabase database;
         readonly EventConverter converter;
-        readonly int pageSize = 10;
+        readonly StreamStoreConfiguration configuration;
         readonly StreamEventEnumeratorFactory enumeratorFactory;
         public StreamStore(StreamStoreConfiguration configuration, IStreamDatabase database, IEventSerializer serializer)
         {
@@ -23,6 +23,7 @@ namespace StreamStore
             this.database = database;
             converter = new EventConverter(serializer);
             enumeratorFactory = new StreamEventEnumeratorFactory(configuration, database, converter);
+            this.configuration = configuration;
         }
 
         public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken = default)
@@ -32,7 +33,7 @@ namespace StreamStore
             await database.DeleteAsync(streamId, cancellationToken);
         }
 
-        public  async Task<IAsyncEnumerable<StreamEvent>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
+        public async Task<IAsyncEnumerable<StreamEvent>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
 
@@ -45,7 +46,7 @@ namespace StreamStore
             if (revision.Value < startFrom)
                 throw new InvalidStartFromException(streamId, startFrom, revision.Value);
 
-            var parameters = new StreamReadingParameters(streamId, startFrom, pageSize);
+            var parameters = new StreamReadingParameters(streamId, startFrom, configuration.ReadingPageSize);
 
             return new StreamEventEnumerable(parameters, enumeratorFactory);
         }
@@ -55,7 +56,7 @@ namespace StreamStore
             streamId.ThrowIfHasNoValue(nameof(streamId));
 
             var revision = await database.GetActualRevision(streamId, cancellationToken);
-            
+
             if (revision == null) revision = Revision.Zero;
 
 

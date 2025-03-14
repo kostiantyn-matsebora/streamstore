@@ -1,38 +1,38 @@
 ﻿using System.Threading.Tasks;
 using System.Threading;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
+
 
 namespace StreamStore.ExampleBase
 {
     [ExcludeFromCodeCoverage]
     internal abstract class WorkerBase
     {
-        protected readonly ILogger logger;
         protected readonly IStreamStore store;
         protected readonly Id streamId;
+        readonly ProgressTracker progressTracker;
 
-        protected WorkerBase(ILogger logger, IStreamStore store, Id streamId)
+        protected WorkerBase(IStreamStore store, Id streamId, ProgressTracker progressTracker)
         {
-            this.logger = logger.ThrowIfNull(nameof(logger));
             this.store = store.ThrowIfNull(nameof(store));
             this.streamId = streamId.ThrowIfHasNoValue(nameof(streamId));
+            this.progressTracker = progressTracker;
         }
 
         public async Task BeginWorkAsync(int sleepPeriod, CancellationToken token)
         {
-
-            logger.LogInformation("Waiting {initialSleepPeriod} seconds for initialization...", InitialSleepPeriod);
-            Thread.Sleep(InitialSleepPeriod);
+            progressTracker.WriteInfo($"InitialSleepPeriod={InitialSleepPeriod}, SleepPeriodBetweenAttempts={sleepPeriod}");
+            await Task.Delay(sleepPeriod);
 
             while (!token.IsCancellationRequested)
             {
-                await DoWorkAsync(sleepPeriod, token);
+                await DoWorkAsync(token);
+                await Task.Delay(sleepPeriod);
             }
         }
 
         protected abstract int InitialSleepPeriod { get; }
-        protected abstract Task DoWorkAsync(int sleepPeriod, CancellationToken token);
-       
+        protected abstract Task DoWorkAsync(CancellationToken token);
+
     }
 }
