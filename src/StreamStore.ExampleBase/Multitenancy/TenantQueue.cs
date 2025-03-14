@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using StreamStore.Multitenancy;
 
 namespace StreamStore.ExampleBase.Multitenancy
 {
+    [ExcludeFromCodeCoverage]
     internal class TenantQueue
     {
         Queue<Id> tenants;

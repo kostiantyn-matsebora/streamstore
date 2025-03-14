@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using StreamStore.Multitenancy;
 
 namespace StreamStore.ExampleBase.Multitenancy
 {
+    [ExcludeFromCodeCoverage]
     internal class TenantServiceBase : BackgroundService
     {
         protected readonly ProgressTrackerFactory trackerFactory;
