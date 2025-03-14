@@ -8,8 +8,8 @@ namespace StreamStore.ExampleBase.Progress
     [ExcludeFromCodeCoverage]
     public class ProgressTrackerFactory
     {
-        List<ReadProgressTracker> readTrackers = new List<ReadProgressTracker>();
-        ProgressBar progressBar;
+        readonly List<ReadProgressTracker> readTrackers = new List<ReadProgressTracker>();
+        readonly ProgressBar progressBar;
 
         public ProgressTrackerFactory(StreamStoreConfiguration configuration)
         {

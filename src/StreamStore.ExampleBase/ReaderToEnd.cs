@@ -14,7 +14,7 @@ namespace StreamStore.ExampleBase
     internal class ReaderToEnd : WorkerBase
     {
         protected override int InitialSleepPeriod => 5_000;
-        ReadToEndProgressTracker progressTracker;
+        readonly ReadToEndProgressTracker progressTracker;
 
         public ReaderToEnd(IStreamStore store, Id streamId, ReadToEndProgressTracker progressTracker) : base(store, streamId, progressTracker)
         {
@@ -32,7 +32,6 @@ namespace StreamStore.ExampleBase
             }
             catch (StreamNotFoundException)
             {
-                return;
             }
         }
     }

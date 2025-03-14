@@ -11,7 +11,7 @@ namespace StreamStore.ExampleBase
     [ExcludeFromCodeCoverage]
     internal class Reader : WorkerBase
     {
-        private ReadProgressTracker progressTracker;
+        readonly ReadProgressTracker progressTracker;
 
         public Reader(IStreamStore store, Id streamId, ReadProgressTracker progressTracker) : base(store, streamId, progressTracker)
         {

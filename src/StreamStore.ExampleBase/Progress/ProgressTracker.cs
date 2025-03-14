@@ -12,7 +12,7 @@ namespace StreamStore.ExampleBase.Progress
         protected readonly ChildProgressBar progressBar;
         readonly string name;
         long milliseconds = 0;
-        public ProgressTracker(ProgressTrackerFactory factory, string name)
+        protected ProgressTracker(ProgressTrackerFactory factory, string name)
         {
             this.factory = factory;
             this.name = name;
