@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-
-
+using StreamStore.ExampleBase.Progress;
 using StreamStore.Multitenancy;
 
 namespace StreamStore.ExampleBase.Multitenancy

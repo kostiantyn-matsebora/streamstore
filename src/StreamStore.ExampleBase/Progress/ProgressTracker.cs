@@ -1,83 +1,11 @@
-﻿
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using ShellProgressBar;
 
 
-namespace StreamStore.ExampleBase
+namespace StreamStore.ExampleBase.Progress
 {
-    public class ProgressTrackerFactory
-    {
-        List<ReadProgressTracker> readTrackers = new List<ReadProgressTracker>();
-        ProgressBar progressBar;
-
-        public ProgressTrackerFactory(StreamStoreConfiguration configuration)
-        {
-            progressBar = new ProgressBar(1, "Maximum revision of all streams is unknown", new DefaultProgressBarOptions(true));
-            progressBar.WriteLine($"Configuration: ReadingMode={configuration.ReadingMode}, ReadingPageSize={configuration.ReadingPageSize}");
-        }
-
-
-        public ReadProgressTracker SpawnReadTracker(string name)
-        {
-            var tracker = new ReadProgressTracker(this, name);
-            readTrackers.Add(tracker);
-            return tracker;
-        }
-
-        public WriteProgressTracker SpawnWriteTracker(string name)
-        {
-            return new WriteProgressTracker(this, name);
-        }
-
-        public ReadToEndProgressTracker SpawnReadToEndTracker(string name)
-        {
-            return new ReadToEndProgressTracker(this, name);
-        }
-
-        internal ChildProgressBar CreateChildProgressBar(string name)
-        {
-            return progressBar.Spawn(1, name, new DefaultProgressBarOptions());
-        }
-
-
-        public void ReportRead(int revision)
-        {
-            if (progressBar.CurrentTick < revision)
-            {
-                SetMaxReadRevision(revision);
-            }
-        }
-
-        public void ReportWrite(int maxRevision)
-        {
-            SetMaxRevision(maxRevision);
-        }
-
-        public void ReportWriteFail(int maxRevision)
-        {
-            SetMaxRevision(maxRevision);
-        }
-
-        void SetMaxRevision(int maxRevision)
-        {
-            foreach (var tracker in readTrackers)
-            {
-                tracker.SetMaxRevision(maxRevision);
-            }
-            progressBar.Tick(progressBar.CurrentTick, $"Maximum revision of all streams is {maxRevision}.");
-            progressBar.MaxTicks = maxRevision;
-        }
-
-        void SetMaxReadRevision(int maxReadRevision)
-        {
-            progressBar.Tick(maxReadRevision, $"Maximum revision of all streams is {progressBar.MaxTicks}.");
-        }
-
-    }
-
+    [ExcludeFromCodeCoverage]
     public abstract class ProgressTracker
     {
         protected readonly ProgressTrackerFactory factory;
@@ -88,7 +16,7 @@ namespace StreamStore.ExampleBase
         {
             this.factory = factory;
             this.name = name;
-            this.progressBar = factory.CreateChildProgressBar(Identifier);
+            progressBar = factory.CreateChildProgressBar(Identifier);
         }
 
 
@@ -113,6 +41,7 @@ namespace StreamStore.ExampleBase
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public class WriteProgressTracker : ProgressTracker
     {
         readonly Stopwatch stopwatch = new Stopwatch();
@@ -144,6 +73,7 @@ namespace StreamStore.ExampleBase
 
     }
 
+    [ExcludeFromCodeCoverage]
     public class ReadProgressTracker : ProgressTracker
     {
         readonly Stopwatch stopwatch = new Stopwatch();
@@ -174,6 +104,7 @@ namespace StreamStore.ExampleBase
         public int Cursor => progressBar.CurrentTick;
     }
 
+    [ExcludeFromCodeCoverage]
     public class ReadToEndProgressTracker : ProgressTracker
     {
         readonly Stopwatch stopwatch = new Stopwatch();
@@ -192,18 +123,6 @@ namespace StreamStore.ExampleBase
         {
             stopwatch.Restart();
             WriteProgress(0, " Start reading stream to end...", 0);
-        }
-    }
-
-    class DefaultProgressBarOptions : ProgressBarOptions
-    {
-        public DefaultProgressBarOptions(bool disableBottomPercentage = true)
-        {
-            ProgressBarOnBottom = true;
-            DisplayTimeInRealTime = true;
-            ForegroundColor = ConsoleColor.Yellow;
-            BackgroundColor = ConsoleColor.DarkGray;
-            DisableBottomPercentage = disableBottomPercentage;
         }
     }
 }

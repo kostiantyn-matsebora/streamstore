@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using StreamStore.ExampleBase.Multitenancy;
+using StreamStore.ExampleBase.Progress;
 using StreamStore.ExampleBase.SingleTenant;
 
 

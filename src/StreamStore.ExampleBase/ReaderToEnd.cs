@@ -4,6 +4,7 @@ using System.Threading;
 using System.Diagnostics.CodeAnalysis;
 using StreamStore.Exceptions;
 using System.Diagnostics;
+using StreamStore.ExampleBase.Progress;
 
 
 

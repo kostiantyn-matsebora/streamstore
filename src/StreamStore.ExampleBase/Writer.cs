@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-
+using StreamStore.ExampleBase.Progress;
 using StreamStore.Exceptions;
 
 namespace StreamStore.ExampleBase

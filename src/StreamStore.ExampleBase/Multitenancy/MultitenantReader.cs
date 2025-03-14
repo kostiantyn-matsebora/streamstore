@@ -2,6 +2,7 @@
 using System.Threading;
 
 using Microsoft.Extensions.Logging;
+using StreamStore.ExampleBase.Progress;
 using StreamStore.Multitenancy;
 
 namespace StreamStore.ExampleBase.Multitenancy

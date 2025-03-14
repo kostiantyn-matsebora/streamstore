@@ -7,6 +7,7 @@ using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 using Fare;
 using System;
+using StreamStore.ExampleBase.Progress;
 
 namespace StreamStore.ExampleBase.Multitenancy
 {

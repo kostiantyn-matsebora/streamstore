@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Threading;
 using System.Diagnostics.CodeAnalysis;
+using StreamStore.ExampleBase.Progress;
 
 
 namespace StreamStore.ExampleBase

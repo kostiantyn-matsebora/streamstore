@@ -2,6 +2,7 @@
 using System.Threading;
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics.CodeAnalysis;
+using StreamStore.ExampleBase.Progress;
 
 
 namespace StreamStore.ExampleBase.SingleTenant
