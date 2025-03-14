@@ -15,8 +15,9 @@ namespace StreamStore.ExampleBase.Progress
             ProgressBarOnBottom = true;
             DisplayTimeInRealTime = true;
             ForegroundColor = ConsoleColor.Yellow;
-            BackgroundColor = ConsoleColor.DarkGray;
+            BackgroundColor = ConsoleColor.DarkYellow;
             DisableBottomPercentage = disableBottomPercentage;
+            ForegroundColorError = ConsoleColor.Red;
         }
     }
 }
