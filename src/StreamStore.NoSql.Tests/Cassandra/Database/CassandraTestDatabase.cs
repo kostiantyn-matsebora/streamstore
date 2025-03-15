@@ -1,5 +1,4 @@
 ﻿using Cassandra;
-using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.Testing.Framework;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Database
@@ -10,17 +9,12 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
         public readonly KeyspaceConfiguration Keyspace;
         bool disposedValue;
 
-        public CassandraTestDatabase(KeyspaceConfiguration keyspace, Action<Builder>? configureCluster = null)
+        public CassandraTestDatabase(KeyspaceConfiguration keyspace, Action<Builder> configureCluster)
         {
             Keyspace = keyspace;
-            var configurator = configureCluster ?? ConfigureCluster;
             var builder = Cluster.Builder();
-            configurator(builder);
+            configureCluster(builder);
             cluster = builder.Build();
-        }
-
-        public CassandraTestDatabase(string keyspace, Action<Builder>? configureCluster = null): this(new KeyspaceConfiguration(keyspace), configureCluster)
-        {
         }
 
         public bool EnsureExists()
@@ -43,11 +37,6 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
                 // ignored
                 return false;
             }
-        }
-
-        void ConfigureCluster(Builder builder)
-        {
-            builder.AddContactPoint("localhost").WithQueryTimeout(10000);
         }
 
         private void Dispose(bool disposing)

@@ -91,7 +91,7 @@ namespace StreamStore.Sql.Example
         static void ConfigureCosmosDbSingle(IHostApplicationBuilder appBuilder)
         {
             // Provision the keyspace
-            var database = new CassandraTestDatabase(singleDatabaseName, builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            var database = new CassandraTestDatabase(new KeyspaceConfiguration(singleDatabaseName), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
 
             // Configure the StreamStore
             appBuilder
@@ -109,9 +109,9 @@ namespace StreamStore.Sql.Example
         static void ConfigureCosmosDbMultitenancy(IHostApplicationBuilder appBuilder)
         {
             // Provision the tenant keyspaces
-            new CassandraTestDatabase(tenant1, builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
-            new CassandraTestDatabase(tenant2, builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
-            new CassandraTestDatabase(tenant3, builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            new CassandraTestDatabase(new KeyspaceConfiguration(tenant1), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            new CassandraTestDatabase(new KeyspaceConfiguration(tenant2), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            new CassandraTestDatabase(new KeyspaceConfiguration(tenant3), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
 
             // Configure the StreamStore
             appBuilder
