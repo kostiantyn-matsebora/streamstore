@@ -14,7 +14,7 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
         readonly ICassandraTenantStorageConfigurationProvider configurationProvider;
         readonly ICassandraTenantClusterRegistry clusterRegistry;
         readonly ICassandraTenantMappingRegistry mappingRegistry;
-        ConcurrentDictionary<Id, ICassandraSessionFactory> factories = new ConcurrentDictionary<Id, ICassandraSessionFactory> ();
+        readonly ConcurrentDictionary<Id, ICassandraSessionFactory> factories = new ConcurrentDictionary<Id, ICassandraSessionFactory> ();
 
         public CassandraTenantMapperProvider(
             ICassandraTenantStorageConfigurationProvider configurationProvider,
@@ -32,8 +32,8 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
             var factory = factories.GetOrAdd(
                 tenantId, 
                 id => new CassandraSessionFactory(
-                    clusterRegistry.GetCluster(tenantId), 
-                    configurationProvider.GetConfiguration(tenantId)));
+                    clusterRegistry.GetCluster(id), 
+                    configurationProvider.GetConfiguration(id)));
 
             return new CassandraMapperProvider(factory, mapping);
         }

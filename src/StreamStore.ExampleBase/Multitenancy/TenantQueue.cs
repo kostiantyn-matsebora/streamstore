@@ -7,7 +7,7 @@ namespace StreamStore.ExampleBase.Multitenancy
     [ExcludeFromCodeCoverage]
     internal class TenantQueue
     {
-        Queue<Id> tenants;
+        readonly Queue<Id> tenants;
         public TenantQueue(ITenantProvider tenantProvider)
         {
             tenants = new Queue<Id>(tenantProvider.GetAll());

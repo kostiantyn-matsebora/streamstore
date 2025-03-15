@@ -17,7 +17,7 @@ namespace StreamStore.ExampleBase.Progress
         {
             this.factory = factory;
             this.name = name;
-            progressBar = factory.CreateChildProgressBar(Identifier, ProgressBarOptions());
+            progressBar = factory.CreateChildProgressBar(Identifier, new DefaultProgressBarOptions());
         }
 
 
@@ -49,8 +49,6 @@ namespace StreamStore.ExampleBase.Progress
             progressBar.ForegroundColor = ConsoleColor.Blue;
             progressBar.Tick(1, $"{Identifier}: {message}");
         }
-
-        protected abstract ProgressBarOptions ProgressBarOptions();
     }
 
     [ExcludeFromCodeCoverage]
@@ -81,12 +79,6 @@ namespace StreamStore.ExampleBase.Progress
             factory.ReportWriteFail(maxRevision);
             WriteFailed(message, stopwatch.ElapsedMilliseconds);
         }
-
-        protected override ProgressBarOptions ProgressBarOptions()
-        {
-           var options = new DefaultProgressBarOptions();
-           return options;
-        }
     }
 
     [ExcludeFromCodeCoverage]
@@ -116,13 +108,6 @@ namespace StreamStore.ExampleBase.Progress
         {
             progressBar.MaxTicks = revision;
         }
-
-        protected override ProgressBarOptions ProgressBarOptions()
-        {
-            var options = new DefaultProgressBarOptions();
-            return options;
-        }
-
         public int Cursor => progressBar.CurrentTick;
     }
 
@@ -145,12 +130,6 @@ namespace StreamStore.ExampleBase.Progress
         {
             stopwatch.Restart();
             Read(0, " Start reading stream to end...", 0);
-        }
-
-        protected override ProgressBarOptions ProgressBarOptions()
-        {
-            var options = new DefaultProgressBarOptions();
-            return options;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace StreamStore.ExampleBase.Multitenancy
     {
         protected readonly ProgressTrackerFactory trackerFactory;
         readonly ITenantStreamStoreFactory storeFactory;
-        private readonly Id tenantId;
+        readonly Id tenantId;
 
         readonly Id streamId = "stream-1";
         const int readerPerTenant = 2;
@@ -77,6 +77,6 @@ namespace StreamStore.ExampleBase.Multitenancy
         }
 
 
-        string Identifier(Id tenantId, string role, int index) => $"{tenantId} {role}-{index}".ToLowerInvariant();
+        static string Identifier(Id tenantId, string role, int index) => $"{tenantId} {role}-{index}".ToLowerInvariant();
     }
 }
