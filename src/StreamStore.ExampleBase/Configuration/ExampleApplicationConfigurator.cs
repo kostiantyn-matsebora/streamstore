@@ -108,9 +108,10 @@ namespace StreamStore.ExampleBase.Configuration
         {
             builder.Services
                 .AddSingleton<ProgressTrackerFactory>()
-                .AddHostedService<MultitenantWriter>()
-                .AddHostedService<MultitenantReader>()
-                .AddHostedService<MultitenantReaderToEnd>()
+                .AddSingleton<TenantQueue>()
+                .AddHostedService<TenantOne>()
+                .AddHostedService<TenantTwo>()
+                .AddHostedService<TenantThree>()
                 ;
         }
     }

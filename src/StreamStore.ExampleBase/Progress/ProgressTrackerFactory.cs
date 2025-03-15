@@ -35,9 +35,9 @@ namespace StreamStore.ExampleBase.Progress
             return new ReadToEndProgressTracker(this, name);
         }
 
-        internal ChildProgressBar CreateChildProgressBar(string name)
+        internal ChildProgressBar CreateChildProgressBar(string name, ProgressBarOptions options)
         {
-            return progressBar.Spawn(1, name, new DefaultProgressBarOptions());
+            return progressBar.Spawn(1, name, options);
         }
 
 
@@ -51,12 +51,18 @@ namespace StreamStore.ExampleBase.Progress
 
         public void ReportWrite(int maxRevision)
         {
-            SetMaxRevision(maxRevision);
+            if (progressBar.MaxTicks < maxRevision)
+            {
+                SetMaxRevision(maxRevision);
+            }
         }
 
         public void ReportWriteFail(int maxRevision)
         {
-            SetMaxRevision(maxRevision);
+            if (progressBar.MaxTicks < maxRevision)
+            {
+                SetMaxRevision(maxRevision);
+            }
         }
 
         void SetMaxRevision(int maxRevision)

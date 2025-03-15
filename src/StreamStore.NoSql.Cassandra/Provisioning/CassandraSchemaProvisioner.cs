@@ -21,10 +21,8 @@ namespace StreamStore.NoSql.Cassandra.Provisioning
 
         public async Task ProvisionSchemaAsync(CancellationToken token)
         {
-            using (var mapper = mapperProvider.OpenMapper())
-            {
-                await mapper.ExecuteAsync(queries.CreateEventsTable());
-            }
+            var mapper = mapperProvider.OpenMapper();
+            await mapper.ExecuteAsync(queries.CreateEventsTable());
         }
     }
 }

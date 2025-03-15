@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Cassandra.Mapping;
+using Moq;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Database;
 using StreamStore.Testing;
@@ -11,19 +12,19 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
 
         internal readonly Mock<ICassandraMapperProvider> MapperProvider;
         internal readonly Mock<ICassandraCqlQueries> Queries;
-        internal readonly Mock<ICassandraMapper> Mapper;
+        internal readonly Mock<IMapper> Mapper;
         internal readonly CassandraStreamDatabase StreamDatabase;
         internal CassandraStreamUnitOfWork StreamUnitOfWork =>
-            new CassandraStreamUnitOfWork(Generated.Id, Generated.Revision, null, MapperProvider.Object, 
+            new CassandraStreamUnitOfWork(Generated.Id, Generated.Revision, null, Mapper.Object, 
                     new CassandraStatementConfigurator(new CassandraStorageConfiguration()),
                     new CassandraCqlQueries(new CassandraStorageConfiguration()));
 
         public CassandraMockTestSuite()
         {
             MapperProvider = MockRepository.Create<ICassandraMapperProvider>();
-            Mapper = MockRepository.Create<ICassandraMapper>();
+            Mapper = MockRepository.Create<IMapper>();
             Queries = MockRepository.Create<ICassandraCqlQueries>();
-            Mapper.Setup(x => x.Dispose());
+            //Mapper.Setup(x => x.Dispose());
             MapperProvider.Setup(x => x.OpenMapper()).Returns(Mapper.Object);
             StreamDatabase = new CassandraStreamDatabase(MapperProvider.Object, Queries.Object, new CassandraStorageConfiguration());
         }

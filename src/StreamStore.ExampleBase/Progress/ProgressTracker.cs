@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using ShellProgressBar;
 
@@ -16,7 +17,7 @@ namespace StreamStore.ExampleBase.Progress
         {
             this.factory = factory;
             this.name = name;
-            progressBar = factory.CreateChildProgressBar(Identifier);
+            progressBar = factory.CreateChildProgressBar(Identifier, new DefaultProgressBarOptions());
         }
 
 
@@ -28,16 +29,25 @@ namespace StreamStore.ExampleBase.Progress
         string Identifier => $"{milliseconds.ToString("D8")} ms {name}";
 
 
-        protected void WriteProgress(int progress, string message, long? elapsedMilliseconds = null)
+        protected void Read(int progress, string message, long? elapsedMilliseconds = null)
         {
             milliseconds = elapsedMilliseconds ?? milliseconds;
             progressBar.Tick(progress, $"{Identifier}: {message}");
         }
 
-        protected void WriteProgress(string message, long? elapsedMilliseconds = null)
+        protected void WriteFailed(string message, long? elapsedMilliseconds = null)
         {
             milliseconds = elapsedMilliseconds ?? milliseconds;
-            progressBar.Tick($"{Identifier}: {message}");
+            progressBar.ObservedError = true;
+            progressBar.Tick(1, $"{Identifier}: {message}");
+        }
+
+        protected void WriteSucceeded(string message, long? elapsedMilliseconds = null)
+        {
+            milliseconds = elapsedMilliseconds ?? milliseconds;
+            progressBar.ObservedError = false;
+            progressBar.ForegroundColor = ConsoleColor.Blue;
+            progressBar.Tick(1, $"{Identifier}: {message}");
         }
     }
 
@@ -59,7 +69,7 @@ namespace StreamStore.ExampleBase.Progress
         {
             stopwatch.Stop();
             factory.ReportWrite(maxRevision);
-            WriteProgress($"Completed appending stream to {maxRevision} revision by adding {count} events", stopwatch.ElapsedMilliseconds);
+            WriteSucceeded($"Completed appending stream to {maxRevision} revision by adding {count} events", stopwatch.ElapsedMilliseconds);
 
         }
 
@@ -67,10 +77,8 @@ namespace StreamStore.ExampleBase.Progress
         {
             stopwatch.Stop();
             factory.ReportWriteFail(maxRevision);
-            WriteProgress(0, message, stopwatch.ElapsedMilliseconds);
+            WriteFailed(message, stopwatch.ElapsedMilliseconds);
         }
-
-
     }
 
     [ExcludeFromCodeCoverage]
@@ -87,20 +95,19 @@ namespace StreamStore.ExampleBase.Progress
         {
             stopwatch.Restart();
             factory.ReportRead(0);
-            WriteProgress(0, $"Start reading...", 0);
+            Read(0, $"Start reading...", 0);
         }
 
         public void ReportRead(int revision)
         {
             factory.ReportRead(revision);
-            WriteProgress($"Read events  to revision {revision}", stopwatch.ElapsedMilliseconds);
+            Read(revision, $"Read events  to revision {revision}", stopwatch.ElapsedMilliseconds);
         }
 
         public void SetMaxRevision(int revision)
         {
             progressBar.MaxTicks = revision;
         }
-
         public int Cursor => progressBar.CurrentTick;
     }
 
@@ -116,13 +123,13 @@ namespace StreamStore.ExampleBase.Progress
         public void ReadEnded(int revision)
         {
             stopwatch.Stop();
-            WriteProgress($"Stream read to end, revision is {revision}", stopwatch.ElapsedMilliseconds);
+            Read(revision, $"Stream read to end, revision is {revision}", stopwatch.ElapsedMilliseconds);
         }
 
         public void StartReading()
         {
             stopwatch.Restart();
-            WriteProgress(0, " Start reading stream to end...", 0);
+            Read(0, " Start reading stream to end...", 0);
         }
     }
 }

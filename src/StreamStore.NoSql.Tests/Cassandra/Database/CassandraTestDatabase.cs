@@ -1,5 +1,4 @@
 ﻿using Cassandra;
-using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.Testing.Framework;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Database
@@ -7,17 +6,14 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
     public sealed class CassandraTestDatabase : ITestDatabase
     {
         readonly Cluster cluster;
-        readonly CassandraStorageConfiguration config;
-        public readonly string Keyspace;
+        public readonly KeyspaceConfiguration Keyspace;
         bool disposedValue;
 
-        public CassandraTestDatabase(string keyspace, Action<Builder>? configureCluster = null)
+        public CassandraTestDatabase(KeyspaceConfiguration keyspace, Action<Builder> configureCluster)
         {
             Keyspace = keyspace;
-            config = new CassandraStorageConfigurationBuilder().WithKeyspaceName(keyspace).Build();
-            var configurator = configureCluster ?? ConfigureCluster;
             var builder = Cluster.Builder();
-            configurator(builder);
+            configureCluster(builder);
             cluster = builder.Build();
         }
 
@@ -28,10 +24,10 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
                 using (var session = cluster.Connect())
                 {
                     session.Execute(
-                        @$"CREATE KEYSPACE {config.Keyspace}
+                        @$"CREATE KEYSPACE {Keyspace.Name}
                               WITH REPLICATION = {{ 
-                               'class' : 'SimpleStrategy', 
-                               'replication_factor' : 1 
+                               'class' : '{Keyspace.ReplicationClass}', 
+                               'replication_factor' : {Keyspace.ReplicationFactor}
                               }};");
                     return true;
                 }
@@ -41,11 +37,6 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
                 // ignored
                 return false;
             }
-        }
-
-        void ConfigureCluster(Builder builder)
-        {
-            builder.AddContactPoint("localhost").WithQueryTimeout(10000);
         }
 
         private void Dispose(bool disposing)
@@ -58,7 +49,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
                     {
                         using (var session = cluster.Connect())
                         {
-                            session.Execute($"DROP KEYSPACE IF  EXISTS {config.Keyspace} ;");
+                            session.Execute($"DROP KEYSPACE IF  EXISTS {Keyspace.Name} ;");
                         }
                     }
                     catch
@@ -76,5 +67,18 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+    }
+
+    public class KeyspaceConfiguration
+    {
+        public KeyspaceConfiguration(string name)
+        {
+            this.Name = name.ThrowIfNull(nameof(name));
+        }
+        public string Name { get; }
+        public int ReplicationFactor { get; set; } = 1;
+        public string ReplicationClass { get; set; } = "SimpleStrategy";
+
     }
 }

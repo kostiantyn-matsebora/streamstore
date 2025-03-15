@@ -20,7 +20,7 @@ namespace StreamStore.Sql.Example
         readonly static Id tenant1 = "tenant_1";
         readonly static Id tenant2 = "tenant_2";
         readonly static Id tenant3 = "tenant_3";
-
+        readonly static int replicationFactor = 3;
         static async Task Main(string[] args)
         {
             var builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder(args);
@@ -39,7 +39,12 @@ namespace StreamStore.Sql.Example
         static void ConfigureCassandraSingle(IHostApplicationBuilder builder)
         {
             // Provision the keyspace
-            var database = new CassandraTestDatabase(singleDatabaseName, ConfigureCluster);
+            var database = new CassandraTestDatabase(
+                new KeyspaceConfiguration(singleDatabaseName)
+                {
+                    ReplicationFactor = replicationFactor
+                }, ConfigureCluster);
+
             database.EnsureExists();
 
             // Configure the StreamStore
@@ -57,15 +62,16 @@ namespace StreamStore.Sql.Example
 
         static void ConfigureCluster(Builder builder)
         {
-            // You can add your custom configuration here
+            // Add your custom cluster configuration here
+            builder.AddContactPoint("localhost");
         }
 
         static void ConfigureCassandraMultitenancy(IHostApplicationBuilder builder)
         {
             // Provision the tenant keyspaces
-            new CassandraTestDatabase(tenant1).EnsureExists();
-            new CassandraTestDatabase(tenant2).EnsureExists();
-            new CassandraTestDatabase(tenant3).EnsureExists();
+            new CassandraTestDatabase(new KeyspaceConfiguration(tenant1) { ReplicationFactor = replicationFactor }, ConfigureCluster).EnsureExists();
+            new CassandraTestDatabase(new KeyspaceConfiguration(tenant2) { ReplicationFactor = replicationFactor }, ConfigureCluster).EnsureExists();
+            new CassandraTestDatabase(new KeyspaceConfiguration(tenant3) { ReplicationFactor = replicationFactor }, ConfigureCluster).EnsureExists();
 
             // Configure the StreamStore
             builder
@@ -85,7 +91,7 @@ namespace StreamStore.Sql.Example
         static void ConfigureCosmosDbSingle(IHostApplicationBuilder appBuilder)
         {
             // Provision the keyspace
-            var database = new CassandraTestDatabase(singleDatabaseName, builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            var database = new CassandraTestDatabase(new KeyspaceConfiguration(singleDatabaseName), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
 
             // Configure the StreamStore
             appBuilder
@@ -103,9 +109,9 @@ namespace StreamStore.Sql.Example
         static void ConfigureCosmosDbMultitenancy(IHostApplicationBuilder appBuilder)
         {
             // Provision the tenant keyspaces
-            new CassandraTestDatabase(tenant1, builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
-            new CassandraTestDatabase(tenant2, builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
-            new CassandraTestDatabase(tenant3, builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            new CassandraTestDatabase(new KeyspaceConfiguration(tenant1), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            new CassandraTestDatabase(new KeyspaceConfiguration(tenant2), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            new CassandraTestDatabase(new KeyspaceConfiguration(tenant3), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
 
             // Configure the StreamStore
             appBuilder
