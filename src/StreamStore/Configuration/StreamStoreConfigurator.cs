@@ -18,7 +18,7 @@ namespace StreamStore
         readonly ISerializationConfigurator serializationConfigurator = new SerializationConfigurator();
 
         bool schemaProvisioningEnabled = false;
-        int pageSize = 1000;
+        int pageSize = 1_000;
 
         public StreamStoreConfigurator()
         {
