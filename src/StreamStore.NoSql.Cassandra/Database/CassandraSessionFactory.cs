@@ -29,12 +29,9 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         void Dispose(bool disposing)
         {
-            if (!disposing)
+            if (!disposing && session.IsValueCreated)
             {
-                if (session.IsValueCreated)
-                {
-                    session.Value.Dispose();
-                }
+               session.Value.Dispose();
             }
         }
 
