@@ -5,10 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
-using StreamStore.ExampleBase.Multitenancy;
 using StreamStore.ExampleBase.Progress;
-using StreamStore.ExampleBase.SingleTenant;
-
+using StreamStore.ExampleBase.Services.Multitenancy;
+using StreamStore.ExampleBase.Services.SingleTenant;
 
 namespace StreamStore.ExampleBase.Configuration
 {
@@ -93,7 +92,7 @@ namespace StreamStore.ExampleBase.Configuration
         {
 
             builder.Services
-                .AddSingleton<ProgressTrackerFactory>()
+                .AddSingleton<WorkerRegistry>()
                 .AddHostedService<Writer1>()
                 .AddHostedService<Writer2>()
                 .AddHostedService<Writer3>()
@@ -107,8 +106,9 @@ namespace StreamStore.ExampleBase.Configuration
         static void ConfigureMultitenancy(IHostApplicationBuilder builder)
         {
             builder.Services
-                .AddSingleton<ProgressTrackerFactory>()
+                .AddSingleton<WorkerRegistry>()
                 .AddSingleton<TenantQueue>()
+                .AddSingleton<TenantContextQueue>()
                 .AddHostedService<TenantOne>()
                 .AddHostedService<TenantTwo>()
                 .AddHostedService<TenantThree>()

@@ -1,7 +1,6 @@
 ﻿using Moq;
 using StreamStore.Multitenancy;
 using StreamStore.Provisioning;
-using StreamStore.Testing;
 using StreamStore.Testing.Framework;
 
 namespace StreamStore.Tests.SchemaProvisioning.Multitenancy
