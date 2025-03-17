@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using ShellProgressBar;
 using StreamStore.ExampleBase.Workers;
 
 
 namespace StreamStore.ExampleBase.Progress
 {
+    [ExcludeFromCodeCoverage]
     class WorkerProgressBar
     {
         readonly WorkerIdentifier identifier;

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+
 
 namespace StreamStore.ExampleBase.Workers
 {
+    [ExcludeFromCodeCoverage]
     static class Roles
     {
         public const string Reader = "reader";

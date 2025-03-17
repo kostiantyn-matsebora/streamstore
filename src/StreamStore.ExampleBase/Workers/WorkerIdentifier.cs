@@ -1,5 +1,8 @@
-﻿namespace StreamStore.ExampleBase.Workers
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace StreamStore.ExampleBase.Workers
 {
+    [ExcludeFromCodeCoverage]
     internal abstract class WorkerIdentifier
     {
         public string Role { get; }
@@ -21,6 +24,7 @@
         }
     }
 
+    [ExcludeFromCodeCoverage]
     internal class ReaderIdentifier : WorkerIdentifier
     {
         public ReaderIdentifier(int number, string tenant = Tenants.Default) : base(Roles.Reader, number, tenant)
@@ -28,6 +32,7 @@
         }
     }
 
+    [ExcludeFromCodeCoverage]
     internal class ReaderToEndIdentifier : WorkerIdentifier
     {
         public ReaderToEndIdentifier(int number, string tenant = Tenants.Default) : base(Roles.ReaderToEnd, number, tenant)
