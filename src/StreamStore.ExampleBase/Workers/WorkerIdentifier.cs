@@ -40,6 +40,7 @@ namespace StreamStore.ExampleBase.Workers
         }
     }
 
+    [ExcludeFromCodeCoverage]
     internal class WriterIdentifier : WorkerIdentifier
     {
         public WriterIdentifier(int number, string tenant = Tenants.Default) : base(Roles.Writer, number, tenant)
