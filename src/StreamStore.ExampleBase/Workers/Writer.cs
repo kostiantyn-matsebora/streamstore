@@ -1,40 +1,37 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using StreamStore.ExampleBase.Progress;
+using StreamStore.ExampleBase.Progress.Model;
 using StreamStore.Exceptions;
 
-namespace StreamStore.ExampleBase
+namespace StreamStore.ExampleBase.Workers
 {
     [ExcludeFromCodeCoverage]
     internal class Writer : WorkerBase
     {
         Revision actualRevision = Revision.Zero;
         protected override int InitialSleepPeriod => 0;
-        readonly WriteProgressTracker progressTracker;
 
-        public Writer(IStreamStore store, Id streamId, WriteProgressTracker progressTracker) : base(store, streamId, progressTracker)
+        public Writer(WriterIdentifier identifier, IStreamStore store, Id streamId) : base(identifier, store, streamId)
         {
-            this.progressTracker = progressTracker;
-
         }
 
         protected override async Task DoWorkAsync(CancellationToken token)
         {
             try
             {
-                progressTracker.StartWriting();
+                TrackProgress(new StartWriting(actualRevision));
                 actualRevision =
                 await store.BeginWriteAsync(streamId, actualRevision, token)
                                 .AppendEventAsync(CreateEvent(), token)
                                 .AppendEventAsync(CreateEvent(), token)
                                 .AppendEventAsync(CreateEvent(), token)
                             .CommitAsync(token);
-                progressTracker.WriteSucceeded(actualRevision, 3);
-
+                
+                TrackProgress(new WriteSucceeded(actualRevision, 3));
             }
             catch (OptimisticConcurrencyException ex)
             {
@@ -43,13 +40,13 @@ namespace StreamStore.ExampleBase
                 if (ex.ActualRevision != null)
                 {
                     actualRevision = ex.ActualRevision!.Value;
-                    progressTracker.WriteFailed(actualRevision, ex.Message);
+                    TrackError(ex);
                 }
             }
             catch (StreamLockedException ex)
             {
+                TrackError(ex);
                 if (token.IsCancellationRequested) return;
-                progressTracker.WriteFailed(actualRevision, ex.Message);
             }
         }
 

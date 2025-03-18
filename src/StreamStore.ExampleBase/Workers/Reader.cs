@@ -3,19 +3,17 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.ExampleBase.Progress;
+using StreamStore.ExampleBase.Progress.Model;
 using StreamStore.Exceptions;
 
 
-namespace StreamStore.ExampleBase
+namespace StreamStore.ExampleBase.Workers
 {
     [ExcludeFromCodeCoverage]
     internal class Reader : WorkerBase
     {
-        readonly ReadProgressTracker progressTracker;
-
-        public Reader(IStreamStore store, Id streamId, ReadProgressTracker progressTracker) : base(store, streamId, progressTracker)
+        public Reader(ReaderIdentifier identifier, IStreamStore store, Id streamId) : base(identifier, store, streamId)
         {
-            this.progressTracker = progressTracker;
         }
 
         protected override int InitialSleepPeriod => 5_000;
@@ -24,13 +22,15 @@ namespace StreamStore.ExampleBase
         {
             IAsyncEnumerator<StreamEvent> enumerator;
 
-            progressTracker.StartReading();
+            TrackProgress(new StartReading());
+
             try
             {
                 enumerator = (await store.BeginReadAsync(streamId, token)).GetAsyncEnumerator();
             }
-            catch (StreamNotFoundException)
+            catch (StreamNotFoundException ex)
             {
+                TrackError(ex);
                 return;
             }
 
@@ -42,10 +42,11 @@ namespace StreamStore.ExampleBase
                 if (notEmpty)
                 {
                     currentRevision = enumerator.Current.Revision;
-                    progressTracker.ReportRead(currentRevision);
+                    TrackProgress(new ReadSucceeded(currentRevision));
                 }
             } while (notEmpty);
 
+            TrackProgress(new ReadCompleted(currentRevision));
         }
     }
 }

@@ -3,35 +3,34 @@ using System.Threading;
 
 using System.Diagnostics.CodeAnalysis;
 using StreamStore.Exceptions;
-using System.Diagnostics;
-using StreamStore.ExampleBase.Progress;
+
+using StreamStore.ExampleBase.Progress.Model;
 
 
 
-namespace StreamStore.ExampleBase
+namespace StreamStore.ExampleBase.Workers
 {
     [ExcludeFromCodeCoverage]
     internal class ReaderToEnd : WorkerBase
     {
         protected override int InitialSleepPeriod => 5_000;
-        readonly ReadToEndProgressTracker progressTracker;
 
-        public ReaderToEnd(IStreamStore store, Id streamId, ReadToEndProgressTracker progressTracker) : base(store, streamId, progressTracker)
+        public ReaderToEnd(ReaderToEndIdentifier identifier, IStreamStore store, Id streamId) : base(identifier, store, streamId)
         {
-            this.progressTracker = progressTracker;
         }
 
         protected override async Task DoWorkAsync(CancellationToken token)
         {
-            progressTracker.StartReading();
+            TrackProgress(new StartReading());
 
             try
             {
                 var result = await store.ReadToEndAsync(streamId, token);
-                progressTracker.ReadEnded(result.MaxRevision);
+                TrackProgress(new ReadCompleted(result.MaxRevision));
             }
-            catch (StreamNotFoundException)
+            catch (StreamNotFoundException ex)
             {
+                TrackError(ex);
             }
         }
     }

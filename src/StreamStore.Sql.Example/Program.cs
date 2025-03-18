@@ -13,11 +13,6 @@ namespace StreamStore.Sql.Example
     [ExcludeFromCodeCoverage]
     internal static class Program
     {
-        const string singleDatabaseName = "streamstore";
-        readonly static Id tenant1 = "tenant_1";
-        readonly static Id tenant2 = "tenant_2";
-        readonly static Id tenant3 = "tenant_3";
-
         static async Task Main(string[] args)
         {
             var builder = Host.CreateApplicationBuilder(args);
@@ -37,7 +32,7 @@ namespace StreamStore.Sql.Example
 
         static void ConfigureSqliteSingle(IHostApplicationBuilder builder)
         {
-            var database = new SqliteTestDatabase(singleDatabaseName);
+            var database = new SqliteTestDatabase(Tenants.Default);
             database.EnsureExists();
 
             builder
@@ -51,7 +46,7 @@ namespace StreamStore.Sql.Example
 
         static void ConfigurePostgresSingle(IHostApplicationBuilder builder)
         {
-            var database = new PostgresTestDatabase(singleDatabaseName);
+            var database = new PostgresTestDatabase(Tenants.Default);
             database.EnsureExists();
 
             builder
@@ -65,37 +60,37 @@ namespace StreamStore.Sql.Example
 
         static void ConfigureSqliteMultitenancy(IHostApplicationBuilder builder)
         {
-            var connectionString1 = EnsureDatabaseExists(new SqliteTestDatabase(tenant1));
-            var connectionString2 = EnsureDatabaseExists(new SqliteTestDatabase(tenant2));
-            var connectionString3 = EnsureDatabaseExists(new SqliteTestDatabase(tenant3));
+            var connectionString1 = EnsureDatabaseExists(new SqliteTestDatabase(Tenants.Tenant1));
+            var connectionString2 = EnsureDatabaseExists(new SqliteTestDatabase(Tenants.Tenant2));
+            var connectionString3 = EnsureDatabaseExists(new SqliteTestDatabase(Tenants.Tenant3));
 
             builder
                 .Services
                 .ConfigureStreamStore(x =>
                     x.EnableSchemaProvisioning()
                      .WithMultitenancy(c => 
-                            c.WithTenants(tenant1, tenant2, tenant3)
+                            c.WithTenants(Tenants.Tenant1, Tenants.Tenant2, Tenants.Tenant3)
                              .UseSqliteDatabase(x => 
-                                    x.WithConnectionString(tenant1, connectionString1)
-                                     .WithConnectionString(tenant2, connectionString2)
-                                     .WithConnectionString(tenant3, connectionString3))));
+                                    x.WithConnectionString(Tenants.Tenant1, connectionString1)
+                                     .WithConnectionString(Tenants.Tenant2, connectionString2)
+                                     .WithConnectionString(Tenants.Tenant3, connectionString3))));
         }
         static void ConfigurePostgresMultitenancy(IHostApplicationBuilder builder)
         {
-            var connectionString1 = EnsureDatabaseExists(new PostgresTestDatabase(tenant1));
-            var connectionString2 = EnsureDatabaseExists(new PostgresTestDatabase(tenant2));
-            var connectionString3 = EnsureDatabaseExists(new PostgresTestDatabase(tenant3));
+            var connectionString1 = EnsureDatabaseExists(new PostgresTestDatabase(Tenants.Tenant1));
+            var connectionString2 = EnsureDatabaseExists(new PostgresTestDatabase(Tenants.Tenant2));
+            var connectionString3 = EnsureDatabaseExists(new PostgresTestDatabase(Tenants.Tenant3));
 
             builder
                 .Services
                 .ConfigureStreamStore(x =>
                     x.EnableSchemaProvisioning()
                      .WithMultitenancy(c =>
-                            c.WithTenants(tenant1, tenant2, tenant3)
+                            c.WithTenants(Tenants.Tenant1, Tenants.Tenant2, Tenants.Tenant3)
                              .UsePostgresDatabase(x =>
-                                    x.WithConnectionString(tenant1, connectionString1)
-                                     .WithConnectionString(tenant2, connectionString2)
-                                     .WithConnectionString(tenant3, connectionString3))));
+                                    x.WithConnectionString(Tenants.Tenant1, connectionString1)
+                                     .WithConnectionString(Tenants.Tenant2, connectionString2)
+                                     .WithConnectionString(Tenants.Tenant3, connectionString3))));
         }
 
         static string EnsureDatabaseExists(ISqlTestDatabase database)

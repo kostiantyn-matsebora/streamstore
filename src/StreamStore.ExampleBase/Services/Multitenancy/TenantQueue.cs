@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using StreamStore.Multitenancy;
 
-namespace StreamStore.ExampleBase.Multitenancy
+namespace StreamStore.ExampleBase.Services.Multitenancy
 {
     [ExcludeFromCodeCoverage]
     internal class TenantQueue
