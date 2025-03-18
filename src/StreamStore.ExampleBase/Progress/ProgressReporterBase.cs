@@ -42,15 +42,8 @@ namespace StreamStore.ExampleBase.Progress
             progressBar.ShowError(message, milliseconds);
         }
 
-
-        protected void ReportReadCompletion(string message, long? elapsed)
+        protected void ReportCompletion(string message, long? elapsed)
         {
-            milliseconds = elapsed ?? milliseconds;
-            progressBar.ShowCompleted(message, milliseconds);
-        }
-        protected void ReportWriteCompletion(string message, long? elapsed)
-        {
-           
             milliseconds = elapsed ?? milliseconds;
             progressBar.ShowCompleted(message, milliseconds);
         }

@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 using StreamStore.ExampleBase.Progress.Model;
+using static System.Collections.Specialized.BitVector32;
 
 
 
@@ -15,7 +16,7 @@ namespace StreamStore.ExampleBase.Workers
     {
         protected readonly IStreamStore store;
         protected readonly Id streamId;
-        List<IObserver<ProgressInfo>> observers;
+        readonly List<IObserver<ProgressInfo>> observers;
 
         public WorkerIdentifier Id { get; }
 
@@ -68,8 +69,8 @@ namespace StreamStore.ExampleBase.Workers
 
         class Unsubscriber : IDisposable
         {
-            List<IObserver<ProgressInfo>> observers;
-            IObserver<ProgressInfo> observer;
+            readonly List<IObserver<ProgressInfo>> observers;
+            readonly IObserver<ProgressInfo> observer;
 
             public Unsubscriber(List<IObserver<ProgressInfo>> observers, IObserver<ProgressInfo> observer)
             {
@@ -79,8 +80,16 @@ namespace StreamStore.ExampleBase.Workers
 
             public void Dispose()
             {
-                if (observer != null && observers.Contains(observer))
-                    observers.Remove(observer);
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            void Dispose(bool disposing)
+            {
+                if (disposing && observer != null && observers.Contains(observer))
+                {
+                   observers.Remove(observer);
+                }
             }
         }
     }

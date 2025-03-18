@@ -40,7 +40,7 @@ namespace StreamStore.ExampleBase.Progress
         void OnProgress(WriteSucceeded progress)
         {
             stopwatch.Stop();
-            ReportWriteCompletion($"Completed appending stream to {progress.ActualRevision} revision by adding {progress.Count} events", stopwatch.ElapsedMilliseconds);
+            ReportCompletion($"Completed appending stream to {progress.ActualRevision} revision by adding {progress.Count} events", stopwatch.ElapsedMilliseconds);
         }
 
         void OnProgress(InfoUpdated progress)

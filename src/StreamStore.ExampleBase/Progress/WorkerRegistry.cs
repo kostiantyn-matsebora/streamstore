@@ -55,9 +55,9 @@ namespace StreamStore.ExampleBase.Progress
 
         public void OnError(Exception error)
         {
-            if (error is OptimisticConcurrencyException)
+            if (error is OptimisticConcurrencyException ex)
             {
-                ReportActualRevision((int)((OptimisticConcurrencyException)error).ActualRevision!);
+                ReportActualRevision((int)ex.ActualRevision!);
             }
         }
 
@@ -73,6 +73,7 @@ namespace StreamStore.ExampleBase.Progress
 
         void OnProgress(ProgressInfo value)
         {
+            // Ignoring any other progresses
         }
 
         void ReportActualRevision(int actualRevision)
