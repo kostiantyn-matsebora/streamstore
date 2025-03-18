@@ -23,7 +23,10 @@ namespace StreamStore.ExampleBase.Progress
         public void OnError(Exception error)
         {
             stopwatch.Stop();
-            ReportFailure(1, error.Message, stopwatch.ElapsedMilliseconds);
+            ReportFailure(
+                progress: 1, 
+                message: error.Message, 
+                elapsed: stopwatch.ElapsedMilliseconds);
         }
 
         public void OnNext(ProgressInfo value)
@@ -34,13 +37,18 @@ namespace StreamStore.ExampleBase.Progress
         void OnProgress(StartWriting progress)
         {
             stopwatch.Restart();
-            ReportProgress(0, $"Start writing to stream, expected revision is {progress.ExpectedRevision}...", 0);
+            ReportProgress(
+                progress: 0,
+                message: $"Start writing to stream, expected revision is {progress.ExpectedRevision}...",
+                elapsed: 0);
         }
 
         void OnProgress(WriteSucceeded progress)
         {
             stopwatch.Stop();
-            ReportCompletion($"Completed appending stream to {progress.ActualRevision} revision by adding {progress.Count} events", stopwatch.ElapsedMilliseconds);
+            ReportCompletion(
+                message: $"Completed appending stream to {progress.ActualRevision} revision by adding {progress.Count} events", 
+                elapsed: stopwatch.ElapsedMilliseconds);
         }
 
         void OnProgress(InfoUpdated progress)

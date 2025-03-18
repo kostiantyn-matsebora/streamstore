@@ -68,7 +68,9 @@ namespace StreamStore.ExampleBase.Progress
 
         void OnProgress(ReadCompleted progress)
         {
-            ReportCompletion($"Stream read to end, revision is {progress.ActualRevision}", stopwatch.ElapsedMilliseconds);
+            ReportCompletion(
+                message: $"Stream read to end, revision is {progress.ActualRevision}", 
+                elapsed: stopwatch.ElapsedMilliseconds);
         }
 
         void OnProgress(InfoUpdated progress)
