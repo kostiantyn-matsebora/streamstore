@@ -13,10 +13,10 @@ namespace StreamStore.S3.Tests.AWS.Client
         {
             // Arrange
             var client = Suite.Client;
-            string key = Generated.String;
+            string key = Generated.Primitives.String;
             CancellationToken token = default;
-            var content = Generated.ByteArray;
-            var name = Generated.String;
+            var content = Generated.Objects.ByteArray;
+            var name = Generated.Primitives.String;
 
             var response = new ListVersionsResponse
             {
@@ -44,13 +44,13 @@ namespace StreamStore.S3.Tests.AWS.Client
         {
             // Arrange
             var client = Suite.Client;
-            string key = Generated.String;
+            string key = Generated.Primitives.String;
             CancellationToken token = default;
-            var content = Generated.ByteArray;
+            var content = Generated.Objects.ByteArray;
             var response = new GetObjectResponse
             {
                 HttpStatusCode = System.Net.HttpStatusCode.OK,
-                VersionId = Generated.String,
+                VersionId = Generated.Primitives.String,
                 ResponseStream = new MemoryStream(content)
             };
 
@@ -79,8 +79,8 @@ namespace StreamStore.S3.Tests.AWS.Client
         {
             // Arrange
             var client = Suite.Client;
-            string sourcePrefix = Generated.String;
-            string? startObjectName = Generated.String;
+            string sourcePrefix = Generated.Primitives.String;
+            string? startObjectName = Generated.Primitives.String;
             CancellationToken token = default;
 
             var response = new ListVersionsResponse

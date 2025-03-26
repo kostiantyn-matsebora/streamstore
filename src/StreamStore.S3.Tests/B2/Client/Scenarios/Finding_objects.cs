@@ -14,10 +14,10 @@ namespace StreamStore.S3.Tests.B2.Client
         {
             // Arrange
             var client = Suite.CreateB2S3Client();
-            string key = Generated.String;
+            string key = Generated.Primitives.String;
             CancellationToken token = default;
-            var content = Generated.ByteArray;
-            var name = Generated.String;
+            var content = Generated.Objects.ByteArray;
+            var name = Generated.Primitives.String;
             var files = new Mock<IStorageFiles>();
             Suite.B2Client.SetupGet(m => m.Files).Returns(files.Object);
 
@@ -30,7 +30,7 @@ namespace StreamStore.S3.Tests.B2.Client
                     new FileItem
                     {
                         FileName = key,
-                        FileId = Generated.String
+                        FileId = Generated.Primitives.String
                     }
                 }
             });
@@ -55,9 +55,9 @@ namespace StreamStore.S3.Tests.B2.Client
         {
             // Arrange
             var client = Suite.CreateB2S3Client();
-            string key = Generated.String;
+            string key = Generated.Primitives.String;
             CancellationToken token = default;
-            var content = Generated.ByteArray;
+            var content = Generated.Objects.ByteArray;
 
             var apiResults = Suite.MockRepository.Create<IApiResults<DownloadFileResponse>>();
             apiResults.SetupGet(m => m.Response).Returns(new DownloadFileResponse());
@@ -81,8 +81,8 @@ namespace StreamStore.S3.Tests.B2.Client
         {
             // Arrange
             var client = Suite.CreateB2S3Client();
-            string sourcePrefix = Generated.String;
-            string? startObjectName = Generated.String;
+            string sourcePrefix = Generated.Primitives.String;
+            string? startObjectName = Generated.Primitives.String;
             CancellationToken token = default;
             var files = new Mock<IStorageFiles>();
             Suite.B2Client.SetupGet(m => m.Files).Returns(files.Object);
@@ -96,7 +96,7 @@ namespace StreamStore.S3.Tests.B2.Client
                     new FileItem
                     {
                         FileName = startObjectName,
-                        FileId = Generated.String
+                        FileId = Generated.Primitives.String
                     }
                 }
             });

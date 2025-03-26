@@ -23,7 +23,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.TenantProvider
         {
             // Arrange
             var configurationProvider = Suite.MockSqlConfigurationProvider;
-            var tenantId = Generated.Id;
+            var tenantId = Generated.Primitives.Id;
             var provider = new PostgresTenantDatabaseProvider(configurationProvider.Object);
 
             configurationProvider

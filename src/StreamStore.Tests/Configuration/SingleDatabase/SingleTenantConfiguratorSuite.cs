@@ -14,7 +14,7 @@ namespace StreamStore.Tests.Configuration.SingleTenant
 
         public static IServiceCollection CreateServiceCollection() => new Microsoft.Extensions.DependencyInjection.ServiceCollection();
 
-        public static Mock<IStreamDatabase> MockStreamDatabase => Generated.MockOf<IStreamDatabase>();
+        public static Mock<IStreamDatabase> MockStreamDatabase => Generated.Mocks.Single<IStreamDatabase>();
 
         internal class FakeSchemaProvisioner : ISchemaProvisioner
         {

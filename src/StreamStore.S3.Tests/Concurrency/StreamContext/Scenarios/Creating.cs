@@ -9,8 +9,8 @@ namespace StreamStore.S3.Tests.Concurrency.StreamContext
         public void When_creating()
         {
             // Arrange
-            var revision = Generated.Revision;
-            var streamId = Generated.Id;
+            var revision = Generated.Primitives.Revision;
+            var streamId = Generated.Primitives.Id;
 
             // Act
             var streamContext = Suite.CreateStreamContext(streamId, revision);

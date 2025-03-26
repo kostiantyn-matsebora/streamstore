@@ -14,14 +14,14 @@ namespace StreamStore.S3.Tests.Storage.EventStorage
         {
             // Arrange
             var s3EventStorage = Suite.CreateS3EventStorage();
-            Id eventId = Generated.Id;
+            Id eventId = Generated.Primitives.Id;
             var fixture = new Fixture();
             CancellationToken token = default(global::System.Threading.CancellationToken);
             var record = fixture.Create<EventRecord>();
             var response = new FindObjectResponse
             {
-                VersionId = Generated.String,
-                Key = Generated.String,
+                VersionId = Generated.Primitives.String,
+                Key = Generated.Primitives.String,
                 Data = Converter.ToByteArray(record)
             };
 

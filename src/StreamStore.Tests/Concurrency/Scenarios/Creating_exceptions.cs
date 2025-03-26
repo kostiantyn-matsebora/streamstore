@@ -11,7 +11,7 @@ namespace StreamStore.Tests.Concurrency
         {
 
             // Arrange
-            var streamId = new Id(Generated.String);
+            var streamId = new Id(Generated.Primitives.String);
 
             // Act
             var exception = new StreamLockedException(streamId);

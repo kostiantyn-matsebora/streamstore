@@ -47,10 +47,10 @@ namespace StreamStore.S3.Tests.B2.Configurator
 
         public Mock<IConfiguration> SetupConfiguration()
         {
-            var applicationKeyId = Generated.String;
-            var applicationKey = Generated.String;
-            var bucketId = Generated.String;
-            var bucketName = Generated.String;
+            var applicationKeyId = Generated.Primitives.String;
+            var applicationKey = Generated.Primitives.String;
+            var bucketId = Generated.Primitives.String;
+            var bucketName = Generated.Primitives.String;
 
             // Arrange
 

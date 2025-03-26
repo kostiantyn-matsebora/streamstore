@@ -17,7 +17,7 @@ namespace StreamStore.Tests.EventEnumerable {
         public async Task When_stream_is_not_found()
         {
             // Arrange
-            var parameters = new StreamReadingParameters(Generated.Id, Revision.One, 10);
+            var parameters = new StreamReadingParameters(Generated.Primitives.Id, Revision.One, 10);
 
             var enumerable = Suite.CreateEnumerable(parameters);
 

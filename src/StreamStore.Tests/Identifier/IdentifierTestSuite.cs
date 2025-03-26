@@ -7,7 +7,7 @@ namespace StreamStore.Tests.Identifier
     {
         public static Id CreateId(string? id = null)
         {
-            return new Id(id ?? Generated.String);
+            return new Id(id ?? Generated.Primitives.String);
         }
     }
 }

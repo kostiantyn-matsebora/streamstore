@@ -24,7 +24,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Provisioning
         {
             // Arrange
             var configurationProvider = Suite.MockSqlConfigurationProvider;
-            var tenantId = Generated.Id;
+            var tenantId = Generated.Primitives.Id;
             var factory = new PostgresSchemaProvisionerFactory(configurationProvider.Object);
 
             configurationProvider

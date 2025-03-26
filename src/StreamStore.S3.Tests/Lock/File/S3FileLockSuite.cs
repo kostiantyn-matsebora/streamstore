@@ -32,7 +32,7 @@ namespace StreamStore.S3.Tests.Lock.File
             var fixture = new Fixture();
             Path = fixture.Create<S3ContainerPath>();
 
-            TransactionId = Generated.Id;
+            TransactionId = Generated.Primitives.Id;
             Factory = MockRepository.Create<IS3ClientFactory>();
             LockObject = new S3LockObject(Path, Factory.Object);
 

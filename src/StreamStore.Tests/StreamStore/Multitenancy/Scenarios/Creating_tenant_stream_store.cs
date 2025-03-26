@@ -37,11 +37,11 @@ namespace StreamStore.Tests.StreamStore.Multitenancy
         {
             // Arrange
             var databaseProvider = Suite.MockTenantStreamDatabaseProvider;
-            databaseProvider.Setup(x => x.GetDatabase(It.IsAny<Id>())).Returns(Generated.MockOf<IStreamDatabase>().Object);
+            databaseProvider.Setup(x => x.GetDatabase(It.IsAny<Id>())).Returns(Generated.Mocks.Single<IStreamDatabase>().Object);
             var factory = new TenantStreamStoreFactory(Suite.Configuration, databaseProvider.Object, Suite.MockEventSerializer.Object);
 
             // Act
-            var store = factory.Create(Generated.Id);
+            var store = factory.Create(Generated.Primitives.Id);
 
             //Assert
             store.Should().NotBeNull();

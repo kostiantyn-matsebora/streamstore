@@ -12,7 +12,7 @@ namespace StreamStore.Testing
 
         protected Scenario(TSuite suite)
         {
-            ArgumentNullException.ThrowIfNull(suite, nameof(suite));
+            suite.ThrowIfNull(nameof(suite));
             Suite = suite;
             Suite.SetUpSuite();
         }

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace StreamStore.Testing.StreamDatabase.Scenarios
 {
@@ -14,7 +15,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             TrySkip();
 
             // Arrange
-            var streamId = Generated.Id;
+            var streamId = Generated.Primitives.Id;
 
             // Act
             var act = async () => await Database.DeleteAsync(streamId);

@@ -33,7 +33,7 @@ namespace StreamStore.Sql.Tests.Multitenancy.ConnectionStringProvider
             var provider = new SqlDefaultConnectionStringProvider().AddConnectionString(tenantId, connectionString);
 
             // Act
-            var act = () =>  provider.GetConnectionString(Generated.Id);
+            var act = () =>  provider.GetConnectionString(Generated.Primitives.Id);
 
             // Assert
             act.Should().Throw<InvalidOperationException>();

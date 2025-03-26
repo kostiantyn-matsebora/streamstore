@@ -1,4 +1,7 @@
-﻿namespace StreamStore.Testing
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace StreamStore.Testing
 {
     internal static class EventRecordExtension
     {

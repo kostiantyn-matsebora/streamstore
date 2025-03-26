@@ -1,4 +1,8 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentAssertions;
 using StreamStore.Exceptions;
 using StreamStore.Models;
 
@@ -14,7 +18,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_stream_is_not_found()
         {
             // Arrange
-            var streamId = Generated.Id;
+            var streamId = Generated.Primitives.Id;
             IStreamStore store = Suite.Store;
 
             // Act

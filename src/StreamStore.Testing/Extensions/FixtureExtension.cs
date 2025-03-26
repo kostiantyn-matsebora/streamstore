@@ -1,10 +1,11 @@
-﻿using AutoFixture;
+﻿using System.Linq;
+using AutoFixture;
 using StreamStore.Serialization;
 
 
 namespace StreamStore.Testing
 {
-    public static class FixtureExtension
+    internal static class FixtureExtension
     {
         readonly static TypeRegistry registry  = new TypeRegistry();
 

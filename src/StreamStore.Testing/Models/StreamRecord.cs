@@ -1,4 +1,8 @@
-﻿namespace StreamStore.Testing.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace StreamStore.Testing.Models
 {
     public abstract class StreamRecord<T> where T : EventMetadataRecord
     {

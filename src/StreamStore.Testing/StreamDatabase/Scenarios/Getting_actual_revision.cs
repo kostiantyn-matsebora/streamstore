@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace StreamStore.Testing.StreamDatabase.Scenarios
 {
@@ -14,7 +16,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
         {
             TrySkip();
 
-            var revision = await Database.GetActualRevision(Generated.Id);
+            var revision = await Database.GetActualRevision(Generated.Primitives.Id);
             revision.Should().BeNull();
         }
 

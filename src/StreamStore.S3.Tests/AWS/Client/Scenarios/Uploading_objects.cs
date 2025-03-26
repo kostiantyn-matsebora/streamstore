@@ -13,9 +13,9 @@ namespace StreamStore.S3.Tests.AWS.Client
         {
             // Arrange
             var aWSS3Client = Suite.Client;
-            string key = Generated.String;
+            string key = Generated.Primitives.String;
             CancellationToken token = default;
-            var content = Generated.ByteArray;
+            var content = Generated.Objects.ByteArray;
             var request = new UploadObjectRequest
             {
                 Key = key,

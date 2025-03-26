@@ -1,4 +1,9 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture;
 using FluentAssertions;
 using StreamStore.Exceptions;
 using StreamStore.Testing.Models;
@@ -20,8 +25,8 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             // Arrange
             IStreamStore store = Suite.Store;
             var eventIds = new List<Id>();
-            var streamId = Generated.Id;
-            var events = Generated.Events(firstBatchCount);
+            var streamId = Generated.Primitives.Id;
+            var events = Generated.Events.Many(firstBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
             Revision actualRevision;
 
@@ -44,7 +49,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             actualRevision.Should().Be(firstBatchCount);
 
             // Arrange 2
-            events = Generated.Events(secondBatchCount);
+            events = Generated.Events.Many(secondBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
 
             // Act 2: Second way to append to stream
@@ -58,7 +63,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             actualRevision.Should().Be(firstBatchCount + secondBatchCount);
 
             // Arrange 3
-            events = Generated.Events(thirdBatchCount);
+            events = Generated.Events.Many(thirdBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
 
             // Act 3: Third way to append to stream
@@ -92,7 +97,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                 await
                    store
                         .BeginWriteAsync(stream.Id, CancellationToken.None)
-                        .AppendRangeAsync(Generated.Events(count))
+                        .AppendRangeAsync(Generated.Events.Many(count))
                         .CommitAsync(CancellationToken.None);
 
             // Assert
@@ -109,7 +114,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
 
             // Act
             // Trying to append existing events mixed with new ones, put existing to the end
-            var mixedEvents = Generated.Events(5).Concat(existingEvents);
+            var mixedEvents = Generated.Events.Many(5).Concat(existingEvents);
 
             var act = async () =>
                 await

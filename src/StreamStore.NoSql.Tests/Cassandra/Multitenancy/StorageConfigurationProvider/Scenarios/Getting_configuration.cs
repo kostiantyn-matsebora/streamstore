@@ -13,8 +13,8 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.StorageConfigurationPro
         public void When_getting_tenant_configuration()
         {
             // Arrange
-            var tenant = Generated.Id;
-            var keyspace = Generated.String;
+            var tenant = Generated.Primitives.Id;
+            var keyspace = Generated.Primitives.String;
             var keyspaceProvider = Suite.CassandraKeyspaceProvider;
             var configuration =
                 new CassandraStorageConfigurationBuilder()

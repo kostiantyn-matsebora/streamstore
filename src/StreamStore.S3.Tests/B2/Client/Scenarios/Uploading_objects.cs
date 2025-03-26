@@ -12,10 +12,10 @@ namespace StreamStore.S3.Tests.B2.Client
         {
             // Arrange
             var aWSS3Client = Suite.CreateB2S3Client();
-            string key = Generated.String;
-            string fileId = Generated.String;
+            string key = Generated.Primitives.String;
+            string fileId = Generated.Primitives.String;
             CancellationToken token = default;
-            var content = Generated.ByteArray;
+            var content = Generated.Objects.ByteArray;
             var request = new UploadObjectRequest
             {
                 Key = key,

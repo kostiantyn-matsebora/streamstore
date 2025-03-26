@@ -14,7 +14,7 @@ public class Creating_provisioner : Scenario<ProvisionerFactorySuite>
     public void When_provisioner_created()
     {
         // Arrange
-        var tenantId = Generated.Id;
+        var tenantId = Generated.Primitives.Id;
         Suite.ConfigurationProvider.Setup(x => x.GetConfiguration(tenantId)).Returns(new CassandraStorageConfiguration());
         Suite.TenantMapperProvider.Setup(x => x.GetMapperProvider(tenantId)).Returns(Suite.MockRepository.Create<ICassandraMapperProvider>().Object);
         var provisionerFactory = new CassandraSchemaProvisionerFactory(Suite.ConfigurationProvider.Object, Suite.TenantMapperProvider.Object);

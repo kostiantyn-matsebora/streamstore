@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 
 namespace StreamStore.Testing.Serializer.Scenarios
 {
@@ -41,7 +42,7 @@ namespace StreamStore.Testing.Serializer.Scenarios
             TrySkip();
 
             // Act
-            var act = () => Serializer.Deserialize(Generated.ByteArray);
+            var act = () => Serializer.Deserialize(Generated.Objects.ByteArray);
 
             // Assert
             act.Should().Throw<Exception>();

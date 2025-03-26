@@ -1,6 +1,10 @@
-﻿namespace StreamStore.Testing
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace StreamStore.Testing
 {
-    public static class IStreamUnitOfWorkExtension
+    internal static class IStreamUnitOfWorkExtension
     {
         public static async Task<IStreamUnitOfWork> AddRangeAsync(this IStreamUnitOfWork unitOfWork, IEnumerable<EventRecord> records, CancellationToken token = default)
         {

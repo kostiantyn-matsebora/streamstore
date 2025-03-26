@@ -22,7 +22,7 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
             var s3FileLock = Suite.CreateS3FileLock();
             CancellationToken token = default;
             var lockId = new LockId(Suite.TransactionId);
-            var lockKey = Generated.String;
+            var lockKey = Generated.Primitives.String;
 
             var client = new Mock<IS3Client>();
 
@@ -69,7 +69,7 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
             var s3FileLock = Suite.CreateS3FileLock();
             CancellationToken token = default;
 
-            var lockKey = Generated.String;
+            var lockKey = Generated.Primitives.String;
             var client = new Mock<IS3Client>();
 
             Suite.Factory.Setup(x => x.CreateClient()).Returns(client.Object);
@@ -78,7 +78,7 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
 
             var response = new FindObjectResponse
             {
-                Data = Converter.ToByteArray(new LockId(Generated.String)),
+                Data = Converter.ToByteArray(new LockId(Generated.Primitives.String)),
                 Key = Suite.Path,
             };
 
@@ -102,7 +102,7 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
             var s3FileLock = Suite.CreateS3FileLock();
             CancellationToken token = default;
 
-            var lockKey = Generated.String;
+            var lockKey = Generated.Primitives.String;
             var client = new Mock<IS3Client>();
 
             Suite.Factory.Setup(x => x.CreateClient()).Returns(client.Object);
@@ -134,7 +134,7 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
             var s3FileLock = Suite.CreateS3FileLock();
             CancellationToken token = default;
 
-            var lockKey = Generated.String;
+            var lockKey = Generated.Primitives.String;
             var client = new Mock<IS3Client>();
 
             Suite.Factory.Setup(x => x.CreateClient()).Returns(client.Object);
@@ -146,7 +146,7 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
 
             var response = new FindObjectResponse
             {
-                Data = Converter.ToByteArray(new LockId(Generated.String)),
+                Data = Converter.ToByteArray(new LockId(Generated.Primitives.String)),
                 Key = Suite.Path,
             };
             client.

@@ -25,8 +25,8 @@ namespace StreamStore.S3.Tests.Concurrency.StreamContext
             MockClientFactory = new Mock<IS3ClientFactory>(MockBehavior.Strict);
             MockClient = new Mock<IS3Client>(MockBehavior.Strict);
             MockClientFactory.Setup(x => x.CreateClient()).Returns(MockClient.Object);
-            Transient = new S3StreamContainer(Generated.String, MockClientFactory.Object);
-            Persistent = new S3StreamContainer(Generated.String, MockClientFactory.Object);
+            Transient = new S3StreamContainer(Generated.Primitives.String, MockClientFactory.Object);
+            Persistent = new S3StreamContainer(Generated.Primitives.String, MockClientFactory.Object);
             MockTransactionalStorage.Setup(x => x.GetTransientContainer(It.IsAny<string>())).Returns(Transient);
             MockTransactionalStorage.Setup(x => x.GetPersistentContainer(It.IsAny<string>())).Returns(Persistent);
         }

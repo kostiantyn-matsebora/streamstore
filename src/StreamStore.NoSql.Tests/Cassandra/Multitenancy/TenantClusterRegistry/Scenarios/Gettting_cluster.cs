@@ -17,7 +17,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.TenantClusterRegistry
             var registry = new CassandraTenantClusterRegistry(new DelegateClusterConfigurator().AddConfigurator(configure), new DelegateTenantClusterConfigurator());
 
             // Act
-            var cluster = registry.GetCluster(Generated.Id);
+            var cluster = registry.GetCluster(Generated.Primitives.Id);
 
             // Assert
             cluster.Should().NotBeNull();
@@ -30,7 +30,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.TenantClusterRegistry
         {
 
             // Arrange
-            var tenant = Generated.Id;
+            var tenant = Generated.Primitives.Id;
             Action<Builder> configure = (builder) => builder.AddContactPoint("localhost").WithDefaultKeyspace("default_keyspace");
           
             var configurator = new DelegateTenantClusterConfigurator((tenantId, builder) =>
@@ -50,7 +50,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.TenantClusterRegistry
             cluster.Configuration.ClientOptions.DefaultKeyspace.Should().Be("custom_keyspace");
 
             // Act
-            cluster = registry.GetCluster(Generated.Id);
+            cluster = registry.GetCluster(Generated.Primitives.Id);
 
             // Assert
             cluster.Should().NotBeNull();

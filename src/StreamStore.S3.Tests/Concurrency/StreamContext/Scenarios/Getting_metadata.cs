@@ -13,8 +13,8 @@ namespace StreamStore.S3.Tests.Concurrency.StreamContext
         public async Task When_persistent_metadata_does_not_exist()
         {
             // Arrange
-            var streamId = Generated.Id;
-            var revision = Generated.Revision;
+            var streamId = Generated.Primitives.Id;
+            var revision = Generated.Primitives.Revision;
             var streamContext = Suite.CreateStreamContext(streamId, revision);
             Suite.MockClient.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default)).ReturnsAsync((FindObjectResponse?)null);
             Suite.MockClient.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
@@ -32,14 +32,14 @@ namespace StreamStore.S3.Tests.Concurrency.StreamContext
         public async Task When_persistent_metadata_exists()
         {
             // Arrange
-            var streamId = Generated.Id;
-            var revision = Generated.Revision;
+            var streamId = Generated.Primitives.Id;
+            var revision = Generated.Primitives.Revision;
             var streamContext = Suite.CreateStreamContext(streamId, revision);
             var response = new FindObjectResponse
             {
-                Data = Converter.ToByteArray(new[] { new EventMetadataRecord { Id = Generated.Id, Revision = Generated.Revision, Timestamp = Generated.DateTime } }),
-                Key = Generated.String,
-                VersionId = Generated.String
+                Data = Converter.ToByteArray(new[] { new EventMetadataRecord { Id = Generated.Primitives.Id, Revision = Generated.Primitives.Revision, Timestamp = Generated.Primitives.DateTime } }),
+                Key = Generated.Primitives.String,
+                VersionId = Generated.Primitives.String
             };
 
             Suite.MockClient.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default)).ReturnsAsync(response);

@@ -13,7 +13,7 @@ namespace StreamStore.Tests.Identifier
         public void When_gettings_hashcode()
         {
             // Arrange
-            var expected = Generated.String;
+            var expected = Generated.Primitives.String;
             var id = IdentifierTestSuite.CreateId(expected);
 
             // Act
@@ -27,7 +27,7 @@ namespace StreamStore.Tests.Identifier
         public void When_using_to_string()
         {
             // Arrange
-            var expected = Generated.String;
+            var expected = Generated.Primitives.String;
             var id = IdentifierTestSuite.CreateId(expected);
 
             // Act

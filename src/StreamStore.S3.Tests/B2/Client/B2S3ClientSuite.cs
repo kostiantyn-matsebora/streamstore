@@ -33,9 +33,9 @@ namespace StreamStore.S3.Tests.B2.Client
                 new B2DatabaseConfigurator(new ServiceCollection());
 
             Settings = configurator
-                .WithBucketId(Generated.String)
-                .WithBucketName(Generated.String)
-                .WithCredential(Generated.String, Generated.String)
+                .WithBucketId(Generated.Primitives.String)
+                .WithBucketName(Generated.Primitives.String)
+                .WithCredential(Generated.Primitives.String, Generated.Primitives.String)
                 .Build();
         }
     }

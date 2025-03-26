@@ -59,7 +59,7 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
                 new EventMetadataRecord { Id = "2", Revision = 2 }
             });
 
-            var @event = new EventRecord { Id = "2", Revision = 2, Data = Generated.ByteArray };
+            var @event = new EventRecord { Id = "2", Revision = 2, Data = Generated.Objects.ByteArray };
 
             Suite.MockS3Client
                 .SetupSequence(x => x.FindObjectAsync(It.IsAny<string>(), default))

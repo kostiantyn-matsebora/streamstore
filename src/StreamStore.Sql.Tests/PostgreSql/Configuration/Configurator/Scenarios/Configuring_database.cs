@@ -16,7 +16,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Configuration.Configurator
 
             // Arrange
             var configurator = new SingleTenantConfigurator();
-            var connectionString = Generated.String;
+            var connectionString = Generated.Primitives.String;
 
             // Act
 

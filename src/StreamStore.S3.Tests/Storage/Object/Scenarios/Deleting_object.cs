@@ -32,8 +32,8 @@ namespace StreamStore.S3.Tests.Storage.Object {
         {
             // Arrange
             var s3Object = Suite.CreateS3Object();
-            var key = Generated.String;
-            var versionId = Generated.String;
+            var key = Generated.Primitives.String;
+            var versionId = Generated.Primitives.String;
 
             CancellationToken token = default;
             Suite.MockS3Client.SetupSequence(x => x.FindObjectDescriptorAsync(Suite.Path, token))

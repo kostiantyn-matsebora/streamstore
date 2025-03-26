@@ -17,7 +17,7 @@ namespace StreamStore.S3.Tests.Storage.Object
             var response = new UploadObjectResponse
             {
                 Key = s3Object.Path,
-                VersionId = Generated.String
+                VersionId = Generated.Primitives.String
             };
 
             CancellationToken token = default;

@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using StreamStore.Testing.Models;
 
 namespace StreamStore.Testing
@@ -61,12 +64,12 @@ namespace StreamStore.Testing
 
         static Id[] GenerateIds(int capacity)
         {
-            return Enumerable.Range(0, capacity).Select(i => Generated.Id).ToArray();
+            return Enumerable.Range(0, capacity).Select(i => Generated.Primitives.Id).ToArray();
         }
 
         static StreamRecord GenerateStream(Id id, int eventPerStream)
         {
-            return new StreamRecord(id, Generated.EventRecords(eventPerStream));
+            return new StreamRecord(id, Generated.Many(eventPerStream));
         }
 
         int RandomStreamIndex()

@@ -13,9 +13,9 @@ namespace StreamStore.S3.Tests.B2.Client
         {
             // Arrange
             var client = Suite.CreateB2S3Client();
-            string sourceFileId = Generated.String;
-            string sourceName = Generated.String;
-            string destinationName = Generated.String;
+            string sourceFileId = Generated.Primitives.String;
+            string sourceName = Generated.Primitives.String;
+            string destinationName = Generated.Primitives.String;
             var files = new Mock<IStorageFiles>();
             Suite.B2Client.SetupGet(m => m.Files).Returns(files.Object);
 
