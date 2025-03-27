@@ -1,4 +1,5 @@
-﻿using StreamStore.Sql.Tests.Database;
+﻿using Npgsql;
+using StreamStore.Sql.Tests.Database;
 
 namespace StreamStore.Sql.Tests.PostgreSql.Database
 {
@@ -16,7 +17,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Database
             this.databaseName = databaseName.ThrowIfNull(nameof(databaseName));
             this.serverConnectionString = serverConnectionString ?? defaultConnectionString;
 
-            var connectionBuilder = new Npgsql.NpgsqlConnectionStringBuilder(this.serverConnectionString);
+            var connectionBuilder = new NpgsqlConnectionStringBuilder(this.serverConnectionString);
             connectionBuilder.Database = databaseName;
             ConnectionString =  connectionBuilder.ToString();
         }
@@ -25,7 +26,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Database
         {
             try
             {
-                using (var connection = new Npgsql.NpgsqlConnection(serverConnectionString))
+                using (var connection = new NpgsqlConnection(serverConnectionString))
                 {
                     connection.Open();
                     using (var command = connection.CreateCommand())
@@ -38,7 +39,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Database
             }
             catch (Npgsql.NpgsqlException ex)
             {
-                if (ex.SqlState == "42P04")
+                if (ex.SqlState == "42P04") // database already exists
                 {
                     return true;
                 }
@@ -54,7 +55,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Database
                 {
                     try
                     {
-                        using (var connection = new Npgsql.NpgsqlConnection(serverConnectionString))
+                        using (var connection = new NpgsqlConnection(serverConnectionString))
                         {
                             connection.Open();
                             using (var command = connection.CreateCommand())

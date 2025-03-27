@@ -6,7 +6,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.AWS.Factory
 {
-    public class Creating_client: Scenario<AWSS3FactorySuite>
+    public class Creating_client: Scenario<AWSS3FactoryTestEnvironment>
     {
 
         [Fact]
@@ -23,7 +23,7 @@ namespace StreamStore.S3.Tests.AWS.Factory
             // Arrange
             var amazonFactory = new Mock<IAmazonS3ClientFactory>();
             amazonFactory.Setup(x => x.CreateClient()).Returns(new Mock<IAmazonS3>().Object);
-            var factory = Suite.CreateFactory(amazonFactory.Object);
+            var factory = Environment.CreateFactory(amazonFactory.Object);
 
             // Act
             factory.CreateClient().Should().NotBeNull();

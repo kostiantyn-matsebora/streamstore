@@ -11,13 +11,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace StreamStore.Sql.Tests.Configuration.SingleTenant
 {
-    public abstract class Configuring_single_database<TSuite> : Scenario<TSuite> where TSuite : SingleTenantConfiguratorSuiteBase, new()
+    public abstract class Configuring_single_database<TEnvironment> : Scenario<TEnvironment> where TEnvironment : SingleTenantConfiguratorTestEnvironmentBase, new()
     {
         [Fact]
         public void When_database_db_connection_factory_is_not_set()
         {
             // Arrange
-            var configurator = Suite.CreateSqlDatabaseConfigurator(new ServiceCollection());
+            var configurator = Environment.CreateSqlDatabaseConfigurator(new ServiceCollection());
 
             // Act
             var act = () => configurator.Apply();
@@ -35,7 +35,7 @@ namespace StreamStore.Sql.Tests.Configuration.SingleTenant
 
             // Act
             configurator.WithSingleDatabase(x => 
-                    Suite.UseParticularDatabase(x, c => 
+                    Environment.UseParticularDatabase(x, c => 
                         c.ConfigureDatabase(x => 
                             x.WithConnectionString("connectionString")
                              .WithSchema("schema")
@@ -73,15 +73,15 @@ namespace StreamStore.Sql.Tests.Configuration.SingleTenant
             var appSettings = new Dictionary<string, string?>
             {
                 {"ConnectionStrings:StreamStore", "connectionString"},
-                {$"{Suite.SectionName}:SchemaName", "schema"},
-                {$"{Suite.SectionName}:TableName", "table"}
+                {$"{Environment.SectionName}:SchemaName", "schema"},
+                {$"{Environment.SectionName}:TableName", "table"}
             };
 
             var config = new ConfigurationBuilder()
                     .AddInMemoryCollection(appSettings)
                     .Build();
             // Act
-            configurator.WithSingleDatabase(x => Suite.UseParticularDatabaseWithAppSettings(x, config));
+            configurator.WithSingleDatabase(x => Environment.UseParticularDatabaseWithAppSettings(x, config));
 
             configurator.Configure(services);
 

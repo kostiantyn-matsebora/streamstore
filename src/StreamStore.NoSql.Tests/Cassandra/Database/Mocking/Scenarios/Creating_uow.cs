@@ -6,7 +6,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
 {
-    public class Creating_uow: Scenario<CassandraMockTestSuite>
+    public class Creating_uow: Scenario<CassandraMockTestEnvironment>
     {
         [Fact]
         public async Task When_begin_appending()
@@ -14,11 +14,11 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking
 
             // Arrange 
             var streamId = Generated.Primitives.Id;
-            Suite.Mapper.Setup(x => x.SingleOrDefaultAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(0);
-            Suite.Queries.Setup(x => x.StreamActualRevision(It.IsAny<string>())).Returns(new Cql(Generated.Primitives.String));
+            Environment.Mapper.Setup(x => x.SingleOrDefaultAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(0);
+            Environment.Queries.Setup(x => x.StreamActualRevision(It.IsAny<string>())).Returns(new Cql(Generated.Primitives.String));
 
             // Act
-            var uow = await Suite.StreamDatabase.BeginAppendAsync(streamId);
+            var uow = await Environment.StreamDatabase.BeginAppendAsync(streamId);
             
             // Assert
             uow.Should().NotBeNull();

@@ -7,16 +7,16 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.Storage.StreamContainer
 {
-    public class Loading_stream : Scenario<S3StorageTestSuite>
+    public class Loading_stream : Scenario<S3StorageTestEnvironment>
     {
 
         [Fact]
         public async Task When_stream_does_not_exist()
         {
             // Arrange
-            var streamContainer = Suite.CreateS3StreamContainer();
-            Suite.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
-            Suite.MockS3Client.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default))
+            var streamContainer = Environment.CreateS3StreamContainer();
+            Environment.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
+            Environment.MockS3Client.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default))
                               .ReturnsAsync(default(FindObjectResponse));
 
             // Act
@@ -30,13 +30,13 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
         public async Task When_start_from_greater_than_revision()
         {
             // Arrange
-            var streamContainer = Suite.CreateS3StreamContainer();
-            Suite.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
+            var streamContainer = Environment.CreateS3StreamContainer();
+            Environment.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
             var events = new EventMetadataRecordCollection(new[]
             {
                 new EventMetadataRecord { Id = "1", Revision = Revision.One }
             });
-            Suite.MockS3Client.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default))
+            Environment.MockS3Client.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default))
                               .ReturnsAsync(new FindObjectResponse { Data = Converter.ToByteArray(events.ToArray()) });
 
             // Act
@@ -51,8 +51,8 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
         public async Task When_start_less_or_equal_revision()
         {
             // Arrange
-            var streamContainer = Suite.CreateS3StreamContainer();
-            Suite.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
+            var streamContainer = Environment.CreateS3StreamContainer();
+            Environment.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
             var metadata = new EventMetadataRecordCollection(new[]
             {
                 new EventMetadataRecord { Id = "1", Revision = Revision.One },
@@ -61,7 +61,7 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
 
             var @event = new EventRecord { Id = "2", Revision = 2, Data = Generated.Objects.ByteArray };
 
-            Suite.MockS3Client
+            Environment.MockS3Client
                 .SetupSequence(x => x.FindObjectAsync(It.IsAny<string>(), default))
                 .ReturnsAsync(new FindObjectResponse { Data = Converter.ToByteArray(metadata.ToArray()) })
                 .ReturnsAsync(new FindObjectResponse { Data = Converter.ToByteArray(@event) });

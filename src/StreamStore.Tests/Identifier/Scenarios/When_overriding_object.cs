@@ -3,9 +3,9 @@ using StreamStore.Testing;
 
 namespace StreamStore.Tests.Identifier
 {
-    public class When_overriding_object : Scenario<IdentifierTestSuite>
+    public class When_overriding_object : Scenario<IdentifierTestEnvironment>
     {
-        public When_overriding_object() : base(new IdentifierTestSuite())
+        public When_overriding_object() : base(new IdentifierTestEnvironment())
         {
         }
 
@@ -14,7 +14,7 @@ namespace StreamStore.Tests.Identifier
         {
             // Arrange
             var expected = Generated.Primitives.String;
-            var id = IdentifierTestSuite.CreateId(expected);
+            var id = IdentifierTestEnvironment.CreateId(expected);
 
             // Act
             var result = id.GetHashCode();
@@ -28,7 +28,7 @@ namespace StreamStore.Tests.Identifier
         {
             // Arrange
             var expected = Generated.Primitives.String;
-            var id = IdentifierTestSuite.CreateId(expected);
+            var id = IdentifierTestEnvironment.CreateId(expected);
 
             // Act
             var result = id.ToString();

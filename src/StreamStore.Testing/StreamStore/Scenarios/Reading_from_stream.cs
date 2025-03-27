@@ -8,9 +8,9 @@ using StreamStore.Models;
 
 namespace StreamStore.Testing.StreamStore.Scenarios
 {
-    public abstract class Reading_from_stream<TSuite> : StreamStoreScenario<TSuite> where TSuite : StreamStoreSuiteBase, new()
+    public abstract class Reading_from_stream<TEnvironment> : StreamStoreScenario<TEnvironment> where TEnvironment : StreamStoreTestEnvironmentBase, new()
     {
-        protected Reading_from_stream(TSuite suite) : base(suite)
+        protected Reading_from_stream(TEnvironment environment) : base(environment)
         {
         }
 
@@ -19,7 +19,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         {
             // Arrange
             var streamId = Generated.Primitives.Id;
-            IStreamStore store = Suite.Store;
+            IStreamStore store = Environment.Store;
 
             // Act
             var act = async () => await store.BeginReadAsync(streamId, CancellationToken.None);
@@ -32,7 +32,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_stream_id_is_null()
         {
             // Arrange
-            IStreamStore store = Suite.Store;
+            IStreamStore store = Environment.Store;
 
             // Act
             var act = () => store.BeginReadAsync(null!);
@@ -46,8 +46,8 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_revision_is_less_than_one()
         {
             // Arrange
-            var stream = Suite.Container.RandomStream;
-            IStreamStore store = Suite.Store;
+            var stream = Environment.Container.RandomStream;
+            IStreamStore store = Environment.Store;
 
             // Act
             var act = () => store.BeginReadAsync(stream.Id, Revision.Zero);
@@ -60,8 +60,8 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_start_from_greater_than_actual_revision()
         {
             //Arrange
-            var stream = Suite.Container.RandomStream;
-            IStreamStore store = Suite.Store;
+            var stream = Environment.Container.RandomStream;
+            IStreamStore store = Environment.Store;
 
             // Act
             var act = () => store.BeginReadAsync(stream.Id, stream.Revision.Increment());
@@ -74,8 +74,8 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_stream_exists()
         {
             // Arrange
-            var stream = Suite.Container.RandomStream;
-            IStreamStore store = Suite.Store;
+            var stream = Environment.Container.RandomStream;
+            IStreamStore store = Environment.Store;
 
             // Act
             var result = await store.ReadToEndAsync(stream.Id);
@@ -93,8 +93,8 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_iterating_events()
         {
             // Arrange
-            var stream = Suite.Container.RandomStream;
-            IStreamStore store = Suite.Store;
+            var stream = Environment.Container.RandomStream;
+            IStreamStore store = Environment.Store;
             StreamEventCollection result = new StreamEventCollection();
 
             // Act

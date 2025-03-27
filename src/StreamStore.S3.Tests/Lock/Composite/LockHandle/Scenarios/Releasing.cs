@@ -3,14 +3,14 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.Lock.Composite.LockHandle
 {
-    public class Releasing: Scenario<S3CompositeLockHandleTestSuite>
+    public class Releasing: Scenario<S3CompositeLockHandleTestEnvironment>
     {
 
         [Fact]
         public async Task When_releasing()
         {
             // Arrange
-            var handle = Suite.CreateHandle();
+            var handle = Environment.CreateHandle();
             CancellationToken token = default(global::System.Threading.CancellationToken);
 
             // Act
@@ -18,8 +18,8 @@ namespace StreamStore.S3.Tests.Lock.Composite.LockHandle
                 token);
 
             // Assert
-            Suite.FirstHandle.Verify(m => m.ReleaseAsync(It.IsAny<CancellationToken>()), Times.Once);
-            Suite.SecondHandle.Verify(m => m.ReleaseAsync(It.IsAny<CancellationToken>()), Times.Once);
+            Environment.FirstHandle.Verify(m => m.ReleaseAsync(It.IsAny<CancellationToken>()), Times.Once);
+            Environment.SecondHandle.Verify(m => m.ReleaseAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

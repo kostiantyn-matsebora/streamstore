@@ -18,7 +18,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.StatementConfigurator
                 WriteConsistencyLevel = ConsistencyLevel.Three,
                 SerialConsistencyLevel = ConsistencyLevel.LocalSerial
             };
-            var batch = Suite.MockRepository.Create<ICqlBatch>();
+            var batch = Environment.MockRepository.Create<ICqlBatch>();
 
             batch.Setup(b => b.WithOptions(It.IsAny<Action<CqlQueryOptions>>())).Returns(batch.Object);
             var configurator = new CassandraStatementConfigurator(config);
@@ -27,7 +27,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.StatementConfigurator
             configurator.Batch(batch.Object);
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
     }
 }

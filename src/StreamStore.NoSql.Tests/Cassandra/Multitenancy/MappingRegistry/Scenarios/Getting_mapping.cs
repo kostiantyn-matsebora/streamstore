@@ -14,7 +14,7 @@ public class Getting_mapping: Scenario
         // Arrange
 
         var tenantId = Generated.Primitives.Id;
-        var configurationProvider = Suite.MockRepository.Create<ICassandraTenantStorageConfigurationProvider>();
+        var configurationProvider = Environment.MockRepository.Create<ICassandraTenantStorageConfigurationProvider>();
         configurationProvider.Setup(x => x.GetConfiguration(tenantId)).Returns(new CassandraStorageConfiguration());
         var registry = new CassandraTenantMappingRegistry(configurationProvider.Object);
 
@@ -23,7 +23,7 @@ public class Getting_mapping: Scenario
 
         // Assert
         result.Should().NotBeNull();
-        Suite.MockRepository.VerifyAll();
+        Environment.MockRepository.VerifyAll();
 
         // Act
         var second_result = registry.GetMapping(tenantId);

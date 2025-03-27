@@ -4,9 +4,9 @@ using StreamStore.Tests.RevisionObject;
 
 namespace StreamStore.Tests.Identifier
 {
-    public class When_comparing: Scenario<IdentifierTestSuite>
+    public class When_comparing: Scenario<IdentifierTestEnvironment>
     {
-        public When_comparing(): base(new IdentifierTestSuite())
+        public When_comparing(): base(new IdentifierTestEnvironment())
         {
             
         }
@@ -17,14 +17,14 @@ namespace StreamStore.Tests.Identifier
             var expected = Generated.Primitives.String;
 
             // Arrange
-            var id = IdentifierTestSuite.CreateId(expected);
+            var id = IdentifierTestEnvironment.CreateId(expected);
 
             // Assert
             (id == expected).Should().BeTrue();
             (id == new Id(expected)).Should().BeTrue();
             (id != Generated.Primitives.String).Should().BeTrue();
             (id == Generated.Primitives.String).Should().BeFalse();
-            (id != IdentifierTestSuite.CreateId()).Should().BeTrue();
+            (id != IdentifierTestEnvironment.CreateId()).Should().BeTrue();
         }
 
         [Fact]
@@ -32,14 +32,14 @@ namespace StreamStore.Tests.Identifier
         {
             // Arrange
             var expected = Generated.Primitives.String;
-            var id = IdentifierTestSuite.CreateId(expected);
+            var id = IdentifierTestEnvironment.CreateId(expected);
 
 
             // Assert
             id.Equals(expected).Should().BeTrue();
             id.Equals(new Id(expected)).Should().BeTrue();
             id.Equals(Generated.Primitives.String).Should().BeFalse();
-            id.Equals(IdentifierTestSuite.CreateId()).Should().BeFalse();
+            id.Equals(IdentifierTestEnvironment.CreateId()).Should().BeFalse();
             id.Equals(string.Empty).Should().BeFalse();
             id.Equals(new object()).Should().BeFalse();
             id.Equals((object)expected).Should().BeTrue();

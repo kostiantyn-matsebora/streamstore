@@ -2,20 +2,20 @@
 
 namespace StreamStore.S3.Tests.AWS.Client
 {
-    public class Disposing_client: Scenario<AWSS3ClientSuite>
+    public class Disposing_client: Scenario<AWSS3ClientTestEnvironment>
     {
         [Fact]
         public async Task When_disposing_client()
         {
             // Arrange
-            var client = Suite.Client;
+            var client = Environment.Client;
 
-            Suite.AmazonClient.Setup(m => m.Dispose());
+            Environment.AmazonClient.Setup(m => m.Dispose());
             // Act
             await client.DisposeAsync();
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
     }
 }

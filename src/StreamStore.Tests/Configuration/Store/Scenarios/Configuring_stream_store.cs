@@ -9,16 +9,16 @@ using StreamStore.Testing;
 
 namespace StreamStore.Tests.Configuration.Store
 {
-    public class Configuring_stream_store : Scenario<StreamStoreConfiguratorSuite>
+    public class Configuring_stream_store : Scenario<StreamStoreConfiguratorTestEnvironment>
     {
         [Fact]
         public void When_database_is_not_configured()
         {
             // Arrange
-            var configurator = StreamStoreConfiguratorSuite.CreateConfigurator();
+            var configurator = StreamStoreConfiguratorTestEnvironment.CreateConfigurator();
 
             // Act
-            var act = () => configurator.Configure(StreamStoreConfiguratorSuite.CreateServiceCollection());
+            var act = () => configurator.Configure(StreamStoreConfiguratorTestEnvironment.CreateServiceCollection());
 
             //Assert
             act.Should().Throw<InvalidOperationException>().WithMessage("Database backend is not registered");
@@ -30,10 +30,10 @@ namespace StreamStore.Tests.Configuration.Store
             // Arrange
             var database = Generated.Mocks.Single<IStreamDatabase>();
             var typeRegistry = Generated.Mocks.Single<ITypeRegistry>();
-            var configurator = StreamStoreConfiguratorSuite.CreateConfigurator();
+            var configurator = StreamStoreConfiguratorTestEnvironment.CreateConfigurator();
             var pageSize = Generated.Primitives.Int;
             var mode = StreamReadingMode.ProduceConsume;
-            var services = StreamStoreConfiguratorSuite.CreateServiceCollection();
+            var services = StreamStoreConfiguratorTestEnvironment.CreateServiceCollection();
 
             // Act
             configurator.WithReadingPageSize(pageSize);
@@ -82,10 +82,10 @@ namespace StreamStore.Tests.Configuration.Store
             // Arrange
             var database = Generated.Mocks.Single<IStreamDatabase>();
             var typeRegistry = Generated.Mocks.Single<ITypeRegistry>();
-            var configurator = StreamStoreConfiguratorSuite.CreateConfigurator();
+            var configurator = StreamStoreConfiguratorTestEnvironment.CreateConfigurator();
             var pageSize = Generated.Primitives.Int;
             var mode = StreamReadingMode.ProduceConsume;
-            var services = StreamStoreConfiguratorSuite.CreateServiceCollection();
+            var services = StreamStoreConfiguratorTestEnvironment.CreateServiceCollection();
 
             // Act
             configurator.WithReadingPageSize(pageSize);

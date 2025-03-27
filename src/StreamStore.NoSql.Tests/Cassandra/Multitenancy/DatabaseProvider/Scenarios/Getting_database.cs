@@ -16,10 +16,10 @@ public class Getting_database: Scenario
     public void When_getting_database() {
         // Arrange
         var tenant = Generated.Primitives.Id;
-        var tenantMapperProvider = Suite.MockRepository.Create<ICassandraTenantMapperProvider>();
-        var mapperProvider = Suite.MockRepository.Create<ICassandraMapperProvider>();
+        var tenantMapperProvider = Environment.MockRepository.Create<ICassandraTenantMapperProvider>();
+        var mapperProvider = Environment.MockRepository.Create<ICassandraMapperProvider>();
         tenantMapperProvider.Setup(x => x.GetMapperProvider(tenant)).Returns(mapperProvider.Object);
-        mapperProvider.Setup(x => x.OpenMapper()).Returns(Suite.MockRepository.Create<IMapper>().Object);
+        mapperProvider.Setup(x => x.OpenMapper()).Returns(Environment.MockRepository.Create<IMapper>().Object);
         
         var tenantStorageConfigurationProvider = Generated.Mocks.Single<ICassandraTenantStorageConfigurationProvider>();
         tenantStorageConfigurationProvider.Setup(x => x.GetConfiguration(tenant)).Returns(new CassandraStorageConfiguration());
@@ -34,6 +34,6 @@ public class Getting_database: Scenario
         
         // Assert
         database.Should().NotBeNull();
-        Suite.MockRepository.VerifyAll();
+        Environment.MockRepository.VerifyAll();
     }
 }

@@ -6,7 +6,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.StorageConfigurationProvider
 {
-    public class Getting_configuration: Scenario<StorageConfigurationProviderSuite>
+    public class Getting_configuration: Scenario<StorageConfigurationProviderTestEnvironment>
     {
 
         [Fact]
@@ -15,7 +15,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.StorageConfigurationPro
             // Arrange
             var tenant = Generated.Primitives.Id;
             var keyspace = Generated.Primitives.String;
-            var keyspaceProvider = Suite.CassandraKeyspaceProvider;
+            var keyspaceProvider = Environment.CassandraKeyspaceProvider;
             var configuration =
                 new CassandraStorageConfigurationBuilder()
                 .WithKeyspaceName("custom_keyspace")
@@ -25,13 +25,13 @@ namespace StreamStore.NoSql.Tests.Cassandra.Multitenancy.StorageConfigurationPro
                 .Build();
 
             keyspaceProvider.Setup(x => x.GetKeyspace(tenant)).Returns(keyspace);
-            var provider = new CassandraStorageConfigurationProvider(Suite.CassandraKeyspaceProvider.Object, configuration);
+            var provider = new CassandraStorageConfigurationProvider(Environment.CassandraKeyspaceProvider.Object, configuration);
 
             // Act
             var result = provider.GetConfiguration(tenant);
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
             result.Should().NotBeNull();
             result.Keyspace.Should().Be(keyspace);
             result.ReadConsistencyLevel.Should().Be(ConsistencyLevel.Quorum);

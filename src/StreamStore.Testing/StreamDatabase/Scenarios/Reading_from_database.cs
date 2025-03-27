@@ -7,11 +7,11 @@ using Xunit.Abstractions;
 
 namespace StreamStore.Testing.StreamDatabase.Scenarios
 {
-    public abstract class Reading_from_database<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase, new()
+    public abstract class Reading_from_database<TEnvironment> : DatabaseScenario<TEnvironment> where TEnvironment : DatabaseTestEnvironmentBase, new()
     {
         readonly ITestOutputHelper output;
 
-        protected Reading_from_database(TSuite suite, ITestOutputHelper output) : base(suite)
+        protected Reading_from_database(TEnvironment environment, ITestOutputHelper output) : base(environment)
         {
             this.output = output ?? throw new ArgumentNullException(nameof(output));
         }

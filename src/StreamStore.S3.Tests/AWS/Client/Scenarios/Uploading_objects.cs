@@ -5,14 +5,14 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.AWS.Client
 {
-    public class Uploading_objects: Scenario<AWSS3ClientSuite>
+    public class Uploading_objects: Scenario<AWSS3ClientTestEnvironment>
     {
 
         [Fact]
         public async Task When_uploading_object()
         {
             // Arrange
-            var aWSS3Client = Suite.Client;
+            var aWSS3Client = Environment.Client;
             string key = Generated.Primitives.String;
             CancellationToken token = default;
             var content = Generated.Objects.ByteArray;
@@ -22,9 +22,9 @@ namespace StreamStore.S3.Tests.AWS.Client
                 Data = content
             };
 
-            Suite.AmazonClient.Setup(m => m.PutObjectAsync(
+            Environment.AmazonClient.Setup(m => m.PutObjectAsync(
                 It.Is<PutObjectRequest>(r =>
-                    r.BucketName == Suite.Settings.BucketName
+                    r.BucketName == Environment.Settings.BucketName
                     && r.Key == key
                     && r.InputStream != null),
                 It.IsAny<CancellationToken>()))
@@ -34,7 +34,7 @@ namespace StreamStore.S3.Tests.AWS.Client
             var result = await aWSS3Client.UploadObjectAsync(request, token);
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
     }
 }

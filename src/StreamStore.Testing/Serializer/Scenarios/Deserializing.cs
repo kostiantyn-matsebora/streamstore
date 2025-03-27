@@ -3,9 +3,9 @@ using FluentAssertions;
 
 namespace StreamStore.Testing.Serializer.Scenarios
 {
-    public abstract class Deserializing<TSuite> : SerializerScenario<TSuite> where TSuite : SerializerSuiteBase, new()
+    public abstract class Deserializing<TEnvironment> : SerializerScenario<TEnvironment> where TEnvironment : SerializerTestEnvironmentBase, new()
     {
-        protected Deserializing(TSuite suite) : base(suite)
+        protected Deserializing(TEnvironment environment) : base(environment)
         {
 
         }

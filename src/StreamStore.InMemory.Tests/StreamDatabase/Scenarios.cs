@@ -3,29 +3,29 @@ using Xunit.Abstractions;
 
 namespace StreamStore.InMemory.Tests.StreamDatabase
 {
-    public class Getting_actual_revision : Get_actual_revision<InMemoryTestSuite>
+    public class Getting_actual_revision : Get_actual_revision<InMemoryTestEnvironment>
     {
-        public Getting_actual_revision() : base(new InMemoryTestSuite())
+        public Getting_actual_revision() : base(new InMemoryTestEnvironment())
         {
         }
     }
-    public class Reading_from_database : Reading_from_database<InMemoryTestSuite>
+    public class Reading_from_database : Reading_from_database<InMemoryTestEnvironment>
     {
-        public Reading_from_database(ITestOutputHelper output) : base(new InMemoryTestSuite(), output)
-        {
-        }
-    }
-
-    public class Deleting_from_database : Deleting_from_database<InMemoryTestSuite>
-    {
-        public Deleting_from_database() : base(new InMemoryTestSuite())
+        public Reading_from_database(ITestOutputHelper output) : base(new InMemoryTestEnvironment(), output)
         {
         }
     }
 
-    public class Writing_to_database : Writing_to_database<InMemoryTestSuite>
+    public class Deleting_from_database : Deleting_from_database<InMemoryTestEnvironment>
     {
-        public Writing_to_database() : base(new InMemoryTestSuite())
+        public Deleting_from_database() : base(new InMemoryTestEnvironment())
+        {
+        }
+    }
+
+    public class Writing_to_database : Writing_to_database<InMemoryTestEnvironment>
+    {
+        public Writing_to_database() : base(new InMemoryTestEnvironment())
         {
         }
     }

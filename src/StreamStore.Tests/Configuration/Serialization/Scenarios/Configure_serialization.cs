@@ -2,17 +2,17 @@
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Serialization;
 using StreamStore.Testing;
-using static StreamStore.Tests.Configuration.Serialization.SerializationTestSuite;
+
 
 namespace StreamStore.Tests.Configuration.Serialization { 
-    public class Configure_serialization: Scenario<SerializationTestSuite>
+    public class Configure_serialization: Scenario<SerializationTestEnvironment>
     {
 
         [Fact]
         public void When_configured_with_default_values()
         {
             // Arrange 
-            var configurator = CreateConfigurator();
+            var configurator = SerializationTestEnvironment.CreateConfigurator();
 
             // Act
             var services = configurator.Configure();
@@ -32,19 +32,25 @@ namespace StreamStore.Tests.Configuration.Serialization {
         public void When_configured_with_custom_dependencies()
         {
             // Arrange 
-            var configurator = CreateConfigurator();
+            var configurator = SerializationTestEnvironment.CreateConfigurator();
 
             // Act
             var services = configurator
                             .UseTextJsonSerializer()
-                            .UseTypeRegistry<FakeTypeRegistry>()
+                            .UseTypeRegistry<SerializationTestEnvironment.FakeTypeRegistry>()
                             .EnableCompression()
                             .Configure();
 
             // Assert
             var provider = services.BuildServiceProvider();
-            provider.GetRequiredService<IEventSerializer>().Should().NotBeNull().And.BeOfType<SystemTextJsonEventSerializer>();
-            provider.GetRequiredService<ITypeRegistry>().Should().NotBeNull().And.BeOfType<FakeTypeRegistry>();
+            provider.GetRequiredService<IEventSerializer>()
+                    .Should().NotBeNull()
+                    .And.BeOfType<SystemTextJsonEventSerializer>();
+
+            provider.GetRequiredService<ITypeRegistry>()
+                    .Should().NotBeNull()
+                    .And.BeOfType<SerializationTestEnvironment.FakeTypeRegistry>();
+
             var configuration = provider.GetRequiredService<SerializationConfiguration>();
 
             configuration.Should().NotBeNull();

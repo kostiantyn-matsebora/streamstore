@@ -7,7 +7,7 @@ using StreamStore.NoSql.Cassandra.Provisioning;
 using StreamStore.Testing;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Provisioning.ProvisionerFactory;
-public class Creating_provisioner : Scenario<ProvisionerFactorySuite>
+public class Creating_provisioner : Scenario<ProvisionerFactoryTestEnvironment>
 {
 
     [Fact]
@@ -15,15 +15,15 @@ public class Creating_provisioner : Scenario<ProvisionerFactorySuite>
     {
         // Arrange
         var tenantId = Generated.Primitives.Id;
-        Suite.ConfigurationProvider.Setup(x => x.GetConfiguration(tenantId)).Returns(new CassandraStorageConfiguration());
-        Suite.TenantMapperProvider.Setup(x => x.GetMapperProvider(tenantId)).Returns(Suite.MockRepository.Create<ICassandraMapperProvider>().Object);
-        var provisionerFactory = new CassandraSchemaProvisionerFactory(Suite.ConfigurationProvider.Object, Suite.TenantMapperProvider.Object);
+        Environment.ConfigurationProvider.Setup(x => x.GetConfiguration(tenantId)).Returns(new CassandraStorageConfiguration());
+        Environment.TenantMapperProvider.Setup(x => x.GetMapperProvider(tenantId)).Returns(Environment.MockRepository.Create<ICassandraMapperProvider>().Object);
+        var provisionerFactory = new CassandraSchemaProvisionerFactory(Environment.ConfigurationProvider.Object, Environment.TenantMapperProvider.Object);
 
         // Act
         var provisioner = provisionerFactory.Create(tenantId);
 
         // Assert
-        Suite.MockRepository.VerifyAll();
+        Environment.MockRepository.VerifyAll();
         provisioner.Should().NotBeNull();
     }
 }

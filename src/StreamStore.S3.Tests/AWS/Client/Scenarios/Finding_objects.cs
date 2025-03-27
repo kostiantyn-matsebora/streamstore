@@ -5,14 +5,14 @@ using FluentAssertions;
 
 namespace StreamStore.S3.Tests.AWS.Client
 {
-    public class Finding_objects : Scenario<AWSS3ClientSuite>
+    public class Finding_objects : Scenario<AWSS3ClientTestEnvironment>
     {
 
         [Fact]
         public async Task When_finding_object_descriptors()
         {
             // Arrange
-            var client = Suite.Client;
+            var client = Environment.Client;
             string key = Generated.Primitives.String;
             CancellationToken token = default;
             var content = Generated.Objects.ByteArray;
@@ -24,7 +24,7 @@ namespace StreamStore.S3.Tests.AWS.Client
                 Versions = new List<S3ObjectVersion> { new S3ObjectVersion { Key = key } }
             };
 
-            Suite.AmazonClient.Setup(
+            Environment.AmazonClient.Setup(
                 m => m.ListVersionsAsync(
                     It.Is<ListVersionsRequest>(r => r.Prefix == key),
                     It.IsAny<CancellationToken>()))
@@ -36,14 +36,14 @@ namespace StreamStore.S3.Tests.AWS.Client
             // Assert
             result.Should().NotBeNull();
             result!.Key.Should().Be(key);
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
 
         [Fact]
         public async Task When_finding_objects()
         {
             // Arrange
-            var client = Suite.Client;
+            var client = Environment.Client;
             string key = Generated.Primitives.String;
             CancellationToken token = default;
             var content = Generated.Objects.ByteArray;
@@ -54,10 +54,10 @@ namespace StreamStore.S3.Tests.AWS.Client
                 ResponseStream = new MemoryStream(content)
             };
 
-            Suite.AmazonClient.Setup(
+            Environment.AmazonClient.Setup(
                 m => m.GetObjectAsync(
                             It.Is<GetObjectRequest>(r =>
-                                 r.BucketName == Suite.Settings.BucketName
+                                 r.BucketName == Environment.Settings.BucketName
                                  && r.Key == key),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
@@ -70,7 +70,7 @@ namespace StreamStore.S3.Tests.AWS.Client
             result!.Data.Should().BeEquivalentTo(content);
             result!.VersionId.Should().Be(response.VersionId);
 
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
 
 
@@ -78,7 +78,7 @@ namespace StreamStore.S3.Tests.AWS.Client
         public async Task When_getting_list_of_objects()
         {
             // Arrange
-            var client = Suite.Client;
+            var client = Environment.Client;
             string sourcePrefix = Generated.Primitives.String;
             string? startObjectName = Generated.Primitives.String;
             CancellationToken token = default;
@@ -89,10 +89,10 @@ namespace StreamStore.S3.Tests.AWS.Client
                 Versions = new List<S3ObjectVersion> { new S3ObjectVersion { Key = startObjectName } }
             };
 
-            Suite.AmazonClient.Setup(
+            Environment.AmazonClient.Setup(
                 m => m.ListVersionsAsync(
                     It.Is<ListVersionsRequest>(r =>
-                        r.BucketName == Suite.Settings.BucketName
+                        r.BucketName == Environment.Settings.BucketName
                         && r.Prefix == sourcePrefix
                         && r.KeyMarker == startObjectName),
                     It.IsAny<CancellationToken>()))
@@ -109,7 +109,7 @@ namespace StreamStore.S3.Tests.AWS.Client
             result!.Objects.Should().NotBeNull();
             result!.Objects!.Should().HaveCount(1);
             result!.Objects![0].Key.Should().Be(startObjectName);
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
     }
 }

@@ -1,13 +1,13 @@
 ﻿namespace StreamStore.Testing.StreamStore
 {
-    public abstract class StreamStoreScenario<TSuite> : Scenario<TSuite> where TSuite : StreamStoreSuiteBase, new()
+    public abstract class StreamStoreScenario<TEnvironment> : Scenario<TEnvironment> where TEnvironment : StreamStoreTestEnvironmentBase, new()
     {
-        protected StreamStoreScenario(TSuite suite) : base(suite)
+        protected StreamStoreScenario(TEnvironment environment) : base(environment)
         {
         }
 
-        protected IStreamStore Store => Suite.Store;
+        protected IStreamStore Store => Environment.Store;
 
-        protected MemoryDatabase Container => Suite.Container;
+        protected MemoryDatabase Container => Environment.Container;
     }
 }

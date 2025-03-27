@@ -7,7 +7,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Provisioning;
 
-public class Provisioning_schema : Scenario<SchemaProvisionerSuite>
+public class Provisioning_schema : Scenario<SchemaProvisionerTestEnvironment>
 {
     [Fact]
     public void When_any_parameter_is_not_set()
@@ -20,7 +20,7 @@ public class Provisioning_schema : Scenario<SchemaProvisionerSuite>
         act.Should().Throw<ArgumentNullException>();
 
         // Act
-        act = () => new CassandraSchemaProvisioner(Suite.MapperProvider.Object, null!);
+        act = () => new CassandraSchemaProvisioner(Environment.MapperProvider.Object, null!);
 
         // Assert
         act.Should().Throw<ArgumentNullException>();
@@ -31,14 +31,14 @@ public class Provisioning_schema : Scenario<SchemaProvisionerSuite>
     public async Task When_provisioning()
     {
         // Arange
-        Suite.Mapper.Setup(x => x.ExecuteAsync(It.IsAny<Cql>())).Returns(Task.CompletedTask);
+        Environment.Mapper.Setup(x => x.ExecuteAsync(It.IsAny<Cql>())).Returns(Task.CompletedTask);
 
-        var provisioner = Suite.SchemaProvisioner;
+        var provisioner = Environment.SchemaProvisioner;
 
         // Act
         await provisioner.ProvisionSchemaAsync(CancellationToken.None);
 
         // Assert
-        Suite.MockRepository.VerifyAll();
+        Environment.MockRepository.VerifyAll();
     }
 }

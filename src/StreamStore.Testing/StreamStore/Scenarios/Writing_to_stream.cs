@@ -10,9 +10,9 @@ using StreamStore.Testing.Models;
 
 namespace StreamStore.Testing.StreamStore.Scenarios
 {
-    public abstract class Writing_to_stream<TSuite> : StreamStoreScenario<TSuite> where TSuite : StreamStoreSuiteBase, new()
+    public abstract class Writing_to_stream<TEnvironment> : StreamStoreScenario<TEnvironment> where TEnvironment : StreamStoreTestEnvironmentBase, new()
     {
-        protected Writing_to_stream(TSuite suite) : base(suite)
+        protected Writing_to_stream(TEnvironment environment) : base(environment)
         {
         }
 
@@ -23,7 +23,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_saving_changes(int firstBatchCount, int secondBatchCount, int thirdBatchCount)
         {
             // Arrange
-            IStreamStore store = Suite.Store;
+            IStreamStore store = Environment.Store;
             var eventIds = new List<Id>();
             var streamId = Generated.Primitives.Id;
             var events = Generated.Events.Many(firstBatchCount);
@@ -87,8 +87,8 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_stream_was_already_updated(int count)
         {
             // Arrange
-            IStreamStore store = Suite.Store;
-            var stream = Suite.Container.RandomStream;
+            IStreamStore store = Environment.Store;
+            var stream = Environment.Container.RandomStream;
 
             // Act
 
@@ -108,8 +108,8 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_event_with_same_id_already_exists()
         {
             // Arrange
-            IStreamStore store = Suite.Store;
-            var stream = Suite.Container.RandomStream;
+            IStreamStore store = Environment.Store;
+            var stream = Environment.Container.RandomStream;
             var existingEvents = stream.Events.Take(1).ToEvents();
 
             // Act
@@ -131,7 +131,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_stream_id_is_null()
         {
             // Arrange
-            IStreamStore store = Suite.Store;
+            IStreamStore store = Environment.Store;
 
             // Act
             var act = () => store.BeginWriteAsync(null!);

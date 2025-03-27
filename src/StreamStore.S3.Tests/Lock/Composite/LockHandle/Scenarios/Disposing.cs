@@ -3,7 +3,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.Lock.Composite.LockHandle
 {
-    public class Disposing: Scenario<S3CompositeLockHandleTestSuite>
+    public class Disposing: Scenario<S3CompositeLockHandleTestEnvironment>
     {
 
 
@@ -11,14 +11,14 @@ namespace StreamStore.S3.Tests.Lock.Composite.LockHandle
         public async Task When_disposing_handle()
         {
             // Arrange
-            var handle = Suite.CreateHandle();
+            var handle = Environment.CreateHandle();
 
             // Act
             await handle.DisposeAsync();
 
             // Assert
-            Suite.FirstHandle.Verify(m => m.DisposeAsync(), Times.Once);
-            Suite.SecondHandle.Verify(m => m.DisposeAsync(), Times.Once);
+            Environment.FirstHandle.Verify(m => m.DisposeAsync(), Times.Once);
+            Environment.SecondHandle.Verify(m => m.DisposeAsync(), Times.Once);
         }
     }
 }

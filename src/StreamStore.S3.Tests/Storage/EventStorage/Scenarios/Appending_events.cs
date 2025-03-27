@@ -6,21 +6,21 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.Storage.EventStorage
 {
-    public class Appending_events: Scenario<S3StorageTestSuite>
+    public class Appending_events: Scenario<S3StorageTestEnvironment>
     {
 
         [Fact]
         public async Task When_appending_events()
         {
             // Arrange
-            var s3EventStorage = Suite.CreateS3EventStorage();
+            var s3EventStorage = Environment.CreateS3EventStorage();
             var fixture = new Fixture();
             EventRecord record = fixture.Create<EventRecord>();
             CancellationToken token = default;
-            Suite.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
+            Environment.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
 
-            Suite.MockS3Client
-                .Setup(x => x.UploadObjectAsync(It.Is<UploadObjectRequest>(r => r.Key!.Contains(record.Id) && r.Key.Contains(Suite.Path)), token))
+            Environment.MockS3Client
+                .Setup(x => x.UploadObjectAsync(It.Is<UploadObjectRequest>(r => r.Key!.Contains(record.Id) && r.Key.Contains(Environment.Path)), token))
                 .ReturnsAsync(fixture.Create<UploadObjectResponse>());
 
             // Act
@@ -32,7 +32,7 @@ namespace StreamStore.S3.Tests.Storage.EventStorage
             s3EventStorage.First().Event.Should().Be(record);
             s3EventStorage.Last().Event.Should().Be(record);
 
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
     }
 }

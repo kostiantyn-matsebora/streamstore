@@ -3,9 +3,9 @@ using FluentAssertions;
 
 namespace StreamStore.Testing.StreamDatabase.Scenarios
 {
-    public abstract class Deleting_from_database<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase, new()
+    public abstract class Deleting_from_database<TEnvironment> : DatabaseScenario<TEnvironment> where TEnvironment : DatabaseTestEnvironmentBase, new()
     {
-        protected Deleting_from_database(TSuite suite) : base(suite)
+        protected Deleting_from_database(TEnvironment environment) : base(environment)
         {
         }
 

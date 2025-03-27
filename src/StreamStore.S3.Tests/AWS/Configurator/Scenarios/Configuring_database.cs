@@ -6,21 +6,21 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.AWS.Configurator
 {
-    public class Configuring_database : Scenario<AWSS3DatabaseConfiguratorSuite>
+    public class Configuring_database : Scenario<AWSS3DatabaseConfiguratorTestEnvironment>
     {
         [Fact]
         public void When_begining_configuration()
         {
             // Arrange
-            var collection = Suite.MockRepository.Create<IServiceCollection>();
+            var collection = Environment.MockRepository.Create<IServiceCollection>();
 
             // Act
-            var result = Suite.CreateAWSDatabaseConfigurator();
+            var result = Environment.CreateAWSDatabaseConfigurator();
 
             // Assert
             result.Should().NotBeNull();
             result.Should().BeOfType<AWSS3DatabaseConfigurator>();
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace StreamStore.S3.Tests.AWS.Configurator
             collection.ConfigureStreamStore(x => x.WithSingleDatabase(x => x.UseAWSDatabase()));
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
     }
 }

@@ -4,14 +4,14 @@ using StreamStore.Testing;
 
 namespace StreamStore.Tests.RevisionObject
 {
-    public class Incrementing: Scenario<RevisionTestSuite>
+    public class Incrementing: Scenario<RevisionTestEnvironment>
     {
 
         [Fact]
         public void When_revision_is_incremented()
         {
             // Arrange
-            var revision = RevisionTestSuite.CreateRevision();
+            var revision = RevisionTestEnvironment.CreateRevision();
 
             // Act
             var result = revision.Increment();
