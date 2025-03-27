@@ -9,9 +9,10 @@ namespace StreamStore.NoSql.Cassandra.Database
     internal class CassandraSessionFactory : ICassandraSessionFactory, IDisposable
     {
         readonly Lazy<ISession> session;
-        public CassandraSessionFactory(Cluster cluster, CassandraStorageConfiguration config)
+        public CassandraSessionFactory(ICluster cluster, CassandraStorageConfiguration config)
         {
             cluster.ThrowIfNull(nameof(cluster));
+            config.ThrowIfNull(nameof(config));
             session = new Lazy<ISession>(() => CreateSession(cluster, config.Keyspace));
         }
 
@@ -29,13 +30,13 @@ namespace StreamStore.NoSql.Cassandra.Database
 
         void Dispose(bool disposing)
         {
-            if (!disposing && session.IsValueCreated)
+            if (disposing && session.IsValueCreated)
             {
                session.Value.Dispose();
             }
         }
 
-        static ISession CreateSession(Cluster cluster, string keyspace)
+        static ISession CreateSession(ICluster cluster, string keyspace)
         {
             return cluster.Connect(keyspace);
         }

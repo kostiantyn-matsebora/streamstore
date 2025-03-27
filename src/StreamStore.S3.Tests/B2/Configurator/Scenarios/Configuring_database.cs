@@ -7,20 +7,20 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.B2.Configurator
 {
-    public class Configuring_database: Scenario<B2S3DatabaseConfiguratorSuite>
+    public class Configuring_database: Scenario<B2S3DatabaseConfiguratorTestEnvironment>
     {
 
         [Fact]
         public void When_credentials_not_set()
         {
             // Arrange
-            var b2DatabaseConfigurator = Suite.CreateB2DatabaseConfigurator();
+            var b2DatabaseConfigurator = Environment.CreateB2DatabaseConfigurator();
 
             // Act
             Action act = () => b2DatabaseConfigurator.Configure();
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
             act.Should().Throw<InvalidOperationException>();
         }
 
@@ -28,14 +28,14 @@ namespace StreamStore.S3.Tests.B2.Configurator
         public void When_reading_from_app_config()
         {
             // Arrange
-            var section = Suite.SetupConfiguration();
-            var b2DatabaseConfigurator = Suite.CreateB2DatabaseConfigurator();
+            var section = Environment.SetupConfiguration();
+            var b2DatabaseConfigurator = Environment.CreateB2DatabaseConfigurator();
 
             // Act
             b2DatabaseConfigurator.ReadFromConfig(section.Object);
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
             section.VerifyAll();
         }
 
@@ -43,15 +43,15 @@ namespace StreamStore.S3.Tests.B2.Configurator
         public void When_using_parametereless_configurator()
         {
             // Arrange
-            var collection = Suite.MockRepository.Create<IServiceCollection>();
-            var configuration = Suite.SetupConfiguration();
-            var b2DatabaseConfigurator = Suite.CreateB2DatabaseConfigurator();
+            var collection = Environment.MockRepository.Create<IServiceCollection>();
+            var configuration = Environment.SetupConfiguration();
+            var b2DatabaseConfigurator = Environment.CreateB2DatabaseConfigurator();
 
             // Act
             b2DatabaseConfigurator.ReadFromConfig(configuration.Object);
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
             configuration.VerifyAll();
         }
 
@@ -59,29 +59,29 @@ namespace StreamStore.S3.Tests.B2.Configurator
         public void When_begining_configuration()
         {
             // Arrange
-            var collection = Suite.MockRepository.Create<IServiceCollection>();
+            var collection = Environment.MockRepository.Create<IServiceCollection>();
 
             // Act
-            var result = Suite.CreateB2DatabaseConfigurator();
+            var result = Environment.CreateB2DatabaseConfigurator();
 
             // Assert
             result.Should().NotBeNull();
             result.Should().BeOfType<B2DatabaseConfigurator>();
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
 
         [Fact]
         public void When_using_store_configurator_for_reading_from_app_config()
         {
             // Arrange
-            var section = Suite.SetupConfiguration();
+            var section = Environment.SetupConfiguration();
             var collection = new ServiceCollection();
 
             // Act
             collection.ConfigureStreamStore(x => x.WithSingleDatabase(x => x.UseB2Database(section.Object)));
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
             section.VerifyAll();
         }
 
@@ -92,10 +92,10 @@ namespace StreamStore.S3.Tests.B2.Configurator
             var collection = new ServiceCollection();
 
             // Act
-            collection.ConfigureStreamStore(x => x.WithSingleDatabase(x => x.UseB2Database(c => c.WithCredential(Generated.String, Generated.String).WithBucketId(Generated.String))));
+            collection.ConfigureStreamStore(x => x.WithSingleDatabase(x => x.UseB2Database(c => c.WithCredential(Generated.Primitives.String, Generated.Primitives.String).WithBucketId(Generated.Primitives.String))));
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
     }
 }

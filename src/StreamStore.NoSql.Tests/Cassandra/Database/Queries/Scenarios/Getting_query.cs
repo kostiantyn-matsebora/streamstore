@@ -23,7 +23,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Queries
 
             // Arrange
             var queries = new CassandraCqlQueries(new CassandraStorageConfiguration());
-            var streamId = Generated.String;
+            var streamId = Generated.Primitives.String;
 
             // Act
             var cql = queries.StreamActualRevision(streamId);
@@ -40,7 +40,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Queries
 
             // Arrange
             var queries = new CassandraCqlQueries(new CassandraStorageConfiguration());
-            var streamId = Generated.String;
+            var streamId = Generated.Primitives.String;
 
             // Act
             var cql = queries.DeleteStream(streamId);
@@ -57,9 +57,9 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Queries
 
             // Arrange
             var queries = new CassandraCqlQueries(new CassandraStorageConfiguration());
-            var streamId = Generated.String;
-            var startFrom = Generated.Int;
-            var count = Generated.Int;
+            var streamId = Generated.Primitives.String;
+            var startFrom = Generated.Primitives.Int;
+            var count = Generated.Primitives.Int;
 
             // Act
             var cql = queries.StreamEvents(streamId, startFrom, count);

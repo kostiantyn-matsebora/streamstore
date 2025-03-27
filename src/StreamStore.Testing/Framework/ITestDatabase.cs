@@ -1,4 +1,6 @@
-﻿namespace StreamStore.Testing.Framework
+﻿using System;
+
+namespace StreamStore.Testing.Framework
 {
     public interface ITestDatabase: IDisposable
     {

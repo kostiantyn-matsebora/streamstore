@@ -6,7 +6,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.Sql.Tests.PostgreSql.Provisioning
 {
-    public class Creating_provisioner: Scenario<PostgresProvisioningSuite>
+    public class Creating_provisioner: Scenario<PostgresProvisioningTestEnvironment>
     {
         [Fact]
         public void When_any_argument_is_not_defined()
@@ -23,8 +23,8 @@ namespace StreamStore.Sql.Tests.PostgreSql.Provisioning
         public void When_creating_tenant_provisioner()
         {
             // Arrange
-            var configurationProvider = Suite.MockSqlConfigurationProvider;
-            var tenantId = Generated.Id;
+            var configurationProvider = Environment.MockSqlConfigurationProvider;
+            var tenantId = Generated.Primitives.Id;
             var factory = new PostgresSchemaProvisionerFactory(configurationProvider.Object);
 
             configurationProvider

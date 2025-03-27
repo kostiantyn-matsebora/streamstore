@@ -1,13 +1,14 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Xunit.Abstractions;
 
 namespace StreamStore.Testing.Serializer.Scenarios
 {
-    public abstract class Serializing<TSuite> : SerializerScenario<TSuite> where TSuite : SerializerSuiteBase, new()
+    public abstract class Serializing<TEnvironment> : SerializerScenario<TEnvironment> where TEnvironment : SerializerTestEnvironmentBase, new()
     {
         readonly ITestOutputHelper output;
 
-        protected Serializing(ITestOutputHelper output, TSuite suite) : base(suite)
+        protected Serializing(ITestOutputHelper output, TEnvironment environment) : base(environment)
         {
             this.output = output.ThrowIfNull(nameof(output));
         }

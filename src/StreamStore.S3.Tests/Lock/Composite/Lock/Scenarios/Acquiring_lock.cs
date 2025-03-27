@@ -5,19 +5,19 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.Lock.Composite.Lock
 {
-    public class Acquiring_lock: Scenario<S3CompositeLockTestSuite>
+    public class Acquiring_lock: Scenario<S3CompositeLockTestEnvironment>
     {
         [Fact]
         public async Task When_acquiring_with_multiple_internal_locks()
         {
             // Arrange
-            var s3CompositeStreamLock = Suite.CreateLock();
+            var s3CompositeStreamLock = Environment.CreateLock();
             CancellationToken token = default;
 
-            Suite.Lock1.Setup(m =>
+            Environment.Lock1.Setup(m =>
                m.AcquireAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Mock<IS3LockHandle>().Object);
-            Suite.Lock2.Setup(m =>
+            Environment.Lock2.Setup(m =>
                m.AcquireAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Mock<IS3LockHandle>().Object);
 
@@ -25,22 +25,22 @@ namespace StreamStore.S3.Tests.Lock.Composite.Lock
             var result = await s3CompositeStreamLock.AcquireAsync(token);
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
         [Fact]
         public async Task When_one_of_the_internal_locks_is_not_acquired()
         {
 
             // Arrange
-            var s3CompositeStreamLock = Suite.CreateLock();
+            var s3CompositeStreamLock = Environment.CreateLock();
             CancellationToken token = default;
             var handle1 = new Mock<IS3LockHandle>();
 
-            Suite.Lock1.Setup(m =>
+            Environment.Lock1.Setup(m =>
                m.AcquireAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(handle1.Object);
 
-            Suite.Lock2.Setup(m =>
+            Environment.Lock2.Setup(m =>
                m.AcquireAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IS3LockHandle?)null);
 
@@ -50,7 +50,7 @@ namespace StreamStore.S3.Tests.Lock.Composite.Lock
             var result = await s3CompositeStreamLock.AcquireAsync(token);
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
     }
 }

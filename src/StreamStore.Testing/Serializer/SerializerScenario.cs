@@ -1,13 +1,13 @@
 ﻿namespace StreamStore.Testing.Serializer
 {
-    public abstract class SerializerScenario<TSuite> : Scenario<TSuite> where TSuite : SerializerSuiteBase, new()
+    public abstract class SerializerScenario<TEnvironment> : Scenario<TEnvironment> where TEnvironment : SerializerTestEnvironmentBase, new()
     {
-        protected IEventSerializer Serializer => Suite.Serializer;
+        protected IEventSerializer Serializer => Environment.Serializer;
 
-        protected byte[] SerializedEvent => Suite.SerializedEvent;
-        protected object DeserializedEvent => Suite.DeserializedEvent;
+        protected byte[] SerializedEvent => Environment.SerializedEvent;
+        protected object DeserializedEvent => Environment.DeserializedEvent;
 
-        protected SerializerScenario(TSuite suite) : base(suite)
+        protected SerializerScenario(TEnvironment environment) : base(environment)
         { }
     }
 }

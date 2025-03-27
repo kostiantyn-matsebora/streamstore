@@ -13,13 +13,13 @@ using StreamStore.Sql.Multitenancy;
 
 namespace StreamStore.Sql.Tests.Configuration.MultiTenant
 {
-    public abstract class Configuring_multitenancy<TSuite> : Scenario<TSuite> where TSuite : MultiTenantConfiguratorSuiteBase, new()
+    public abstract class Configuring_multitenancy<TEnvironment> : Scenario<TEnvironment> where TEnvironment : MultitenantConfiguratorTestEnvironmentBase, new()
     {
         [Fact]
         public void When_connection_string_provider_is_not_set()
         {
             // Arrange
-            var configurator = Suite.CreateSqlDatabaseConfigurator(new ServiceCollection());
+            var configurator = Environment.CreateSqlDatabaseConfigurator(new ServiceCollection());
 
             // Act
             var act = () => configurator.Apply();
@@ -38,7 +38,7 @@ namespace StreamStore.Sql.Tests.Configuration.MultiTenant
 
             // Act
             configurator.WithMultitenancy(x => 
-                    Suite.UseDatabase(x, c => 
+                    Environment.UseDatabase(x, c => 
                         c.ConfigureDatabase(x => 
                             x.WithConnectionString("connectionString")
                              .WithSchema("schema")
@@ -74,15 +74,15 @@ namespace StreamStore.Sql.Tests.Configuration.MultiTenant
             var appSettings = new Dictionary<string, string?>
             {
                 {"ConnectionStrings:StreamStore", "connectionString"},
-                {$"{Suite.SectionName}:SchemaName", "schema"},
-                {$"{Suite.SectionName}:TableName", "table"}
+                {$"{Environment.SectionName}:SchemaName", "schema"},
+                {$"{Environment.SectionName}:TableName", "table"}
             };
 
             var config = new ConfigurationBuilder()
                     .AddInMemoryCollection(appSettings)
                     .Build();
             // Act
-            configurator.WithMultitenancy(x => Suite.UseDatabaseWithAppSettings(x, config));
+            configurator.WithMultitenancy(x => Environment.UseDatabaseWithAppSettings(x, config));
 
             configurator.Configure(services);
 

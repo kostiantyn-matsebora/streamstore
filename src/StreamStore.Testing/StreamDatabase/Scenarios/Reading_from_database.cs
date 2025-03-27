@@ -1,14 +1,17 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using FluentAssertions;
 using StreamStore.Exceptions;
 using Xunit.Abstractions;
 
 namespace StreamStore.Testing.StreamDatabase.Scenarios
 {
-    public abstract class Reading_from_database<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase, new()
+    public abstract class Reading_from_database<TEnvironment> : DatabaseScenario<TEnvironment> where TEnvironment : DatabaseTestEnvironmentBase, new()
     {
         readonly ITestOutputHelper output;
 
-        protected Reading_from_database(TSuite suite, ITestOutputHelper output) : base(suite)
+        protected Reading_from_database(TEnvironment environment, ITestOutputHelper output) : base(environment)
         {
             this.output = output ?? throw new ArgumentNullException(nameof(output));
         }
@@ -22,7 +25,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             TrySkip();
 
             // Act
-            var act = async () => await Database.ReadAsync(Generated.Id, Revision.One, count);
+            var act = async () => await Database.ReadAsync(Generated.Primitives.Id, Revision.One, count);
 
             // Assert
             await act.Should().ThrowAsync<StreamNotFoundException>();

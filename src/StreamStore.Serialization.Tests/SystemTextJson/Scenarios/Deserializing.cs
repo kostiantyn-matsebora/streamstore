@@ -2,9 +2,9 @@
 
 namespace StreamStore.Serialization.Tests.SystemTextJson
 {
-    public class Deserializing : Deserializing<SystemTextJsonTestSuite>
+    public class Deserializing : Deserializing<SystemTextJsonTestEnvironment>
     {
-        public Deserializing() : base(new SystemTextJsonTestSuite())
+        public Deserializing() : base(new SystemTextJsonTestEnvironment())
         {
         }
     }

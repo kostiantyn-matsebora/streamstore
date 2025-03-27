@@ -15,17 +15,17 @@ public class Getting_database: Scenario
     [Fact]   
     public void When_getting_database() {
         // Arrange
-        var tenant = Generated.Id;
-        var tenantMapperProvider = Suite.MockRepository.Create<ICassandraTenantMapperProvider>();
-        var mapperProvider = Suite.MockRepository.Create<ICassandraMapperProvider>();
+        var tenant = Generated.Primitives.Id;
+        var tenantMapperProvider = Environment.MockRepository.Create<ICassandraTenantMapperProvider>();
+        var mapperProvider = Environment.MockRepository.Create<ICassandraMapperProvider>();
         tenantMapperProvider.Setup(x => x.GetMapperProvider(tenant)).Returns(mapperProvider.Object);
-        mapperProvider.Setup(x => x.OpenMapper()).Returns(Suite.MockRepository.Create<IMapper>().Object);
+        mapperProvider.Setup(x => x.OpenMapper()).Returns(Environment.MockRepository.Create<IMapper>().Object);
         
-        var tenantStorageConfigurationProvider = Generated.MockOf<ICassandraTenantStorageConfigurationProvider>();
+        var tenantStorageConfigurationProvider = Generated.Mocks.Single<ICassandraTenantStorageConfigurationProvider>();
         tenantStorageConfigurationProvider.Setup(x => x.GetConfiguration(tenant)).Returns(new CassandraStorageConfiguration());
 
-        var cqlQueriesProvider = Generated.MockOf<ICassandraCqlQueriesProvider>();
-        cqlQueriesProvider.Setup(x => x.GetCqlQueries(It.IsAny<CassandraStorageConfiguration>())).Returns(Generated.MockOf<ICassandraCqlQueries>().Object);
+        var cqlQueriesProvider = Generated.Mocks.Single<ICassandraCqlQueriesProvider>();
+        cqlQueriesProvider.Setup(x => x.GetCqlQueries(It.IsAny<CassandraStorageConfiguration>())).Returns(Generated.Mocks.Single<ICassandraCqlQueries>().Object);
 
         var databaseProvider = new CassandraStreamDatabaseProvider(tenantMapperProvider.Object, tenantStorageConfigurationProvider.Object, cqlQueriesProvider.Object);
 
@@ -34,6 +34,6 @@ public class Getting_database: Scenario
         
         // Assert
         database.Should().NotBeNull();
-        Suite.MockRepository.VerifyAll();
+        Environment.MockRepository.VerifyAll();
     }
 }

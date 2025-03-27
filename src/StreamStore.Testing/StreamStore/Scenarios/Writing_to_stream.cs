@@ -1,13 +1,18 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture;
 using FluentAssertions;
 using StreamStore.Exceptions;
 using StreamStore.Testing.Models;
 
 namespace StreamStore.Testing.StreamStore.Scenarios
 {
-    public abstract class Writing_to_stream<TSuite> : StreamStoreScenario<TSuite> where TSuite : StreamStoreSuiteBase, new()
+    public abstract class Writing_to_stream<TEnvironment> : StreamStoreScenario<TEnvironment> where TEnvironment : StreamStoreTestEnvironmentBase, new()
     {
-        protected Writing_to_stream(TSuite suite) : base(suite)
+        protected Writing_to_stream(TEnvironment environment) : base(environment)
         {
         }
 
@@ -18,10 +23,10 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_saving_changes(int firstBatchCount, int secondBatchCount, int thirdBatchCount)
         {
             // Arrange
-            IStreamStore store = Suite.Store;
+            IStreamStore store = Environment.Store;
             var eventIds = new List<Id>();
-            var streamId = Generated.Id;
-            var events = Generated.Events(firstBatchCount);
+            var streamId = Generated.Primitives.Id;
+            var events = Generated.Events.Many(firstBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
             Revision actualRevision;
 
@@ -44,7 +49,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             actualRevision.Should().Be(firstBatchCount);
 
             // Arrange 2
-            events = Generated.Events(secondBatchCount);
+            events = Generated.Events.Many(secondBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
 
             // Act 2: Second way to append to stream
@@ -58,7 +63,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             actualRevision.Should().Be(firstBatchCount + secondBatchCount);
 
             // Arrange 3
-            events = Generated.Events(thirdBatchCount);
+            events = Generated.Events.Many(thirdBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
 
             // Act 3: Third way to append to stream
@@ -82,8 +87,8 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_stream_was_already_updated(int count)
         {
             // Arrange
-            IStreamStore store = Suite.Store;
-            var stream = Suite.Container.RandomStream;
+            IStreamStore store = Environment.Store;
+            var stream = Environment.Container.RandomStream;
 
             // Act
 
@@ -92,7 +97,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                 await
                    store
                         .BeginWriteAsync(stream.Id, CancellationToken.None)
-                        .AppendRangeAsync(Generated.Events(count))
+                        .AppendRangeAsync(Generated.Events.Many(count))
                         .CommitAsync(CancellationToken.None);
 
             // Assert
@@ -103,13 +108,13 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_event_with_same_id_already_exists()
         {
             // Arrange
-            IStreamStore store = Suite.Store;
-            var stream = Suite.Container.RandomStream;
+            IStreamStore store = Environment.Store;
+            var stream = Environment.Container.RandomStream;
             var existingEvents = stream.Events.Take(1).ToEvents();
 
             // Act
             // Trying to append existing events mixed with new ones, put existing to the end
-            var mixedEvents = Generated.Events(5).Concat(existingEvents);
+            var mixedEvents = Generated.Events.Many(5).Concat(existingEvents);
 
             var act = async () =>
                 await
@@ -126,7 +131,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_stream_id_is_null()
         {
             // Arrange
-            IStreamStore store = Suite.Store;
+            IStreamStore store = Environment.Store;
 
             // Act
             var act = () => store.BeginWriteAsync(null!);

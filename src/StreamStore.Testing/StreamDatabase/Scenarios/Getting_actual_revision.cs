@@ -1,10 +1,12 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace StreamStore.Testing.StreamDatabase.Scenarios
 {
-    public abstract class Get_actual_revision<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase, new()
+    public abstract class Get_actual_revision<TEnvironment> : DatabaseScenario<TEnvironment> where TEnvironment : DatabaseTestEnvironmentBase, new()
     {
-        protected Get_actual_revision(TSuite suite) : base(suite)
+        protected Get_actual_revision(TEnvironment environment) : base(environment)
         {
         }
 
@@ -14,7 +16,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
         {
             TrySkip();
 
-            var revision = await Database.GetActualRevision(Generated.Id);
+            var revision = await Database.GetActualRevision(Generated.Primitives.Id);
             revision.Should().BeNull();
         }
 

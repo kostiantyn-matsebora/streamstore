@@ -5,36 +5,36 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.B2.Client
 {
-    public class Uploading_objects: Scenario<B2S3ClientSuite>
+    public class Uploading_objects: Scenario<B2S3ClientTestEnvironment>
     {
         [Fact]
         public async Task When_uploading_object()
         {
             // Arrange
-            var aWSS3Client = Suite.CreateB2S3Client();
-            string key = Generated.String;
-            string fileId = Generated.String;
+            var aWSS3Client = Environment.CreateB2S3Client();
+            string key = Generated.Primitives.String;
+            string fileId = Generated.Primitives.String;
             CancellationToken token = default;
-            var content = Generated.ByteArray;
+            var content = Generated.Objects.ByteArray;
             var request = new UploadObjectRequest
             {
                 Key = key,
                 Data = content
             };
 
-            var apiResults = Suite.MockRepository.Create<IApiResults<UploadFileResponse>>();
+            var apiResults = Environment.MockRepository.Create<IApiResults<UploadFileResponse>>();
             apiResults.SetupGet(m => m.Response).Returns(new UploadFileResponse() { FileName = key, FileId = fileId });
             apiResults.SetupGet(m => m.IsSuccessStatusCode).Returns(true);
 
-            Suite.B2Client
-                .Setup(m => m.UploadAsync(Suite.Settings.BucketId, key, It.IsAny<System.IO.Stream>()))
+            Environment.B2Client
+                .Setup(m => m.UploadAsync(Environment.Settings.BucketId, key, It.IsAny<System.IO.Stream>()))
                 .ReturnsAsync(apiResults.Object);
 
             // Act
             var result = await aWSS3Client.UploadObjectAsync(request, token);
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
     }
 }

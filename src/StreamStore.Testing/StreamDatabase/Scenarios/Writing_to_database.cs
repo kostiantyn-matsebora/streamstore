@@ -1,11 +1,13 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Threading.Tasks;
+using FluentAssertions;
 using StreamStore.Exceptions;
 
 namespace StreamStore.Testing.StreamDatabase.Scenarios
 {
-    public abstract class Writing_to_database<TSuite> : DatabaseScenario<TSuite> where TSuite : DatabaseSuiteBase, new()
+    public abstract class Writing_to_database<TEnvironment> : DatabaseScenario<TEnvironment> where TEnvironment : DatabaseTestEnvironmentBase, new()
     {
-        protected Writing_to_database(TSuite suite) : base(suite)
+        protected Writing_to_database(TEnvironment environment) : base(environment)
         {
         }
 
@@ -21,19 +23,19 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             var uow = await Database.BeginAppendAsync(stream.Id, stream.Revision);
 
             // Act
-            var act = async () => await uow.AddAsync(eventId, Generated.DateTime, Generated.ByteArray);
+            var act = async () => await uow.AddAsync(eventId, Generated.Primitives.DateTime, Generated.Objects.ByteArray);
 
             //Assert
             await act.Should().ThrowAsync<ArgumentNullException>();
 
             // Act
-            act = async () => await uow.AddAsync(Generated.Id, DateTime.MinValue, Generated.ByteArray);
+            act = async () => await uow.AddAsync(Generated.Primitives.Id, DateTime.MinValue, Generated.Objects.ByteArray);
 
             //Assert
             await act.Should().ThrowAsync<ArgumentOutOfRangeException>();
 
             // Act
-            act = async () => await uow.AddAsync(Generated.Id, Generated.DateTime, null!);
+            act = async () => await uow.AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, null!);
 
             //Assert
             await act.Should().ThrowAsync<ArgumentNullException>();
@@ -61,11 +63,11 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             var uow = await Database.BeginAppendAsync(stream.Id, stream.Revision);
 
             await Database.BeginAppendAsync(stream.Id, stream.Revision)
-                .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
+                .AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
                 .SaveChangesAsync();
 
             // Act
-            act = () => uow.AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray).SaveChangesAsync();
+            act = () => uow.AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray).SaveChangesAsync();
 
             //Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
@@ -93,11 +95,11 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             var uow = await Database.BeginAppendAsync(stream.Id, stream.Revision);
 
             await Database.BeginAppendAsync(stream.Id, stream.Revision)
-                .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
+                .AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
                 .SaveChangesAsync();
 
             // Act
-            act = () => uow.AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray).SaveChangesAsync();
+            act = () => uow.AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray).SaveChangesAsync();
 
             //Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
@@ -111,7 +113,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             TrySkip();
 
             // Arrange
-            Id streamId = Generated.Id;
+            Id streamId = Generated.Primitives.Id;
             Revision revision = Revision.Zero;
             if (!isNew)
             {
@@ -123,8 +125,8 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
             // Act
 
             await Database.BeginAppendAsync(streamId, revision)
-                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
-                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
+                  .AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
+                  .AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
                   .SaveChangesAsync();
 
             // Assert
@@ -134,7 +136,7 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
 
             // Act
             await Database.BeginAppendAsync(streamId, revision + 2)
-                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
+                  .AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
                    .SaveChangesAsync();
 
             // Assert
@@ -144,11 +146,11 @@ namespace StreamStore.Testing.StreamDatabase.Scenarios
 
             // Act
             await Database.BeginAppendAsync(streamId, revision + 2 + 1)
-                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
-                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
-                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
-                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
-                  .AddAsync(Generated.Id, Generated.DateTime, Generated.ByteArray)
+                  .AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
+                  .AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
+                  .AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
+                  .AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
+                  .AddAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
                   .SaveChangesAsync();
 
             // Assert

@@ -6,19 +6,19 @@ using StreamStore.Testing;
 
 namespace StreamStore.Tests.SchemaProvisioning.Multitenancy
 {
-    public class Provisioning_tenant_schemas: Scenario<MultitenantProvisioningSuite>
+    public class Provisioning_tenant_schemas: Scenario<MultitenantProvisioningTestEnvironment>
     {
         [Fact]
         public void When_any_of_parameters_is_not_defined()
         {
             // Act
-            var act = () => new TenantSchemaProvisioningService(null!, Suite.TenantProvider);
+            var act = () => new TenantSchemaProvisioningService(null!, Environment.TenantProvider);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
 
             // Act
-            act = () => new TenantSchemaProvisioningService(Suite.SchemaProvisionerFactory.Object, null!);
+            act = () => new TenantSchemaProvisioningService(Environment.SchemaProvisionerFactory.Object, null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
@@ -29,13 +29,13 @@ namespace StreamStore.Tests.SchemaProvisioning.Multitenancy
         {
             // Arrange
             var token = CancellationToken.None;
-            var factory = Suite.SchemaProvisionerFactory;
-            var tenantProvider = Suite.TenantProvider;
+            var factory = Environment.SchemaProvisionerFactory;
+            var tenantProvider = Environment.TenantProvider;
             var service = new TenantSchemaProvisioningService(factory.Object, tenantProvider);
 
-            foreach (var tenant in Suite.tenants)
+            foreach (var tenant in Environment.tenants)
             {
-                var provisioner = Suite.MockSchemaProvisioner;
+                var provisioner = Environment.MockSchemaProvisioner;
                 provisioner
                     .Setup(provisioner => provisioner.ProvisionSchemaAsync(It.IsAny<CancellationToken>()))
                     .Returns(Task.CompletedTask);
@@ -49,7 +49,7 @@ namespace StreamStore.Tests.SchemaProvisioning.Multitenancy
             await service.StartAsync(token);
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
     }
 }

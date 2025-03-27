@@ -5,10 +5,10 @@ using StreamStore.Testing;
 using StreamStore.Tests.Enumerator;
 
 namespace StreamStore.Tests.EventEnumerable { 
-    public abstract class Enumerating_events : Scenario<EnumerableTestSuite>
+    public abstract class Enumerating_events : Scenario<EnumerableTestEnvironment>
     {
 
-        protected Enumerating_events(StreamReadingMode mode) : base(new EnumerableTestSuite(mode))
+        protected Enumerating_events(StreamReadingMode mode) : base(new EnumerableTestEnvironment(mode))
         {
         }
 
@@ -17,9 +17,9 @@ namespace StreamStore.Tests.EventEnumerable {
         public async Task When_stream_is_not_found()
         {
             // Arrange
-            var parameters = new StreamReadingParameters(Generated.Id, Revision.One, 10);
+            var parameters = new StreamReadingParameters(Generated.Primitives.Id, Revision.One, 10);
 
-            var enumerable = Suite.CreateEnumerable(parameters);
+            var enumerable = Environment.CreateEnumerable(parameters);
 
             // Act
             var act = async () => await enumerable.ReadToEndAsync();
@@ -37,10 +37,10 @@ namespace StreamStore.Tests.EventEnumerable {
         public async Task When_reading_stream_to_end(int startFrom, int pageSize)
         {
             // Arrange
-            var stream = Suite.Container.RandomStream;
+            var stream = Environment.Container.RandomStream;
             var parameters = new StreamReadingParameters(stream.Id, startFrom, pageSize);
 
-            var enumerable = Suite.CreateEnumerable(parameters);
+            var enumerable = Environment.CreateEnumerable(parameters);
 
             // Act
             var events = (await enumerable.ReadToEndAsync()).ToArray();
@@ -60,11 +60,11 @@ namespace StreamStore.Tests.EventEnumerable {
         public async Task When_iterating_stream_to_end(int startFrom, int pageSize)
         {
             // Arrange
-            var stream = Suite.Container.RandomStream;
+            var stream = Environment.Container.RandomStream;
 
             var parameters = new StreamReadingParameters(stream.Id, startFrom, pageSize);
 
-            var enumerable = Suite.CreateEnumerable(parameters);
+            var enumerable = Environment.CreateEnumerable(parameters);
             var events = new List<StreamEvent>();
             // Act
             await foreach (var _ in enumerable)
@@ -85,12 +85,12 @@ namespace StreamStore.Tests.EventEnumerable {
         [InlineData(10)]
         public async Task When_page_size_greater_than_stream_length(int increment)
         {
-            var stream = Suite.Container.RandomStream;
+            var stream = Environment.Container.RandomStream;
             var pageSize = stream.Revision + increment;
 
             var parameters = new StreamReadingParameters(stream.Id, Revision.One, pageSize);
 
-            var enumerable = Suite.CreateEnumerable(parameters);
+            var enumerable = Environment.CreateEnumerable(parameters);
             var events = new List<StreamEvent>();
             // Act
             await foreach (var _ in enumerable)
@@ -122,13 +122,13 @@ namespace StreamStore.Tests.EventEnumerable {
         [InlineData(10, 10)]
         public async Task When_leftover_less_than_page_size(int startFrom, int pageSizeIncrement)
         {
-            var stream = Suite.Container.RandomStream;
+            var stream = Environment.Container.RandomStream;
             var leftover = stream.Revision - startFrom + 1;
             var pageSize = leftover + pageSizeIncrement;
 
             var parameters = new StreamReadingParameters(stream.Id, startFrom, pageSize);
 
-            var enumerable = Suite.CreateEnumerable(parameters);
+            var enumerable = Environment.CreateEnumerable(parameters);
             var events = new List<StreamEvent>();
             // Act
             await foreach (var _ in enumerable)

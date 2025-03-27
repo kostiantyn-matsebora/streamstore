@@ -2,9 +2,9 @@
 
 namespace StreamStore.Serialization.Tests.Protobuf
 {
-    public class Deserializing : Deserializing<ProtobufTestSuite>
+    public class Deserializing : Deserializing<ProtobufTestEnvironment>
     {
-        public Deserializing() : base(new ProtobufTestSuite())
+        public Deserializing() : base(new ProtobufTestEnvironment())
         {
         }
     }

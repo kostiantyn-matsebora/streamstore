@@ -24,7 +24,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.CosmosDb.Queries
         {
 
             // Arrange
-            var streamId = Generated.String;
+            var streamId = Generated.Primitives.String;
             var queries = new CosmosDbCqlQueries(new CassandraStorageConfiguration());
 
             // Act

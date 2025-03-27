@@ -4,12 +4,12 @@ using StreamStore.Testing;
 using StreamStore.InMemory;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Provisioning;
-using static StreamStore.Tests.Configuration.SingleTenant.SingleTenantConfiguratorSuite;
+using static StreamStore.Tests.Configuration.SingleTenant.SingleTenantConfiguratorTestEnvironment;
 using StreamStore.InMemory.Extensions;
 
 namespace StreamStore.Tests.Configuration.SingleTenant
 {
-    public class Configuring_single_database: Scenario<SingleTenantConfiguratorSuite>
+    public class Configuring_single_database: Scenario<SingleTenantConfiguratorTestEnvironment>
     {
 
         [Fact]

@@ -11,18 +11,18 @@ public class Instantiating: Scenario
     public void When_any_argument_is_not_set()
     {
         // Act
-        var act = () => new CassandraTenantMapperProvider(null!, Generated.MockOf<ICassandraTenantClusterRegistry>().Object, Generated.MockOf<ICassandraTenantMappingRegistry>().Object);
+        var act = () => new CassandraTenantMapperProvider(null!, Generated.Mocks.Single<ICassandraTenantClusterRegistry>().Object, Generated.Mocks.Single<ICassandraTenantMappingRegistry>().Object);
 
         // Assert
         act.Should().Throw<ArgumentNullException>();
 
         // Act
-        act = () => new CassandraTenantMapperProvider(Generated.MockOf<ICassandraTenantStorageConfigurationProvider>(). Object,  null!, Generated.MockOf<ICassandraTenantMappingRegistry>().Object);
+        act = () => new CassandraTenantMapperProvider(Generated.Mocks.Single<ICassandraTenantStorageConfigurationProvider>(). Object,  null!, Generated.Mocks.Single<ICassandraTenantMappingRegistry>().Object);
 
         // Assert
         act.Should().Throw<ArgumentNullException>();
 
-                act = () => new CassandraTenantMapperProvider(Generated.MockOf<ICassandraTenantStorageConfigurationProvider>(). Object,  Generated.MockOf<ICassandraTenantClusterRegistry>().Object, null!);
+                act = () => new CassandraTenantMapperProvider(Generated.Mocks.Single<ICassandraTenantStorageConfigurationProvider>(). Object,  Generated.Mocks.Single<ICassandraTenantClusterRegistry>().Object, null!);
 
         // Assert
         act.Should().Throw<ArgumentNullException>();

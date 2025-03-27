@@ -12,7 +12,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking.UnitOfWork
 {
-    public class Saving_changes : Scenario<CassandraMockTestSuite>
+    public class Saving_changes : Scenario<CassandraMockTestEnvironment>
     {
 
         [Fact]
@@ -22,17 +22,17 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking.UnitOfWork
             var queries = new CassandraCqlQueries(new CassandraStorageConfiguration());
             var configure = new CassandraStatementConfigurator(new CassandraStorageConfiguration());
             var batch = MockBatch();
-            var uow = Suite.StreamUnitOfWork;
+            var uow = Environment.StreamUnitOfWork;
 
-            Suite.Mapper.Setup(x => x.CreateBatch(It.IsAny<BatchType>())).Returns(batch.Object);
-            Suite.Mapper.Setup(x => x.ExecuteConditionalAsync<EventEntity>(It.IsAny<ICqlBatch>())).ReturnsAsync(new AppliedInfo<EventEntity>(true));
+            Environment.Mapper.Setup(x => x.CreateBatch(It.IsAny<BatchType>())).Returns(batch.Object);
+            Environment.Mapper.Setup(x => x.ExecuteConditionalAsync<EventEntity>(It.IsAny<ICqlBatch>())).ReturnsAsync(new AppliedInfo<EventEntity>(true));
 
 
             // Act
             await uow.SaveChangesAsync(CancellationToken.None);
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
 
         [Fact]
@@ -41,24 +41,24 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.Mocking.UnitOfWork
             // Arrange
             var queries = new CassandraCqlQueries(new CassandraStorageConfiguration());
             var configure = new CassandraStatementConfigurator(new CassandraStorageConfiguration());
-            var uow = Suite.StreamUnitOfWork;
+            var uow = Environment.StreamUnitOfWork;
             var batch = MockBatch();
 
-            Suite.Mapper.Setup(x => x.CreateBatch(BatchType.Logged)).Returns(batch.Object);
-            Suite.Mapper.Setup(x => x.ExecuteConditionalAsync<EventEntity>(It.IsAny<ICqlBatch>())).ReturnsAsync(new AppliedInfo<EventEntity>(false));
-            Suite.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(10);
+            Environment.Mapper.Setup(x => x.CreateBatch(BatchType.Logged)).Returns(batch.Object);
+            Environment.Mapper.Setup(x => x.ExecuteConditionalAsync<EventEntity>(It.IsAny<ICqlBatch>())).ReturnsAsync(new AppliedInfo<EventEntity>(false));
+            Environment.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(10);
 
             // Act
             var act = async () => await uow.SaveChangesAsync(CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
 
         Mock<ICqlBatch> MockBatch()
         {
-            var batch = Suite.MockRepository.Create<ICqlBatch>();
+            var batch = Environment.MockRepository.Create<ICqlBatch>();
             batch.Setup(x => x.WithOptions(It.IsAny<Action<CqlQueryOptions>>())).Returns(batch.Object);
             return batch;
         }

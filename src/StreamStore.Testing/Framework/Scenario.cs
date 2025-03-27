@@ -2,30 +2,30 @@
 
 namespace StreamStore.Testing
 {
-    public abstract class Scenario<TSuite> where TSuite : ITestSuite, new()
+    public abstract class Scenario<TEnvironment> where TEnvironment : ITestEnvironment, new()
     {
-        protected readonly TSuite Suite;
+        protected readonly TEnvironment Environment;
 
-        protected Scenario() : this(new TSuite())
+        protected Scenario() : this(new TEnvironment())
         {
         }
 
-        protected Scenario(TSuite suite)
+        protected Scenario(TEnvironment environment)
         {
-            ArgumentNullException.ThrowIfNull(suite, nameof(suite));
-            Suite = suite;
-            Suite.SetUpSuite();
+            environment.ThrowIfNull(nameof(environment));
+            Environment = environment;
+            Environment.SetUp();
         }
 
         protected virtual void TrySkip()
         {
-            Skip.IfNot(Suite.ArePrerequisitiesMet, "Suite is not ready.");
+            Skip.IfNot(Environment.IsReady, "Environment is not ready.");
         }
     }
 
-    public class Scenario: Scenario<TestSuite>
+    public class Scenario: Scenario<TestEnvironment>
     {
-        public Scenario() : base(new TestSuite())
+        public Scenario() : base(new TestEnvironment())
         {
         }
     }

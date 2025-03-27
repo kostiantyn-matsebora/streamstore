@@ -33,14 +33,14 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database.QueryConfigurator
                 ReadConsistencyLevel = ConsistencyLevel.Three,
                 SerialConsistencyLevel = ConsistencyLevel.LocalSerial
             };
-            var cql = Suite.MockRepository.Create<Cql>("SELECT * FROM events");
+            var cql = Environment.MockRepository.Create<Cql>("SELECT * FROM events");
             var configurator = new CassandraStatementConfigurator(config);
 
             // Act
             configurator.Query(cql.Object);
             
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
 
         }
     }

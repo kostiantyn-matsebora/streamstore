@@ -28,7 +28,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Database
         static KeyspaceConfiguration KeyspaceConfiguration()
         {
             // Put your keyspace configuration here
-            return new KeyspaceConfiguration(Generated.DatabaseName)
+            return new KeyspaceConfiguration(Generated.Names.Database)
             {
                 ReplicationClass = "SimpleStrategy",
                 ReplicationFactor = 1

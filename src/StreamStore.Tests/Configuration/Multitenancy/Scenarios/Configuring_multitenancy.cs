@@ -5,12 +5,12 @@ using StreamStore.InMemory.Extensions;
 using StreamStore.Multitenancy;
 using StreamStore.Provisioning;
 using StreamStore.Testing;
-using static StreamStore.Tests.Configuration.MultiTenant.MultiTenantConfiguratorSuite;
+using static StreamStore.Tests.Configuration.MultiTenant.MultiTenantConfiguratorTestEnvironment;
 
 
 namespace StreamStore.Tests.Configuration.MultiTenant
 {
-    public class Configuring_multitenancy: Scenario<MultiTenantConfiguratorSuite>
+    public class Configuring_multitenancy: Scenario<MultiTenantConfiguratorTestEnvironment>
     {
 
         [Fact]

@@ -12,7 +12,7 @@ namespace StreamStore.Tests.BuildingEvents
             var builder = new EventBuilder();
 
             // Act
-            builder.WithId(Generated.Id).Dated(Generated.DateTime);
+            builder.WithId(Generated.Primitives.Id).Dated(Generated.Primitives.DateTime);
             var act = () => builder.Build();
 
             // Assert
@@ -27,7 +27,7 @@ namespace StreamStore.Tests.BuildingEvents
             var builder = new EventBuilder();
 
             // Act
-            builder.Dated(Generated.DateTime).WithEvent(Generated.Event);
+            builder.Dated(Generated.Primitives.DateTime).WithEvent(Generated.Events.Single);
             var act = () => builder.Build();
 
             // Assert
@@ -41,7 +41,7 @@ namespace StreamStore.Tests.BuildingEvents
             var builder = new EventBuilder();
 
             // Act
-            builder.WithId(Generated.Id).Dated(DateTime.MinValue).WithEvent(Generated.Event);
+            builder.WithId(Generated.Primitives.Id).Dated(DateTime.MinValue).WithEvent(Generated.Events.Single);
             var act = () => builder.Build();
 
             // Assert
@@ -54,9 +54,9 @@ namespace StreamStore.Tests.BuildingEvents
         {
             // Arrange
             var builder = new EventBuilder();
-            var id = Generated.Id;
-            var timestamp = Generated.DateTime;
-            var @event = Generated.Event;
+            var id = Generated.Primitives.Id;
+            var timestamp = Generated.Primitives.DateTime;
+            var @event = Generated.Events.Single;
 
             // Act
             builder.WithId(id).Dated(timestamp).WithEvent(@event);

@@ -6,7 +6,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.Concurrency.StreamContext
 {
-    public class Saving_changes : Scenario<S3StreamContextSuite>
+    public class Saving_changes : Scenario<S3StreamContextTestEnvironment>
     {
 
         [Fact]
@@ -14,22 +14,22 @@ namespace StreamStore.S3.Tests.Concurrency.StreamContext
         {
 
             // Arrange
-            var streamId = Generated.Id;
-            var revision = Generated.Revision;
-            var streamContext = Suite.CreateStreamContext(streamId, revision);
-            Suite.MockClient.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
-            var record = Generated.EventRecords(count: 1).First();
-            Suite.MockClient.Setup(x => x.UploadObjectAsync(It.IsAny<UploadObjectRequest>(), default))
-                            .ReturnsAsync(new UploadObjectResponse() { Key = Generated.String, VersionId = Generated.String });
-            Suite.MockClient.SetupSequence(x => x.FindObjectDescriptorAsync(It.IsAny<string>(), default))
-                            .ReturnsAsync(new ObjectDescriptor { Key = Generated.String, VersionId = Generated.String })
-                            .ReturnsAsync(new ObjectDescriptor { Key = Generated.String, VersionId = Generated.String })
+            var streamId = Generated.Primitives.Id;
+            var revision = Generated.Primitives.Revision;
+            var streamContext = Environment.CreateStreamContext(streamId, revision);
+            Environment.MockClient.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
+            var record = Generated.Many(count: 1).First();
+            Environment.MockClient.Setup(x => x.UploadObjectAsync(It.IsAny<UploadObjectRequest>(), default))
+                            .ReturnsAsync(new UploadObjectResponse() { Key = Generated.Primitives.String, VersionId = Generated.Primitives.String });
+            Environment.MockClient.SetupSequence(x => x.FindObjectDescriptorAsync(It.IsAny<string>(), default))
+                            .ReturnsAsync(new ObjectDescriptor { Key = Generated.Primitives.String, VersionId = Generated.Primitives.String })
+                            .ReturnsAsync(new ObjectDescriptor { Key = Generated.Primitives.String, VersionId = Generated.Primitives.String })
                             .ReturnsAsync((ObjectDescriptor?)null);
-            Suite.MockClient.Setup(x => x.CopyByVersionIdAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), default))
+            Environment.MockClient.Setup(x => x.CopyByVersionIdAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), default))
                             .Returns(Task.CompletedTask);
-            Suite.MockClient.Setup(x => x.DeleteObjectByVersionIdAsync(It.IsAny<string>(), It.IsAny<string>(), default))
+            Environment.MockClient.Setup(x => x.DeleteObjectByVersionIdAsync(It.IsAny<string>(), It.IsAny<string>(), default))
                             .Returns(Task.CompletedTask);
-            Suite.MockClient.Setup(x => x.ListObjectsAsync(It.IsAny<string>(), It.IsAny<string>(), default))
+            Environment.MockClient.Setup(x => x.ListObjectsAsync(It.IsAny<string>(), It.IsAny<string>(), default))
                             .ReturnsAsync(new ListS3ObjectsResponse { Objects = Array.Empty<ObjectDescriptor>() });
             await streamContext.AddTransientEventAsync(record, default);
 

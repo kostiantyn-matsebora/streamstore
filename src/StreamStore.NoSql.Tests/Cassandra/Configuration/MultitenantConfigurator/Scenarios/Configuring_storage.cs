@@ -100,8 +100,8 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.MultitenantConfigurato
             // Arrange
             var configurator = new CassandraMultitenantConfigurator();
             var services = new ServiceCollection();
-            var keyspace = Generated.String;
-            var tenant = Generated.Id;
+            var keyspace = Generated.Primitives.String;
+            var tenant = Generated.Primitives.Id;
 
             // Act
             configurator
@@ -115,7 +115,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.MultitenantConfigurato
             var keyspaceProvider = provider.GetRequiredService<ICassandraKeyspaceProvider>();
             keyspaceProvider.GetKeyspace(tenant).Should().Be(keyspace);
 
-            var act = () => keyspaceProvider.GetKeyspace(Generated.Id);
+            var act = () => keyspaceProvider.GetKeyspace(Generated.Primitives.Id);
             act.Should().Throw<InvalidOperationException>();
         }
 

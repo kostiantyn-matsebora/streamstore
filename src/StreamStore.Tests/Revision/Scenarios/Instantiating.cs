@@ -4,7 +4,7 @@ using StreamStore.Testing;
 
 namespace StreamStore.Tests.RevisionObject
 {
-    public class Instantiating : Scenario<RevisionTestSuite>
+    public class Instantiating : Scenario<RevisionTestEnvironment>
     {
 
         [Fact]

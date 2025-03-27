@@ -29,19 +29,19 @@ namespace StreamStore.Tests.Models
             var records = fixture.CreateMany<EventMetadataRecord>(10);
 
             // Act
-            var act = () => new StreamEvent(Id.None, Generated.Revision, Generated.DateTime, Generated.Object<object>());
+            var act = () => new StreamEvent(Id.None, Generated.Primitives.Revision, Generated.Primitives.DateTime, Generated.Objects.Single<object>());
 
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>();
 
             // Act
-            act = () => new StreamEvent(Generated.Id, Generated.Revision, default, Generated.Object<object>());
+            act = () => new StreamEvent(Generated.Primitives.Id, Generated.Primitives.Revision, default, Generated.Objects.Single<object>());
 
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>();
 
             // Act
-            act = () => new StreamEvent(Generated.Id, Generated.Revision, Generated.DateTime,  null!);
+            act = () => new StreamEvent(Generated.Primitives.Id, Generated.Primitives.Revision, Generated.Primitives.DateTime,  null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();

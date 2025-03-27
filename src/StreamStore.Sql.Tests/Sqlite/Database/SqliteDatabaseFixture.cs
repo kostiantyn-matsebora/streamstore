@@ -7,7 +7,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Database
 {
     public sealed class SqliteDatabaseFixture : SqlDatabaseFixtureBase<SqliteTestDatabase>
     {
-        public SqliteDatabaseFixture(): base(new SqliteTestDatabase($"{Generated.DatabaseName}.sqlite"))
+        public SqliteDatabaseFixture(): base(new SqliteTestDatabase($"{Generated.Names.Database}.sqlite"))
         {
         }
 

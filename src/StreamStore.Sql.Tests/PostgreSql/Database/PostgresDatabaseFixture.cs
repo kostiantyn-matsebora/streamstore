@@ -9,7 +9,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Database
     public sealed class PostgresDatabaseFixture : SqlDatabaseFixtureBase<PostgresTestDatabase>
     {
 
-        public PostgresDatabaseFixture() : base(new PostgresTestDatabase(Generated.DatabaseName))
+        public PostgresDatabaseFixture() : base(new PostgresTestDatabase(Generated.Names.Database))
         {
         }
        

@@ -369,3 +369,4 @@ FodyWeavers.xsd
 *.cmd
 **/*.Debug.json
 **/*.Development.json
+/src/StreamStore/Models/EventEnvelope.cs

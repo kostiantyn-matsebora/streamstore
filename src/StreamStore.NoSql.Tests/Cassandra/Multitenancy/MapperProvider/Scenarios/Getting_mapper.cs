@@ -13,12 +13,12 @@ public class Getting_mapper: Scenario
     [Fact]
     public void When_getting_mapper() {
         // Arrange
-        var tenant = Generated.Id;
-        var tenantClusterRegistry = Suite.MockRepository.Create<ICassandraTenantClusterRegistry>();
+        var tenant = Generated.Primitives.Id;
+        var tenantClusterRegistry = Environment.MockRepository.Create<ICassandraTenantClusterRegistry>();
         tenantClusterRegistry.Setup(x => x.GetCluster(tenant)).Returns(Cluster.Builder().AddContactPoint("localhost").Build());
-        var tenantMappingRegistry = Suite.MockRepository.Create<ICassandraTenantMappingRegistry>();
+        var tenantMappingRegistry = Environment.MockRepository.Create<ICassandraTenantMappingRegistry>();
         tenantMappingRegistry.Setup(x => x.GetMapping(tenant)).Returns(new MappingConfiguration());
-        var tenantStorageConfigurationProvider = Generated.MockOf<ICassandraTenantStorageConfigurationProvider>();
+        var tenantStorageConfigurationProvider = Generated.Mocks.Single<ICassandraTenantStorageConfigurationProvider>();
         tenantStorageConfigurationProvider.Setup(x => x.GetConfiguration(tenant)).Returns(new CassandraStorageConfiguration());
         var tenantMapperProvider = new CassandraTenantMapperProvider(tenantStorageConfigurationProvider.Object, tenantClusterRegistry.Object, tenantMappingRegistry.Object);
         
@@ -27,6 +27,6 @@ public class Getting_mapper: Scenario
         
         // Assert
         mapper.Should().NotBeNull();
-        Suite.MockRepository.VerifyAll();
+        Environment.MockRepository.VerifyAll();
     }
 }

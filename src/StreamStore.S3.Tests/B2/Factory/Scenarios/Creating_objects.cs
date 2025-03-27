@@ -5,7 +5,7 @@ using StreamStore.Testing;
 using FluentAssertions;
 
 namespace StreamStore.S3.Tests.B2.Factory { 
-    public class Creating_objects: Scenario<B2S3FactorySuite>
+    public class Creating_objects: Scenario<B2S3FactoryTestEnvironment>
     {
 
         [Fact]
@@ -14,15 +14,15 @@ namespace StreamStore.S3.Tests.B2.Factory {
             // Arrange
 
             var client = new Mock<IStorageClient>();
-            Suite.FactoryMock.Setup(m => m.Create()).Returns(client.Object);
-            client.Setup(client => client.Connect(Suite.Settings.Credential!.UserName, Suite.Settings.Credential!.Password));
+            Environment.FactoryMock.Setup(m => m.Create()).Returns(client.Object);
+            client.Setup(client => client.Connect(Environment.Settings.Credential!.UserName, Environment.Settings.Credential!.Password));
             // Act
-            var factory = new B2S3Factory(Suite.Settings, Suite.FactoryMock.Object);
+            var factory = new B2S3Factory(Environment.Settings, Environment.FactoryMock.Object);
             var result = factory.CreateClient();
 
             // Assert
-            Suite.MockRepository.VerifyAll();
-            Suite.FactoryMock.VerifyAll();
+            Environment.MockRepository.VerifyAll();
+            Environment.FactoryMock.VerifyAll();
         }
 
         [Fact]
@@ -30,16 +30,16 @@ namespace StreamStore.S3.Tests.B2.Factory {
         {
             // Arrange
             var client = new Mock<IStorageClient>();
-            Suite.FactoryMock.Setup(m => m.Create()).Returns(client.Object);
-            client.Setup(client => client.Connect(Suite.Settings.Credential!.UserName, Suite.Settings.Credential!.Password));
+            Environment.FactoryMock.Setup(m => m.Create()).Returns(client.Object);
+            client.Setup(client => client.Connect(Environment.Settings.Credential!.UserName, Environment.Settings.Credential!.Password));
 
             // Act
-            var factory = new B2S3Factory(Suite.Settings, Suite.FactoryMock.Object);
-            var result = factory.CreateLock(Suite.StreamId, Suite.TransactionId);
+            var factory = new B2S3Factory(Environment.Settings, Environment.FactoryMock.Object);
+            var result = factory.CreateLock(Environment.StreamId, Environment.TransactionId);
 
             // Assert
             result.Should().NotBeNull();
-            Suite.FactoryMock.VerifyAll();
+            Environment.FactoryMock.VerifyAll();
         }
     }
 }

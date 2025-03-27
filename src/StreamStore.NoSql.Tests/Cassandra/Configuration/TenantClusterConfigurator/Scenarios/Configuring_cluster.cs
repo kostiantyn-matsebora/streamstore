@@ -23,7 +23,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.TenantClusterConfigura
             // Arrange
             Action<Id, Builder> configure = (tenantId, builder) => builder.AddContactPoint("localhost").WithDefaultKeyspace("default_keyspace");
             var configurator = new DelegateTenantClusterConfigurator(configure);
-            var tenantId = Generated.Id;
+            var tenantId = Generated.Primitives.Id;
             var builder = Cluster.Builder();
 
             // Act

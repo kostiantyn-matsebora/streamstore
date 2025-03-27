@@ -2,9 +2,9 @@
 
 namespace StreamStore.S3.Tests.Lock.File.Scenarios
 {
-    public class Releasing_lock : Scenario<S3FileLockSuite>
+    public class Releasing_lock : Scenario<S3FileLockTestEnvironment>
     {
-        public Releasing_lock() : base(new S3FileLockSuite())
+        public Releasing_lock() : base(new S3FileLockTestEnvironment())
         {
         }
 
@@ -15,7 +15,7 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
 
             // Arrange
             CancellationToken token = default;
-            var handle = Suite.CreateS3FileLockHandle();
+            var handle = Environment.CreateS3FileLockHandle();
 
 
             // Act
@@ -23,7 +23,7 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
             await handle.ReleaseAsync(token); //Checking that the lock is only released once
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
             TrySkip();
 
             // Arrange
-            var handle = Suite.CreateS3FileLockHandle();
+            var handle = Environment.CreateS3FileLockHandle();
 
             // Act
             await handle.DisposeAsync();
@@ -41,7 +41,7 @@ namespace StreamStore.S3.Tests.Lock.File.Scenarios
 #pragma warning restore S3966 // Objects should not be disposed more than once
 
             // Assert
-            Suite.MockRepository.VerifyAll();
+            Environment.MockRepository.VerifyAll();
         }
     }
 }

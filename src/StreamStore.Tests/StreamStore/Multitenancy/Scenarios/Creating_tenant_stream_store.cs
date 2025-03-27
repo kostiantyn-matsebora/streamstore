@@ -2,10 +2,10 @@
 using Moq;
 using StreamStore.Multitenancy;
 using StreamStore.Testing;
-using Suite = StreamStore.Tests.StreamStore.Multitenancy.TenantStreamStoreFactorySuite;
+using Environment = StreamStore.Tests.StreamStore.Multitenancy.TenantStreamStoreFactoryTestEnvironment;
 namespace StreamStore.Tests.StreamStore.Multitenancy
 {
-    public class Creating_tenant_stream_store : Scenario<TenantStreamStoreFactorySuite>
+    public class Creating_tenant_stream_store : Scenario<TenantStreamStoreFactoryTestEnvironment>
     {
 
         [Fact]
@@ -13,19 +13,19 @@ namespace StreamStore.Tests.StreamStore.Multitenancy
         {
 
             // Act
-            var act = () => new TenantStreamStoreFactory(null!, Suite.MockTenantStreamDatabaseProvider.Object, Suite.MockEventSerializer.Object);
+            var act = () => new TenantStreamStoreFactory(null!, Environment.MockTenantStreamDatabaseProvider.Object, Environment.MockEventSerializer.Object);
 
             //Assert
             act.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("configuration");
 
             // Act
-            act = () => new TenantStreamStoreFactory(Suite.Configuration, null!, Suite.MockEventSerializer.Object);
+            act = () => new TenantStreamStoreFactory(Environment.Configuration, null!, Environment.MockEventSerializer.Object);
 
             //Assert
             act.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("databaseProvider");
 
             // Act
-            act = () => new TenantStreamStoreFactory(Suite.Configuration, Suite.MockTenantStreamDatabaseProvider.Object, null!);
+            act = () => new TenantStreamStoreFactory(Environment.Configuration, Environment.MockTenantStreamDatabaseProvider.Object, null!);
 
             //Assert
             act.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("serializer");
@@ -36,12 +36,12 @@ namespace StreamStore.Tests.StreamStore.Multitenancy
         public void When_streamstore_is_created()
         {
             // Arrange
-            var databaseProvider = Suite.MockTenantStreamDatabaseProvider;
-            databaseProvider.Setup(x => x.GetDatabase(It.IsAny<Id>())).Returns(Generated.MockOf<IStreamDatabase>().Object);
-            var factory = new TenantStreamStoreFactory(Suite.Configuration, databaseProvider.Object, Suite.MockEventSerializer.Object);
+            var databaseProvider = Environment.MockTenantStreamDatabaseProvider;
+            databaseProvider.Setup(x => x.GetDatabase(It.IsAny<Id>())).Returns(Generated.Mocks.Single<IStreamDatabase>().Object);
+            var factory = new TenantStreamStoreFactory(Environment.Configuration, databaseProvider.Object, Environment.MockEventSerializer.Object);
 
             // Act
-            var store = factory.Create(Generated.Id);
+            var store = factory.Create(Generated.Primitives.Id);
 
             //Assert
             store.Should().NotBeNull();

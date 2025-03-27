@@ -3,9 +3,9 @@ using StreamStore.Testing.Serializer.Scenarios;
 
 namespace StreamStore.Serialization.Tests.NewtonsoftJson
 {
-    public class Deserializing : Deserializing<NewtonsoftTestSuite>
+    public class Deserializing : Deserializing<NewtonsoftTestEnvironment>
     {
-        public Deserializing() : base(new NewtonsoftTestSuite())
+        public Deserializing() : base(new NewtonsoftTestEnvironment())
         {
         }
     }

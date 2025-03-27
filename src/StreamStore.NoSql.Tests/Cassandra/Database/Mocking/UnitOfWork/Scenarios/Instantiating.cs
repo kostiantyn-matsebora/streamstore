@@ -10,7 +10,7 @@ public class Instantiating : Scenario
     {
 
         // Act
-        var act = () => new CassandraStreamUnitOfWork(Generated.Id, Generated.Revision, null, null!, null!, null!);
+        var act = () => new CassandraStreamUnitOfWork(Generated.Primitives.Id, Generated.Primitives.Revision, null, null!, null!, null!);
 
         // Assert
         act.Should().Throw<ArgumentNullException>();
