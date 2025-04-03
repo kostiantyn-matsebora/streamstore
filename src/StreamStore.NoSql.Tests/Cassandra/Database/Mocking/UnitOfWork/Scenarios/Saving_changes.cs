@@ -1,6 +1,5 @@
 ﻿
 using Cassandra;
-using Cassandra.Data.Linq;
 using Cassandra.Mapping;
 using FluentAssertions;
 using Moq;

@@ -1,4 +1,4 @@
-﻿namespace StreamStore.Database
+﻿namespace StreamStore.Storage
 {
         public enum DatabaseOperation
         {

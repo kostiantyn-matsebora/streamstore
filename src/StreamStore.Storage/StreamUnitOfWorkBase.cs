@@ -5,7 +5,7 @@ using System.Threading;
 using System;
 
 
-namespace StreamStore
+namespace StreamStore.Storage
 {
     public abstract class StreamUnitOfWorkBase : IStreamWriter
     {

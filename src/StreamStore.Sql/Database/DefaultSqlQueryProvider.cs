@@ -1,5 +1,5 @@
 ﻿using System;
-using StreamStore.Database;
+using StreamStore.Storage;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 

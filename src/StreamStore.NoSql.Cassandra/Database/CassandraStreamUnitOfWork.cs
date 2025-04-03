@@ -6,6 +6,7 @@ using Cassandra.Mapping;
 using StreamStore.Exceptions;
 
 using StreamStore.NoSql.Cassandra.Models;
+using StreamStore.Storage;
 
 namespace StreamStore.NoSql.Cassandra.Database
 {

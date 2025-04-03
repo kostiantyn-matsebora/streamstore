@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using StreamStore.Database;
+using StreamStore.Storage;
 using StreamStore.Exceptions;
 using StreamStore.Sql.API;
 

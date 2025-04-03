@@ -1,5 +1,5 @@
 ﻿
-using StreamStore.Database;
+using StreamStore.Storage;
 
 namespace StreamStore.Sql.API
 {

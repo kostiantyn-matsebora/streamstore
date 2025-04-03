@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
 
-namespace StreamStore.Database
+namespace StreamStore.Storage
 {
     public abstract class StreamDatabaseBase : IStreamDatabase
     {

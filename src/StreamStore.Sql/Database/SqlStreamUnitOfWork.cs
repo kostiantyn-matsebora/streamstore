@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Dapper;
 using StreamStore.Exceptions;
 using StreamStore.Sql.API;
+using StreamStore.Storage;
 
 
 namespace StreamStore.Sql.Database
