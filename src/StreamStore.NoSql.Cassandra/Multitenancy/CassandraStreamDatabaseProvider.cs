@@ -20,7 +20,7 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
             this.cqlQueriesProvider = cqlQueriesProvider.ThrowIfNull(nameof(cqlQueriesProvider));
         }
 
-        public IStreamDatabase GetDatabase(Id tenantId)
+        public IStreamStorage GetDatabase(Id tenantId)
         {
             var config = configProvider.GetConfiguration(tenantId);
             return new CassandraStreamDatabase(mapperProvider.GetMapperProvider(tenantId), cqlQueriesProvider.GetCqlQueries(config), config);

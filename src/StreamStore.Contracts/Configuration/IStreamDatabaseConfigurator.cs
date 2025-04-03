@@ -12,8 +12,8 @@ namespace StreamStore
 
     public interface ISingleTenantConfigurator: IStreamDatabaseConfigurator
     {
-        ISingleTenantConfigurator UseDatabase<TDatabase>(Action<IServiceCollection>? dependencies = null) where TDatabase : IStreamDatabase;
-        ISingleTenantConfigurator UseDatabase(IStreamDatabase database);
+        ISingleTenantConfigurator UseDatabase<TDatabase>(Action<IServiceCollection>? dependencies = null) where TDatabase : IStreamStorage;
+        ISingleTenantConfigurator UseDatabase(IStreamStorage database);
 
         ISingleTenantConfigurator UseSchemaProvisioner<TProvisioner>(Action<IServiceCollection>? dependencies = null) where TProvisioner : ISchemaProvisioner;
     }

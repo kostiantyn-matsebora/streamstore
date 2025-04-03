@@ -28,7 +28,7 @@ namespace StreamStore.Tests.Configuration.Store
         public void When_store_configured_in_single_mode()
         {
             // Arrange
-            var database = Generated.Mocks.Single<IStreamDatabase>();
+            var database = Generated.Mocks.Single<IStreamStorage>();
             var typeRegistry = Generated.Mocks.Single<ITypeRegistry>();
             var configurator = StreamStoreConfiguratorTestEnvironment.CreateConfigurator();
             var pageSize = Generated.Primitives.Int;
@@ -48,7 +48,7 @@ namespace StreamStore.Tests.Configuration.Store
             // Assert
             provider.GetRequiredService<IStreamStore>().Should().NotBeNull();
 
-            provider.GetRequiredService<IStreamDatabase>()
+            provider.GetRequiredService<IStreamStorage>()
                         .Should().NotBeNull()
                         .And.BeOfType<InMemoryStreamDatabase>();
 
@@ -80,7 +80,7 @@ namespace StreamStore.Tests.Configuration.Store
         public void When_store_configured_in_multitenant_mode()
         {
             // Arrange
-            var database = Generated.Mocks.Single<IStreamDatabase>();
+            var database = Generated.Mocks.Single<IStreamStorage>();
             var typeRegistry = Generated.Mocks.Single<ITypeRegistry>();
             var configurator = StreamStoreConfiguratorTestEnvironment.CreateConfigurator();
             var pageSize = Generated.Primitives.Int;

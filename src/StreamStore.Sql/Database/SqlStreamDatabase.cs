@@ -9,7 +9,7 @@ using StreamStore.Sql.API;
 
 namespace StreamStore.Sql.Database
 {
-    public class SqlStreamDatabase : StreamDatabaseBase
+    public class SqlStreamDatabase : StreamStorageBase
     {
         readonly IDbConnectionFactory connectionFactory;
         readonly IDapperCommandFactory commandFactory;

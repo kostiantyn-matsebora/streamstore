@@ -28,7 +28,7 @@ namespace StreamStore.S3.Tests.AWS.Configurator
                 );
             ServiceCollection.Setup(
              x => x.Add(It.Is<ServiceDescriptor>(d =>
-                 d.ServiceType == typeof(IStreamDatabase) &&
+                 d.ServiceType == typeof(IStreamStorage) &&
                  d.ImplementationType == typeof(S3StreamDatabase) &&
                  d.Lifetime == ServiceLifetime.Singleton))
              );

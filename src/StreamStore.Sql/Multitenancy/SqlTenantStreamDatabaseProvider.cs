@@ -14,7 +14,7 @@ namespace StreamStore.Sql.Multitenancy
             this.configProvider = configProvider.ThrowIfNull(nameof(configProvider));
         }
 
-        public IStreamDatabase GetDatabase(Id tenantId)
+        public IStreamStorage GetDatabase(Id tenantId)
         {
             tenantId.ThrowIfNull(nameof(tenantId));
             var configuration = configProvider.GetConfiguration(tenantId);

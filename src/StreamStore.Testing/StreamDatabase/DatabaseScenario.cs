@@ -2,7 +2,7 @@
 {
     public abstract class DatabaseScenario<TEnvironment> : Scenario<TEnvironment> where TEnvironment : DatabaseTestEnvironmentBase, new()
     {
-        protected IStreamDatabase Database => Environment.StreamDatabase;
+        protected IStreamStorage Database => Environment.StreamDatabase;
 
         protected MemoryDatabase Container => Environment.Container;
 

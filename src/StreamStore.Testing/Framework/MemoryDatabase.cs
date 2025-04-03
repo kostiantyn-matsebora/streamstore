@@ -43,7 +43,7 @@ namespace StreamStore.Testing
             }
         }
 
-        public void CopyTo(IStreamDatabase database)
+        public void CopyTo(IStreamStorage database)
         {
             // Copying events from source
             var tasks = store.Select(async pair =>

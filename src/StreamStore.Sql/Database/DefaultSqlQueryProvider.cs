@@ -14,14 +14,14 @@ namespace StreamStore.Sql.Database
             this.configuration = configuration.ThrowIfNull(nameof(configuration));
         }
 
-        public string GetQuery(DatabaseOperation operation) => operation switch
+        public string GetQuery(StorageOperation operation) => operation switch
         {
-            DatabaseOperation.DeleteStream => DeleteStream,
-            DatabaseOperation.AppendEvent => AppendEvent,
-            DatabaseOperation.GetEvents => GetEvents,
-            DatabaseOperation.GetStreamActualRevision => GetStreamActualRevision,
-            DatabaseOperation.GetStreamEventCount => GetStreamEventCount,
-            DatabaseOperation.GetStreamMetadata => GetStreamMetadata,
+            StorageOperation.DeleteStream => DeleteStream,
+            StorageOperation.AppendEvent => AppendEvent,
+            StorageOperation.GetEvents => GetEvents,
+            StorageOperation.GetStreamActualRevision => GetStreamActualRevision,
+            StorageOperation.GetStreamEventCount => GetStreamEventCount,
+            StorageOperation.GetStreamMetadata => GetStreamMetadata,
             _ => throw new ArgumentOutOfRangeException(nameof(operation), $"Not expected query type value: {operation}"),
         };
 

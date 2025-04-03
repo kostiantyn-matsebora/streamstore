@@ -10,7 +10,7 @@ namespace StreamStore.Testing.StreamDatabase
     {
         readonly MemoryDatabase container = new MemoryDatabase();
 
-        public IStreamDatabase StreamDatabase => Services.GetRequiredService<IStreamDatabase>();
+        public IStreamStorage StreamDatabase => Services.GetRequiredService<IStreamStorage>();
 
         public virtual MemoryDatabase Container => container;
 

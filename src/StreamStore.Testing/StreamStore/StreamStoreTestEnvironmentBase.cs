@@ -10,7 +10,7 @@ namespace StreamStore.Testing.StreamStore
 
         public MemoryDatabase Container => database;
 
-        public IStreamDatabase Database => Services.GetRequiredService<IStreamDatabase>();
+        public IStreamStorage Database => Services.GetRequiredService<IStreamStorage>();
 
         public IStreamStore Store => Services.GetRequiredService<IStreamStore>();
 

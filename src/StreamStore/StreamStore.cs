@@ -11,11 +11,11 @@ namespace StreamStore
 {
     public sealed class StreamStore : IStreamStore
     {
-        readonly IStreamDatabase database;
+        readonly IStreamStorage database;
         readonly EventConverter converter;
         readonly StreamStoreConfiguration configuration;
         readonly StreamEventEnumeratorFactory enumeratorFactory;
-        public StreamStore(StreamStoreConfiguration configuration, IStreamDatabase database, IEventSerializer serializer)
+        public StreamStore(StreamStoreConfiguration configuration, IStreamStorage database, IEventSerializer serializer)
         {
             if (database == null) throw new ArgumentNullException(nameof(database));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));

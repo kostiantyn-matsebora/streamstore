@@ -59,7 +59,7 @@ namespace StreamStore.Testing.Framework
 
         void FillDatabase(IServiceProvider provider)
         {
-            var database = provider.GetRequiredService<IStreamDatabase>();
+            var database = provider.GetRequiredService<IStreamStorage>();
             Container.CopyTo(database);
         }
 

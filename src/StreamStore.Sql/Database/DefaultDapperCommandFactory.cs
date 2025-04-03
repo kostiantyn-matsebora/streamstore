@@ -18,7 +18,7 @@ namespace StreamStore.Sql.Database
         public CommandDefinition CreateAppendEventCommand(Id streamId, EventEntity[] events, IDbTransaction transaction)
         {
             return new CommandDefinition(
-               commandText: queryProvider.GetQuery(DatabaseOperation.AppendEvent),
+               commandText: queryProvider.GetQuery(StorageOperation.AppendEvent),
                parameters: events,
                transaction: transaction);
         }
@@ -26,7 +26,7 @@ namespace StreamStore.Sql.Database
         public CommandDefinition CreateStreamDeleteCommand(Id streamId, IDbTransaction transaction)
         {
             return new CommandDefinition(
-                commandText: queryProvider.GetQuery(DatabaseOperation.DeleteStream),
+                commandText: queryProvider.GetQuery(StorageOperation.DeleteStream),
                 parameters: new { StreamId = streamId.Value },
                 transaction: transaction);
         }
@@ -34,28 +34,28 @@ namespace StreamStore.Sql.Database
         public CommandDefinition CreateGetActualRevisionCommand(Id streamId)
         {
             return new CommandDefinition(
-                 commandText: queryProvider.GetQuery(DatabaseOperation.GetStreamActualRevision),
+                 commandText: queryProvider.GetQuery(StorageOperation.GetStreamActualRevision),
                  parameters: new { StreamId = streamId.Value });
         }
 
         public CommandDefinition CreateGetEventCountCommand(Id streamId)
         {
             return new CommandDefinition(
-               commandText: queryProvider.GetQuery(DatabaseOperation.GetStreamEventCount),
+               commandText: queryProvider.GetQuery(StorageOperation.GetStreamEventCount),
                parameters: new { StreamId = streamId.Value });
         }
 
         public CommandDefinition CreateGetEventsCommand(Id streamId, Revision startFrom, int count)
         {
             return new CommandDefinition(
-              commandText: queryProvider.GetQuery(DatabaseOperation.GetEvents),
+              commandText: queryProvider.GetQuery(StorageOperation.GetEvents),
               parameters: new { StreamId = (string)streamId, Revision = (int)startFrom, Count = count });
         }
 
         public CommandDefinition CreateGetStreamMetadataCommand(Id streamId)
         {
             return new CommandDefinition(
-              commandText: queryProvider.GetQuery(DatabaseOperation.GetStreamMetadata),
+              commandText: queryProvider.GetQuery(StorageOperation.GetStreamMetadata),
               parameters: new { StreamId = streamId.Value });
         }
 

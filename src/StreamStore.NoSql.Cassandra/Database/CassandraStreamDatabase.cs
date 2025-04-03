@@ -9,7 +9,7 @@ using StreamStore.NoSql.Cassandra.Models;
 
 namespace StreamStore.NoSql.Cassandra.Database
 {
-    internal class CassandraStreamDatabase : StreamDatabaseBase
+    internal class CassandraStreamDatabase : StreamStorageBase
     {
         readonly CassandraStatementConfigurator configure;
         readonly ICassandraCqlQueries queries;

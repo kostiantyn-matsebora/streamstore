@@ -22,7 +22,7 @@ namespace StreamStore.Tests.Configuration.SingleTenant
             var act = () => configurator.Configure();
 
             //Assert
-            act.Should().Throw<InvalidOperationException>().WithMessage("Database backend (IStreamDatabase) is not registered");
+            act.Should().Throw<InvalidOperationException>().WithMessage("Database backend (IStreamStorage) is not registered");
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace StreamStore.Tests.Configuration.SingleTenant
             //Assert
             var provider = services.BuildServiceProvider();
 
-            provider.GetRequiredService<IStreamDatabase>()
+            provider.GetRequiredService<IStreamStorage>()
                      .Should().NotBeNull()
                      .And.BeOfType<InMemoryStreamDatabase>();
 
@@ -66,7 +66,7 @@ namespace StreamStore.Tests.Configuration.SingleTenant
             //Assert
             var provider = services.BuildServiceProvider();
 
-            provider.GetRequiredService<IStreamDatabase>()
+            provider.GetRequiredService<IStreamStorage>()
                      .Should().NotBeNull()
                      .And.Be(database);
 

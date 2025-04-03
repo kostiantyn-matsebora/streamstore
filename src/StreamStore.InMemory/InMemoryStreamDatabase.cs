@@ -10,7 +10,7 @@ using System.Linq;
 namespace StreamStore.InMemory
 {
 
-    public sealed class InMemoryStreamDatabase : IStreamDatabase
+    public sealed class InMemoryStreamDatabase : IStreamStorage
     {
         internal ConcurrentDictionary<string, EventRecordCollection> store;
 

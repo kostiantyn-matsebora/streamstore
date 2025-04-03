@@ -46,7 +46,7 @@ namespace StreamStore.Sql.Tests.Configuration.SingleTenant
             //Assert
             var provider = services.BuildServiceProvider();
 
-            provider.GetRequiredService<IStreamDatabase>()
+            provider.GetRequiredService<IStreamStorage>()
                      .Should().NotBeNull()
                      .And.BeOfType<SqlStreamDatabase>();
 
@@ -88,7 +88,7 @@ namespace StreamStore.Sql.Tests.Configuration.SingleTenant
             //Assert
             var provider = services.BuildServiceProvider();
 
-            provider.GetRequiredService<IStreamDatabase>()
+            provider.GetRequiredService<IStreamStorage>()
                      .Should().NotBeNull()
                      .And.BeOfType<SqlStreamDatabase>();
 

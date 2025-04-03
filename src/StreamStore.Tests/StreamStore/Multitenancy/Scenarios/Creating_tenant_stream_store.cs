@@ -37,7 +37,7 @@ namespace StreamStore.Tests.StreamStore.Multitenancy
         {
             // Arrange
             var databaseProvider = Environment.MockTenantStreamDatabaseProvider;
-            databaseProvider.Setup(x => x.GetDatabase(It.IsAny<Id>())).Returns(Generated.Mocks.Single<IStreamDatabase>().Object);
+            databaseProvider.Setup(x => x.GetDatabase(It.IsAny<Id>())).Returns(Generated.Mocks.Single<IStreamStorage>().Object);
             var factory = new TenantStreamStoreFactory(Environment.Configuration, databaseProvider.Object, Environment.MockEventSerializer.Object);
 
             // Act

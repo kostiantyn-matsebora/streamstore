@@ -5,7 +5,7 @@ using StreamStore.Exceptions;
 
 namespace StreamStore.Storage
 {
-    public abstract class StreamDatabaseBase : IStreamDatabase
+    public abstract class StreamStorageBase : IStreamStorage
     {
         public async Task<IStreamWriter> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {

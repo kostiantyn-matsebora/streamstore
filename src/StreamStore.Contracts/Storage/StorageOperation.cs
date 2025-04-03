@@ -1,6 +1,6 @@
 ﻿namespace StreamStore.Storage
 {
-        public enum DatabaseOperation
+        public enum StorageOperation
         {
             AppendEvent,
             DeleteStream,

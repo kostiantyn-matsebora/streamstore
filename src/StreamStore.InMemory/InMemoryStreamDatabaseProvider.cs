@@ -7,7 +7,7 @@ namespace StreamStore.InMemory
     {
         internal ConcurrentDictionary<string, InMemoryStreamDatabase> registry = new ConcurrentDictionary<string, InMemoryStreamDatabase>();
 
-        public IStreamDatabase GetDatabase(Id tenantId)
+        public IStreamStorage GetDatabase(Id tenantId)
         {
             return registry.GetOrAdd(tenantId, _ => new InMemoryStreamDatabase());
         }

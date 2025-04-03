@@ -14,18 +14,18 @@ namespace StreamStore.Configuration.Database
             services.AddSingleton(typeof(ISchemaProvisioner), typeof(DefaultSchemaProvisioner));
         }
 
-        public ISingleTenantConfigurator UseDatabase<TDatabase>(Action<IServiceCollection>? dependencies = null) where TDatabase : IStreamDatabase
+        public ISingleTenantConfigurator UseDatabase<TDatabase>(Action<IServiceCollection>? dependencies = null) where TDatabase : IStreamStorage
         {
-            services.AddSingleton(typeof(IStreamDatabase), typeof(TDatabase));
-            services.AddSingleton(typeof(IStreamReader), provider => provider.GetRequiredService<IStreamDatabase>());
+            services.AddSingleton(typeof(IStreamStorage), typeof(TDatabase));
+            services.AddSingleton(typeof(IStreamReader), provider => provider.GetRequiredService<IStreamStorage>());
             if (dependencies != null) dependencies.Invoke(services);
             ValidateConfiguration(services);
             return this;
         }
 
-        public ISingleTenantConfigurator UseDatabase(IStreamDatabase database)
+        public ISingleTenantConfigurator UseDatabase(IStreamStorage database)
         {
-            services.AddSingleton(typeof(IStreamDatabase), database);
+            services.AddSingleton(typeof(IStreamStorage), database);
             services.AddSingleton(typeof(IStreamReader), database);
             return this;
         }
@@ -46,9 +46,9 @@ namespace StreamStore.Configuration.Database
 
         static void ValidateConfiguration(IServiceCollection services)
         {
-            if (!services.Any(s => s.ServiceType == typeof(IStreamDatabase)))
+            if (!services.Any(s => s.ServiceType == typeof(IStreamStorage)))
             {
-                throw new InvalidOperationException("Database backend (IStreamDatabase) is not registered");
+                throw new InvalidOperationException("Database backend (IStreamStorage) is not registered");
             }
 
             if (!services.Any(s => s.ServiceType == typeof(IStreamReader)))

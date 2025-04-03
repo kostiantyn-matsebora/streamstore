@@ -3,6 +3,6 @@ namespace StreamStore.Multitenancy
 {
     public interface ITenantStreamDatabaseProvider
     {
-        IStreamDatabase GetDatabase(Id tenantId);
+        IStreamStorage GetDatabase(Id tenantId);
     }
 }

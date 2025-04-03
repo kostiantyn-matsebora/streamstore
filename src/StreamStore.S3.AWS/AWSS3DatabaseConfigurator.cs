@@ -14,7 +14,7 @@ namespace StreamStore.S3.AWS
             services.AddSingleton<IAmazonS3ClientFactory, AmazonS3ClientFactory>();
             services.AddSingleton<IS3LockFactory, AWSS3Factory>();
             services.AddSingleton<IS3ClientFactory, AWSS3Factory>();
-            services.AddSingleton<IStreamDatabase, S3StreamDatabase>();
+            services.AddSingleton<IStreamStorage, S3StreamDatabase>();
             services.AddSingleton<IStreamReader, S3StreamDatabase>();
             services.AddSingleton<IS3StorageFactory, S3StorageFactory>();
         }

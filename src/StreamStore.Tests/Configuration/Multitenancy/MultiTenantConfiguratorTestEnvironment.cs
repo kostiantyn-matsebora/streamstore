@@ -15,7 +15,7 @@ namespace StreamStore.Tests.Configuration.MultiTenant
 
         public static IServiceCollection CreateServiceCollection() => new ServiceCollection();
 
-        public static Mock<IStreamDatabase> MockStreamDatabase => Generated.Mocks.Single<IStreamDatabase>();
+        public static Mock<IStreamStorage> MockStreamDatabase => Generated.Mocks.Single<IStreamStorage>();
 
         internal class FakeSchemaProvisionerFactory : ITenantSchemaProvisionerFactory
         {
