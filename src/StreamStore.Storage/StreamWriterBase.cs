@@ -30,7 +30,7 @@ namespace StreamStore.Storage
             
         }
 
-        public async Task<Revision> SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task<Revision> ComitAsync(CancellationToken cancellationToken)
         {
             ThrowIfThereIsDuplicates();
 
@@ -38,7 +38,7 @@ namespace StreamStore.Storage
             return events.MaxRevision;
         }
 
-        public async Task<IStreamWriter> AddAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default)
+        public async Task<IStreamWriter> AppendAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default)
         {
             eventId.ThrowIfHasNoValue(nameof(eventId));
             timestamp.ThrowIfMinValue(nameof(timestamp));

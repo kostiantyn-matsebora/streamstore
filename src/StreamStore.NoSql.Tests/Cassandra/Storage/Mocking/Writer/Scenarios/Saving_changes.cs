@@ -28,7 +28,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking.UnitOfWork
 
 
             // Act
-            await uow.SaveChangesAsync(CancellationToken.None);
+            await uow.ComitAsync(CancellationToken.None);
 
             // Assert
             Environment.MockRepository.VerifyAll();
@@ -48,7 +48,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking.UnitOfWork
             Environment.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(10);
 
             // Act
-            var act = async () => await uow.SaveChangesAsync(CancellationToken.None);
+            var act = async () => await uow.ComitAsync(CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();

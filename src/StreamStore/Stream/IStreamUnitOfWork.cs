@@ -9,6 +9,6 @@ namespace StreamStore
     {
         Task<IStreamUnitOfWork> AppendEventAsync(Id eventId, DateTime timestamp, object @event, CancellationToken cancellationToken = default);
 
-        Task<Revision> CommitAsync(CancellationToken cancellationToken);
+        Task<Revision> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

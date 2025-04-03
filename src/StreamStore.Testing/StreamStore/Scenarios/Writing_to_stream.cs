@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
 using FluentAssertions;
 using StreamStore.Exceptions;
-using StreamStore.Testing.Models;
+
 
 namespace StreamStore.Testing.StreamStore.Scenarios
 {
@@ -43,7 +42,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                         );
             }
 
-            actualRevision = await writer.CommitAsync(CancellationToken.None);
+            actualRevision = await writer.SaveChangesAsync(CancellationToken.None);
 
             // Assert 1
             actualRevision.Should().Be(firstBatchCount);
@@ -57,7 +56,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                 await store
                     .BeginWriteAsync(streamId, actualRevision, CancellationToken.None)
                         .AppendRangeAsync(events)
-                    .CommitAsync(CancellationToken.None);
+                    .SaveChangesAsync(CancellationToken.None);
 
             // Assert 2
             actualRevision.Should().Be(firstBatchCount + secondBatchCount);
@@ -98,7 +97,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                    store
                         .BeginWriteAsync(stream.Id, CancellationToken.None)
                         .AppendRangeAsync(Generated.Events.Many(count))
-                        .CommitAsync(CancellationToken.None);
+                        .SaveChangesAsync(CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
@@ -121,7 +120,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                     store
                         .BeginWriteAsync(stream.Id, stream.Revision, CancellationToken.None)
                         .AppendRangeAsync(mixedEvents)
-                        .CommitAsync(CancellationToken.None);
+                        .SaveChangesAsync(CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<DuplicateEventException>();

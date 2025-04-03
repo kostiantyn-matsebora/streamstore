@@ -22,13 +22,13 @@ namespace StreamStore
 
             eventId.ThrowIfHasNoValue(eventId);
 
-            await uow!.AddAsync(eventId, timestamp, converter.ConvertToByteArray(@event));
+            await uow!.AppendAsync(eventId, timestamp, converter.ConvertToByteArray(@event));
             return this;
         }
 
-        public async Task<Revision> CommitAsync(CancellationToken cancellationToken)
+        public async Task<Revision> SaveChangesAsync(CancellationToken cancellationToken)
         {
-            return await uow!.SaveChangesAsync(cancellationToken);
+            return await uow!.ComitAsync(cancellationToken);
         }
 
         public void Dispose()

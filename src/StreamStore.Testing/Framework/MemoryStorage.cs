@@ -50,8 +50,8 @@ namespace StreamStore.Testing
             {
                 await storage
                  .BeginAppendAsync(pair.Key)
-                 .AddRangeAsync(pair.Value.Events)
-                 .SaveChangesAsync();
+                 .AppendManyAsync(pair.Value.Events)
+                 .CommitAsync();
             });
 
             Task.WaitAll(tasks.ToArray());
