@@ -6,9 +6,9 @@ namespace StreamStore.Sql.PostgreSql
 {
     internal class PostgresSchemaProvisionerFactory : ITenantSchemaProvisionerFactory
     {
-        readonly ISqlTenantDatabaseConfigurationProvider configurationProvider;
+        readonly ISqlTenantStorageConfigurationProvider configurationProvider;
 
-        public PostgresSchemaProvisionerFactory(ISqlTenantDatabaseConfigurationProvider configurationProvider)
+        public PostgresSchemaProvisionerFactory(ISqlTenantStorageConfigurationProvider configurationProvider)
         {
             this.configurationProvider = configurationProvider.ThrowIfNull(nameof(configurationProvider));
         }

@@ -6,13 +6,13 @@ using StreamStore.Testing.Framework;
 
 namespace StreamStore.S3.Tests.AWS.Configurator
 {
-    public class AWSS3DatabaseConfiguratorTestEnvironment : TestEnvironmentBase
+    public class AWSS3StorageConfiguratorTestEnvironment : TestEnvironmentBase
     {
         public MockRepository MockRepository { get; }
 
         public Mock<IServiceCollection> ServiceCollection { get; }
 
-        public AWSS3DatabaseConfigurator CreateAWSDatabaseConfigurator()
+        public AWSS3StorageConfigurator CreateAWSStorageConfigurator()
         {
             ServiceCollection.Setup(
                  x => x.Add(It.Is<ServiceDescriptor>(d =>
@@ -29,7 +29,7 @@ namespace StreamStore.S3.Tests.AWS.Configurator
             ServiceCollection.Setup(
              x => x.Add(It.Is<ServiceDescriptor>(d =>
                  d.ServiceType == typeof(IStreamStorage) &&
-                 d.ImplementationType == typeof(S3StreamDatabase) &&
+                 d.ImplementationType == typeof(S3StreamStorage) &&
                  d.Lifetime == ServiceLifetime.Singleton))
              );
             ServiceCollection.Setup(
@@ -39,10 +39,10 @@ namespace StreamStore.S3.Tests.AWS.Configurator
                  d.Lifetime == ServiceLifetime.Singleton))
              );
 
-            return new AWSS3DatabaseConfigurator(ServiceCollection.Object);
+            return new AWSS3StorageConfigurator(ServiceCollection.Object);
         }
 
-        public AWSS3DatabaseConfiguratorTestEnvironment()
+        public AWSS3StorageConfiguratorTestEnvironment()
         {
             MockRepository = new MockRepository(MockBehavior.Default);
 

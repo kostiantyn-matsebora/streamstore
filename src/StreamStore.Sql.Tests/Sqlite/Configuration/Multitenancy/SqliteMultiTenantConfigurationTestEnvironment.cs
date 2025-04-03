@@ -8,23 +8,23 @@ namespace StreamStore.Sql.Tests.Sqlite.Configuration.Multitenancy
 {
     public class SqliteMultiTenantConfigurationTestEnvironment : MultitenantConfiguratorTestEnvironmentBase
     {
-        public override SqlDatabaseConfiguration DefaultConfiguration => SqliteConfiguration.DefaultConfiguration;
+        public override SqlStorageConfiguration DefaultConfiguration => SqliteConfiguration.DefaultConfiguration;
 
         public override string SectionName => SqliteConfiguration.ConfigurationSection;
 
-        public override void UseDatabase(IMultitenancyConfigurator configurator, Action<SqlMultiTenantDatabaseConfigurator> configureDatabase)
+        public override void UseStorage(IMultitenancyConfigurator configurator, Action<SqlMultiTenantStorageConfigurator> configureStorage)
         {
-            configurator.UseSqliteDatabase(x =>
+            configurator.UseSqliteStorage(x =>
             {
                 x.WithConnectionStringProvider<FakeConnectionStringProvider>();
-                configureDatabase(x);
+                configureStorage(x);
             });
         }
 
-        public override void UseDatabaseWithAppSettings(IMultitenancyConfigurator configurator, IConfigurationRoot configuration)
+        public override void UseStorageWithAppSettings(IMultitenancyConfigurator configurator, IConfigurationRoot configuration)
         {
 
-            configurator.UseSqliteDatabase(configuration, x => x.WithConnectionStringProvider<FakeConnectionStringProvider>());
+            configurator.UseSqliteStorage(configuration, x => x.WithConnectionStringProvider<FakeConnectionStringProvider>());
         }
     }
 }

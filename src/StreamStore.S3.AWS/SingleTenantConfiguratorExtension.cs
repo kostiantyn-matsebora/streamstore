@@ -2,11 +2,11 @@
 {
     public static class SingleTenantConfiguratorExtension
     {
-        public static ISingleTenantConfigurator UseAWSDatabase(this ISingleTenantConfigurator configurator)
+        public static ISingleTenantConfigurator UseAWSStorage(this ISingleTenantConfigurator configurator)
         {
-            return configurator.UseDatabase<S3StreamDatabase>(services =>
+            return configurator.UseStorage<S3StreamStorage>(services =>
             {
-                new AWSS3DatabaseConfigurator(services).Configure();
+                new AWSS3StorageConfigurator(services).Configure();
             });
         }
     }

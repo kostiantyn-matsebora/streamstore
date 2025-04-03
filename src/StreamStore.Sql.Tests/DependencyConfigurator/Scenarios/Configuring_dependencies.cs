@@ -9,10 +9,10 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator
 {
     public class Configuring_dependencies : Scenario
     {
-        static SqlSingleTenantDatabaseConfigurator CreateConfigurator(ServiceCollection? services = null)
+        static SqlSingleTenantStorageConfigurator CreateConfigurator(ServiceCollection? services = null)
         {
             var serviceCollection = services ?? new ServiceCollection();
-            return new SqlSingleTenantDatabaseConfigurator(serviceCollection, new SqlDatabaseConfiguration());
+            return new SqlSingleTenantStorageConfigurator(serviceCollection, new SqlStorageConfiguration());
         }
 
         [Fact]

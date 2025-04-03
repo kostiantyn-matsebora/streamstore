@@ -6,36 +6,36 @@ namespace StreamStore.Sql.PostgreSql
 {
     public static class MultiTenantConfiguratorExtension
     {
-        public static IMultitenancyConfigurator UsePostgresDatabase(
+        public static IMultitenancyConfigurator UsePostgresStorage(
               this IMultitenancyConfigurator configurator,
-              Action<SqlMultiTenantDatabaseConfigurator> dbConfigurator)
+              Action<SqlMultiTenantStorageConfigurator> dbConfigurator)
         {
             return configurator
-                .UseDatabaseProvider<PostgresTenantDatabaseProvider>()
+                .UseStorageProvider<PostgresTenantStorageProvider>()
                 .UseSchemaProvisionerFactory<PostgresSchemaProvisionerFactory>()
-                .UseSqlDatabase<PostgresTenantDatabaseProvider>(PostgresConfiguration.DefaultConfiguration, (c) =>
+                .UseSqlStorage<PostgresTenantStorageProvider>(PostgresConfiguration.DefaultConfiguration, (c) =>
                 {
                     ConfigureRequiredDependencies(c);
                     dbConfigurator(c);
                 });
         }
 
-        public static IMultitenancyConfigurator UsePostgresDatabase(
+        public static IMultitenancyConfigurator UsePostgresStorage(
             this IMultitenancyConfigurator configurator, 
             IConfiguration configuration,
-            Action<SqlMultiTenantDatabaseConfigurator> dbConfigurator)
+            Action<SqlMultiTenantStorageConfigurator> dbConfigurator)
         {
             return configurator
-                 .UseDatabaseProvider<PostgresTenantDatabaseProvider>()
+                 .UseStorageProvider<PostgresTenantStorageProvider>()
                  .UseSchemaProvisionerFactory<PostgresSchemaProvisionerFactory>()
-                 .UseSqlDatabase<PostgresTenantDatabaseProvider>(PostgresConfiguration.DefaultConfiguration, configuration, PostgresConfiguration.ConfigurationSection, (c) =>
+                 .UseSqlStorage<PostgresTenantStorageProvider>(PostgresConfiguration.DefaultConfiguration, configuration, PostgresConfiguration.ConfigurationSection, (c) =>
                  {
                      ConfigureRequiredDependencies(c);
                      dbConfigurator(c);
                  });
         }
 
-        static void ConfigureRequiredDependencies(SqlMultiTenantDatabaseConfigurator configurator)
+        static void ConfigureRequiredDependencies(SqlMultiTenantStorageConfigurator configurator)
         {
             configurator.WithExceptionHandling<PostgresExceptionHandler>();
         }

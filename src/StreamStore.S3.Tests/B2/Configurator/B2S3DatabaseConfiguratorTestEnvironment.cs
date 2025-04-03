@@ -9,13 +9,13 @@ using StreamStore.Testing.Framework;
 
 namespace StreamStore.S3.Tests.B2.Configurator
 {
-    public class B2S3DatabaseConfiguratorTestEnvironment: TestEnvironmentBase
+    public class B2S3StorageConfiguratorTestEnvironment: TestEnvironmentBase
     {
         public MockRepository MockRepository { get; }
 
         public Mock<IServiceCollection> ServiceCollection { get;  }
 
-        public B2DatabaseConfigurator CreateB2DatabaseConfigurator()
+        public B2StorageConfigurator CreateB2StorageConfigurator()
         {
            ServiceCollection.Setup(
                 x => x.Add(It.Is<ServiceDescriptor>(d =>
@@ -32,7 +32,7 @@ namespace StreamStore.S3.Tests.B2.Configurator
             ServiceCollection.Setup(
              x => x.Add(It.Is<ServiceDescriptor>(d =>
                  d.ServiceType == typeof(IStreamStorage) &&
-                 d.ImplementationType == typeof(S3StreamDatabase) &&
+                 d.ImplementationType == typeof(S3StreamStorage) &&
                  d.Lifetime == ServiceLifetime.Singleton))
              );
             ServiceCollection.Setup(
@@ -42,7 +42,7 @@ namespace StreamStore.S3.Tests.B2.Configurator
                  d.Lifetime == ServiceLifetime.Singleton))
              );
 
-            return new B2DatabaseConfigurator(ServiceCollection.Object);
+            return new B2StorageConfigurator(ServiceCollection.Object);
         }
 
         public Mock<IConfiguration> SetupConfiguration()
@@ -74,7 +74,7 @@ namespace StreamStore.S3.Tests.B2.Configurator
             return configuration;
         }
 
-        public B2S3DatabaseConfiguratorTestEnvironment()
+        public B2S3StorageConfiguratorTestEnvironment()
         {
             MockRepository = new MockRepository(MockBehavior.Default);
 

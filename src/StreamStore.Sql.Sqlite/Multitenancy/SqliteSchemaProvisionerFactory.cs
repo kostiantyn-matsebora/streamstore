@@ -7,9 +7,9 @@ namespace StreamStore.Sql.Sqlite
 {
     internal class SqliteSchemaProvisionerFactory : ITenantSchemaProvisionerFactory
     {
-        readonly ISqlTenantDatabaseConfigurationProvider configurationProvider;
+        readonly ISqlTenantStorageConfigurationProvider configurationProvider;
 
-        public SqliteSchemaProvisionerFactory(ISqlTenantDatabaseConfigurationProvider configurationProvider)
+        public SqliteSchemaProvisionerFactory(ISqlTenantStorageConfigurationProvider configurationProvider)
         {
             this.configurationProvider = configurationProvider.ThrowIfNull(nameof(configurationProvider));
         }

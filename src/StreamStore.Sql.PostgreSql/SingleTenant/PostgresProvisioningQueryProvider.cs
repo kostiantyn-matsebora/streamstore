@@ -5,9 +5,9 @@ namespace StreamStore.Sql.PostgreSql
 {
     internal class PostgresProvisioningQueryProvider : ISqlProvisioningQueryProvider
     {
-        readonly SqlDatabaseConfiguration configuration;
+        readonly SqlStorageConfiguration configuration;
 
-        public PostgresProvisioningQueryProvider(SqlDatabaseConfiguration configuration)
+        public PostgresProvisioningQueryProvider(SqlStorageConfiguration configuration)
         {
             this.configuration = configuration.ThrowIfNull(nameof(configuration));
         }

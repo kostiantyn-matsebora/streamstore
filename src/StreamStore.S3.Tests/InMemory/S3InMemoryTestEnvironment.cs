@@ -8,7 +8,7 @@ namespace StreamStore.S3.Tests.InMemory
     {
         protected override void RegisterServices(IServiceCollection services)
         {
-            services.AddSingleton<IStreamStorage, InMemoryStreamDatabase>();
+            services.AddSingleton<IStreamStorage, InMemoryStreamStorage>();
         }
     }
 }

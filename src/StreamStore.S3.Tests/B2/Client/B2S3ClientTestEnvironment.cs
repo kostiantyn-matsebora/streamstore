@@ -15,7 +15,7 @@ namespace StreamStore.S3.Tests.B2.Client
 
         public Mock<IStorageClient> B2Client { get; }
 
-        public B2StreamDatabaseSettings Settings { get; }
+        public B2StreamStorageSettings Settings { get; }
 
 
         internal B2S3Client CreateB2S3Client()
@@ -30,7 +30,7 @@ namespace StreamStore.S3.Tests.B2.Client
             B2Client = MockRepository.Create<IStorageClient>();
 
             var configurator =
-                new B2DatabaseConfigurator(new ServiceCollection());
+                new B2StorageConfigurator(new ServiceCollection());
 
             Settings = configurator
                 .WithBucketId(Generated.Primitives.String)

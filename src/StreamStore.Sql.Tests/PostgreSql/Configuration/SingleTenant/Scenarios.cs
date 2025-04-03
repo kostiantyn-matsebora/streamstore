@@ -2,7 +2,7 @@
 
 namespace StreamStore.Sql.Tests.Postgres.Configuration.SingleTenant
 {
-    public class Configuring_single_database : Configuring_single_database<PostgresSingleTenantConfigurationTestEnvironment>
+    public class Configuring_single_storage : Configuring_single_storage<PostgresSingleTenantConfigurationTestEnvironment>
     {
     }
 }

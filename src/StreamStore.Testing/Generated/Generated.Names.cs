@@ -7,7 +7,7 @@ namespace StreamStore.Testing
     {
         public static class Names
         {
-            public static string Database => "test_" + Guid.NewGuid().ToString().Replace("-", "_");
+            public static string Storage => "test_" + Guid.NewGuid().ToString().Replace("-", "_");
         }
     }
 }

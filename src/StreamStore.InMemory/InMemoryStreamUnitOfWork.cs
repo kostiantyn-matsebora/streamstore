@@ -9,20 +9,20 @@ using StreamStore.Storage;
 
 namespace StreamStore.InMemory
 {
-    sealed class InMemoryStreamUnitOfWork : StreamUnitOfWorkBase
+    sealed class InMemoryStreamUnitOfWork : StreamWriterBase
     {
-        readonly InMemoryStreamDatabase database;
+        readonly InMemoryStreamStorage storage;
 
-        public InMemoryStreamUnitOfWork(Id streamId, Revision expectedRevision, InMemoryStreamDatabase database, EventRecordCollection? existing): base(streamId, expectedRevision, existing)
+        public InMemoryStreamUnitOfWork(Id streamId, Revision expectedRevision, InMemoryStreamStorage storage, EventRecordCollection? existing): base(streamId, expectedRevision, existing)
         {
-            this.database = database ?? throw new ArgumentNullException(nameof(database));
+            this.storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
 
         protected override Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
         {
             var record = new EventRecordCollection(uncommited);
 
-            database.store.AddOrUpdate(streamId, record, (key, oldValue) =>
+            storage.store.AddOrUpdate(streamId, record, (key, oldValue) =>
             {
                 if (oldValue.MaxRevision != expectedRevision)
                     throw new OptimisticConcurrencyException(expectedRevision, oldValue.MaxRevision, key);

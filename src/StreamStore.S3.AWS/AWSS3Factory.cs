@@ -6,10 +6,10 @@ namespace StreamStore.S3.AWS
 {
     internal class AWSS3Factory : S3FactoryBase
     {
-        readonly AWSS3DatabaseSettings settings;
+        readonly AWSS3StorageSettings settings;
         readonly IAmazonS3ClientFactory clientFactory;
 
-        public AWSS3Factory(AWSS3DatabaseSettings settings, IAmazonS3ClientFactory clientFactory)
+        public AWSS3Factory(AWSS3StorageSettings settings, IAmazonS3ClientFactory clientFactory)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));

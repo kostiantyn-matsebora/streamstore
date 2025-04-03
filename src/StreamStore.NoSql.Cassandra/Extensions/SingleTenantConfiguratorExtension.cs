@@ -1,6 +1,6 @@
 ﻿using System;
 using StreamStore.NoSql.Cassandra.Configuration;
-using StreamStore.NoSql.Cassandra.Database;
+using StreamStore.NoSql.Cassandra.Storage;
 using StreamStore.NoSql.Cassandra.Provisioning;
 using Microsoft.Extensions.Configuration;
 
@@ -12,7 +12,7 @@ namespace StreamStore.NoSql.Cassandra
         {
             configurator
                 .UseSchemaProvisioner<CassandraSchemaProvisioner>()
-                .UseDatabase<CassandraStreamDatabase>(services =>
+                .UseStorage<CassandraStreamStorage>(services =>
                 {
                     var singleConfigurator = new CassandraSingleTenantConfigurator();
                     configure(singleConfigurator);

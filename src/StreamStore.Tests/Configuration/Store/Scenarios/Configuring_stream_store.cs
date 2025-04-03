@@ -12,7 +12,7 @@ namespace StreamStore.Tests.Configuration.Store
     public class Configuring_stream_store : Scenario<StreamStoreConfiguratorTestEnvironment>
     {
         [Fact]
-        public void When_database_is_not_configured()
+        public void When_storage_is_not_configured()
         {
             // Arrange
             var configurator = StreamStoreConfiguratorTestEnvironment.CreateConfigurator();
@@ -21,14 +21,14 @@ namespace StreamStore.Tests.Configuration.Store
             var act = () => configurator.Configure(StreamStoreConfiguratorTestEnvironment.CreateServiceCollection());
 
             //Assert
-            act.Should().Throw<InvalidOperationException>().WithMessage("Database backend is not registered");
+            act.Should().Throw<InvalidOperationException>().WithMessage("Storage backend is not registered");
         }
 
         [Fact]
         public void When_store_configured_in_single_mode()
         {
             // Arrange
-            var database = Generated.Mocks.Single<IStreamStorage>();
+            var storage = Generated.Mocks.Single<IStreamStorage>();
             var typeRegistry = Generated.Mocks.Single<ITypeRegistry>();
             var configurator = StreamStoreConfiguratorTestEnvironment.CreateConfigurator();
             var pageSize = Generated.Primitives.Int;
@@ -38,7 +38,7 @@ namespace StreamStore.Tests.Configuration.Store
             // Act
             configurator.WithReadingPageSize(pageSize);
             configurator.WithReadingMode(mode);
-            configurator.WithSingleDatabase(x => x.UseInMemoryDatabase());
+            configurator.WithSingleStorage(x => x.UseInMemoryStorage());
             configurator.EnableSchemaProvisioning();
 
             configurator.Configure(services);
@@ -50,11 +50,11 @@ namespace StreamStore.Tests.Configuration.Store
 
             provider.GetRequiredService<IStreamStorage>()
                         .Should().NotBeNull()
-                        .And.BeOfType<InMemoryStreamDatabase>();
+                        .And.BeOfType<InMemoryStreamStorage>();
 
             provider.GetRequiredService<IStreamReader>()
                         .Should().NotBeNull()
-                        .And.BeOfType<InMemoryStreamDatabase>();
+                        .And.BeOfType<InMemoryStreamStorage>();
 
             provider.GetRequiredService<StreamEventEnumeratorFactory>()
                         .Should().NotBeNull()
@@ -80,7 +80,7 @@ namespace StreamStore.Tests.Configuration.Store
         public void When_store_configured_in_multitenant_mode()
         {
             // Arrange
-            var database = Generated.Mocks.Single<IStreamStorage>();
+            var storage = Generated.Mocks.Single<IStreamStorage>();
             var typeRegistry = Generated.Mocks.Single<ITypeRegistry>();
             var configurator = StreamStoreConfiguratorTestEnvironment.CreateConfigurator();
             var pageSize = Generated.Primitives.Int;
@@ -90,7 +90,7 @@ namespace StreamStore.Tests.Configuration.Store
             // Act
             configurator.WithReadingPageSize(pageSize);
             configurator.WithReadingMode(mode);
-            configurator.WithMultitenancy(x => x.UseInMemoryDatabase());
+            configurator.WithMultitenancy(x => x.UseInMemoryStorage());
             configurator.EnableSchemaProvisioning();
 
             configurator.Configure(services);

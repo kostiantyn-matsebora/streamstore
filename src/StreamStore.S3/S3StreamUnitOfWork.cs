@@ -11,7 +11,7 @@ using StreamStore.Storage;
 
 namespace StreamStore.S3
 {
-    internal sealed class S3StreamUnitOfWork : StreamUnitOfWorkBase
+    internal sealed class S3StreamUnitOfWork : StreamWriterBase
     {
       
         readonly IS3LockFactory factory;

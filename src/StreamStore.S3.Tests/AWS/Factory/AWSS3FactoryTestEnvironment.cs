@@ -5,7 +5,7 @@ namespace StreamStore.S3.Tests.AWS.Factory
 {
     public class AWSS3FactoryTestEnvironment : TestEnvironmentBase
     {
-        public AWSS3DatabaseSettings Settings { get; private set; }
+        public AWSS3StorageSettings Settings { get; private set; }
 
 
         internal AWSS3Factory CreateFactory(IAmazonS3ClientFactory clientFactory)
@@ -15,7 +15,7 @@ namespace StreamStore.S3.Tests.AWS.Factory
 
         public AWSS3FactoryTestEnvironment()
         {
-            Settings = new AWSS3DatabaseSettingsBuilder().Build();
+            Settings = new AWSS3StorageSettingsBuilder().Build();
         }
     }
 }

@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <SignAssembly>False</SignAssembly>
     <Title>StreamStore.Contracts</Title>
-    <Description>Abstractions for creating specific database backend implementation used by StreamStore asynchronous event sourcing library.</Description>
+    <Description>Abstractions for creating specific storage backend implementation used by StreamStore asynchronous event sourcing library.</Description>
     <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
     <Authors>kostiantyn-matsebora</Authors>

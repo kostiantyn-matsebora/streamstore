@@ -15,7 +15,7 @@ namespace StreamStore.S3.Tests.AWS.Client
 
         internal AWSS3Client Client { get; private set; }
 
-        public AWSS3DatabaseSettings Settings { get; private set; }
+        public AWSS3StorageSettings Settings { get; private set; }
 
         public AWSS3ClientTestEnvironment()
         {
@@ -23,7 +23,7 @@ namespace StreamStore.S3.Tests.AWS.Client
 
             AmazonClient = MockRepository.Create<IAmazonS3>();
             var configurator =
-                new AWSS3DatabaseConfigurator(new ServiceCollection());
+                new AWSS3StorageConfigurator(new ServiceCollection());
 
            Settings = configurator.Build();
            Client = new AWSS3Client(

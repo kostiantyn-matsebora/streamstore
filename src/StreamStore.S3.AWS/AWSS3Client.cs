@@ -11,11 +11,11 @@ namespace StreamStore.S3.AWS
 {
     internal class AWSS3Client : IS3Client
     {
-        readonly AWSS3DatabaseSettings settings;
+        readonly AWSS3StorageSettings settings;
         readonly IAmazonS3 client;
         const int maxKeyCount = 100;
 
-        public AWSS3Client(IAmazonS3 client, AWSS3DatabaseSettings  settings)
+        public AWSS3Client(IAmazonS3 client, AWSS3StorageSettings  settings)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.client = client ?? throw new ArgumentNullException(nameof(client));

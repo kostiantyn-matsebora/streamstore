@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="StreamDatabase\Multitenancy\" />
+    <Folder Include="StreamStorage\Multitenancy\" />
   </ItemGroup>
 
 </Project>

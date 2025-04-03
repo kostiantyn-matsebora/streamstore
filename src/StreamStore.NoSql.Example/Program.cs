@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 
 using StreamStore.ExampleBase;
 using StreamStore.NoSql.Example;
-using StreamStore.NoSql.Tests.Cassandra.Database;
+using StreamStore.NoSql.Tests.Cassandra.Storage;
 using StreamStore.NoSql.Cassandra;
 using StreamStore.NoSql.Cassandra.Extensions;
 
@@ -23,10 +23,10 @@ namespace StreamStore.Sql.Example
             await builder
                 .ConfigureExampleApplication(c =>
                     c.EnableMultitenancy()
-                     .AddDatabase(NoSqlDatabases.Cassandra,
+                     .AddStorage(NoSqlStorages.Cassandra,
                                   x => x.WithSingleMode(ConfigureCassandraSingle)
                                         .WithMultitenancy(ConfigureCassandraMultitenancy))
-                     .AddDatabase(NoSqlDatabases.CosmosDbCassandra,
+                     .AddStorage(NoSqlStorages.CosmosDbCassandra,
                                   x => x.WithSingleMode(ConfigureCosmosDbSingle)
                                         .WithMultitenancy(ConfigureCosmosDbMultitenancy)))
                 .InvokeAsync(args);
@@ -35,20 +35,20 @@ namespace StreamStore.Sql.Example
         static void ConfigureCassandraSingle(IHostApplicationBuilder builder)
         {
             // Provision the keyspace
-            var database = new CassandraTestDatabase(
+            var storage = new CassandraTestStorage(
                 new KeyspaceConfiguration(Tenants.Default)
                 {
                     ReplicationFactor = replicationFactor
                 }, ConfigureCluster);
 
-            database.EnsureExists();
+            storage.EnsureExists();
 
             // Configure the StreamStore
             builder
                 .Services
                 .ConfigureStreamStore(x =>
                     x.EnableSchemaProvisioning()
-                     .WithSingleDatabase(c =>
+                     .WithSingleStorage(c =>
                         c.UseCassandra(x =>
                             x.ConfigureCluster(ConfigureCluster)
                         )
@@ -65,9 +65,9 @@ namespace StreamStore.Sql.Example
         static void ConfigureCassandraMultitenancy(IHostApplicationBuilder builder)
         {
             // Provision the tenant keyspaces
-            new CassandraTestDatabase(new KeyspaceConfiguration(Tenants.Tenant1) { ReplicationFactor = replicationFactor }, ConfigureCluster).EnsureExists();
-            new CassandraTestDatabase(new KeyspaceConfiguration(Tenants.Tenant2) { ReplicationFactor = replicationFactor }, ConfigureCluster).EnsureExists();
-            new CassandraTestDatabase(new KeyspaceConfiguration(Tenants.Tenant3) { ReplicationFactor = replicationFactor }, ConfigureCluster).EnsureExists();
+            new CassandraTestStorage(new KeyspaceConfiguration(Tenants.Tenant1) { ReplicationFactor = replicationFactor }, ConfigureCluster).EnsureExists();
+            new CassandraTestStorage(new KeyspaceConfiguration(Tenants.Tenant2) { ReplicationFactor = replicationFactor }, ConfigureCluster).EnsureExists();
+            new CassandraTestStorage(new KeyspaceConfiguration(Tenants.Tenant3) { ReplicationFactor = replicationFactor }, ConfigureCluster).EnsureExists();
 
             // Configure the StreamStore
             builder
@@ -87,14 +87,14 @@ namespace StreamStore.Sql.Example
         static void ConfigureCosmosDbSingle(IHostApplicationBuilder appBuilder)
         {
             // Provision the keyspace
-            var database = new CassandraTestDatabase(new KeyspaceConfiguration(Tenants.Default), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            var storage = new CassandraTestStorage(new KeyspaceConfiguration(Tenants.Default), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
 
             // Configure the StreamStore
             appBuilder
                 .Services
                 .ConfigureStreamStore(x =>
                     x.EnableSchemaProvisioning()
-                        .WithSingleDatabase(c =>
+                        .WithSingleStorage(c =>
                             c.UseCassandra(x =>
                                 x.UseCosmosDb(appBuilder.Configuration, "StreamStore_CassandraCosmosDb")
                         )
@@ -105,9 +105,9 @@ namespace StreamStore.Sql.Example
         static void ConfigureCosmosDbMultitenancy(IHostApplicationBuilder appBuilder)
         {
             // Provision the tenant keyspaces
-            new CassandraTestDatabase(new KeyspaceConfiguration(Tenants.Tenant1), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
-            new CassandraTestDatabase(new KeyspaceConfiguration(Tenants.Tenant2), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
-            new CassandraTestDatabase(new KeyspaceConfiguration(Tenants.Tenant3), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            new CassandraTestStorage(new KeyspaceConfiguration(Tenants.Tenant1), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            new CassandraTestStorage(new KeyspaceConfiguration(Tenants.Tenant2), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
+            new CassandraTestStorage(new KeyspaceConfiguration(Tenants.Tenant3), builder => ConfigureCosmosDbBuilder(appBuilder, builder)).EnsureExists();
 
             // Configure the StreamStore
             appBuilder
