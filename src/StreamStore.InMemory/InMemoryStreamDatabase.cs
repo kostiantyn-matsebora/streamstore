@@ -43,7 +43,7 @@ namespace StreamStore.InMemory
             return Task.FromResult<Revision?>(new EventMetadataRecordCollection(record).MaxRevision);
         }
 
-        public Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
+        public Task<IStreamWriter> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
             if (store.TryGetValue(streamId, out var existing) && expectedStreamVersion != existing.MaxRevision)
             {
@@ -51,7 +51,7 @@ namespace StreamStore.InMemory
                 throw new OptimisticConcurrencyException(expectedStreamVersion, existing.MaxRevision, streamId);
             }
 
-            return Task.FromResult((IStreamUnitOfWork)new InMemoryStreamUnitOfWork(streamId, expectedStreamVersion, this, existing));
+            return Task.FromResult((IStreamWriter)new InMemoryStreamUnitOfWork(streamId, expectedStreamVersion, this, existing));
         }
 
         public async Task<EventRecordCollection> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)

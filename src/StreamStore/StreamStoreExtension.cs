@@ -8,7 +8,7 @@ namespace StreamStore
 {
     public static class StreamStoreExtension
     {
-        public static async Task<IStreamWriter> BeginWriteAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
+        public static async Task<IStreamUnitOfWork> BeginWriteAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
         {
             return await store.BeginWriteAsync(streamId, Revision.Zero, cancellationToken);
         }

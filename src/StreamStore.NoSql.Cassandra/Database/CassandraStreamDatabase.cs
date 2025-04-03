@@ -23,9 +23,9 @@ namespace StreamStore.NoSql.Cassandra.Database
             mapper = mapperProvider.OpenMapper();
         }
 
-        protected override Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
+        protected override Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
-            return Task.FromResult<IStreamUnitOfWork>(
+            return Task.FromResult<IStreamWriter>(
                 new CassandraStreamUnitOfWork(streamId, expectedStreamVersion, null, mapper, configure, queries));
         }
 

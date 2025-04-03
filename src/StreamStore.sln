@@ -67,6 +67,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.NoSql.Example",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{5E8E5B65-C4EB-478C-88E0-C1BE992C381F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.Storage", "StreamStore.Storage\StreamStore.Storage.csproj", "{88227196-D819-4F7E-90A1-F205C57486D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,10 @@ Global
 		{0364ACFC-A846-407D-AE6D-93BC2BD6BD95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0364ACFC-A846-407D-AE6D-93BC2BD6BD95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0364ACFC-A846-407D-AE6D-93BC2BD6BD95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88227196-D819-4F7E-90A1-F205C57486D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88227196-D819-4F7E-90A1-F205C57486D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88227196-D819-4F7E-90A1-F205C57486D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88227196-D819-4F7E-90A1-F205C57486D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

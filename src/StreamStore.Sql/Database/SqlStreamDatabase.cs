@@ -22,9 +22,9 @@ namespace StreamStore.Sql.Database
             this.exceptionHandler = exceptionHandler.ThrowIfNull(nameof(exceptionHandler));
         }
 
-        protected override Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
+        protected override Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
-            return Task.FromResult((IStreamUnitOfWork)
+            return Task.FromResult((IStreamWriter)
                 new SqlStreamUnitOfWork(streamId, expectedStreamVersion, null, connectionFactory, commandFactory, exceptionHandler));
         }
 

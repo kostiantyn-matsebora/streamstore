@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
@@ -8,7 +7,7 @@ namespace StreamStore.Database
 {
     public abstract class StreamDatabaseBase : IStreamDatabase
     {
-        public async Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
+        public async Task<IStreamWriter> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
             if (expectedStreamVersion < 0)
@@ -50,7 +49,7 @@ namespace StreamStore.Database
 
         protected abstract Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default);
         protected abstract Task DeleteAsyncInternal(Id streamId, CancellationToken token = default);
-        protected abstract Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default);
+        protected abstract Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default);
         protected abstract Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default);
 
     }

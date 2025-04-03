@@ -24,7 +24,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
+    <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="README.md">

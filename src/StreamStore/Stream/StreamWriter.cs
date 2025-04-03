@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 
 namespace StreamStore
 {
-    sealed class StreamWriter : IStreamWriter
+    sealed class StreamWriter : IStreamUnitOfWork
     {
-        readonly IStreamUnitOfWork uow;
+        readonly IStreamWriter uow;
         readonly EventConverter converter;
 
-        public StreamWriter(IStreamUnitOfWork uow, EventConverter converter)
+        public StreamWriter(IStreamWriter uow, EventConverter converter)
         {
           this.uow = uow ?? throw new ArgumentNullException(nameof(uow));
           this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
         }
 
-        public async Task<IStreamWriter> AppendEventAsync(Id eventId, DateTime timestamp, object @event, CancellationToken cancellationToken = default)
+        public async Task<IStreamUnitOfWork> AppendEventAsync(Id eventId, DateTime timestamp, object @event, CancellationToken cancellationToken = default)
         {
             if (uow == null) throw new InvalidOperationException("Writing is not started.");
 

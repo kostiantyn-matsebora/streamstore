@@ -7,7 +7,7 @@ using System;
 
 namespace StreamStore
 {
-    public abstract class StreamUnitOfWorkBase : IStreamUnitOfWork
+    public abstract class StreamUnitOfWorkBase : IStreamWriter
     {
         protected readonly Id streamId;
         protected readonly Revision expectedRevision;
@@ -38,7 +38,7 @@ namespace StreamStore
             return events.MaxRevision;
         }
 
-        public async Task<IStreamUnitOfWork> AddAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default)
+        public async Task<IStreamWriter> AddAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default)
         {
             eventId.ThrowIfHasNoValue(nameof(eventId));
             timestamp.ThrowIfMinValue(nameof(timestamp));

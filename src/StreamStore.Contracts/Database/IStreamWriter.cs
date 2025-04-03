@@ -4,9 +4,9 @@ using System;
 
 namespace StreamStore
 {
-    public interface IStreamUnitOfWork: IDisposable
+    public interface IStreamWriter: IDisposable
     {
-        Task<IStreamUnitOfWork> AddAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default);
+        Task<IStreamWriter> AddAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default);
         Task<Revision> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

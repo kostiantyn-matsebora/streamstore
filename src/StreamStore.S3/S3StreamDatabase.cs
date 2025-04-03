@@ -37,7 +37,7 @@ namespace StreamStore.S3
             await storage.DeletePersistentContainerAsync(streamId, token);
         }
 
-        protected override async Task<IStreamUnitOfWork> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
+        protected override async Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
             var context = new S3StreamContext(streamId, expectedStreamVersion, storageFactory.CreateStorage());
             await context.Initialize(token);
