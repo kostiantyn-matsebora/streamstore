@@ -41,7 +41,7 @@ namespace StreamStore.S3
         {
             var context = new S3StreamContext(streamId, expectedStreamVersion, storageFactory.CreateStorage());
             await context.Initialize(token);
-            return new S3StreamUnitOfWork(lockFactory, context);
+            return new S3StreamWriter(lockFactory, context);
         }
 
         protected override async Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default)

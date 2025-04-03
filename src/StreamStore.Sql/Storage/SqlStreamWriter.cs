@@ -9,13 +9,13 @@ using StreamStore.Storage;
 
 namespace StreamStore.Sql.Storage
 {
-    public class SqlStreamUnitOfWork : StreamWriterBase
+    public class SqlStreamWriter : StreamWriterBase
     {
         readonly IDbConnectionFactory connectionFactory;
         readonly IDapperCommandFactory commandFactory;
         readonly ISqlExceptionHandler exceptionHandler;
 
-        public SqlStreamUnitOfWork(Id streamId, Revision expectedRevision, EventRecordCollection? existing, IDbConnectionFactory connectionFactory, IDapperCommandFactory commandFactory, ISqlExceptionHandler exceptionHandler) :
+        public SqlStreamWriter(Id streamId, Revision expectedRevision, EventRecordCollection? existing, IDbConnectionFactory connectionFactory, IDapperCommandFactory commandFactory, ISqlExceptionHandler exceptionHandler) :
             base(streamId, expectedRevision, existing)
         {
             this.connectionFactory = connectionFactory.ThrowIfNull(nameof(connectionFactory));

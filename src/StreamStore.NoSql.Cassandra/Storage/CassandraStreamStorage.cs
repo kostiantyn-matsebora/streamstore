@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Cassandra.Mapping;
@@ -26,7 +25,7 @@ namespace StreamStore.NoSql.Cassandra.Storage
         protected override Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
             return Task.FromResult<IStreamWriter>(
-                new CassandraStreamUnitOfWork(streamId, expectedStreamVersion, null, mapper, configure, queries));
+                new CassandraStreamWriter(streamId, expectedStreamVersion, null, mapper, configure, queries));
         }
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)

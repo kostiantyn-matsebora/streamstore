@@ -14,8 +14,8 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking
         internal readonly Mock<ICassandraCqlQueries> Queries;
         internal readonly Mock<IMapper> Mapper;
         internal readonly CassandraStreamStorage StreamStorage;
-        internal CassandraStreamUnitOfWork StreamUnitOfWork =>
-            new CassandraStreamUnitOfWork(Generated.Primitives.Id, Generated.Primitives.Revision, null, Mapper.Object, 
+        internal CassandraStreamWriter StreamUnitOfWork =>
+            new CassandraStreamWriter(Generated.Primitives.Id, Generated.Primitives.Revision, null, Mapper.Object, 
                     new CassandraStatementConfigurator(new CassandraStorageConfiguration()),
                     new CassandraCqlQueries(new CassandraStorageConfiguration()));
 

@@ -5,19 +5,18 @@ using System.Threading.Tasks;
 using StreamStore.Exceptions;
 using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
-using StreamStore.S3.Storage;
 using StreamStore.Storage;
 
 
 namespace StreamStore.S3
 {
-    internal sealed class S3StreamUnitOfWork : StreamWriterBase
+    internal sealed class S3StreamWriter : StreamWriterBase
     {
       
         readonly IS3LockFactory factory;
         readonly S3StreamContext streamContext;
 
-        public S3StreamUnitOfWork(IS3LockFactory factory, S3StreamContext streamContext):
+        public S3StreamWriter(IS3LockFactory factory, S3StreamContext streamContext):
             base(streamContext.StreamId, streamContext.ExpectedRevision, null)
         {
            this.streamContext = streamContext;

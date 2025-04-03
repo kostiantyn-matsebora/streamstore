@@ -25,7 +25,7 @@ namespace StreamStore.Sql.Storage
         protected override Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
             return Task.FromResult((IStreamWriter)
-                new SqlStreamUnitOfWork(streamId, expectedStreamVersion, null, connectionFactory, commandFactory, exceptionHandler));
+                new SqlStreamWriter(streamId, expectedStreamVersion, null, connectionFactory, commandFactory, exceptionHandler));
         }
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)

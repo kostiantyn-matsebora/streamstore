@@ -12,16 +12,16 @@ namespace StreamStore.InMemory
 
     public sealed class InMemoryStreamStorage : IStreamStorage
     {
-        internal ConcurrentDictionary<string, EventRecordCollection> store;
+        internal ConcurrentDictionary<string, EventRecordCollection> storage;
 
         public InMemoryStreamStorage()
         {
-            store = new ConcurrentDictionary<string, EventRecordCollection>();
+            storage = new ConcurrentDictionary<string, EventRecordCollection>();
         }
 
         public Task<EventRecordCollection?> FindAsync(Id streamId, CancellationToken token = default)
         {
-            if (!store.TryGetValue(streamId, out var record))
+            if (!storage.TryGetValue(streamId, out var record))
                 return Task.FromResult<EventRecordCollection?>(null);
 
             return Task.FromResult<EventRecordCollection?>(record);
@@ -29,15 +29,15 @@ namespace StreamStore.InMemory
 
         public Task DeleteAsync(Id streamId, CancellationToken token = default)
         {
-            if (store.ContainsKey(streamId))
-                store.TryRemove(streamId, out var _);
+            if (storage.ContainsKey(streamId))
+                storage.TryRemove(streamId, out var _);
 
             return Task.CompletedTask;
         }
 
         public Task<Revision?> GetActualRevision(Id streamId, CancellationToken token = default)
         {
-            if (!store.TryGetValue(streamId, out var record))
+            if (!storage.TryGetValue(streamId, out var record))
                 return Task.FromResult<Revision?>(null!);
 
             return Task.FromResult<Revision?>(new EventMetadataRecordCollection(record).MaxRevision);
@@ -45,13 +45,13 @@ namespace StreamStore.InMemory
 
         public Task<IStreamWriter> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
-            if (store.TryGetValue(streamId, out var existing) && expectedStreamVersion != existing.MaxRevision)
+            if (storage.TryGetValue(streamId, out var existing) && expectedStreamVersion != existing.MaxRevision)
             {
                 // It seems like stream has been already added, fail fast
                 throw new OptimisticConcurrencyException(expectedStreamVersion, existing.MaxRevision, streamId);
             }
 
-            return Task.FromResult((IStreamWriter)new InMemoryStreamUnitOfWork(streamId, expectedStreamVersion, this, existing));
+            return Task.FromResult((IStreamWriter)new InMemoryStreamWriter(streamId, expectedStreamVersion, this.storage, existing));
         }
 
         public async Task<EventRecordCollection> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)

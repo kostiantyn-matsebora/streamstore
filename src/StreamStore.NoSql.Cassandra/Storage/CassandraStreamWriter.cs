@@ -10,14 +10,14 @@ using StreamStore.Storage;
 
 namespace StreamStore.NoSql.Cassandra.Storage
 {
-    internal class CassandraStreamUnitOfWork : StreamWriterBase
+    internal class CassandraStreamWriter : StreamWriterBase
     {
         readonly IMapper mapper;
         readonly CassandraStatementConfigurator configure;
         readonly ICassandraCqlQueries queries;
 
 
-        public CassandraStreamUnitOfWork(
+        public CassandraStreamWriter(
             Id streamId, 
             Revision expectedRevision, 
             EventRecordCollection? events,
