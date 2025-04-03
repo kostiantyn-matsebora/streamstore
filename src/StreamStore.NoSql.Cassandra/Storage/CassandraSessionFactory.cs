@@ -6,7 +6,7 @@ using StreamStore.NoSql.Cassandra.Configuration;
 
 namespace StreamStore.NoSql.Cassandra.Storage
 {
-    internal class CassandraSessionFactory : ICassandraSessionFactory, IDisposable
+    internal sealed class CassandraSessionFactory : ICassandraSessionFactory, IDisposable
     {
         readonly Lazy<ISession> session;
         public CassandraSessionFactory(ICluster cluster, CassandraStorageConfiguration config)
@@ -23,17 +23,11 @@ namespace StreamStore.NoSql.Cassandra.Storage
 
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        void Dispose(bool disposing)
-        {
-            if (disposing && session.IsValueCreated)
+            if (session.IsValueCreated)
             {
-               session.Value.Dispose();
+                session.Value.Dispose();
             }
+            GC.SuppressFinalize(this);
         }
 
         static ISession CreateSession(ICluster cluster, string keyspace)

@@ -30,12 +30,12 @@ namespace StreamStore
 
         public static Task<Revision> WriteAsync(this IStreamStore store, Id streamId, Revision expectedRevision, IEnumerable<Event> events, CancellationToken token = default)
         {
-            return store.BeginWriteAsync(streamId, expectedRevision, token).SaveChangesAsync(events, token);
+            return store.BeginWriteAsync(streamId, expectedRevision, token).WriteAsync(events, token);
         }
 
         public static Task<Revision> WriteAsync(this IStreamStore store, Id streamId, IEnumerable<Event> events, CancellationToken token = default)
         {
-            return store.BeginWriteAsync(streamId,  token).SaveChangesAsync(events, token);
+            return store.BeginWriteAsync(streamId,  token).WriteAsync(events, token);
         }
     }
 }

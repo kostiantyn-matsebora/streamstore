@@ -9,7 +9,7 @@ namespace StreamStore
     public static class StreamUnitOfWorkExtension
     {
 
-        public static Task<Revision> SaveChangesAsync(this Task<IStreamUnitOfWork> uow, IEnumerable<Event> events, CancellationToken token = default)
+        public static Task<Revision> WriteAsync(this Task<IStreamUnitOfWork> uow, IEnumerable<Event> events, CancellationToken token = default)
         {
             return uow.AppendRangeAsync(events, token).SaveChangesAsync(token);
         }
