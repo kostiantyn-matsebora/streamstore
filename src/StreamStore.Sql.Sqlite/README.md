@@ -2,7 +2,7 @@
 
 [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
 
-[SQLite] backend database for [StreamStore] asynchronous event sourcing library.
+[SQLite] storage for [StreamStore] asynchronous event sourcing library.
 
 ## Installation
 
@@ -70,10 +70,10 @@ You can define configuration of the library in `appsettings.json` file:
 ```csharp
 services.ConfigureStreamStore(x =>...
 
-  // Register single database implementation
-  x.WithSingleDatabase(c => ...
-      c.UseSqliteDatabase(x =>
-          c => c.ConfigureDatabase(x =>                        // Configure database options.
+  // Register single storage implementation
+  x.WithSingleStorage(c => ...
+      c.UseSqliteStorage(x =>
+          c => c.ConfigureStorage(x =>                        // Configure storage options.
             x.WithConnectionString("your-connection-string")   // Required. Connection string.
             x.WithSchema("your-schema-name");                  // Optional. Schema name, default is "main".
             x.WithTableName("your-table-name");                // Optional. Table name, default is "Events".
@@ -82,11 +82,11 @@ services.ConfigureStreamStore(x =>...
 
   // Or enable multitenancy
   x.WithMultitenancy(c => ...
-      c.UseSqliteDatabase(x => 
+      c.UseSqliteStorage(x => 
           x.WithConnectionStringProvider<Provider>()          // Required. Register your 
                                                               // ISqlTenantConnectionStringProvider implementation.
-          c => c.ConfigureDatabase(x =>...)                   // Optional. Configure database options will be used as 
-                                                              // template for tenant database configuration, optional.
+          c => c.ConfigureStorage(x =>...)                   // Optional. Configure storage options will be used as 
+                                                              // template for tenant storage configuration, optional.
       )
   )
 ); 

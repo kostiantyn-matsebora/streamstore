@@ -23,7 +23,7 @@ namespace StreamStore.Sql.Storage
             this.exceptionHandler = exceptionHandler.ThrowIfNull(nameof(exceptionHandler));
         }
 
-        protected override async Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
+        protected override async Task CommitAsync(EventRecordCollection uncommited, CancellationToken token)
         {
             using (var connection = connectionFactory.GetConnection())
             {

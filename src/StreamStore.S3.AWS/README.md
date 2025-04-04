@@ -2,7 +2,7 @@
 
 [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)
 
-[Amazon S3] backend database for [StreamStore] asynchronous event sourcing library.
+[Amazon S3] storage for [StreamStore] asynchronous event sourcing library.
 
 ## Installation
 
@@ -43,8 +43,8 @@ or you can provide the configuration in code, see section below.
 
 ```csharp
    services.ConfigureStreamStore(x =>
-      x.WithSingleDatabase(c =>
-         c.UseAWSDatabase(
+      x.WithSingleStorage(c =>
+         c.UseAWSStorage(
             c => c.WithBucketName("bucket-name")) // Bucket name, optional, by default "streamstore"
       )
    );

@@ -19,7 +19,7 @@ namespace StreamStore.InMemory
             this.storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
 
-        protected override Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
+        protected override Task CommitAsync(EventRecordCollection uncommited, CancellationToken token)
         {
             var record = new EventRecordCollection(uncommited);
 

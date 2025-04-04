@@ -12,7 +12,7 @@ Heavily inspired by Greg Young's Event Store and [`Streamstone`](https://github.
 
 ## Overview
 
-Designed to be easily extended with custom database backends.
+Designed to be easily extended with custom storage backends.
 Despite the fact that component implements a logical layer for storing and querying events as a stream,
  `it does not provide functionality of DDD aggregate`, such as state mutation, conflict resolution etc., but serves more as `persistence layer`  for it.
 
@@ -42,7 +42,7 @@ The general idea is to highlight the common characteristics and features of even
 - [x] Serialization/deserialization of events.
 - [x] Optimistic concurrency control.
 - [x] Event duplication detection based on event ID.
-- [x] Database agnostic test framework, including benchmarking test scenarios.
+- [x] Storage agnostic test framework.
 - [x] Binary serialization support.
 
 ## Storages
@@ -78,7 +78,7 @@ To install the package, you can use the following command from the command line:
   
   dotnet add package StreamStore
 
-  # Install package of particular database implementation, for instance InMemory
+  # Install package of particular storage implementation, for instance InMemory
 
   dotnet add package StreamStore.InMemory
 ```
@@ -89,7 +89,7 @@ or from NuGet Package Manager Console:
    # Install StreamStore package
   Install-Package StreamStore
 
-   # Install package of particular database implementation, for instance SQLite database backend
+   # Install package of particular storage implementation, for instance SQLite storage backend
   Install-Package StreamStore.Sql.Sqlite
 ```
 
@@ -101,17 +101,17 @@ or from NuGet Package Manager Console:
     services.ConfigureStreamStore(x =>              // Register StreamStore
       x.EnableSchemaProvisioning()                  // Optional. Enable schema provisioning, default: false.
       
-      // Register single database implementation, see details in documentation for particular database
-      x.WithSingleDatabase(c =>                 
-          c.UseSqliteDatabase(x =>                  // For instance, SQLite database backend
-              x.ConfigureDatabase(c =>
+      // Register single storage implementation, see details in documentation for particular storage
+      x.WithSingleStorage(c =>                 
+          c.UseSqliteStorage(x =>                  // For instance, SQLite storage backend
+              x.ConfigureStorage(c =>
                 c.WithConnectionString(connectionString)
               )
           )
       )
-      // Or enable multitenancy, see details in documentation for particular database.
+      // Or enable multitenancy, see details in documentation for particular storage.
       x.WithMultitenancy(c => 
-          c.UseInMemoryDatabase()                   // For instance, InMemory database backend
+          c.UseInMemoryStorage()                   // For instance, InMemory storage backend
            .UseTenantProvider<MyTenantProvider>()   // Optional. Register your  ITenantProvider implementation.
                                                     // Required if you want schema to be provisioned for each tenant.
       )
@@ -121,7 +121,7 @@ or from NuGet Package Manager Console:
 - Use store in your application
 
 ```csharp
-   // Inject IStreamStore in your service or controller for single database implementation
+   // Inject IStreamStore in your service or controller for single storage implementation
     public class MyService
     {
         private readonly IStreamStore store;
@@ -177,10 +177,10 @@ or from NuGet Package Manager Console:
              .Dated(DateTime.Now)
              .WithEvent(yourEventObject)
            )
-        ...
+        ...F
         .CommitAsync(streamId);
   } catch (StreamLockedException ex) {
-    // Some database backends like S3 do not support optimistic concurrency control
+    // Some storage backends like S3 do not support optimistic concurrency control
     // So, the only way to handle concurrency is to lock the stream
   }
 ```
@@ -191,9 +191,9 @@ More examples of reading and writing events you can find in test scenarios of [S
 
 Each type of storage has its own example project, for instance, you can find an example of usage in the [StreamStore.Sql.Example](../src/StreamStore.Sql.Example) project.
 
-Example projects provides a simple console application that demonstrates how to **configure and use** [`StreamStore`] in your application as single database or multitenancy.
+Example projects provides a simple console application that demonstrates how to **configure and use** [`StreamStore`] in your application as single storage or multitenancy.
 
-`Single database` examples demonstrates:
+`Single storage` examples demonstrates:
 
 - optimistic concurrency control
 - asynchronous reading and writing operations

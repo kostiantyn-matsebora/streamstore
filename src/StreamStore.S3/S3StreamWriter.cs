@@ -23,7 +23,7 @@ namespace StreamStore.S3
            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
          }
 
-        protected override async Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token)
+        protected override async Task CommitAsync(EventRecordCollection uncommited, CancellationToken token)
         {
             if (!streamContext.NotEmpty)
                 throw new InvalidOperationException("No events to save.");

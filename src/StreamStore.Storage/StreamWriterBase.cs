@@ -34,7 +34,7 @@ namespace StreamStore.Storage
         {
             ThrowIfThereIsDuplicates();
 
-            await SaveChangesAsync(uncommited, cancellationToken);
+            await CommitAsync(uncommited, cancellationToken);
             return events.MaxRevision;
         }
 
@@ -65,7 +65,7 @@ namespace StreamStore.Storage
             return this;
         }
 
-        protected abstract Task SaveChangesAsync(EventRecordCollection uncommited, CancellationToken token);
+        protected abstract Task CommitAsync(EventRecordCollection uncommited, CancellationToken token);
 
         protected virtual Task OnEventAdded(EventRecord @event, CancellationToken token)
         {
