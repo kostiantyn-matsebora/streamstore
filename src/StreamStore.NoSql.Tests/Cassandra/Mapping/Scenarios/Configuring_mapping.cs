@@ -1,7 +1,7 @@
 ﻿using Cassandra.Mapping;
 using FluentAssertions;
 using StreamStore.NoSql.Cassandra.Configuration;
-using StreamStore.NoSql.Cassandra.Database;
+using StreamStore.NoSql.Cassandra.Storage;
 using StreamStore.NoSql.Cassandra.Models;
 using StreamStore.Testing;
 

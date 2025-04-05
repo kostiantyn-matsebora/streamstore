@@ -7,9 +7,9 @@ namespace StreamStore.Sql.PostgreSql
 {
     internal class PostgresConnectionFactory : IDbConnectionFactory
     {
-        readonly SqlDatabaseConfiguration configuration;
+        readonly SqlStorageConfiguration configuration;
 
-        public PostgresConnectionFactory(SqlDatabaseConfiguration configuration)
+        public PostgresConnectionFactory(SqlStorageConfiguration configuration)
         {
             this.configuration = configuration.ThrowIfNull(nameof(configuration));
         }

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
+    <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" />
   </ItemGroup>
 
 </Project>

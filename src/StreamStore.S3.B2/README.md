@@ -2,7 +2,7 @@
 
 [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)
 
-[Backblaze B2] backend database for [StreamStore] asynchronous event sourcing library.
+[Backblaze B2] storage for [StreamStore] asynchronous event sourcing library.
 
 ## Installation
 
@@ -27,7 +27,7 @@ or from Nuget Package Manager Console:
 
 ### Storage
 
-See storage requirements for [Amazon S3 database](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#storage) implementation.
+See storage requirements for [Amazon S3 storage](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#storage) implementation.
 
 ### Configuration
 
@@ -51,17 +51,17 @@ or you can provide the configuration in code, see section below.
 ### Register in DI container
 
 ```csharp
-   // Adding B2 database with configuration from appsettings.json
+   // Adding B2 storage with configuration from appsettings.json
    services.ConfigureStreamStore(x => 
-      x => x.WithSingleDatabase(c =>
-              c.UseB2Database(Configuration)
+      x => x.WithSingleStorage(c =>
+              c.UseB2Storage(Configuration)
             )
    );
 
   // Or configuring it manually
    services.ConfigureStreamStore(x =>
-      x => x.WithSingleDatabase(c =>
-         c.UseB2Database(c => {
+      x => x.WithSingleStorage(c =>
+         c.UseB2Storage(c => {
             c.WithBucketId("your-bucket-id");
             c.WithBucketName("your-bucket-name");
             c.WithCredential("your-access-key-id","your-access-key");
@@ -75,15 +75,15 @@ or you can provide the configuration in code, see section below.
 
 ## Good to know
 
-See  [Amazon S3 database](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#good-to-know) documentation.
+See  [Amazon S3 storage](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#good-to-know) documentation.
 
 ### Storage structure
 
-See  [Amazon S3 database](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#storage-structure) documentation.
+See  [Amazon S3 storage](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#storage-structure) documentation.
 
 ## Example
 
-See  [Amazon S3 database](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#example) documentation.
+See  [Amazon S3 storage](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.S3.AWS#example) documentation.
 
 ## Testing
 

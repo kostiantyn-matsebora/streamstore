@@ -1,44 +1,44 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using StreamStore.Sql.Configuration;
-using StreamStore.Sql.Database;
+using StreamStore.Sql.Storage;
 using StreamStore.Sql.Provisioning;
 
 namespace StreamStore.Sql
 {
     public static class SingleTenantConfiguratorExtension
     {
-        internal static ISingleTenantConfigurator UseSqlDatabase(
+        internal static ISingleTenantConfigurator UseSqlStorage(
                 this ISingleTenantConfigurator configurator,
-                SqlDatabaseConfiguration defaultConfig,
+                SqlStorageConfiguration defaultConfig,
                 IConfiguration configuration,
                 string sectionName,
-                Action<SqlSingleTenantDatabaseConfigurator> configureDatabase)
+                Action<SqlSingleTenantStorageConfigurator> configureStorage)
         {
             return configurator
                 .UseSchemaProvisioner<SqlSchemaProvisioner>()
-                .UseDatabase<SqlStreamDatabase>(services =>
+                .UseStorage<SqlStreamStorage>(services =>
                 {
-                    // Configuring database
-                    var dbConfigurator = new SqlSingleTenantDatabaseConfigurator(services, defaultConfig);
-                    configureDatabase(dbConfigurator);
+                    // Configuring storage
+                    var dbConfigurator = new SqlSingleTenantStorageConfigurator(services, defaultConfig);
+                    configureStorage(dbConfigurator);
                     dbConfigurator.ApplyFromConfig(configuration, sectionName);
                 });
         }
 
-        internal static ISingleTenantConfigurator UseSqlDatabase(
+        internal static ISingleTenantConfigurator UseSqlStorage(
                 this ISingleTenantConfigurator configurator,
-                SqlDatabaseConfiguration defaultConfig,
-                Action<SqlSingleTenantDatabaseConfigurator> configureDatabase)
+                SqlStorageConfiguration defaultConfig,
+                Action<SqlSingleTenantStorageConfigurator> configureStorage)
         {
 
             return configurator
                 .UseSchemaProvisioner<SqlSchemaProvisioner>()
-                .UseDatabase<SqlStreamDatabase>(services =>
+                .UseStorage<SqlStreamStorage>(services =>
                 {
-                    // Configuring database
-                    var dbConfigurator = new SqlSingleTenantDatabaseConfigurator(services, defaultConfig);
-                    configureDatabase(dbConfigurator);
+                    // Configuring storage
+                    var dbConfigurator = new SqlSingleTenantStorageConfigurator(services, defaultConfig);
+                    configureStorage(dbConfigurator);
                     dbConfigurator.Apply();
                 });
         }

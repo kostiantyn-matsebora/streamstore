@@ -11,16 +11,16 @@ namespace StreamStore.ExampleBase.Configuration
     class RootCommandBuilder
     {
         readonly HashSet<string> modes = new HashSet<string>();
-        readonly HashSet<string> databases = new HashSet<string>();
+        readonly HashSet<string> storages = new HashSet<string>();
 
         public RootCommandBuilder(params StoreMode[] modes)
         {
             if (modes != null) Array.ForEach(modes, RegisterMode);
         }
 
-        public RootCommandBuilder AddDatabase(string database)
+        public RootCommandBuilder AddStorage(string storage)
         {
-            databases.Add(database);
+            storages.Add(storage);
             return this;
         }
 
@@ -35,27 +35,27 @@ namespace StreamStore.ExampleBase.Configuration
             var rootCommand = new RootCommand("Sample application for StreamStore");
 
             Option<string> modeOption = CreateModeOption();
-            Option<string> databaseOption = CreateDatabaseOption();
+            Option<string> storageOption = CreateStorageOption();
 
-            rootCommand.AddOption(databaseOption);
+            rootCommand.AddOption(storageOption);
             rootCommand.AddOption(modeOption);
-            rootCommand.SetHandler((mode, database) =>
-                command(new InvocationContext(mode.ToEnum<StoreMode>(), database)),
+            rootCommand.SetHandler((mode, storage) =>
+                command(new InvocationContext(mode.ToEnum<StoreMode>(), storage)),
                 modeOption,
-                databaseOption);
+                storageOption);
 
             return rootCommand;
         }
 
-        Option<string> CreateDatabaseOption()
+        Option<string> CreateStorageOption()
         {
-            var firstDatabase = databases.First();
+            var firstStorage = storages.First();
 
-            var databaseOption = new Option<string>(
-                name: "--database",
-                getDefaultValue: () => firstDatabase,
-                $"Database backend, possible values: {databases.CommaSeparated()}.");
-            return databaseOption;
+            var storageOption = new Option<string>(
+                name: "--storage",
+                getDefaultValue: () => firstStorage,
+                $"Storage backend, possible values: {storages.CommaSeparated()}.");
+            return storageOption;
         }
 
         Option<string> CreateModeOption()

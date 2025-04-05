@@ -5,9 +5,9 @@ namespace StreamStore.Sql.Sqlite
 {
     internal class SqliteProvisioningQueryProvider : ISqlProvisioningQueryProvider
     {
-        readonly SqlDatabaseConfiguration configuration;
+        readonly SqlStorageConfiguration configuration;
 
-        public SqliteProvisioningQueryProvider(SqlDatabaseConfiguration configuration)
+        public SqliteProvisioningQueryProvider(SqlStorageConfiguration configuration)
         {
           this.configuration = configuration.ThrowIfNull(nameof(configuration));
         }

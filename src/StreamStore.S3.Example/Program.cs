@@ -16,27 +16,27 @@ namespace StreamStore.S3.Example
 
             await builder
                 .ConfigureExampleApplication(c => 
-                    c.AddDatabase(S3Databases.AWS, x => x.WithSingleMode(UseAWSDatabase))
-                     .AddDatabase(S3Databases.B2, x => x.WithSingleMode(UseB2Database)))
+                    c.AddStorage(S3Storages.AWS, x => x.WithSingleMode(UseAWSStorage))
+                     .AddStorage(S3Storages.B2, x => x.WithSingleMode(UseB2Storage)))
                 .InvokeAsync(args);
         }
 
-        static void UseAWSDatabase(IHostApplicationBuilder builder)
+        static void UseAWSStorage(IHostApplicationBuilder builder)
         {
             builder
                 .Services
                 .ConfigureStreamStore(x =>
-                    x.WithSingleDatabase(x =>
-                        x.UseAWSDatabase()));
+                    x.WithSingleStorage(x =>
+                        x.UseAWSStorage()));
         }
 
-        static void UseB2Database(IHostApplicationBuilder builder)
+        static void UseB2Storage(IHostApplicationBuilder builder)
         {
             builder
                 .Services
                 .ConfigureStreamStore(x =>
-                    x.WithSingleDatabase(x =>
-                        x.UseB2Database(builder.Configuration)));
+                    x.WithSingleStorage(x =>
+                        x.UseB2Storage(builder.Configuration)));
         }
     }
 }

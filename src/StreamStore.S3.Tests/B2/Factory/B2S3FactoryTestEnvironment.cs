@@ -10,7 +10,7 @@ namespace StreamStore.S3.Tests.B2.Factory
     public class B2S3FactoryTestEnvironment : TestEnvironmentBase
     {
         public MockRepository MockRepository { get;  }
-        public B2StreamDatabaseSettings Settings { get; }
+        public B2StreamStorageSettings Settings { get; }
         public Mock<IStorageClientFactory> FactoryMock { get; }
 
         public readonly Id StreamId = Generated.Primitives.Id;
@@ -22,7 +22,7 @@ namespace StreamStore.S3.Tests.B2.Factory
             MockRepository = new MockRepository(MockBehavior.Strict);
             FactoryMock = new Mock<IStorageClientFactory>();
             var fixture = new Fixture();
-            Settings = new B2StreamDatabaseSettingsBuilder()
+            Settings = new B2StreamStorageSettingsBuilder()
                 .WithBucketId(fixture.Create<string>())
                 .WithBucketName(fixture.Create<string>())
                 .WithCredential(fixture.Create<string>(), fixture.Create<string>())

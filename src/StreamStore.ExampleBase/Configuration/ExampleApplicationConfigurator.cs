@@ -15,7 +15,7 @@ namespace StreamStore.ExampleBase.Configuration
     public sealed class ExampleApplicationConfigurator
     {
         readonly RootCommandBuilder commandBuilder = new RootCommandBuilder(StoreMode.Single);
-        readonly DatabaseConfiguratorRegistry configurators = new DatabaseConfiguratorRegistry();
+        readonly StorageConfiguratorRegistry configurators = new StorageConfiguratorRegistry();
 
         public ExampleApplicationConfigurator EnableMultitenancy()
         {
@@ -23,11 +23,11 @@ namespace StreamStore.ExampleBase.Configuration
             return this;
         }
 
-        public ExampleApplicationConfigurator AddDatabase<TEnum>(TEnum name, Action<DatabaseConfigurator> configure)
+        public ExampleApplicationConfigurator AddStorage<TEnum>(TEnum name, Action<StorageConfigurator> configure)
         {
-            var databaseName = Enum.GetName(typeof(TEnum), name).ToLower();
-            commandBuilder.AddDatabase(databaseName);
-            configure(configurators.GetOrAdd(databaseName));
+            var storageName = Enum.GetName(typeof(TEnum), name).ToLower();
+            commandBuilder.AddStorage(storageName);
+            configure(configurators.GetOrAdd(storageName));
             return this;
         }
 
@@ -44,7 +44,7 @@ namespace StreamStore.ExampleBase.Configuration
         static void RunHost(InvocationContext ctx, HostApplicationBuilder builder)
         {
             Console.WriteLine("Mode: {0}", ctx.Mode);
-            Console.WriteLine("Database backend: {0}", ctx.Database);
+            Console.WriteLine("Storage backend: {0}", ctx.Storage);
 
             var host = builder.Build();
             host.Run();
@@ -53,7 +53,7 @@ namespace StreamStore.ExampleBase.Configuration
 
         void ConfigureHost(InvocationContext ctx, IHostApplicationBuilder builder)
         {
-            ConfigureDatabase(ctx, builder);
+            ConfigureStorage(ctx, builder);
             ConfigureLogging(builder);
             ConfigureApplication(ctx, builder);
         }
@@ -69,11 +69,11 @@ namespace StreamStore.ExampleBase.Configuration
                  });
         }
 
-        void ConfigureDatabase(InvocationContext ctx, IHostApplicationBuilder builder)
+        void ConfigureStorage(InvocationContext ctx, IHostApplicationBuilder builder)
         {
             configurators
-                .Get(ctx.Database)
-                .ConfigureDatabase(builder, ctx.Mode);
+                .Get(ctx.Storage)
+                .ConfigureStorage(builder, ctx.Mode);
         }
         static void ConfigureApplication(InvocationContext ctx, IHostApplicationBuilder builder)
         {

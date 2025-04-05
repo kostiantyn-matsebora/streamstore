@@ -5,13 +5,13 @@
     <Nullable>enable</Nullable>
     <SignAssembly>False</SignAssembly>
     <Title>StreamStore.Contracts</Title>
-    <Description>Abstractions for creating specific database backend implementation used by StreamStore asynchronous event sourcing library.</Description>
+    <Description>Abstractions for creating specific storage backend implementation used by StreamStore asynchronous event sourcing library.</Description>
     <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
     <Authors>kostiantyn-matsebora</Authors>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>StreamStore.Contracts</PackageId>
-    <Version>0.11.0</Version>
+    <Version>0.12.0</Version>
     <RootNamespace>StreamStore</RootNamespace>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>

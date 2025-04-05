@@ -2,7 +2,7 @@
 using Cassandra;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.NoSql.Cassandra.Database;
+using StreamStore.NoSql.Cassandra.Storage;
 
 
 

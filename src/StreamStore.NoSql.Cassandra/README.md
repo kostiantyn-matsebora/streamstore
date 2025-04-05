@@ -69,7 +69,7 @@ However, in case if you decided to use library with [Azure Cosmos DB for Apache 
 services.ConfigureStreamStore(x =>...
   
   // Register single tenant implementation
-  x.WithSingleDatabase(c => ...
+  x.WithSingleStorage(c => ...
       c.UseCassandra(x => {
           x.UseCosmosDb(connectionString);            // Optional. Required  if you want to use Azure Cosmos DB for Apache Cassandra
           x.ConfigureCluster(c =>                     // Required. Configure cluster options. Optional if you decided to use CosmosDB (see above).
@@ -106,7 +106,7 @@ More information about how example application works you can find in [StreamStor
 
 ### Testing
 
-In order to run tests placed in [StreamStore.NoSql.Tests/Cassandra/Database](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.NoSql.Tests/Cassandra/Database), you need to have a running Cassandra cluster. You can use docker-compose [docker-compose.yaml](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.NoSql.Tests/Cassandra/Database/docker-compose.yaml) to run it.
+In order to run tests placed in [StreamStore.NoSql.Tests/Cassandra/Storage](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.NoSql.Tests/Cassandra/Storage), you need to have a running Cassandra cluster. You can use docker-compose [docker-compose.yaml](https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.NoSql.Tests/Cassandra/Storage/docker-compose.yaml) to run it.
 
 ## Configuration options
 
@@ -114,7 +114,7 @@ Below you can find the list of configuration options that can be used to configu
 
 ```csharp
 // Register single tenant implementation
-  x.WithSingleDatabase(c => ...
+  x.WithSingleStorage(c => ...
       c.UseCassandra(x => 
          {
             x.UseCosmosDb(connectionString);                                    // Optional. Required  if you want to use Azure Cosmos DB for Apache Cassandra.

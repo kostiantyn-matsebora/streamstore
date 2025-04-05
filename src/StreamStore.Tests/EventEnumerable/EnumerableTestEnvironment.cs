@@ -27,7 +27,7 @@ namespace StreamStore.Tests.Enumerator
         protected override void ConfigureStreamStore(IStreamStoreConfigurator configurator)
         {
             configurator.WithReadingMode(mode);
-            configurator.WithSingleDatabase(x => x.UseInMemoryDatabase());
+            configurator.WithSingleStorage(x => x.UseInMemoryStorage());
         }
     }
 }

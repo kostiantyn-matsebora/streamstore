@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using StreamStore.NoSql.Cassandra.Configuration;
-using StreamStore.NoSql.Cassandra.Database;
+using StreamStore.NoSql.Cassandra.Storage;
 using StreamStore.Testing;
 
 namespace StreamStore.NoSql.Tests.Cassandra.CosmosDb.Queries

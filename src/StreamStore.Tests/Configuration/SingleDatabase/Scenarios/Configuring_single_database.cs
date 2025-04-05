@@ -9,11 +9,11 @@ using StreamStore.InMemory.Extensions;
 
 namespace StreamStore.Tests.Configuration.SingleTenant
 {
-    public class Configuring_single_database: Scenario<SingleTenantConfiguratorTestEnvironment>
+    public class Configuring_single_storage: Scenario<SingleTenantConfiguratorTestEnvironment>
     {
 
         [Fact]
-        public void When_database_is_not_configured()
+        public void When_storage_is_not_configured()
         {
             // Arrange
             var configurator = CreateConfigurator();
@@ -22,29 +22,29 @@ namespace StreamStore.Tests.Configuration.SingleTenant
             var act = () => configurator.Configure();
 
             //Assert
-            act.Should().Throw<InvalidOperationException>().WithMessage("Database backend (IStreamDatabase) is not registered");
+            act.Should().Throw<InvalidOperationException>().WithMessage("Storage backend (IStreamStorage) is not registered");
         }
 
         [Fact]
-        public void When_database_is_configured_by_defaults()
+        public void When_storage_is_configured_by_defaults()
         {
             // Arrange
             var configurator = CreateConfigurator();
 
             // Act
-            configurator.UseInMemoryDatabase();
+            configurator.UseInMemoryStorage();
             var services =  configurator.Configure();
 
             //Assert
             var provider = services.BuildServiceProvider();
 
-            provider.GetRequiredService<IStreamDatabase>()
+            provider.GetRequiredService<IStreamStorage>()
                      .Should().NotBeNull()
-                     .And.BeOfType<InMemoryStreamDatabase>();
+                     .And.BeOfType<InMemoryStreamStorage>();
 
             provider.GetRequiredService<IStreamReader>()
                         .Should().NotBeNull()
-                        .And.BeOfType<InMemoryStreamDatabase>();
+                        .And.BeOfType<InMemoryStreamStorage>();
 
             provider.GetRequiredService<ISchemaProvisioner>()
                     .Should().NotBeNull()
@@ -53,26 +53,26 @@ namespace StreamStore.Tests.Configuration.SingleTenant
 
 
         [Fact]
-        public void When_database_is_configured_by_database_instance()
+        public void When_storage_is_configured_by_storage_instance()
         {
             // Arrange
             var configurator = CreateConfigurator();
-            var database = MockStreamDatabase.Object;
+            var storage = MockStreamStorage.Object;
 
             // Act
-            configurator.UseDatabase(database);
+            configurator.UseStorage(storage);
             var services = configurator.Configure();
 
             //Assert
             var provider = services.BuildServiceProvider();
 
-            provider.GetRequiredService<IStreamDatabase>()
+            provider.GetRequiredService<IStreamStorage>()
                      .Should().NotBeNull()
-                     .And.Be(database);
+                     .And.Be(storage);
 
             provider.GetRequiredService<IStreamReader>()
                         .Should().NotBeNull()
-                        .And.Be(database);
+                        .And.Be(storage);
 
             provider.GetRequiredService<ISchemaProvisioner>()
                     .Should().NotBeNull()
@@ -81,7 +81,7 @@ namespace StreamStore.Tests.Configuration.SingleTenant
 
 
         [Fact]
-        public void When_database_is_configured_with_custom_dependencies()
+        public void When_storage_is_configured_with_custom_dependencies()
         {
             // Arrange
             var configurator = CreateConfigurator();
@@ -89,7 +89,7 @@ namespace StreamStore.Tests.Configuration.SingleTenant
 
             // Act
             configurator
-                .UseInMemoryDatabase()
+                .UseInMemoryStorage()
                 .UseSchemaProvisioner<FakeSchemaProvisioner>();
             var services = configurator.Configure();
 

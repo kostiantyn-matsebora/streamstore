@@ -8,15 +8,15 @@ namespace StreamStore.Sql.Tests.Configuration.SingleTenant
 {
     public abstract class SingleTenantConfiguratorTestEnvironmentBase : TestEnvironmentBase
     {
-        public SqlSingleTenantDatabaseConfigurator CreateSqlDatabaseConfigurator(IServiceCollection collection) 
+        public SqlSingleTenantStorageConfigurator CreateSqlStorageConfigurator(IServiceCollection collection) 
         {
-            return new SqlSingleTenantDatabaseConfigurator(collection, DefaultConfiguration);
+            return new SqlSingleTenantStorageConfigurator(collection, DefaultConfiguration);
         }
 
-        public abstract SqlDatabaseConfiguration DefaultConfiguration { get; }
+        public abstract SqlStorageConfiguration DefaultConfiguration { get; }
         public abstract string SectionName { get; }
 
-        public abstract void UseParticularDatabase(ISingleTenantConfigurator configurator, Action<SqlSingleTenantDatabaseConfigurator> configureDatabase);
-        public abstract void UseParticularDatabaseWithAppSettings(ISingleTenantConfigurator configurator, IConfigurationRoot configuration);
+        public abstract void UseParticularStorage(ISingleTenantConfigurator configurator, Action<SqlSingleTenantStorageConfigurator> configureStorage);
+        public abstract void UseParticularStorageWithAppSettings(ISingleTenantConfigurator configurator, IConfigurationRoot configuration);
     }
 }

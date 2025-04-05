@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Configuration;
-using StreamStore.Configuration.Database;
+using StreamStore.Configuration.Storage;
 using StreamStore.Multitenancy;
 using StreamStore.Provisioning;
 
@@ -14,7 +14,7 @@ namespace StreamStore
     public class StreamStoreConfigurator : IStreamStoreConfigurator
     {
         StreamReadingMode mode = StreamReadingMode.Default;
-        IStreamDatabaseConfigurator? databaseConfigurator;
+        IStreamStorageConfigurator? storageConfigurator;
         readonly ISerializationConfigurator serializationConfigurator = new SerializationConfigurator();
 
         bool schemaProvisioningEnabled = false;
@@ -48,11 +48,11 @@ namespace StreamStore
             return this;
         }
 
-        public IStreamStoreConfigurator WithSingleDatabase(Action<ISingleTenantConfigurator> configure)
+        public IStreamStoreConfigurator WithSingleStorage(Action<ISingleTenantConfigurator> configure)
         {
             var configurator = new SingleTenantConfigurator();
             configure(configurator);
-            databaseConfigurator = configurator;
+            storageConfigurator = configurator;
             return this;
         }
 
@@ -60,22 +60,22 @@ namespace StreamStore
         {
             var configurator = new MultitenancyConfigurator();
             configure(configurator);
-            databaseConfigurator = configurator;
+            storageConfigurator = configurator;
             return this;
         }
 
         public IServiceCollection Configure(IServiceCollection services)
         {
-            if (databaseConfigurator == null)
-                throw new InvalidOperationException("Database backend is not registered");
+            if (storageConfigurator == null)
+                throw new InvalidOperationException("Storage backend is not registered");
 
             var configuration = CreateConfiguration();
 
-            CopyServices(databaseConfigurator.Configure(), services);
+            CopyServices(storageConfigurator.Configure(), services);
             CopyServices(serializationConfigurator.Configure(), services);
 
             RegisterSharedDependencies(services, configuration);
-            RegisterModeDependencies(services, (dynamic)databaseConfigurator);
+            RegisterModeDependencies(services, (dynamic)storageConfigurator);
 
             return services;
         }

@@ -7,18 +7,18 @@ namespace StreamStore.Sql.Tests.Sqlite.Configuration.SingleTenant
 {
     public class SqliteSingleTenantConfigurationTestEnvironment : SingleTenantConfiguratorTestEnvironmentBase
     {
-        public override SqlDatabaseConfiguration DefaultConfiguration => SqliteConfiguration.DefaultConfiguration;
+        public override SqlStorageConfiguration DefaultConfiguration => SqliteConfiguration.DefaultConfiguration;
 
         public override string SectionName => SqliteConfiguration.ConfigurationSection;
 
-        public override void UseParticularDatabase(ISingleTenantConfigurator configurator, Action<SqlSingleTenantDatabaseConfigurator> configureDatabase)
+        public override void UseParticularStorage(ISingleTenantConfigurator configurator, Action<SqlSingleTenantStorageConfigurator> configureStorage)
         {
-            configurator.UseSqliteDatabase(configureDatabase);
+            configurator.UseSqliteStorage(configureStorage);
         }
 
-        public override void UseParticularDatabaseWithAppSettings(ISingleTenantConfigurator configurator, IConfigurationRoot configuration)
+        public override void UseParticularStorageWithAppSettings(ISingleTenantConfigurator configurator, IConfigurationRoot configuration)
         {
-            configurator.UseSqliteDatabase(configuration);
+            configurator.UseSqliteStorage(configuration);
         }
     }
 }

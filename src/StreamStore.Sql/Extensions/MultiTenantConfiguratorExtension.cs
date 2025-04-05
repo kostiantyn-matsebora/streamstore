@@ -8,31 +8,31 @@ namespace StreamStore.Sql
 {
     public static class MultiTenantConfiguratorExtension
     {
-        internal static IMultitenancyConfigurator UseSqlDatabase<TDatabaseProvider>(
+        internal static IMultitenancyConfigurator UseSqlStorage<TStorageProvider>(
                 this IMultitenancyConfigurator configurator,
-                SqlDatabaseConfiguration defaultConfig,
+                SqlStorageConfiguration defaultConfig,
                 IConfiguration configuration,
                 string sectionName,
-                Action<SqlMultiTenantDatabaseConfigurator> configureDatabase) where TDatabaseProvider : ITenantStreamDatabaseProvider
+                Action<SqlMultiTenantStorageConfigurator> configureStorage) where TStorageProvider : ITenantStreamStorageProvider
         {
-            return configurator.UseDatabaseProvider<TDatabaseProvider>(services =>
+            return configurator.UseStorageProvider<TStorageProvider>(services =>
             {
-                var configurator = new SqlMultiTenantDatabaseConfigurator(services, defaultConfig);
-                configureDatabase(configurator);
+                var configurator = new SqlMultiTenantStorageConfigurator(services, defaultConfig);
+                configureStorage(configurator);
                 configurator.ApplyFromConfig(configuration, sectionName);
             });
             
         }
 
-        internal static IMultitenancyConfigurator UseSqlDatabase<TDatabaseProvider>(
+        internal static IMultitenancyConfigurator UseSqlStorage<TStorageProvider>(
              this IMultitenancyConfigurator configurator,
-             SqlDatabaseConfiguration defaultConfig,
-             Action<SqlMultiTenantDatabaseConfigurator> configureDatabase) where TDatabaseProvider: ITenantStreamDatabaseProvider
+             SqlStorageConfiguration defaultConfig,
+             Action<SqlMultiTenantStorageConfigurator> configureStorage) where TStorageProvider: ITenantStreamStorageProvider
         {
-            return configurator.UseDatabaseProvider<TDatabaseProvider>(services =>
+            return configurator.UseStorageProvider<TStorageProvider>(services =>
             {
-                var dbConfigurator = new SqlMultiTenantDatabaseConfigurator(services, defaultConfig);
-                configureDatabase(dbConfigurator);
+                var dbConfigurator = new SqlMultiTenantStorageConfigurator(services, defaultConfig);
+                configureStorage(dbConfigurator);
                 dbConfigurator.Apply();
             });
         }

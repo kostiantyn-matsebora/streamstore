@@ -8,22 +8,22 @@ namespace StreamStore.Sql.Tests.Postgres.Configuration.Multitenancy
 {
     public class PostgresMultiTenantConfigurationTestEnvironment : MultitenantConfiguratorTestEnvironmentBase
     {
-        public override SqlDatabaseConfiguration DefaultConfiguration => PostgresConfiguration.DefaultConfiguration;
+        public override SqlStorageConfiguration DefaultConfiguration => PostgresConfiguration.DefaultConfiguration;
 
         public override string SectionName => PostgresConfiguration.ConfigurationSection;
 
-        public override void UseDatabase(IMultitenancyConfigurator configurator, Action<SqlMultiTenantDatabaseConfigurator> configureDatabase)
+        public override void UseStorage(IMultitenancyConfigurator configurator, Action<SqlMultiTenantStorageConfigurator> configureStorage)
         {
-            configurator.UsePostgresDatabase(x =>
+            configurator.UsePostgresStorage(x =>
             {
                 x.WithConnectionStringProvider<FakeConnectionStringProvider>();
-                configureDatabase(x);
+                configureStorage(x);
             });
         }
 
-        public override void UseDatabaseWithAppSettings(IMultitenancyConfigurator configurator, IConfigurationRoot configuration)
+        public override void UseStorageWithAppSettings(IMultitenancyConfigurator configurator, IConfigurationRoot configuration)
         {
-            configurator.UsePostgresDatabase(configuration, x => x.WithConnectionStringProvider<FakeConnectionStringProvider>());
+            configurator.UsePostgresStorage(configuration, x => x.WithConnectionStringProvider<FakeConnectionStringProvider>());
         }
     }
 }

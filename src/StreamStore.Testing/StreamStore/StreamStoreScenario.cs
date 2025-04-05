@@ -8,6 +8,6 @@
 
         protected IStreamStore Store => Environment.Store;
 
-        protected MemoryDatabase Container => Environment.Container;
+        protected MemoryStorage Container => Environment.Container;
     }
 }

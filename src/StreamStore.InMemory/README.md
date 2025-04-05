@@ -2,7 +2,7 @@
 
 [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/)
 
-In-memory database backend for [`StreamStore`](https://github.com/kostiantyn-matsebora/streamstore/tree/master) storage is provided **for testing and educational purposes only**.
+In-memory storage backend for [`StreamStore`](https://github.com/kostiantyn-matsebora/streamstore/tree/master) storage is provided **for testing and educational purposes only**.
 
 ## Installation
 
@@ -28,8 +28,8 @@ or from Nuget Package Manager Console:
   
 ```csharp
   services.ConfigureStreamStore(x => 
-      x.WithSingleDatabase(c => 
-        c.UseInMemoryDatabase()
+      x.WithSingleStorage(c => 
+        c.UseInMemoryStorage()
       )
   ); // Register StreamStore
 ```

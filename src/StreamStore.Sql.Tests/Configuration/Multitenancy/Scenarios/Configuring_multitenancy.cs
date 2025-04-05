@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using StreamStore.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Sql.Database;
+using StreamStore.Sql.Storage;
 using StreamStore.Provisioning;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
@@ -19,7 +19,7 @@ namespace StreamStore.Sql.Tests.Configuration.MultiTenant
         public void When_connection_string_provider_is_not_set()
         {
             // Arrange
-            var configurator = Environment.CreateSqlDatabaseConfigurator(new ServiceCollection());
+            var configurator = Environment.CreateSqlStorageConfigurator(new ServiceCollection());
 
             // Act
             var act = () => configurator.Apply();
@@ -38,8 +38,8 @@ namespace StreamStore.Sql.Tests.Configuration.MultiTenant
 
             // Act
             configurator.WithMultitenancy(x => 
-                    Environment.UseDatabase(x, c => 
-                        c.ConfigureDatabase(x => 
+                    Environment.UseStorage(x, c => 
+                        c.ConfigureStorage(x => 
                             x.WithConnectionString("connectionString")
                              .WithSchema("schema")
                              .WithTable("table"))));
@@ -49,16 +49,16 @@ namespace StreamStore.Sql.Tests.Configuration.MultiTenant
             //Assert
             var provider = services.BuildServiceProvider();
 
-            provider.GetRequiredService<ITenantStreamDatabaseProvider>()
+            provider.GetRequiredService<ITenantStreamStorageProvider>()
                      .Should().NotBeNull()
-                     .And.BeAssignableTo<SqlTenantStreamDatabaseProvider>();
+                     .And.BeAssignableTo<SqlTenantStreamStorageProvider>();
 
             provider.GetRequiredService<ITenantSchemaProvisionerFactory>().Should().NotBeNull();
             provider.GetRequiredService<ISqlExceptionHandler>().Should().NotBeNull();
             provider.GetRequiredService<ISqlTenantConnectionStringProvider>().Should().NotBeNull();
-            provider.GetRequiredService<ISqlTenantDatabaseConfigurationProvider>().Should().NotBeNull();
+            provider.GetRequiredService<ISqlTenantStorageConfigurationProvider>().Should().NotBeNull();
 
-            var configuration = provider.GetRequiredService<SqlDatabaseConfiguration>();
+            var configuration = provider.GetRequiredService<SqlStorageConfiguration>();
             configuration.ConnectionString.Should().Be("connectionString");
             configuration.SchemaName.Should().Be("schema");
             configuration.TableName.Should().Be("table");
@@ -82,23 +82,23 @@ namespace StreamStore.Sql.Tests.Configuration.MultiTenant
                     .AddInMemoryCollection(appSettings)
                     .Build();
             // Act
-            configurator.WithMultitenancy(x => Environment.UseDatabaseWithAppSettings(x, config));
+            configurator.WithMultitenancy(x => Environment.UseStorageWithAppSettings(x, config));
 
             configurator.Configure(services);
 
             //Assert
             var provider = services.BuildServiceProvider();
 
-            provider.GetRequiredService<ITenantStreamDatabaseProvider>()
+            provider.GetRequiredService<ITenantStreamStorageProvider>()
                      .Should().NotBeNull()
-                     .And.BeAssignableTo<SqlTenantStreamDatabaseProvider>();
+                     .And.BeAssignableTo<SqlTenantStreamStorageProvider>();
 
             provider.GetRequiredService<ITenantSchemaProvisionerFactory>().Should().NotBeNull();
             provider.GetRequiredService<ISqlExceptionHandler>().Should().NotBeNull();
             provider.GetRequiredService<ISqlTenantConnectionStringProvider>().Should().NotBeNull();
-            provider.GetRequiredService<ISqlTenantDatabaseConfigurationProvider>().Should().NotBeNull();
+            provider.GetRequiredService<ISqlTenantStorageConfigurationProvider>().Should().NotBeNull();
 
-            var configuration = provider.GetRequiredService<SqlDatabaseConfiguration>();
+            var configuration = provider.GetRequiredService<SqlStorageConfiguration>();
             configuration.ConnectionString.Should().Be("connectionString");
             configuration.SchemaName.Should().Be("schema");
             configuration.TableName.Should().Be("table");

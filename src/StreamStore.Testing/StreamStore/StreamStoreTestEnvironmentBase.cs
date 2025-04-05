@@ -6,11 +6,11 @@ namespace StreamStore.Testing.StreamStore
 {
     public abstract class StreamStoreTestEnvironmentBase : TestEnvironmentBase
     {
-        readonly MemoryDatabase database = new MemoryDatabase();
+        readonly MemoryStorage storage = new MemoryStorage();
 
-        public MemoryDatabase Container => database;
+        public MemoryStorage Container => storage;
 
-        public IStreamDatabase Database => Services.GetRequiredService<IStreamDatabase>();
+        public IStreamStorage Storage => Services.GetRequiredService<IStreamStorage>();
 
         public IStreamStore Store => Services.GetRequiredService<IStreamStore>();
 
@@ -21,7 +21,7 @@ namespace StreamStore.Testing.StreamStore
 
         protected override void SetUpInternal()
         {
-            database.CopyTo(Database);
+            storage.CopyTo(Storage);
         }
 
         protected abstract void ConfigureStreamStore(IStreamStoreConfigurator configurator);

@@ -8,16 +8,16 @@ namespace StreamStore.Sql.Tests.Postgres.Configuration.SingleTenant
 {
     public class PostgresSingleTenantConfigurationTestEnvironment : SingleTenantConfiguratorTestEnvironmentBase
     {
-        public override SqlDatabaseConfiguration DefaultConfiguration => PostgresConfiguration.DefaultConfiguration;
+        public override SqlStorageConfiguration DefaultConfiguration => PostgresConfiguration.DefaultConfiguration;
 
-        public override void UseParticularDatabase(ISingleTenantConfigurator configurator, Action<SqlSingleTenantDatabaseConfigurator> configureDatabase)
+        public override void UseParticularStorage(ISingleTenantConfigurator configurator, Action<SqlSingleTenantStorageConfigurator> configureStorage)
         {
-            configurator.UsePostgresDatabase(configureDatabase);
+            configurator.UsePostgresStorage(configureStorage);
         }
 
-        public override void UseParticularDatabaseWithAppSettings(ISingleTenantConfigurator configurator, IConfigurationRoot configuration)
+        public override void UseParticularStorageWithAppSettings(ISingleTenantConfigurator configurator, IConfigurationRoot configuration)
         {
-            configurator.UsePostgresDatabase(configuration);
+            configurator.UsePostgresStorage(configuration);
         }
 
         public override string SectionName => PostgresConfiguration.ConfigurationSection;

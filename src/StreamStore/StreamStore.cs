@@ -11,18 +11,18 @@ namespace StreamStore
 {
     public sealed class StreamStore : IStreamStore
     {
-        readonly IStreamDatabase database;
+        readonly IStreamStorage storage;
         readonly EventConverter converter;
         readonly StreamStoreConfiguration configuration;
         readonly StreamEventEnumeratorFactory enumeratorFactory;
-        public StreamStore(StreamStoreConfiguration configuration, IStreamDatabase database, IEventSerializer serializer)
+        public StreamStore(StreamStoreConfiguration configuration, IStreamStorage storage, IEventSerializer serializer)
         {
-            if (database == null) throw new ArgumentNullException(nameof(database));
+            if (storage == null) throw new ArgumentNullException(nameof(storage));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
-            this.database = database;
+            this.storage = storage;
             converter = new EventConverter(serializer);
-            enumeratorFactory = new StreamEventEnumeratorFactory(configuration, database, converter);
+            enumeratorFactory = new StreamEventEnumeratorFactory(configuration, storage, converter);
             this.configuration = configuration;
         }
 
@@ -30,7 +30,7 @@ namespace StreamStore
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
 
-            await database.DeleteAsync(streamId, cancellationToken);
+            await storage.DeleteAsync(streamId, cancellationToken);
         }
 
         public async Task<IAsyncEnumerable<StreamEvent>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
@@ -40,7 +40,7 @@ namespace StreamStore
             if (startFrom < Revision.One)
                 throw new ArgumentOutOfRangeException(nameof(startFrom), "startFrom must be greater than or equal to 1.");
 
-            var revision = await database.GetActualRevision(streamId, cancellationToken);
+            var revision = await storage.GetActualRevision(streamId, cancellationToken);
             if (revision == null) throw new StreamNotFoundException(streamId);
 
             if (revision.Value < startFrom)
@@ -51,11 +51,11 @@ namespace StreamStore
             return new StreamEventEnumerable(parameters, enumeratorFactory);
         }
 
-        public async Task<IStreamWriter> BeginWriteAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
+        public async Task<IStreamUnitOfWork> BeginWriteAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
 
-            var revision = await database.GetActualRevision(streamId, cancellationToken);
+            var revision = await storage.GetActualRevision(streamId, cancellationToken);
 
             if (revision == null) revision = Revision.Zero;
 
@@ -63,12 +63,12 @@ namespace StreamStore
             if (expectedRevision != revision.Value)
                 throw new OptimisticConcurrencyException(expectedRevision, revision.Value, streamId);
 
-            var uow = await database.BeginAppendAsync(streamId, expectedRevision);
+            var uow = await storage.BeginAppendAsync(streamId, expectedRevision);
 
             if (uow == null)
                 throw new InvalidOperationException("Failed to open stream, either stream does not exist or revision is incorrect.");
 
-            return new StreamWriter(uow, converter);
+            return new StreamUnitOfWork(uow, converter);
         }
     }
 }

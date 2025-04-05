@@ -11,7 +11,7 @@ namespace StreamStore.Sql.Sqlite
     {
         readonly string connectionString;
 
-        public SqliteDbConnectionFactory(SqlDatabaseConfiguration configuration): this(configuration.ConnectionString)
+        public SqliteDbConnectionFactory(SqlStorageConfiguration configuration): this(configuration.ConnectionString)
         {
         }
         

@@ -13,7 +13,7 @@ namespace StreamStore
 
         IStreamStoreConfigurator ConfigureSerialization(Action<ISerializationConfigurator> configure);
 
-        public IStreamStoreConfigurator WithSingleDatabase(Action<ISingleTenantConfigurator> configure);
+        public IStreamStoreConfigurator WithSingleStorage(Action<ISingleTenantConfigurator> configure);
 
         public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenancyConfigurator> configure);
 

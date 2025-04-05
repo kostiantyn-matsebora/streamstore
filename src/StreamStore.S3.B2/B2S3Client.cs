@@ -14,11 +14,11 @@ namespace StreamStore.S3.B2
 {
     internal class B2S3Client : IS3Client
     {
-        readonly B2StreamDatabaseSettings settings;
+        readonly B2StreamStorageSettings settings;
         IStorageClient? client;
         const int maxFileCount = 100;
 
-        public B2S3Client(B2StreamDatabaseSettings settings, IStorageClient client)
+        public B2S3Client(B2StreamStorageSettings settings, IStorageClient client)
         {
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
             this.client = client ?? throw new ArgumentNullException(nameof(client));

@@ -5,13 +5,13 @@ namespace StreamStore.ExampleBase
     [ExcludeFromCodeCoverage]
     public sealed class InvocationContext
     {
-        public InvocationContext(StoreMode mode, string database)
+        public InvocationContext(StoreMode mode, string storage)
         {
             this.Mode = mode;
-            this.Database = database;
+            this.Storage = storage;
         }
 
-        public string Database { get;  }
+        public string Storage { get;  }
         public StoreMode Mode { get; }
     }
 }

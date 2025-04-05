@@ -8,9 +8,9 @@ Heavily inspired by Greg Young's Event Store and [`Streamstone`](https://github.
 
 ## Overview
 
-Designed to be easily extended with custom database backends.
+Designed to be easily extended with custom storage backends.
 Despite the fact that component implements a logical layer for storing and querying events as a stream,
- `it does not provide functionality of DDD aggregate`, such as state mutation, conflict resolution etc., but serves more as `persistence layer`  for it.
+ `it does not provide functionality of DDD aggregate`, such as state mutation, conflict resolution etc., but serves more as `persistence layer` for it.
 
 ## Storage packages
 
@@ -34,7 +34,7 @@ The general idea is to highlight the common characteristics and features of even
 - [x] Serialization/deserialization of events.
 - [x] Optimistic concurrency control.
 - [x] Event duplication detection based on event ID.
-- [x] Database agnostic test framework, including benchmarking test scenarios.
+- [x] Storage agnostic test framework, including benchmarking test scenarios.
 - [x] Binary serialization support.
 
 More information you can find in the [documentation](https://github.com/kostiantyn-matsebora/streamstore).

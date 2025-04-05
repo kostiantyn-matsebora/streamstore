@@ -6,7 +6,7 @@ namespace StreamStore.Sql.Sqlite
     {
         public const string ConfigurationSection = "StreamStore:Sqlite";
 
-        public readonly static SqlDatabaseConfiguration DefaultConfiguration = new SqlDatabaseConfiguration
+        public readonly static SqlStorageConfiguration DefaultConfiguration = new SqlStorageConfiguration
         {
             SchemaName = "main",
             TableName = "Events",

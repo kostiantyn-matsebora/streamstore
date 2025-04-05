@@ -20,7 +20,7 @@ Each event has a unique identifier, a timestamp, and a payload.
 ### Stream ID
 
 A stream identifier is a unique identifier of the stream.
-It is an abstraction of the sequence of events, guaranteeing `uniqueness and order, as well isolation`.  
+It is an abstraction of the sequence of events, guaranteeing `uniqueness and order, as well isolation`.
 Example of stream IDs:
 
 - ID of DDD aggregate.
@@ -67,7 +67,7 @@ Stream store is an abstraction of particular storage that allows to read and wri
 
 - _Idempotency of reading and deletion fully depends on particular storage implementation._
 
-- _You don't need to retrieve stream  to add events to it_.  
+- _You don't need to retrieve stream  to add events to it_.
   Appending to stream and getting stream  are separate operations.
 
 - _Despite the fact that reading is declared as asynchronous and iterative operation, for the sake of performance it is implemented as paginated operation._
@@ -75,7 +75,7 @@ Stream store is an abstraction of particular storage that allows to read and wri
   You can define the page size by using `WithReadingPageSize` method of store configuration, by default it is 10 events.
 
 - _Reading and writing operations are not thread-safe_.  
- Thus, it is not recommended to use the same instances of `IStreamWriter` or `IAsyncEnumerable<StreamEvent>` in multiple threads.
+ Thus, it is not recommended to use the same instances of `IStreamUnitOfWork` or `IAsyncEnumerable<StreamEvent>` in multiple threads.
 
 [Id]: ../src/StreamStore.Contracts/Id.cs
 [Revision]: ../src/StreamStore.Contracts/Revision.cs

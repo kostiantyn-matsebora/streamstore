@@ -29,7 +29,7 @@ namespace StreamStore.ExampleBase.Workers
                                 .AppendEventAsync(CreateEvent(), token)
                                 .AppendEventAsync(CreateEvent(), token)
                                 .AppendEventAsync(CreateEvent(), token)
-                            .CommitAsync(token);
+                            .SaveChangesAsync(token);
                 
                 TrackProgress(new WriteSucceeded(actualRevision, 3));
             }

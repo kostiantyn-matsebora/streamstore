@@ -11,7 +11,7 @@ namespace StreamStore.NoSql.Cassandra
         {
             configurator
                 .UseSchemaProvisionerFactory<CassandraSchemaProvisionerFactory>()
-                .UseDatabaseProvider<CassandraStreamDatabaseProvider>(services =>
+                .UseStorageProvider<CassandraStreamStorageProvider>(services =>
                 {
                     var multitenancyConfigurator = new CassandraMultitenantConfigurator();
                     configure(multitenancyConfigurator);

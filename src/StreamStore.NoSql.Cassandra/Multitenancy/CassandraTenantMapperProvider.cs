@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using StreamStore.NoSql.Cassandra.API;
-using StreamStore.NoSql.Cassandra.Database;
+using StreamStore.NoSql.Cassandra.Storage;
 
 namespace StreamStore.NoSql.Cassandra.Multitenancy
 {

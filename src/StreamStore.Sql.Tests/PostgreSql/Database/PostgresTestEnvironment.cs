@@ -1,15 +1,15 @@
-﻿using StreamStore.Sql.Tests.Database;
+﻿using StreamStore.Sql.Tests.Storage;
 
 
-namespace StreamStore.Sql.Tests.PostgreSql.Database
+namespace StreamStore.Sql.Tests.PostgreSql.Storage
 {
-    public class PostgresTestEnvironment : SqlTestEnvironmentBase<PostgresTestDatabase>
+    public class PostgresTestEnvironment : SqlTestEnvironmentBase<PostgresTestStorage>
     {
-        public PostgresTestEnvironment() : this(new PostgresDatabaseFixture())
+        public PostgresTestEnvironment() : this(new PostgresStorageFixture())
         {
         }
 
-        public PostgresTestEnvironment(PostgresDatabaseFixture fixture) : base(fixture)
+        public PostgresTestEnvironment(PostgresStorageFixture fixture) : base(fixture)
         {
         }
     }

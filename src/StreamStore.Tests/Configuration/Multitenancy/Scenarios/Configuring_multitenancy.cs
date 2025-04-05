@@ -14,7 +14,7 @@ namespace StreamStore.Tests.Configuration.MultiTenant
     {
 
         [Fact]
-        public void When_database_provider_is_not_configured()
+        public void When_storage_provider_is_not_configured()
         {
             // Arrange
             var configurator = CreateConfigurator();
@@ -23,7 +23,7 @@ namespace StreamStore.Tests.Configuration.MultiTenant
             var act = configurator.Configure;
 
             //Assert
-            act.Should().Throw<InvalidOperationException>().WithMessage("Database backend (ITenantStreamDatabaseProvider) is not registered");
+            act.Should().Throw<InvalidOperationException>().WithMessage("Storage backend (ITenantStreamStorageProvider) is not registered");
         }
 
         [Fact]
@@ -33,16 +33,16 @@ namespace StreamStore.Tests.Configuration.MultiTenant
             var configurator = CreateConfigurator();
 
             // Act
-            configurator.UseInMemoryDatabase();
+            configurator.UseInMemoryStorage();
         
             var services = configurator.Configure();
 
             //Assert
             var provider = services.BuildServiceProvider();
 
-            provider.GetRequiredService<ITenantStreamDatabaseProvider>()
+            provider.GetRequiredService<ITenantStreamStorageProvider>()
                      .Should().NotBeNull()
-                     .And.BeOfType<InMemoryStreamDatabaseProvider>();
+                     .And.BeOfType<InMemoryStreamStorageProvider>();
 
             provider.GetRequiredService<ITenantSchemaProvisionerFactory>()
                     .Should().NotBeNull()
@@ -60,7 +60,7 @@ namespace StreamStore.Tests.Configuration.MultiTenant
 
             // Act
             configurator
-                .UseInMemoryDatabase()
+                .UseInMemoryStorage()
                 .UseSchemaProvisionerFactory<FakeSchemaProvisionerFactory>()
                 .UseTenantProvider<FakeTenantProvider>();
 
@@ -69,9 +69,9 @@ namespace StreamStore.Tests.Configuration.MultiTenant
             //Assert
             var provider = services.BuildServiceProvider();
 
-            provider.GetRequiredService<ITenantStreamDatabaseProvider>()
+            provider.GetRequiredService<ITenantStreamStorageProvider>()
                      .Should().NotBeNull()
-                     .And.BeOfType<InMemoryStreamDatabaseProvider>();
+                     .And.BeOfType<InMemoryStreamStorageProvider>();
 
             provider.GetRequiredService<ITenantSchemaProvisionerFactory>()
                     .Should().NotBeNull()

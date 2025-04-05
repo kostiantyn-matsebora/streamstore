@@ -5,7 +5,7 @@ using Cassandra.Mapping;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.API;
-using StreamStore.NoSql.Cassandra.Database;
+using StreamStore.NoSql.Cassandra.Storage;
 using StreamStore.NoSql.Cassandra.Extensions;
 
 

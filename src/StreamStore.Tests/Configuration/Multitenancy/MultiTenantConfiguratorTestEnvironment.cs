@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using StreamStore.Configuration.Database;
+using StreamStore.Configuration.Storage;
 using StreamStore.Multitenancy;
 using StreamStore.Provisioning;
 using StreamStore.Testing;
@@ -15,7 +15,7 @@ namespace StreamStore.Tests.Configuration.MultiTenant
 
         public static IServiceCollection CreateServiceCollection() => new ServiceCollection();
 
-        public static Mock<IStreamDatabase> MockStreamDatabase => Generated.Mocks.Single<IStreamDatabase>();
+        public static Mock<IStreamStorage> MockStreamStorage => Generated.Mocks.Single<IStreamStorage>();
 
         internal class FakeSchemaProvisionerFactory : ITenantSchemaProvisionerFactory
         {

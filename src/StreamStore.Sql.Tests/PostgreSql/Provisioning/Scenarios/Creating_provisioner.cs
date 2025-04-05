@@ -29,7 +29,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Provisioning
 
             configurationProvider
                 .Setup(provider => provider.GetConfiguration(tenantId))
-                .Returns(new SqlDatabaseConfiguration());
+                .Returns(new SqlStorageConfiguration());
 
             // Act
             var provisioner = factory.Create(tenantId);

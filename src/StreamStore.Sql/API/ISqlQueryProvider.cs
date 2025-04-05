@@ -1,10 +1,10 @@
 ﻿
-using StreamStore.Database;
+using StreamStore.Storage;
 
 namespace StreamStore.Sql.API
 {
     public interface ISqlQueryProvider
     {
-        public string GetQuery(DatabaseOperation operation);
+        public string GetQuery(StorageOperation operation);
     }
 }

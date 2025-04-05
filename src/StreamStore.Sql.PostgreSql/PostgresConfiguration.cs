@@ -6,7 +6,7 @@ namespace StreamStore.Sql.PostgreSql
     {
         public const string ConfigurationSection = "StreamStore:PostgreSql";
 
-        public readonly static SqlDatabaseConfiguration DefaultConfiguration = new SqlDatabaseConfiguration
+        public readonly static SqlStorageConfiguration DefaultConfiguration = new SqlStorageConfiguration
         {
             SchemaName = "public",
             TableName = "Events",

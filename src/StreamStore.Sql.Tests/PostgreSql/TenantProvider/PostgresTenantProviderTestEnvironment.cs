@@ -8,6 +8,6 @@ namespace StreamStore.Sql.Tests.PostgreSql.TenantProvider
     {
         public readonly MockRepository MockRepository = new MockRepository(MockBehavior.Strict);
 
-        public Mock<ISqlTenantDatabaseConfigurationProvider> MockSqlConfigurationProvider => MockRepository.Create<ISqlTenantDatabaseConfigurationProvider>();
+        public Mock<ISqlTenantStorageConfigurationProvider> MockSqlConfigurationProvider => MockRepository.Create<ISqlTenantStorageConfigurationProvider>();
     }
 }

@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.16.0] - 2025-04-04
+
+### Added
+
+- Added StreamStore.Storage package to support custom storage implementations.
+
+### Changed
+
+- Renamed 'Database' to 'Storage' in all packages and namespaces.
+
 ## [0.15.0] - 2025-03-14
 
 ### Changed
