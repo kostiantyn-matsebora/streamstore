@@ -18,6 +18,8 @@ About serialization you can read in [SERIALIZATION](SERIALIZATION.md) file.
 
 ## Create your own storage implementation
 
+### Implement your own storage
+
 To create your own storage implementation, you need to implement the following interfaces:
 
 - [`IStreamStorage`][IStreamStorage] - provides methods for working with streams.
@@ -48,10 +50,58 @@ To create your own storage implementation, you need to implement the following i
     }
   ```
 
-  Default serializer is using `Newtonsoft.Json` library, so you can create your own using `System.Text.Json` or any other, by
-  implementing [`IEventSerializer`](../src/StreamStore.Contracts/Serialization/IEventSerializer.cs) interface.
+### Implement storage provisioning
 
-### Considerations
+To make your storage support automatic  provisioning of your storage, you must implement [`ISchemaProvisioner`](../src/StreamStore.Contracts/Provisioning/ISchemaProvisioner.cs) interface.
+
+### Multitenancy
+
+To make your storage support multitenancy, you must implement:
+
+* [`ITenantStreamStorageProvider`](../src/StreamStore.Contracts/Multitenancy/ITenantStreamStorageProvider.cs) interface, provider of IStreamStorage for particular tenant.
+* [`ITenantSchemaProvisionerFactory`](../src/StreamStore.Contracts/Provisioning/ITenantSchemaProvisionerFactory.cs) interface, factory of ISchemaProvisioner for particular tenant.
+
+### Register your storage implementation and dependencies in DI container
+
+To provide ability to use your storage implementation as single tenant, you must implement extension method for `IServiceCollection` with following signature:
+
+```csharp
+ public static ISingleTenantConfigurator Use[YourStorage](this ISingleTenantConfigurator registrator)
+{
+   ...
+}
+```
+
+example:
+
+```csharp
+  public static ISingleTenantConfigurator UseInMemoryStorage(this ISingleTenantConfigurator registrator)
+  {
+      return registrator.UseStorage<InMemoryStreamStorage>();
+  }
+```
+
+To provide ability to use your storage implementation as multitenant, you must implement extension method for `IServiceCollection` with following signature:
+
+```csharp
+  public static IMultitenancyConfigurator Use[YourStorage](this IMultitenancyConfigurator registrator)
+  {
+    ...
+  }
+```
+
+example:
+
+```csharp
+  public static IMultitenancyConfigurator UseInMemoryStorage(this IMultitenancyConfigurator registrator)
+  {
+      return registrator.UseStorageProvider<InMemoryStreamStorageProvider>();
+  }
+```
+
+More complex examples you can find in implementations of particular storage.
+
+## Considerations
 
 - To implement your own storage you do not need StreamStore package, all necessary interfaces are located in [StreamStore.Contracts](https://www.nuget.org/packages/StreamStore.Contracts/) and base implementations in  [StreamStore.Storage](https://www.nuget.org/packages/StreamStore.Storage/) package.
 - _You can register your own storage implementation in the DI container using any kind of lifetime (i.e. Singleton, Transient, Scoped, etc.)_  

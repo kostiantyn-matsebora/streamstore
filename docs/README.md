@@ -159,8 +159,8 @@ or from NuGet Package Manager Console:
              .WithEvent(eventObject)
          )
         ...
-        .AppendRangeAsync(events)       // Or append range of events by passing IEnumerable<Event>
-      .CommitAsync(token);
+        .AppendRangeAsync(events)  // Or append range of events by passing IEnumerable<Event>
+      .SaveChangesAsync(token);
 
   } catch (StreamConcurrencyException ex) {
 
@@ -177,8 +177,8 @@ or from NuGet Package Manager Console:
              .Dated(DateTime.Now)
              .WithEvent(yourEventObject)
            )
-        ...F
-        .CommitAsync(streamId);
+        ...
+        .SaveChangesAsync(streamId);
   } catch (StreamLockedException ex) {
     // Some storage backends like S3 do not support optimistic concurrency control
     // So, the only way to handle concurrency is to lock the stream
