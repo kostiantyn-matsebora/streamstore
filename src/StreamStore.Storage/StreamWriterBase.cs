@@ -68,7 +68,7 @@ namespace StreamStore.Storage
 
         protected abstract Task CommitAsync(StreamEventRecordCollection uncommited, CancellationToken token);
 
-        protected virtual Task OnEventAdded(StreamEventRecord @event, CancellationToken token)
+        protected virtual Task OnEventAdded(IStreamEventRecord @event, CancellationToken token)
         {
             return Task.CompletedTask;
         }

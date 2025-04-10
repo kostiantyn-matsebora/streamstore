@@ -11,7 +11,7 @@ using StreamStore.S3.Storage;
 
 namespace StreamStore.S3
 {
-    internal sealed class S3StreamStorage : StreamStorageBase
+    internal sealed class S3StreamStorage : StreamStorageBase<IStreamEventRecord>
     {
         readonly IS3LockFactory lockFactory;
         private readonly IS3StorageFactory storageFactory;
@@ -22,12 +22,12 @@ namespace StreamStore.S3
             this.storageFactory = storageFactory ?? throw new ArgumentNullException(nameof(storageFactory));
         }
 
-        protected override async Task<StreamEventRecordCollection> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        protected override async Task<IStreamEventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
             var storage = storageFactory.CreateStorage();
             var container = await storage.LoadPersistentContainerAsync(streamId, startFrom, count, token);
             if (container.State == S3ObjectState.DoesNotExist) throw new StreamNotFoundException(streamId);
-            return new StreamEventRecordCollection(container.Events!.Select(e => e.Event!).ToArray());
+            return container.Events!.Select(e => e.Event!).ToArray();
         }
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
@@ -55,6 +55,11 @@ namespace StreamStore.S3
 
             return new StreamEventMetadataRecordCollection(metadata.Events).MaxRevision;
 
+        }
+
+        protected override IStreamEventRecord ConvertToRecord(IStreamEventRecordBuilder builder, IStreamEventRecord entity)
+        {
+            return entity;
         }
     }
 }

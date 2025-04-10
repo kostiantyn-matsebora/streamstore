@@ -8,7 +8,7 @@ using StreamStore.NoSql.Cassandra.Models;
 
 namespace StreamStore.NoSql.Cassandra.Storage
 {
-    internal class CassandraStreamStorage : StreamStorageBase
+    internal class CassandraStreamStorage : StreamStorageBase<EventEntity>
     {
         readonly CassandraStatementConfigurator configure;
         readonly ICassandraCqlQueries queries;
@@ -34,15 +34,24 @@ namespace StreamStore.NoSql.Cassandra.Storage
                 await mapper.ExecuteAsync(configure.Query(queries.DeleteStream(streamId)));
         }
 
+        protected override IStreamEventRecord ConvertToRecord(IStreamEventRecordBuilder builder, EventEntity entity)
+        {
+          return  builder
+                    .WithId(entity.Id)
+                    .Dated(entity.Timestamp)
+                    .WithRevision(entity.Revision)
+                    .WithData(entity.Data!)
+                    .Build();
+        }
+
         protected override async Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default)
         {
             return await mapper.SingleOrDefaultAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
         }
         
-        protected override async Task<StreamEventRecordCollection> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        protected override async Task<EventEntity[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-                var events = await mapper.FetchAsync<EventEntity>(configure.Query(queries.StreamEvents(streamId, startFrom, count)));
-                return new StreamEventRecordCollection(events.ToArray().ToRecords());
+                return  (await mapper.FetchAsync<EventEntity>(configure.Query(queries.StreamEvents(streamId, startFrom, count)))).ToArray();
         }
     }
 }

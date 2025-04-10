@@ -9,7 +9,7 @@ using StreamStore.Sql.API;
 
 namespace StreamStore.Sql.Storage
 {
-    public class SqlStreamStorage : StreamStorageBase
+    public class SqlStreamStorage : StreamStorageBase<EventEntity>
     {
         readonly IDbConnectionFactory connectionFactory;
         readonly IDapperCommandFactory commandFactory;
@@ -27,6 +27,8 @@ namespace StreamStore.Sql.Storage
             return Task.FromResult((IStreamWriter)
                 new SqlStreamWriter(streamId, expectedStreamVersion, null, connectionFactory, commandFactory, exceptionHandler));
         }
+
+
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
         {
@@ -50,7 +52,7 @@ namespace StreamStore.Sql.Storage
             }
         }
 
-        protected override async Task<StreamEventRecordCollection> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        protected override async Task<EventEntity[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
             using (var connection = connectionFactory.GetConnection())
             {
@@ -60,10 +62,18 @@ namespace StreamStore.Sql.Storage
                 if (number == 0)
                     throw new StreamNotFoundException(streamId);
 
-                var entities = (await connection.QueryAsync<EventEntity>(commandFactory.CreateGetEventsCommand(streamId, startFrom, count))).ToArray();
-
-                return new StreamEventRecordCollection(entities.ToArray().ToRecords());
+               return (await connection.QueryAsync<EventEntity>(commandFactory.CreateGetEventsCommand(streamId, startFrom, count))).ToArray();
             }
+        }
+
+        protected override IStreamEventRecord ConvertToRecord(IStreamEventRecordBuilder builder, EventEntity entity)
+        {
+            return builder
+                 .WithId(entity.Id!)
+                 .WithRevision(entity.Revision!)
+                 .Dated(entity.Timestamp)
+                 .WithData(entity.Data!)
+                 .Build();
         }
     }
 }

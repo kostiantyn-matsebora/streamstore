@@ -6,7 +6,7 @@ using StreamStore.Exceptions;
 
 namespace StreamStore.Storage
 {
-    public abstract class StreamStorageBase : IStreamStorage
+    public abstract class StreamStorageBase<TEntity> : IStreamStorage
     {
         public async Task<IStreamWriter> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
         {
@@ -45,10 +45,23 @@ namespace StreamStore.Storage
             if (actualRevision == null || actualRevision == Revision.Zero)
                 throw new StreamNotFoundException(streamId);
 
-            return (await ReadAsyncInternal(streamId, startFrom, count, token)).ToArray();
+            var entities = await ReadAsyncInternal(streamId, startFrom, count, token);
+            if (entities == null || !entities.Any())
+                return Array.Empty<IStreamEventRecord>();
+            
+            var result = new StreamEventRecordCollection();
+
+            foreach ( var entity in entities)
+            {
+                result.Add(ConvertToRecord(new StreamEventRecordBuilder(), entity));
+            }
+           
+            return result.ToArray();
         }
 
-        protected abstract Task<StreamEventRecordCollection> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default);
+        protected abstract IStreamEventRecord ConvertToRecord(IStreamEventRecordBuilder builder, TEntity entity);
+
+        protected abstract Task<TEntity[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default);
         protected abstract Task DeleteAsyncInternal(Id streamId, CancellationToken token = default);
         protected abstract Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default);
         protected abstract Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default);
