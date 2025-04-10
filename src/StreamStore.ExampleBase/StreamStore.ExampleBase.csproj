@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StreamStore.Testing\StreamStore.Testing.csproj" />
     <ProjectReference Include="..\StreamStore\StreamStore.csproj" />
   </ItemGroup>
 

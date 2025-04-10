@@ -50,7 +50,7 @@ namespace StreamStore.Sql.Storage
             }
         }
 
-        protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        protected override async Task<StreamEventRecordCollection> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
             using (var connection = connectionFactory.GetConnection())
             {
@@ -62,7 +62,7 @@ namespace StreamStore.Sql.Storage
 
                 var entities = (await connection.QueryAsync<EventEntity>(commandFactory.CreateGetEventsCommand(streamId, startFrom, count))).ToArray();
 
-                return entities.ToArray().ToRecords();
+                return new StreamEventRecordCollection(entities.ToArray().ToRecords());
             }
         }
     }

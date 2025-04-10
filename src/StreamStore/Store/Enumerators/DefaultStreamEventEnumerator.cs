@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StreamStore.Stream
 {
-    class DefaultStreamEventEnumerator : IAsyncEnumerator<StreamEvent>
+    class DefaultStreamEventEnumerator : IAsyncEnumerator<IStreamEvent>
     {
         readonly IStreamReader reader;
         private readonly EventConverter converter;
@@ -16,7 +16,7 @@ namespace StreamStore.Stream
         readonly int pageSize;
         Revision nextRevision;
 
-        readonly Queue<EventRecord> queue = new Queue<EventRecord>();
+        readonly Queue<IStreamEventRecord> queue = new Queue<IStreamEventRecord>();
 
         public DefaultStreamEventEnumerator(StreamReadingParameters parameters, IStreamReader reader, EventConverter converter, CancellationToken token)
         {
@@ -30,7 +30,7 @@ namespace StreamStore.Stream
             Current = null!;
         }
 
-        public StreamEvent Current { get; private set; }
+        public IStreamEvent Current { get; private set; }
 
         public async ValueTask<bool> MoveNextAsync()
         {
@@ -56,14 +56,14 @@ namespace StreamStore.Stream
             return MoveNext();
         }
 
-        async Task<EventRecordCollection> ReadNextPage()
+        async Task<IStreamEventRecord[]> ReadNextPage()
         {
-            return new EventRecordCollection(await reader.ReadAsync(streamId, nextRevision, pageSize));
+            return await reader.ReadAsync(streamId, nextRevision, pageSize);
         }
 
         bool MoveNext()
         {
-            if (queue.TryDequeue(out EventRecord record))
+            if (queue.TryDequeue(out IStreamEventRecord record))
             {
                 Current = converter.ConvertToEvent(record);
                 nextRevision = Current.Revision + 1;

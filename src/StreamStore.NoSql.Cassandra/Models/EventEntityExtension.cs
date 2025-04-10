@@ -1,21 +1,22 @@
 ﻿using System.Linq;
+using StreamStore.Storage;
 
 namespace StreamStore.NoSql.Cassandra.Models
 {
     public static class EventEntityExtension
     {
-        internal static EventRecord ToRecord(this EventEntity entity)
+        internal static IStreamEventRecord ToRecord(this EventEntity entity)
         {
-            return new EventRecord
+            return new StreamEventRecord
             {
                 Id = entity.Id,
                 Revision = entity.Revision,
                 Timestamp = entity.Timestamp,
-                Data = entity.Data
+                Data = entity.Data!
             };
         }
 
-        internal static EventRecord[] ToRecords(this EventEntity[] entity)
+        internal static IStreamEventRecord[] ToRecords(this EventEntity[] entity)
         {
             return entity.Select(ToRecord).ToArray();
         }

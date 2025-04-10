@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace StreamStore.Provisioning
 {
-    internal class TenantSchemaProvisioningService: BackgroundService
+    class TenantSchemaProvisioningService: BackgroundService
     {
         readonly ITenantProvider tenantProvider;
         readonly ITenantSchemaProvisionerFactory provisionerFactory;

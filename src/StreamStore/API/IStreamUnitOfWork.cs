@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using System.Threading;
 
 
+
 namespace StreamStore
 {
     public interface IStreamUnitOfWork: IDisposable
     {
-        Task<IStreamUnitOfWork> AppendEventAsync(Id eventId, DateTime timestamp, object @event, CancellationToken cancellationToken = default);
+        Task<IStreamUnitOfWork> AppendAsync(IEventEnvelope envelope, CancellationToken cancellationToken = default);
 
         Task<Revision> SaveChangesAsync(CancellationToken cancellationToken);
     }

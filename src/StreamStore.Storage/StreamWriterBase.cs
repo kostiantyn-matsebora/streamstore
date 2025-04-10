@@ -11,12 +11,12 @@ namespace StreamStore.Storage
     {
         protected readonly Id streamId;
         protected readonly Revision expectedRevision;
-        readonly EventRecordCollection events = new EventRecordCollection();
-        readonly EventRecordCollection uncommited = new EventRecordCollection();
+        readonly StreamEventRecordCollection events = new StreamEventRecordCollection();
+        readonly StreamEventRecordCollection uncommited = new StreamEventRecordCollection();
 
         Revision revision;
 
-        protected StreamWriterBase(Id streamId, Revision expectedRevision, EventRecordCollection? existing)
+        protected StreamWriterBase(Id streamId, Revision expectedRevision, StreamEventRecordCollection? existing)
         {
             this.streamId = streamId.ThrowIfHasNoValue(nameof(streamId));
 
@@ -50,7 +50,7 @@ namespace StreamStore.Storage
             // Since revision is immutable, we need to assign the new value to revision
             revision = revision.Increment();
             
-            var eventRecord = new EventRecord
+            var eventRecord = new StreamEventRecord
             {
                 Id = eventId,
                 Revision = revision,
@@ -65,9 +65,9 @@ namespace StreamStore.Storage
             return this;
         }
 
-        protected abstract Task CommitAsync(EventRecordCollection uncommited, CancellationToken token);
+        protected abstract Task CommitAsync(StreamEventRecordCollection uncommited, CancellationToken token);
 
-        protected virtual Task OnEventAdded(EventRecord @event, CancellationToken token)
+        protected virtual Task OnEventAdded(StreamEventRecord @event, CancellationToken token)
         {
             return Task.CompletedTask;
         }

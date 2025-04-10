@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AutoFixture;
 using StreamStore.Serialization;
+using StreamStore.Storage;
 
 
 namespace StreamStore.Testing
@@ -9,7 +10,7 @@ namespace StreamStore.Testing
     {
         readonly static TypeRegistry registry  = new TypeRegistry();
 
-        public static EventRecord[] CreateEventRecords(this Fixture fixture, int initialRevision, int count)
+        public static StreamEventRecord[] CreateEventRecords(this Fixture fixture, int initialRevision, int count)
         {
             var serializer = new NewtonsoftEventSerializer(registry, false);
 
@@ -17,7 +18,7 @@ namespace StreamStore.Testing
 
             var records =
                     fixture
-                    .Build<EventRecord>()
+                    .Build<StreamEventRecord>()
                     .With(x => x.Revision, () => revision++)
                     .With(x => x.Data, serializer.Serialize(CreateEvents(fixture, 1).First()))
                     .CreateMany(count)
@@ -31,7 +32,7 @@ namespace StreamStore.Testing
             return fixture.CreateMany<RootEvent>().ToArray();
         }
 
-        public static EventRecord[] CreateEventRecords(this Fixture fixture,  int count)
+        public static StreamEventRecord[] CreateEventRecords(this Fixture fixture,  int count)
         {
             return CreateEventRecords(fixture, 1, count);
         }

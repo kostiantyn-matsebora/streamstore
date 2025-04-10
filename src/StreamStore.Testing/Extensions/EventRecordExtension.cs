@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using StreamStore.Storage;
 
 namespace StreamStore.Testing
 {
     internal static class EventRecordExtension
     {
 
-        public static Event[] ToEvents(this IEnumerable<EventRecord> records)
+        public static TestEventEnvelope[] ToEventEnvelopes(this IEnumerable<StreamEventRecord> records)
         {
-           return records.Select(e => new Event { Id = e.Id, EventObject = new { }, Timestamp = e.Timestamp }).ToArray();
+           return records.Select(e => new TestEventEnvelope { Id = e.Id, Event = new { }, Timestamp = e.Timestamp }).ToArray();
         }
     }
 }

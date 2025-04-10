@@ -9,7 +9,7 @@ using StreamStore.Stream;
 
 namespace StreamStore
 {
-    public sealed class StreamStore : IStreamStore
+    class StreamStore : IStreamStore
     {
         readonly IStreamStorage storage;
         readonly EventConverter converter;
@@ -33,7 +33,7 @@ namespace StreamStore
             await storage.DeleteAsync(streamId, cancellationToken);
         }
 
-        public async Task<IAsyncEnumerable<StreamEvent>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
+        public async Task<IAsyncEnumerable<IStreamEvent>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
 
@@ -63,12 +63,12 @@ namespace StreamStore
             if (expectedRevision != revision.Value)
                 throw new OptimisticConcurrencyException(expectedRevision, revision.Value, streamId);
 
-            var uow = await storage.BeginAppendAsync(streamId, expectedRevision);
+            var writer = await storage.BeginAppendAsync(streamId, expectedRevision);
 
-            if (uow == null)
+            if (writer == null)
                 throw new InvalidOperationException("Failed to open stream, either stream does not exist or revision is incorrect.");
 
-            return new StreamUnitOfWork(uow, converter);
+            return new StreamUnitOfWork(writer, converter);
         }
     }
 }

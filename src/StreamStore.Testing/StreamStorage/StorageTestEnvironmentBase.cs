@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Configuration;
 using StreamStore.Testing.Framework;
 
 
@@ -16,7 +17,7 @@ namespace StreamStore.Testing.StreamStorage
 
         protected override sealed void RegisterServices(IServiceCollection services)
         {
-            new StreamStoreConfigurator()
+            ConfiguratorFactory.StoreConfigurator
                 .WithSingleStorage(ConfigureStorage)
                 .Configure(services);
         }

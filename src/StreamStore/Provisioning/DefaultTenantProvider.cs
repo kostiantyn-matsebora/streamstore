@@ -3,7 +3,7 @@ using StreamStore.Multitenancy;
 
 namespace StreamStore.Provisioning
 {
-    internal class DefaultTenantProvider : ITenantProvider
+    class DefaultTenantProvider : ITenantProvider
     {
         readonly List<Id> tenants = new List<Id>();
 

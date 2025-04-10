@@ -1,41 +1,42 @@
 ﻿using System;
+using StreamStore.Models;
 
 namespace StreamStore
 {
-    internal class EventBuilder : IEventBuilder
+    class EventEnvelopeBuilder : IEventEnvelopeBuilder
     {
         Id id;
         DateTime timestamp = DateTime.Now;
         object @event = null!;
 
-        public IEventBuilder WithId(Id id)
+        public IEventEnvelopeBuilder WithId(Id id)
         {
             this.id = id;
             return this;
         }
 
-        public IEventBuilder Dated(DateTime timestamp)
+        public IEventEnvelopeBuilder Dated(DateTime timestamp)
         {
             this.timestamp = timestamp;
             return this;
         }
 
-        public IEventBuilder WithEvent(object @event)
+        public IEventEnvelopeBuilder WithEvent(object @event)
         {
             this.@event = @event;
             return this;
         }
 
-        internal Event Build()
+        internal IEventEnvelope Build()
         {
             id.ThrowIfHasNoValue(nameof(id));
             timestamp.ThrowIfMinValue(nameof(timestamp));
             @event.ThrowIfNull(nameof(@event));
-            return new Event
+            return new EventEnvelope
             {
                 Id = id,
                 Timestamp = timestamp,
-                EventObject = @event
+                Event = @event
             };
         }
     }

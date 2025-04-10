@@ -9,7 +9,7 @@ namespace StreamStore.Tests.BuildingEvents
         public void When_event_object_is_not_set()
         {
             // Arrange
-            var builder = new EventBuilder();
+            var builder = new EventEnvelopeBuilder();
 
             // Act
             builder.WithId(Generated.Primitives.Id).Dated(Generated.Primitives.DateTime);
@@ -24,10 +24,10 @@ namespace StreamStore.Tests.BuildingEvents
         public void When_id_is_not_set()
         {
             // Arrange
-            var builder = new EventBuilder();
+            var builder = new EventEnvelopeBuilder();
 
             // Act
-            builder.Dated(Generated.Primitives.DateTime).WithEvent(Generated.Events.Single);
+            builder.Dated(Generated.Primitives.DateTime).WithEvent(Generated.EventEnvelopes.Single);
             var act = () => builder.Build();
 
             // Assert
@@ -38,10 +38,10 @@ namespace StreamStore.Tests.BuildingEvents
         public void When_timestamp_is_incorrect()
         {
             // Arrange
-            var builder = new EventBuilder();
+            var builder = new EventEnvelopeBuilder();
 
             // Act
-            builder.WithId(Generated.Primitives.Id).Dated(DateTime.MinValue).WithEvent(Generated.Events.Single);
+            builder.WithId(Generated.Primitives.Id).Dated(DateTime.MinValue).WithEvent(Generated.EventEnvelopes.Single);
             var act = () => builder.Build();
 
             // Assert
@@ -53,10 +53,10 @@ namespace StreamStore.Tests.BuildingEvents
         public void When_all_parameters_set()
         {
             // Arrange
-            var builder = new EventBuilder();
+            var builder = new EventEnvelopeBuilder();
             var id = Generated.Primitives.Id;
             var timestamp = Generated.Primitives.DateTime;
-            var @event = Generated.Events.Single;
+            var @event = Generated.EventEnvelopes.Single;
 
             // Act
             builder.WithId(id).Dated(timestamp).WithEvent(@event);
@@ -65,7 +65,7 @@ namespace StreamStore.Tests.BuildingEvents
             // Assert
             result.Id.Should().Be(id);
             result.Timestamp.Should().Be(timestamp);
-            result.EventObject.Should().Be(@event);
+            result.Event.Should().Be(@event);
         }
     }
 }

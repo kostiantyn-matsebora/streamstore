@@ -25,7 +25,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             IStreamStore store = Environment.Store;
             var eventIds = new List<Id>();
             var streamId = Generated.Primitives.Id;
-            var events = Generated.Events.Many(firstBatchCount);
+            var events = Generated.EventEnvelopes.Many(firstBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
             Revision actualRevision;
 
@@ -38,7 +38,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                         .AppendEventAsync(x => 
                             x.WithId(@event.Id)
                              .Dated(@event.Timestamp)
-                             .WithEvent(@event.EventObject)
+                             .WithEvent(@event.Event)
                         );
             }
 
@@ -48,7 +48,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             actualRevision.Should().Be(firstBatchCount);
 
             // Arrange 2
-            events = Generated.Events.Many(secondBatchCount);
+            events = Generated.EventEnvelopes.Many(secondBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
 
             // Act 2: Second way to append to stream
@@ -62,7 +62,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             actualRevision.Should().Be(firstBatchCount + secondBatchCount);
 
             // Arrange 3
-            events = Generated.Events.Many(thirdBatchCount);
+            events = Generated.EventEnvelopes.Many(thirdBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
 
             // Act 3: Third way to append to stream
@@ -73,10 +73,10 @@ namespace StreamStore.Testing.StreamStore.Scenarios
 
             // Assert 3
             collection.Should().NotBeNull();
-            collection.MaxRevision.Should().Be(firstBatchCount + secondBatchCount + thirdBatchCount);
+            collection.Last().Revision.Should().Be(firstBatchCount + secondBatchCount + thirdBatchCount);
 
             collection.Should().HaveCount(eventIds.Count);
-            eventIds.Should().BeEquivalentTo(collection.Select(e => e.EventId));
+            eventIds.Should().BeEquivalentTo(collection.Select(e => e.Id));
         }
 
         [Theory]
@@ -96,7 +96,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                 await
                    store
                         .BeginWriteAsync(stream.Id, CancellationToken.None)
-                        .AppendRangeAsync(Generated.Events.Many(count))
+                        .AppendRangeAsync(Generated.EventEnvelopes.Many(count))
                         .SaveChangesAsync(CancellationToken.None);
 
             // Assert
@@ -109,11 +109,11 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             // Arrange
             IStreamStore store = Environment.Store;
             var stream = Environment.Container.RandomStream;
-            var existingEvents = stream.Events.Take(1).ToEvents();
+            var existingEvents = stream.Events.Take(1).ToEventEnvelopes();
 
             // Act
             // Trying to append existing events mixed with new ones, put existing to the end
-            var mixedEvents = Generated.Events.Many(5).Concat(existingEvents);
+            var mixedEvents = Generated.EventEnvelopes.Many(5).Concat(existingEvents);
 
             var act = async () =>
                 await

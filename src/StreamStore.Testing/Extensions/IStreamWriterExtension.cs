@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Storage;
 
 namespace StreamStore.Testing
 {
     internal static class IStreamWriterExtension
     {
-        public static async Task<IStreamWriter> AppendManyAsync(this IStreamWriter writer, IEnumerable<EventRecord> records, CancellationToken token = default)
+        public static async Task<IStreamWriter> AppendManyAsync(this IStreamWriter writer, IEnumerable<StreamEventRecord> records, CancellationToken token = default)
         {
             foreach (var record in records)
             {
@@ -15,7 +16,7 @@ namespace StreamStore.Testing
             return writer;
         }
 
-        public static async Task<IStreamWriter> AppendManyAsync(this Task<IStreamWriter> writer, IEnumerable<EventRecord> records, CancellationToken token = default)
+        public static async Task<IStreamWriter> AppendManyAsync(this Task<IStreamWriter> writer, IEnumerable<StreamEventRecord> records, CancellationToken token = default)
         {
             await FuncExtension.ThrowOriginalExceptionIfOccured(async() => await writer.GetAwaiter().GetResult().AppendManyAsync(records, token));
             return writer.Result;

@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
+using StreamStore.Storage;
 
 
 namespace StreamStore.S3.Storage
@@ -14,7 +15,7 @@ namespace StreamStore.S3.Storage
         {
         }
 
-        public async Task AppendAsync(EventRecord record, CancellationToken token)
+        public async Task AppendAsync(StreamEventRecord record, CancellationToken token)
         {
             await GetItem(record.Id).SetRecord(record).UploadAsync(token);
         }

@@ -39,10 +39,10 @@ namespace StreamStore.NoSql.Cassandra.Storage
             return await mapper.SingleOrDefaultAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
         }
         
-        protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        protected override async Task<StreamEventRecordCollection> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
                 var events = await mapper.FetchAsync<EventEntity>(configure.Query(queries.StreamEvents(streamId, startFrom, count)));
-                return events.ToArray().ToRecords();
+                return new StreamEventRecordCollection(events.ToArray().ToRecords());
         }
     }
 }

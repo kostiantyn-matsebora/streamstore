@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Configuration;
 using StreamStore.Provisioning;
 
 namespace StreamStore.Testing.Framework
@@ -44,7 +45,7 @@ namespace StreamStore.Testing.Framework
         ServiceProvider BuildServiceProvider()
         {
             var serviceCollection = new ServiceCollection();
-            var configurator = new StreamStoreConfigurator();
+            var configurator = ConfiguratorFactory.StoreConfigurator;
             configurator
                 .WithSingleStorage(ConfigureStorage)
                 .Configure(serviceCollection);

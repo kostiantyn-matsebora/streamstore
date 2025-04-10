@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
@@ -34,7 +35,7 @@ namespace StreamStore.Storage
             return actualRevision == Revision.Zero ? null : (Revision?)actualRevision;
         }
 
-        public async Task<EventRecordCollection> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        public async Task<IStreamEventRecord[]> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
            if (startFrom <= 0)
                 throw new ArgumentOutOfRangeException(nameof(startFrom), "Revision must be equal or greater 1.");
@@ -44,10 +45,10 @@ namespace StreamStore.Storage
             if (actualRevision == null || actualRevision == Revision.Zero)
                 throw new StreamNotFoundException(streamId);
 
-            return new EventRecordCollection(await ReadAsyncInternal(streamId, startFrom, count, token));
+            return (await ReadAsyncInternal(streamId, startFrom, count, token)).ToArray();
         }
 
-        protected abstract Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default);
+        protected abstract Task<StreamEventRecordCollection> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default);
         protected abstract Task DeleteAsyncInternal(Id streamId, CancellationToken token = default);
         protected abstract Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default);
         protected abstract Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default);

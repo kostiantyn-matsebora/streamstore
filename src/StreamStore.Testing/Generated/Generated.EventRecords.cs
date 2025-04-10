@@ -1,15 +1,16 @@
 ﻿using AutoFixture;
+using StreamStore.Storage;
 
 namespace StreamStore.Testing
 {
     public static partial class Generated
     {
-        public static EventRecord[] Many(int initialRevision, int count)
+        public static StreamEventRecord[] Many(int initialRevision, int count)
         {
             return new Fixture().CreateEventRecords(initialRevision, count);
         }
 
-        public static EventRecord[] Many(int count)
+        public static StreamEventRecord[] Many(int count)
         {
             return new Fixture().CreateEventRecords(count);
         }

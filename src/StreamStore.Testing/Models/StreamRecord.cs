@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using StreamStore.Storage;
 
 namespace StreamStore.Testing.Models
 {
-    public abstract class StreamRecord<T> where T : EventMetadataRecord
+    public abstract class StreamRecord<T> where T : StreamEventMetadataRecord
     {
         public Revision Revision => Events.MaxRevision;
 
@@ -23,10 +24,10 @@ namespace StreamStore.Testing.Models
         }
     }
 
-    public sealed class StreamRecord : StreamRecord<EventRecord>
+    public sealed class StreamRecord : StreamRecord<StreamEventRecord>
     {
-        public StreamRecord(Id streamId) : this(streamId, Array.Empty<EventRecord>()) { }
-        public StreamRecord(Id streamId, IEnumerable<EventRecord> records) : base(streamId, records) { }
+        public StreamRecord(Id streamId) : this(streamId, Array.Empty<StreamEventRecord>()) { }
+        public StreamRecord(Id streamId, IEnumerable<StreamEventRecord> records) : base(streamId, records) { }
 
         public bool IsEmpty => !Events.Any();
     }

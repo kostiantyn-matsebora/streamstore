@@ -1,21 +1,22 @@
 ﻿using System.Linq;
+using StreamStore.Storage;
 
 namespace StreamStore.Sql
 {
     public static class EventEntityExtension
     {
-        public static EventRecord ToRecord(this EventEntity entity)
+        public static StreamEventRecord ToRecord(this EventEntity entity)
         {
-            return new EventRecord
+            return new StreamEventRecord
             {
                 Id = entity.Id!,
                 Revision = entity.Revision,
                 Timestamp = entity.Timestamp,
-                Data = entity.Data
+                Data = entity.Data!
             };
         }
 
-        public static EventRecord[] ToRecords(this EventEntity[] entity)
+        public static StreamEventRecord[] ToRecords(this EventEntity[] entity)
         {
             return entity.Select(ToRecord).ToArray();
         }

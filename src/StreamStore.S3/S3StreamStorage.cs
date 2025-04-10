@@ -22,12 +22,12 @@ namespace StreamStore.S3
             this.storageFactory = storageFactory ?? throw new ArgumentNullException(nameof(storageFactory));
         }
 
-        protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        protected override async Task<StreamEventRecordCollection> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
             var storage = storageFactory.CreateStorage();
             var container = await storage.LoadPersistentContainerAsync(streamId, startFrom, count, token);
             if (container.State == S3ObjectState.DoesNotExist) throw new StreamNotFoundException(streamId);
-            return container.Events!.Select(e => e.Event!).ToArray();
+            return new StreamEventRecordCollection(container.Events!.Select(e => e.Event!).ToArray());
         }
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
@@ -53,7 +53,7 @@ namespace StreamStore.S3
 
             if (metadata!.State == S3ObjectState.DoesNotExist) return null;
 
-            return new EventMetadataRecordCollection(metadata.Events).MaxRevision;
+            return new StreamEventMetadataRecordCollection(metadata.Events).MaxRevision;
 
         }
     }

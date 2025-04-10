@@ -1,6 +1,6 @@
 ﻿namespace StreamStore.Multitenancy
 {
-    internal class TenantStreamStoreFactory : ITenantStreamStoreFactory
+    class TenantStreamStoreFactory : ITenantStreamStoreFactory
     {
         readonly StreamStoreConfiguration configuration;
         readonly ITenantStreamStorageProvider storageProvider;

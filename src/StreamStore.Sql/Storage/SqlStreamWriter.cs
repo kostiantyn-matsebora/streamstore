@@ -15,7 +15,7 @@ namespace StreamStore.Sql.Storage
         readonly IDapperCommandFactory commandFactory;
         readonly ISqlExceptionHandler exceptionHandler;
 
-        public SqlStreamWriter(Id streamId, Revision expectedRevision, EventRecordCollection? existing, IDbConnectionFactory connectionFactory, IDapperCommandFactory commandFactory, ISqlExceptionHandler exceptionHandler) :
+        public SqlStreamWriter(Id streamId, Revision expectedRevision, StreamEventRecordCollection? existing, IDbConnectionFactory connectionFactory, IDapperCommandFactory commandFactory, ISqlExceptionHandler exceptionHandler) :
             base(streamId, expectedRevision, existing)
         {
             this.connectionFactory = connectionFactory.ThrowIfNull(nameof(connectionFactory));
@@ -23,7 +23,7 @@ namespace StreamStore.Sql.Storage
             this.exceptionHandler = exceptionHandler.ThrowIfNull(nameof(exceptionHandler));
         }
 
-        protected override async Task CommitAsync(EventRecordCollection uncommited, CancellationToken token)
+        protected override async Task CommitAsync(StreamEventRecordCollection uncommited, CancellationToken token)
         {
             using (var connection = connectionFactory.GetConnection())
             {

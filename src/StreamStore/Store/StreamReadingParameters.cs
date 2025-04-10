@@ -1,6 +1,6 @@
 ﻿namespace StreamStore
 {
-    internal class StreamReadingParameters
+    class StreamReadingParameters
     {
         public StreamReadingParameters(Id streamId, Revision startFrom, int pageSize)
         {

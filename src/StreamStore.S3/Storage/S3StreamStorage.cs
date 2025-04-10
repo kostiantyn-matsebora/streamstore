@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
+using StreamStore.Storage;
 
 
 namespace StreamStore.S3.Storage
@@ -25,7 +26,7 @@ namespace StreamStore.S3.Storage
             return stream.MetadataObject;
         }
 
-        public async Task AppendEventAsync(string streamId, EventRecord record, CancellationToken token)
+        public async Task AppendEventAsync(string streamId, StreamEventRecord record, CancellationToken token)
         {
             var stream = GetContainer(streamId);
             await stream.AppendEventAsync(record, token);
