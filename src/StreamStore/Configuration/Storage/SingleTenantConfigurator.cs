@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace StreamStore.Configuration.Storage
 {
-    public class SingleTenantConfigurator : ISingleTenantConfigurator
+    class SingleTenantConfigurator : ISingleTenantConfigurator
     {
         readonly ServiceCollection services = new ServiceCollection();
 

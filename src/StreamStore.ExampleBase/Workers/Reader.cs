@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamStore.ExampleBase.Progress;
 using StreamStore.ExampleBase.Progress.Model;
 using StreamStore.Exceptions;
 
@@ -20,7 +19,7 @@ namespace StreamStore.ExampleBase.Workers
 
         protected override async Task DoWorkAsync(CancellationToken token)
         {
-            IAsyncEnumerator<StreamEvent> enumerator;
+            IAsyncEnumerator<IStreamEvent> enumerator;
 
             TrackProgress(new StartReading());
 

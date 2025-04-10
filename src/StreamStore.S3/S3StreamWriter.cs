@@ -23,7 +23,7 @@ namespace StreamStore.S3
            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
          }
 
-        protected override async Task CommitAsync(EventRecordCollection uncommited, CancellationToken token)
+        protected override async Task CommitAsync(StreamEventRecordCollection uncommited, CancellationToken token)
         {
             if (!streamContext.NotEmpty)
                 throw new InvalidOperationException("No events to save.");
@@ -48,12 +48,12 @@ namespace StreamStore.S3
             }
         }
 
-        protected override async Task OnEventAdded(EventRecord @event, CancellationToken token)
+        protected override async Task OnEventAdded(StreamEventRecord @event, CancellationToken token)
         {
             await streamContext.AddTransientEventAsync(@event, token);
         }
 
-        void ThrowIfStreamAlreadyChanged(EventMetadataRecordCollection? stream)
+        void ThrowIfStreamAlreadyChanged(StreamEventMetadataRecordCollection? stream)
         {
             if (stream == null) return;
             if (stream!.MaxRevision > expectedRevision)

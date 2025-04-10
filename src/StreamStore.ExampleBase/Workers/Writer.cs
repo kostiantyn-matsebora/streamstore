@@ -6,6 +6,7 @@ using AutoFixture;
 using StreamStore.ExampleBase.Progress;
 using StreamStore.ExampleBase.Progress.Model;
 using StreamStore.Exceptions;
+using StreamStore.Testing;
 
 namespace StreamStore.ExampleBase.Workers
 {
@@ -50,14 +51,14 @@ namespace StreamStore.ExampleBase.Workers
             }
         }
 
-        static Event CreateEvent()
+        static TestEventEnvelope CreateEvent()
         {
             var fixture = new Fixture();
-            return new Event
+            return new TestEventEnvelope
             {
                 Id = fixture.Create<Id>(),
                 Timestamp = fixture.Create<DateTime>(),
-                EventObject = new EventExample
+                Event = new EventExample
                 {
                     InvoiceId = fixture.Create<Guid>(),
                     Name = fixture.Create<string>(),

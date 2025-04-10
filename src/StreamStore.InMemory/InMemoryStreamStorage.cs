@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using StreamStore.Exceptions;
 using System;
 using System.Linq;
+using StreamStore.Storage;
 
 
 namespace StreamStore.InMemory
@@ -12,19 +13,19 @@ namespace StreamStore.InMemory
 
     public sealed class InMemoryStreamStorage : IStreamStorage
     {
-        internal ConcurrentDictionary<string, EventRecordCollection> storage;
+        internal ConcurrentDictionary<string, StreamEventRecordCollection> storage;
 
         public InMemoryStreamStorage()
         {
-            storage = new ConcurrentDictionary<string, EventRecordCollection>();
+            storage = new ConcurrentDictionary<string, StreamEventRecordCollection>();
         }
 
-        public Task<EventRecordCollection?> FindAsync(Id streamId, CancellationToken token = default)
+        public Task<StreamEventRecordCollection?> FindAsync(Id streamId, CancellationToken token = default)
         {
             if (!storage.TryGetValue(streamId, out var record))
-                return Task.FromResult<EventRecordCollection?>(null);
+                return Task.FromResult<StreamEventRecordCollection?>(null);
 
-            return Task.FromResult<EventRecordCollection?>(record);
+            return Task.FromResult<StreamEventRecordCollection?>(record);
         }
 
         public Task DeleteAsync(Id streamId, CancellationToken token = default)
@@ -40,7 +41,7 @@ namespace StreamStore.InMemory
             if (!storage.TryGetValue(streamId, out var record))
                 return Task.FromResult<Revision?>(null!);
 
-            return Task.FromResult<Revision?>(new EventMetadataRecordCollection(record).MaxRevision);
+            return Task.FromResult<Revision?>(new StreamEventMetadataRecordCollection(record).MaxRevision);
         }
 
         public Task<IStreamWriter> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
@@ -54,7 +55,7 @@ namespace StreamStore.InMemory
             return Task.FromResult((IStreamWriter)new InMemoryStreamWriter(streamId, expectedStreamVersion, this.storage, existing));
         }
 
-        public async Task<EventRecordCollection> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        public async Task<IStreamEventRecord[]> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
             if (startFrom < Revision.One)
                 throw new ArgumentOutOfRangeException(nameof(startFrom), "Start from should be greater than zero.");
@@ -68,14 +69,13 @@ namespace StreamStore.InMemory
                 throw new StreamNotFoundException(streamId);
 
             if (startFrom > stream.MaxRevision)
-                return new EventRecordCollection();
+                return Array.Empty<IStreamEventRecord>();
 
             return
-                new EventRecordCollection(
+                new StreamEventRecordCollection(
                     stream
                         .Where(e => e.Revision >= startFrom)
-                        .Take(count)
-                        .ToArray());
+                        .Take(count)).ToArray();
         }
     }
 }

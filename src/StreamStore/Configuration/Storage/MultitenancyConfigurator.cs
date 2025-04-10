@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace StreamStore.Configuration.Storage
 {
-    public sealed class MultitenancyConfigurator : IMultitenancyConfigurator
+    class MultitenancyConfigurator : IMultitenancyConfigurator
     {
         readonly ServiceCollection services = new ServiceCollection();
 

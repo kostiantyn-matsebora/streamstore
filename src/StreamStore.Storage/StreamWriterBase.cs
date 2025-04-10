@@ -11,12 +11,12 @@ namespace StreamStore.Storage
     {
         protected readonly Id streamId;
         protected readonly Revision expectedRevision;
-        readonly EventRecordCollection events = new EventRecordCollection();
-        readonly EventRecordCollection uncommited = new EventRecordCollection();
+        readonly StreamEventRecordCollection events = new StreamEventRecordCollection();
+        readonly StreamEventRecordCollection uncommited = new StreamEventRecordCollection();
 
         Revision revision;
 
-        protected StreamWriterBase(Id streamId, Revision expectedRevision, EventRecordCollection? existing)
+        protected StreamWriterBase(Id streamId, Revision expectedRevision, StreamEventRecordCollection? existing)
         {
             this.streamId = streamId.ThrowIfHasNoValue(nameof(streamId));
 
@@ -38,24 +38,25 @@ namespace StreamStore.Storage
             return events.MaxRevision;
         }
 
-        public async Task<IStreamWriter> AppendAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default)
+        public async Task<IStreamWriter> AppendAsync(IEventRecord record, CancellationToken token = default)
         {
-            eventId.ThrowIfHasNoValue(nameof(eventId));
-            timestamp.ThrowIfMinValue(nameof(timestamp));
-            data.ThrowIfNull(nameof(data));
+            record.ThrowIfNull(nameof(record));
+            record.Id.ThrowIfHasNoValue(nameof(record.Id));
+            record.Timestamp.ThrowIfMinValue(nameof(record.Timestamp));
+            record.Data.ThrowIfNull(nameof(record.Data));
 
 
-            ThrowIfDuplicateEventId(eventId);
+            ThrowIfDuplicateEventId(record.Id);
 
             // Since revision is immutable, we need to assign the new value to revision
             revision = revision.Increment();
             
-            var eventRecord = new EventRecord
+            var eventRecord = new StreamEventRecord
             {
-                Id = eventId,
+                Id = record.Id,
                 Revision = revision,
-                Timestamp = timestamp,
-                Data = data
+                Timestamp = record.Timestamp,
+                Data = record.Data
             };
 
             events!.Add(eventRecord);
@@ -65,9 +66,9 @@ namespace StreamStore.Storage
             return this;
         }
 
-        protected abstract Task CommitAsync(EventRecordCollection uncommited, CancellationToken token);
+        protected abstract Task CommitAsync(StreamEventRecordCollection uncommited, CancellationToken token);
 
-        protected virtual Task OnEventAdded(EventRecord @event, CancellationToken token)
+        protected virtual Task OnEventAdded(IStreamEventRecord @event, CancellationToken token)
         {
             return Task.CompletedTask;
         }

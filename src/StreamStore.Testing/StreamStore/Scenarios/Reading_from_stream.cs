@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -82,10 +83,10 @@ namespace StreamStore.Testing.StreamStore.Scenarios
 
             // Assert
             result.Should().NotBeNull();
-            result.MaxRevision.Should().Be(stream.Revision);
+            result.Last().Revision.Should().Be(stream.Revision);
             result.Should().HaveCount(stream.Revision);
             result.Should().BeInAscendingOrder(e => e.Revision);
-            result.Select(e => e.EventId).Should().BeEquivalentTo(stream.Events.Select(e => e.Id));
+            result.Select(e => e.Id).Should().BeEquivalentTo(stream.Events.Select(e => e.Id));
         }
 
 
@@ -95,7 +96,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             // Arrange
             var stream = Environment.Container.RandomStream;
             IStreamStore store = Environment.Store;
-            StreamEventCollection result = new StreamEventCollection();
+            List<IStreamEvent> result = new List<IStreamEvent>();
 
             // Act
             await foreach(var @event in await store.BeginReadAsync(stream.Id, CancellationToken.None))
@@ -107,10 +108,10 @@ namespace StreamStore.Testing.StreamStore.Scenarios
 
             // Assert
             result.Should().NotBeNull();
-            result.MaxRevision.Should().Be(stream.Revision);
+            result.Last().Revision.Should().Be(stream.Revision);
             result.Should().HaveCount(stream.Revision);
             result.Should().BeInAscendingOrder(e => e.Revision);
-            result.Select(e => e.EventId).Should().BeEquivalentTo(stream.Events.Select(e => e.Id));
+            result.Select(e => e.Id).Should().BeEquivalentTo(stream.Events.Select(e => e.Id));
         }
     }
 }

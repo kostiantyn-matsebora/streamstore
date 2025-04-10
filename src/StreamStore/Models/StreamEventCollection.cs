@@ -6,26 +6,24 @@ using System.Linq;
 
 namespace StreamStore.Models
 {
-    public class StreamEventCollection : IEnumerable<StreamEvent>
+    class StreamEventCollection : IEnumerable<IStreamEvent>
     {
-        readonly List<StreamEvent> events;
+        readonly List<IStreamEvent> events;
 
-        public StreamEventCollection() : this(Enumerable.Empty<StreamEvent>())
+        public StreamEventCollection() : this(Enumerable.Empty<IStreamEvent>())
         {
         }
-        public StreamEventCollection(IEnumerable<StreamEvent> events)
+        public StreamEventCollection(IEnumerable<IStreamEvent> events)
         {
             this.events = events != null ? events.OrderBy(e => e.Revision).ToList() : throw new ArgumentNullException(nameof(events));
         }
 
-        public Revision MaxRevision => events.Max(x => x.Revision);
-
-        public IEnumerator<StreamEvent> GetEnumerator()
+        public IEnumerator<IStreamEvent> GetEnumerator()
         {
             return events.GetEnumerator();
         }
 
-        public void Add(StreamEvent @event)
+        public void Add(IStreamEvent @event)
         {
             @event.ThrowIfNull(nameof(@event));
             events.Add(@event);

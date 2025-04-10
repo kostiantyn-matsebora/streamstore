@@ -9,7 +9,7 @@
             this.serializer = serializer;
         }
 
-        public StreamEvent ConvertToEvent(EventRecord record)
+        public StreamEvent ConvertToEvent(IStreamEventRecord record)
         {
             var data = serializer.Deserialize(record.Data!);
             return new StreamEvent(record.Id, record.Revision, record.Timestamp, data);

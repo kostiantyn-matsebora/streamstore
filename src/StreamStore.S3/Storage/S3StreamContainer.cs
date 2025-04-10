@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using StreamStore.S3.Client;
+using StreamStore.Storage;
 
 
 
@@ -14,7 +15,7 @@ namespace StreamStore.S3.Storage
 
         public S3MetadataObject MetadataObject { get; }
 
-        public EventMetadataRecordCollection EventsMetadata => MetadataObject.Events!;
+        public StreamEventMetadataRecordCollection EventsMetadata => MetadataObject.Events!;
 
         public bool NotEmpty => Events.NotEmpty;
             
@@ -52,7 +53,7 @@ namespace StreamStore.S3.Storage
             await Task.WhenAll(tasks);
         }
 
-        public async Task AppendEventAsync(EventRecord record, CancellationToken token)
+        public async Task AppendEventAsync(IStreamEventRecord record, CancellationToken token)
         {
             await Events.AppendAsync(record, token);
             await MetadataObject.AppendEventAsync(record, token).UploadAsync(token);

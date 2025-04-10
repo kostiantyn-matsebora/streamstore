@@ -12,16 +12,16 @@ namespace StreamStore.InMemory
 {
     sealed class InMemoryStreamWriter : StreamWriterBase
     {
-        readonly ConcurrentDictionary<string, EventRecordCollection> storage;
+        readonly ConcurrentDictionary<string, StreamEventRecordCollection> storage;
 
-        public InMemoryStreamWriter(Id streamId, Revision expectedRevision, ConcurrentDictionary<string, EventRecordCollection> storage, EventRecordCollection? existing): base(streamId, expectedRevision, existing)
+        public InMemoryStreamWriter(Id streamId, Revision expectedRevision, ConcurrentDictionary<string, StreamEventRecordCollection> storage, StreamEventRecordCollection? existing): base(streamId, expectedRevision, existing)
         {
             this.storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
 
-        protected override Task CommitAsync(EventRecordCollection uncommited, CancellationToken token)
+        protected override Task CommitAsync(StreamEventRecordCollection uncommited, CancellationToken token)
         {
-            var record = new EventRecordCollection(uncommited);
+            var record = new StreamEventRecordCollection(uncommited);
 
             storage.AddOrUpdate(streamId, record, (key, oldValue) =>
             {

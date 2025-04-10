@@ -5,7 +5,7 @@ using StreamStore.Stream;
 
 namespace StreamStore
 {
-    internal class StreamEventEnumeratorFactory
+    class StreamEventEnumeratorFactory
     {
         readonly StreamStoreConfiguration configuration;
         readonly IStreamReader reader;
@@ -18,7 +18,7 @@ namespace StreamStore
             this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
 
         }
-        public IAsyncEnumerator<StreamEvent> CreateEnumerator(StreamReadingParameters parameters, CancellationToken token)
+        public IAsyncEnumerator<IStreamEvent> CreateEnumerator(StreamReadingParameters parameters, CancellationToken token)
         {
             if (configuration.ReadingMode == StreamReadingMode.ProduceConsume)
             {

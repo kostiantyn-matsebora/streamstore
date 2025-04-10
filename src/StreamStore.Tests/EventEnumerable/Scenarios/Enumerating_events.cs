@@ -48,8 +48,8 @@ namespace StreamStore.Tests.EventEnumerable {
             // Assert
             events.Should().NotBeEmpty();
             events.Length.Should().Be(stream.Revision - startFrom + 1);
-            events.First().EventId.Should().Be(stream.Events.Skip(startFrom - 1).First().Id);
-            events.Last().EventId.Should().Be(stream.Events.Last().Id);
+            events.First().Id.Should().Be(stream.Events.Skip(startFrom - 1).First().Id);
+            events.Last().Id.Should().Be(stream.Events.Last().Id);
         }
 
         [Theory]
@@ -65,7 +65,7 @@ namespace StreamStore.Tests.EventEnumerable {
             var parameters = new StreamReadingParameters(stream.Id, startFrom, pageSize);
 
             var enumerable = Environment.CreateEnumerable(parameters);
-            var events = new List<StreamEvent>();
+            var events = new List<IStreamEvent>();
             // Act
             await foreach (var _ in enumerable)
             {
@@ -75,8 +75,8 @@ namespace StreamStore.Tests.EventEnumerable {
             // Assert
             events.Should().NotBeEmpty();
             events.Count.Should().Be(stream.Revision - startFrom + 1);
-            events.First().EventId.Should().Be(stream.Events.Skip(startFrom - 1).First().Id);
-            events.Last().EventId.Should().Be(stream.Events.Last().Id);
+            events.First().Id.Should().Be(stream.Events.Skip(startFrom - 1).First().Id);
+            events.Last().Id.Should().Be(stream.Events.Last().Id);
         }
 
         [Theory]
@@ -91,7 +91,7 @@ namespace StreamStore.Tests.EventEnumerable {
             var parameters = new StreamReadingParameters(stream.Id, Revision.One, pageSize);
 
             var enumerable = Environment.CreateEnumerable(parameters);
-            var events = new List<StreamEvent>();
+            var events = new List<IStreamEvent>();
             // Act
             await foreach (var _ in enumerable)
             {
@@ -101,8 +101,8 @@ namespace StreamStore.Tests.EventEnumerable {
             // Assert
             events.Should().NotBeEmpty();
             events.Count.Should().Be(stream.Revision);
-            events.First().EventId.Should().Be(stream.Events.First().Id);
-            events.Last().EventId.Should().Be(stream.Events.Last().Id);
+            events.First().Id.Should().Be(stream.Events.First().Id);
+            events.Last().Id.Should().Be(stream.Events.Last().Id);
         }
 
         [Theory]
@@ -129,7 +129,7 @@ namespace StreamStore.Tests.EventEnumerable {
             var parameters = new StreamReadingParameters(stream.Id, startFrom, pageSize);
 
             var enumerable = Environment.CreateEnumerable(parameters);
-            var events = new List<StreamEvent>();
+            var events = new List<IStreamEvent>();
             // Act
             await foreach (var _ in enumerable)
             {
@@ -139,8 +139,8 @@ namespace StreamStore.Tests.EventEnumerable {
             // Assert
             events.Should().NotBeEmpty();
             events.Count.Should().Be(leftover);
-            events.First().EventId.Should().Be(stream.Events.Skip(startFrom - 1).First().Id);
-            events.Last().EventId.Should().Be(stream.Events.Last().Id);
+            events.First().Id.Should().Be(stream.Events.Skip(startFrom - 1).First().Id);
+            events.Last().Id.Should().Be(stream.Events.Last().Id);
         }
     }
 }

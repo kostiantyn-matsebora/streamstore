@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Moq;
 using StreamStore.S3.Client;
+using StreamStore.Storage;
 using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.Storage.EventStorage
@@ -15,7 +16,7 @@ namespace StreamStore.S3.Tests.Storage.EventStorage
             // Arrange
             var s3EventStorage = Environment.CreateS3EventStorage();
             var fixture = new Fixture();
-            EventRecord record = fixture.Create<EventRecord>();
+            StreamEventRecord record = fixture.Create<StreamEventRecord>();
             CancellationToken token = default;
             Environment.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
 

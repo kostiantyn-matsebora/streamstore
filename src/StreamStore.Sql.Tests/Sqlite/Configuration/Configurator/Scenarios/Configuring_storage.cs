@@ -5,6 +5,7 @@ using FluentAssertions;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Sqlite;
 using StreamStore.Configuration.Storage;
+using StreamStore.Configuration;
 
 namespace StreamStore.Sql.Tests.Sqlite.Configuration.Configurator
 {
@@ -14,7 +15,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Configuration.Configurator
         public void When_configuring_streamstore_storage()
         {
             // Arrange
-            var configurator = new SingleTenantConfigurator();
+            var configurator = ConfiguratorFactory.SingleTenantConfigurator;
             var connectionString = Generated.Primitives.String;
 
 

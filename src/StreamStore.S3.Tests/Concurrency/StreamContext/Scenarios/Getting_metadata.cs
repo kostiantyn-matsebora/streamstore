@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Moq;
 using StreamStore.S3.Client;
+using StreamStore.Storage;
 using StreamStore.Testing;
 using Converter = StreamStore.Serialization.Converter;
 
@@ -37,7 +38,7 @@ namespace StreamStore.S3.Tests.Concurrency.StreamContext
             var streamContext = Environment.CreateStreamContext(streamId, revision);
             var response = new FindObjectResponse
             {
-                Data = Converter.ToByteArray(new[] { new EventMetadataRecord { Id = Generated.Primitives.Id, Revision = Generated.Primitives.Revision, Timestamp = Generated.Primitives.DateTime } }),
+                Data = Converter.ToByteArray(new[] { new StreamEventMetadataRecord { Id = Generated.Primitives.Id, Revision = Generated.Primitives.Revision, Timestamp = Generated.Primitives.DateTime } }),
                 Key = Generated.Primitives.String,
                 VersionId = Generated.Primitives.String
             };

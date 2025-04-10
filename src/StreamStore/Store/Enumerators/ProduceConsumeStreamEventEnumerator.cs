@@ -9,13 +9,13 @@ using StreamStore.Exceptions;
 
 namespace StreamStore.Stream
 {
-    internal sealed class ProduceConsumeStreamEventEnumerator : IAsyncEnumerator<StreamEvent>
+    class ProduceConsumeStreamEventEnumerator : IAsyncEnumerator<IStreamEvent>
     {
         readonly IStreamReader reader;
         readonly EventConverter converter;
         readonly StreamReadingParameters parameters;
         readonly CancellationToken token;
-        readonly Channel<StreamEvent> channel;
+        readonly Channel<IStreamEvent> channel;
         readonly Task producer;
 
         public ProduceConsumeStreamEventEnumerator(
@@ -43,7 +43,7 @@ namespace StreamStore.Stream
 
         public async ValueTask<bool> MoveNextAsync()
         {
-            StreamEvent streamEvent = null!;
+            IStreamEvent streamEvent = null!;
             try
             {
                 streamEvent = await channel.Reader.ReadAsync();
@@ -62,7 +62,7 @@ namespace StreamStore.Stream
             Current = streamEvent;
             return true;
         }
-        public StreamEvent Current { get; private set; }
+        public IStreamEvent Current { get; private set; }
 
         Task DisposeAsync(bool disposing)
         {
@@ -79,9 +79,9 @@ namespace StreamStore.Stream
             return Task.CompletedTask;
         }
 
-        Channel<StreamEvent> CreateChannel(int pageSize)
+        Channel<IStreamEvent> CreateChannel(int pageSize)
         {
-            return Channel.CreateBounded<StreamEvent>(
+            return Channel.CreateBounded<IStreamEvent>(
                 new BoundedChannelOptions(pageSize)
                 {
                     FullMode = BoundedChannelFullMode.Wait,
@@ -93,7 +93,7 @@ namespace StreamStore.Stream
         async Task ProduceAsync()
         {
             int cursor = parameters.StartFrom;
-            EventRecordCollection records;
+            IStreamEventRecord[] records;
 
             do
             {
@@ -117,7 +117,7 @@ namespace StreamStore.Stream
             channel.Writer.Complete();
         }
 
-        async Task<int> WritePageAsync(EventRecordCollection records, int cursor)
+        async Task<int> WritePageAsync(IStreamEventRecord[] records, int cursor)
         {
             foreach (var record in records)
             {

@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Configuration;
 using StreamStore.Configuration.Storage;
@@ -11,7 +10,7 @@ using StreamStore.Provisioning;
 namespace StreamStore
 {
 
-    public class StreamStoreConfigurator : IStreamStoreConfigurator
+    class StreamStoreConfigurator : IStreamStoreConfigurator
     {
         StreamReadingMode mode = StreamReadingMode.Default;
         IStreamStorageConfigurator? storageConfigurator;
@@ -120,6 +119,7 @@ namespace StreamStore
             services.AddSingleton<ITenantStreamStoreFactory, TenantStreamStoreFactory>();
             if (schemaProvisioningEnabled) services.AddHostedService<TenantSchemaProvisioningService>();
         }
+
 #pragma warning restore S1172 // Unused method parameters should be removed
     }
 }

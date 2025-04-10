@@ -3,15 +3,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Client;
 using StreamStore.Serialization;
+using StreamStore.Storage;
 
 
 namespace StreamStore.S3.Storage
 {
     class S3EventObject : S3Object
     {
-        EventRecord? record;
+        IStreamEventRecord? record;
 
-        public EventRecord? Event => record;
+        public IStreamEventRecord? Event => record;
 
         public S3EventObject(S3ContainerPath path, IS3ClientFactory clientFactory) : base(path, clientFactory)
         {
@@ -20,7 +21,7 @@ namespace StreamStore.S3.Storage
         public override async Task LoadAsync(CancellationToken token)
         {
             var data = await LoadDataAsync(token);
-            if (State == S3ObjectState.Loaded) record = Converter.FromByteArray<EventRecord>(data)!;
+            if (State == S3ObjectState.Loaded) record = Converter.FromByteArray<StreamEventRecord>(data)!;
         }
 
         public override async Task DeleteAsync(CancellationToken token)
@@ -29,7 +30,7 @@ namespace StreamStore.S3.Storage
             record = null;
         }
 
-        public S3EventObject SetRecord(EventRecord record)
+        public S3EventObject SetRecord(IStreamEventRecord record)
         {
             this.record = record;
 

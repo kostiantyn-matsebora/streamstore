@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace StreamStore.Provisioning
 {
-    internal class SchemaProvisioningService : BackgroundService
+    class SchemaProvisioningService : BackgroundService
     {
         readonly ISchemaProvisioner provisioner;
 

@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using StreamStore.S3.Client;
 using StreamStore.Serialization;
+using StreamStore.Storage;
 using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.Storage.EventStorage
@@ -17,7 +18,7 @@ namespace StreamStore.S3.Tests.Storage.EventStorage
             Id eventId = Generated.Primitives.Id;
             var fixture = new Fixture();
             CancellationToken token = default(global::System.Threading.CancellationToken);
-            var record = fixture.Create<EventRecord>();
+            var record = fixture.Create<StreamEventRecord>();
             var response = new FindObjectResponse
             {
                 VersionId = Generated.Primitives.String,

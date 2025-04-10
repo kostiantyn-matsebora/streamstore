@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.S3.Storage;
+using StreamStore.Storage;
 
 namespace StreamStore.S3.Concurrency
 {
@@ -31,7 +32,7 @@ namespace StreamStore.S3.Concurrency
            await CopyPersistentMetadataToTransient(CancellationToken.None);
         }
 
-        public async Task<EventMetadataRecordCollection> GetPersistentMetadataAsync(CancellationToken token)
+        public async Task<StreamEventMetadataRecordCollection> GetPersistentMetadataAsync(CancellationToken token)
         {
            await Persistent.MetadataObject.LoadAsync(token);
 
@@ -40,10 +41,10 @@ namespace StreamStore.S3.Concurrency
                 return Persistent.MetadataObject.Events;
             }
 
-            return new EventMetadataRecordCollection();
+            return new StreamEventMetadataRecordCollection();
         }
 
-        public async Task AddTransientEventAsync(EventRecord @event, CancellationToken token)
+        public async Task AddTransientEventAsync(IStreamEventRecord @event, CancellationToken token)
         {
             await Transient.AppendEventAsync(@event, token);
         }

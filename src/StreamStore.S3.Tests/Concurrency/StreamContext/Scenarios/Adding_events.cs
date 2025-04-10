@@ -14,7 +14,7 @@ namespace StreamStore.S3.Tests.Concurrency.StreamContext
             var streamId = Generated.Primitives.Id;
             var revision = Generated.Primitives.Revision;
             var streamContext = Environment.CreateStreamContext(streamId, revision);
-            var record = Generated.Many(count: 1).First();
+            var record = Generated.StreamEventRecords.Many(count: 1).First();
             Environment.MockClient.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
             Environment.MockClient.Setup(x => x.UploadObjectAsync(It.IsAny<UploadObjectRequest>(), default))
                             .ReturnsAsync(new UploadObjectResponse() { Key = Generated.Primitives.String, VersionId = Generated.Primitives.String });

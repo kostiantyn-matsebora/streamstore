@@ -20,7 +20,7 @@ namespace StreamStore.NoSql.Cassandra.Storage
         public CassandraStreamWriter(
             Id streamId, 
             Revision expectedRevision, 
-            EventRecordCollection? events,
+            StreamEventRecordCollection? events,
             IMapper mapper,
             CassandraStatementConfigurator configure,
             ICassandraCqlQueries queries)
@@ -31,7 +31,7 @@ namespace StreamStore.NoSql.Cassandra.Storage
             this.queries = queries.ThrowIfNull(nameof(queries));
         }
 
-        protected override async Task CommitAsync(EventRecordCollection uncommited, CancellationToken token)
+        protected override async Task CommitAsync(StreamEventRecordCollection uncommited, CancellationToken token)
         {
             var records = uncommited.ToArray();
             var batch = configure.Batch(mapper.CreateBatch(BatchType.Logged));
