@@ -53,7 +53,7 @@ namespace StreamStore.S3.Storage
             await Task.WhenAll(tasks);
         }
 
-        public async Task AppendEventAsync(StreamEventRecord record, CancellationToken token)
+        public async Task AppendEventAsync(IStreamEventRecord record, CancellationToken token)
         {
             await Events.AppendAsync(record, token);
             await MetadataObject.AppendEventAsync(record, token).UploadAsync(token);

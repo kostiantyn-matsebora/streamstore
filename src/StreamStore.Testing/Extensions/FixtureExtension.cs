@@ -10,7 +10,7 @@ namespace StreamStore.Testing
     {
         readonly static TypeRegistry registry  = new TypeRegistry();
 
-        public static StreamEventRecord[] CreateEventRecords(this Fixture fixture, int initialRevision, int count)
+        public static StreamEventRecord[] CreateStreamEventRecords(this Fixture fixture, int initialRevision, int count)
         {
             var serializer = new NewtonsoftEventSerializer(registry, false);
 
@@ -32,9 +32,9 @@ namespace StreamStore.Testing
             return fixture.CreateMany<RootEvent>().ToArray();
         }
 
-        public static StreamEventRecord[] CreateEventRecords(this Fixture fixture,  int count)
+        public static StreamEventRecord[] CreateStreamEventRecords(this Fixture fixture,  int count)
         {
-            return CreateEventRecords(fixture, 1, count);
+            return CreateStreamEventRecords(fixture, 1, count);
         }
     }
 }

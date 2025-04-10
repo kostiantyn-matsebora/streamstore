@@ -38,24 +38,25 @@ namespace StreamStore.Storage
             return events.MaxRevision;
         }
 
-        public async Task<IStreamWriter> AppendAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default)
+        public async Task<IStreamWriter> AppendAsync(IEventRecord record, CancellationToken token = default)
         {
-            eventId.ThrowIfHasNoValue(nameof(eventId));
-            timestamp.ThrowIfMinValue(nameof(timestamp));
-            data.ThrowIfNull(nameof(data));
+            record.ThrowIfNull(nameof(record));
+            record.Id.ThrowIfHasNoValue(nameof(record.Id));
+            record.Timestamp.ThrowIfMinValue(nameof(record.Timestamp));
+            record.Data.ThrowIfNull(nameof(record.Data));
 
 
-            ThrowIfDuplicateEventId(eventId);
+            ThrowIfDuplicateEventId(record.Id);
 
             // Since revision is immutable, we need to assign the new value to revision
             revision = revision.Increment();
             
             var eventRecord = new StreamEventRecord
             {
-                Id = eventId,
+                Id = record.Id,
                 Revision = revision,
-                Timestamp = timestamp,
-                Data = data
+                Timestamp = record.Timestamp,
+                Data = record.Data
             };
 
             events!.Add(eventRecord);

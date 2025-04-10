@@ -21,7 +21,7 @@ namespace StreamStore
             if (writer == null) throw new InvalidOperationException("Writing is not started.");
             envelope.ThrowIfNull(nameof(envelope));
 
-            await writer!.AppendAsync(envelope.Id, envelope.Timestamp, converter.ConvertToByteArray(envelope.Event));
+            await writer!.AppendAsync(new EventRecord(envelope, converter), cancellationToken);
             return this;
         }
 
@@ -42,6 +42,21 @@ namespace StreamStore
             {
                 writer.Dispose();
             }
+        }
+
+        class EventRecord : IEventRecord
+        {
+            public EventRecord(IEventEnvelope envelope, EventConverter converter)
+            {
+                Id = envelope.Id;
+                Timestamp = envelope.Timestamp;
+                Data = converter.ConvertToByteArray(envelope.Event);
+            }
+            public byte[] Data { get; }
+
+            public Id Id { get; }
+
+            public DateTime Timestamp { get; }
         }
     }
 }

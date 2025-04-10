@@ -44,7 +44,7 @@ namespace StreamStore.S3.Concurrency
             return new StreamEventMetadataRecordCollection();
         }
 
-        public async Task AddTransientEventAsync(StreamEventRecord @event, CancellationToken token)
+        public async Task AddTransientEventAsync(IStreamEventRecord @event, CancellationToken token)
         {
             await Transient.AppendEventAsync(@event, token);
         }

@@ -10,9 +10,9 @@ namespace StreamStore.S3.Storage
 {
     class S3EventObject : S3Object
     {
-        StreamEventRecord? record;
+        IStreamEventRecord? record;
 
-        public StreamEventRecord? Event => record;
+        public IStreamEventRecord? Event => record;
 
         public S3EventObject(S3ContainerPath path, IS3ClientFactory clientFactory) : base(path, clientFactory)
         {
@@ -30,7 +30,7 @@ namespace StreamStore.S3.Storage
             record = null;
         }
 
-        public S3EventObject SetRecord(StreamEventRecord record)
+        public S3EventObject SetRecord(IStreamEventRecord record)
         {
             this.record = record;
 

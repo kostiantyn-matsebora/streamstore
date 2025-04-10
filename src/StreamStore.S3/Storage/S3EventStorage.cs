@@ -15,7 +15,7 @@ namespace StreamStore.S3.Storage
         {
         }
 
-        public async Task AppendAsync(StreamEventRecord record, CancellationToken token)
+        public async Task AppendAsync(IStreamEventRecord record, CancellationToken token)
         {
             await GetItem(record.Id).SetRecord(record).UploadAsync(token);
         }

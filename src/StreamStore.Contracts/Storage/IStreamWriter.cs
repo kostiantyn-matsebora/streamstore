@@ -6,7 +6,7 @@ namespace StreamStore
 {
     public interface IStreamWriter: IDisposable
     {
-        Task<IStreamWriter> AppendAsync(Id eventId, DateTime timestamp, byte[] data, CancellationToken token = default);
+        Task<IStreamWriter> AppendAsync(IEventRecord record, CancellationToken token = default);
         Task<Revision> ComitAsync(CancellationToken cancellationToken);
     }
 }

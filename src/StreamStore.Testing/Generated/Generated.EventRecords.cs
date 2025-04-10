@@ -1,18 +1,15 @@
-﻿using AutoFixture;
-using StreamStore.Storage;
+﻿using System.Linq;
+using AutoFixture;
+
 
 namespace StreamStore.Testing
 {
     public static partial class Generated
     {
-        public static StreamEventRecord[] Many(int initialRevision, int count)
+        public static class EventRecords
         {
-            return new Fixture().CreateEventRecords(initialRevision, count);
-        }
+            public static IEventRecord Single => new Fixture().CreateStreamEventRecords(1).First();
 
-        public static StreamEventRecord[] Many(int count)
-        {
-            return new Fixture().CreateEventRecords(count);
         }
     }
 }

@@ -20,22 +20,22 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             var eventId = Id.None;
             var stream = Container.PeekStream();
 
-            var uow = await Storage.BeginAppendAsync(stream.Id, stream.Revision);
+            var writer = await Storage.BeginAppendAsync(stream.Id, stream.Revision);
 
             // Act
-            var act = async () => await uow.AppendAsync(eventId, Generated.Primitives.DateTime, Generated.Objects.ByteArray);
+            var act = async () => await writer.AppendAsync(new TestEventRecord(eventId, Generated.Primitives.DateTime, Generated.Objects.ByteArray));
 
             //Assert
             await act.Should().ThrowAsync<ArgumentNullException>();
 
             // Act
-            act = async () => await uow.AppendAsync(Generated.Primitives.Id, DateTime.MinValue, Generated.Objects.ByteArray);
+            act = async () => await writer.AppendAsync(new TestEventRecord(Generated.Primitives.Id, DateTime.MinValue, Generated.Objects.ByteArray));
 
             //Assert
             await act.Should().ThrowAsync<ArgumentOutOfRangeException>();
 
             // Act
-            act = async () => await uow.AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, null!);
+            act = async () => await writer.AppendAsync(new TestEventRecord(Generated.Primitives.Id, Generated.Primitives.DateTime, null!));
 
             //Assert
             await act.Should().ThrowAsync<ArgumentNullException>();
@@ -60,14 +60,14 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
 
             // Arrange
-            var uow = await Storage.BeginAppendAsync(stream.Id, stream.Revision);
+            var writer = await Storage.BeginAppendAsync(stream.Id, stream.Revision);
 
             await Storage.BeginAppendAsync(stream.Id, stream.Revision)
-                .AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
+                .AppendAsync(Generated.EventRecords.Single)
                 .CommitAsync();
 
             // Act
-            act = () => uow.AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray).CommitAsync();
+            act = () => writer.AppendAsync(Generated.EventRecords.Single).CommitAsync();
 
             //Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
@@ -92,14 +92,14 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
 
             // Arrange
-            var uow = await Storage.BeginAppendAsync(stream.Id, stream.Revision);
+            var writer = await Storage.BeginAppendAsync(stream.Id, stream.Revision);
 
             await Storage.BeginAppendAsync(stream.Id, stream.Revision)
-                .AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
+                .AppendAsync(Generated.EventRecords.Single)
                 .CommitAsync();
 
             // Act
-            act = () => uow.AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray).CommitAsync();
+            act = () => writer.AppendAsync(Generated.EventRecords.Single).CommitAsync();
 
             //Assert
             await act.Should().ThrowAsync<OptimisticConcurrencyException>();
@@ -125,8 +125,8 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             // Act
 
             await Storage.BeginAppendAsync(streamId, revision)
-                  .AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
-                  .AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
+                  .AppendAsync(Generated.EventRecords.Single)
+                  .AppendAsync(Generated.EventRecords.Single)
                   .CommitAsync();
 
             // Assert
@@ -136,7 +136,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
 
             // Act
             await Storage.BeginAppendAsync(streamId, revision + 2)
-                  .AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
+                  .AppendAsync(Generated.EventRecords.Single)
                    .CommitAsync();
 
             // Assert
@@ -146,11 +146,11 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
 
             // Act
             await Storage.BeginAppendAsync(streamId, revision + 2 + 1)
-                  .AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
-                  .AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
-                  .AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
-                  .AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
-                  .AppendAsync(Generated.Primitives.Id, Generated.Primitives.DateTime, Generated.Objects.ByteArray)
+                  .AppendAsync(Generated.EventRecords.Single)
+                  .AppendAsync(Generated.EventRecords.Single)
+                  .AppendAsync(Generated.EventRecords.Single)
+                  .AppendAsync(Generated.EventRecords.Single)
+                  .AppendAsync(Generated.EventRecords.Single)
                   .CommitAsync();
 
             // Assert

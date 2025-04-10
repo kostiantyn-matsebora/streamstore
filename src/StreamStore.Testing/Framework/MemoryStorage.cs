@@ -69,7 +69,7 @@ namespace StreamStore.Testing
 
         static StreamRecord GenerateStream(Id id, int eventPerStream)
         {
-            return new StreamRecord(id, Generated.Many(eventPerStream));
+            return new StreamRecord(id, Generated.StreamEventRecords.Many(eventPerStream));
         }
 
         int RandomStreamIndex()

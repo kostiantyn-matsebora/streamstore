@@ -35,7 +35,7 @@ namespace StreamStore.S3.Storage
             }
         }
 
-        public S3MetadataObject AppendEventAsync(StreamEventMetadataRecord record, CancellationToken token)
+        public S3MetadataObject AppendEventAsync(IStreamEventMetadata record, CancellationToken token)
         {
             records.Add(record);
             return this;
