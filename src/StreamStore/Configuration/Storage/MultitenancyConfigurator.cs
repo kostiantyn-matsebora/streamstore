@@ -6,10 +6,8 @@ using System.Linq;
 
 namespace StreamStore.Configuration.Storage
 {
-    class MultitenancyConfigurator : IMultitenancyConfigurator
+    class MultitenancyConfigurator : ConfiguratorBase, IMultitenancyConfigurator
     {
-        readonly ServiceCollection services = new ServiceCollection();
-
         public IMultitenancyConfigurator UseStorageProvider<TStorageProvider>(Action<IServiceCollection>? dependencies = null) where TStorageProvider : ITenantStreamStorageProvider
         {
             services.AddSingleton(typeof(ITenantStreamStorageProvider), typeof(TStorageProvider));

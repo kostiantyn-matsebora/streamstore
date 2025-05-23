@@ -4,9 +4,9 @@ using Xunit.Abstractions;
 namespace StreamStore.NoSql.Tests.Cassandra.Storage
 {
     [Collection("Reading Cassandra")]
-    public class Getting_actual_revision : Get_actual_revision<CassandraStorageTestEnvironment>
+    public class Getting_stream_metadata : Getting_stream_metadata<CassandraStorageTestEnvironment>
     {
-        public Getting_actual_revision(CassandraStorageFixture fixture) : base(new CassandraStorageTestEnvironment(fixture))
+        public Getting_stream_metadata(CassandraStorageFixture fixture) : base(new CassandraStorageTestEnvironment(fixture))
         {
         }
     }

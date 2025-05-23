@@ -10,7 +10,7 @@ namespace StreamStore.Stream
     class DefaultStreamEventEnumerator : IAsyncEnumerator<IStreamEvent>
     {
         readonly IStreamReader reader;
-        private readonly EventConverter converter;
+        private readonly IEventConverter converter;
         private readonly CancellationToken token;
         readonly Id streamId;
         readonly int pageSize;
@@ -18,7 +18,7 @@ namespace StreamStore.Stream
 
         readonly Queue<IStreamEventRecord> queue = new Queue<IStreamEventRecord>();
 
-        public DefaultStreamEventEnumerator(StreamReadingParameters parameters, IStreamReader reader, EventConverter converter, CancellationToken token)
+        public DefaultStreamEventEnumerator(StreamReadingParameters parameters, IStreamReader reader, IEventConverter converter, CancellationToken token)
         {
             this.reader = reader ?? throw new ArgumentNullException(nameof(reader));
             this.converter = converter ?? throw new ArgumentNullException(nameof(converter));

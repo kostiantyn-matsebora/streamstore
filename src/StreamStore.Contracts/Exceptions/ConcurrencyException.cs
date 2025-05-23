@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace StreamStore.Exceptions
 {
     public abstract class ConcurrencyException : StreamStoreException

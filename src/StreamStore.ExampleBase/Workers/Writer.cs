@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using StreamStore.ExampleBase.Progress;
 using StreamStore.ExampleBase.Progress.Model;
 using StreamStore.Exceptions;
 using StreamStore.Testing;
@@ -25,16 +24,17 @@ namespace StreamStore.ExampleBase.Workers
             try
             {
                 TrackProgress(new StartWriting(actualRevision));
-                actualRevision =
+
                 await store.BeginWriteAsync(streamId, actualRevision, token)
-                                .AppendEventAsync(CreateEvent(), token)
-                                .AppendEventAsync(CreateEvent(), token)
-                                .AppendEventAsync(CreateEvent(), token)
+                                .AppendAsync(CreateEvent(), token)
+                                .AppendAsync(CreateEvent(), token)
+                                .AppendAsync(CreateEvent(), token)
                             .SaveChangesAsync(token);
-                
+
+                actualRevision = actualRevision + 3;
                 TrackProgress(new WriteSucceeded(actualRevision, 3));
             }
-            catch (OptimisticConcurrencyException ex)
+            catch (StreamAlreadyChangedException ex)
             {
                 if (token.IsCancellationRequested) return;
 

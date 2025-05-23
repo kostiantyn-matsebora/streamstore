@@ -1,12 +1,11 @@
 ﻿using System.Threading.Tasks;
 using System.Threading;
-using System;
+using System.Collections.Generic;
 
 namespace StreamStore
 {
-    public interface IStreamWriter: IDisposable
+    public interface IStreamWriter
     {
-        Task<IStreamWriter> AppendAsync(IEventRecord record, CancellationToken token = default);
-        Task<Revision> ComitAsync(CancellationToken cancellationToken);
+        Task WriteAsync(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token);
     }
 }

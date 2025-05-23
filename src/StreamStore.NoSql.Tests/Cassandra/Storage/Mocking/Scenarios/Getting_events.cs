@@ -18,7 +18,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking
             Environment.Queries.Setup(x => x.StreamActualRevision(It.IsAny<string>())).Returns(new Cql(Generated.Primitives.String));
 
             // Act
-            var result = await Environment.StreamStorage.GetActualRevision(streamId);
+            var result = await Environment.StreamStorage.GetMetadata(streamId);
 
             // Assert
             Environment.MockRepository.VerifyAll();
@@ -35,12 +35,13 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking
             Environment.Queries.Setup(x => x.StreamActualRevision(It.IsAny<string>())).Returns(new Cql(Generated.Primitives.String));
 
             // Act
-            var result = await Environment.StreamStorage.GetActualRevision(streamId);
+            var result = await Environment.StreamStorage.GetMetadata(streamId);
 
             // Assert
             Environment.MockRepository.VerifyAll();
             result.Should().NotBeNull();
-            result.Should().Be(10);
+            result!.Id.Should().Be(streamId);
+            result!.Revision.Should().Be(10);
         }
 
         [Fact]

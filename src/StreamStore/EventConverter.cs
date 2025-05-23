@@ -1,6 +1,6 @@
 ﻿namespace StreamStore
 {
-    class EventConverter
+    class EventConverter: IEventConverter
     {
         readonly IEventSerializer serializer;
 
@@ -9,7 +9,7 @@
             this.serializer = serializer;
         }
 
-        public StreamEvent ConvertToEvent(IStreamEventRecord record)
+        public IStreamEvent ConvertToEvent(IStreamEventRecord record)
         {
             var data = serializer.Deserialize(record.Data!);
             return new StreamEvent(record.Id, record.Revision, record.Timestamp, data);

@@ -5,6 +5,11 @@ namespace StreamStore.Sql.PostgreSql
 {
     internal class PostgresExceptionHandler : ISqlExceptionHandler
     {
+        public void HandleException(Exception ex, Id streamId)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsOptimisticConcurrencyException(Exception ex)
         {
             var exception = ex as Npgsql.PostgresException;

@@ -27,46 +27,47 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             var streamId = Generated.Primitives.Id;
             var events = Generated.EventEnvelopes.Many(firstBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
-            Revision actualRevision;
+
 
             // Act 1: First way to append to stream
-            var writer = await store.BeginWriteAsync(streamId, CancellationToken.None);
+            var uow = await store.BeginWriteAsync(streamId, CancellationToken.None);
 
             foreach (var @event in events)
             {
-                await writer
-                        .AppendEventAsync(x => 
+                await uow
+                        .AppendAsync(x =>
                             x.WithId(@event.Id)
                              .Dated(@event.Timestamp)
                              .WithEvent(@event.Event)
                         );
             }
 
-            actualRevision = await writer.SaveChangesAsync(CancellationToken.None);
+            var act = async () => await uow.SaveChangesAsync(CancellationToken.None);
+
 
             // Assert 1
-            actualRevision.Should().Be(firstBatchCount);
+            await act.Should().NotThrowAsync();
 
             // Arrange 2
             events = Generated.EventEnvelopes.Many(secondBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
 
             // Act 2: Second way to append to stream
-            actualRevision =
-                await store
-                    .BeginWriteAsync(streamId, actualRevision, CancellationToken.None)
+            act = async () =>
+                  await store
+                    .BeginWriteAsync(streamId, firstBatchCount, CancellationToken.None)
                         .AppendRangeAsync(events)
                     .SaveChangesAsync(CancellationToken.None);
 
             // Assert 2
-            actualRevision.Should().Be(firstBatchCount + secondBatchCount);
+            await act.Should().NotThrowAsync();
 
             // Arrange 3
             events = Generated.EventEnvelopes.Many(thirdBatchCount);
             eventIds.AddRange(events.Select(e => e.Id));
 
             // Act 3: Third way to append to stream
-            await store.WriteAsync(streamId, actualRevision, events, CancellationToken.None);
+            await store.WriteAsync(streamId, firstBatchCount + secondBatchCount, events, CancellationToken.None);
 
             // Getting stream
             var collection = await store.ReadToEndAsync(streamId, CancellationToken.None);
@@ -100,7 +101,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                         .SaveChangesAsync(CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<OptimisticConcurrencyException>();
+            await act.Should().ThrowAsync<StreamAlreadyChangedException>();
         }
 
         [Fact]
@@ -109,11 +110,12 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             // Arrange
             IStreamStore store = Environment.Store;
             var stream = Environment.Container.RandomStream;
-            var existingEvents = stream.Events.Take(1).ToEventEnvelopes();
+
 
             // Act
-            // Trying to append existing events mixed with new ones, put existing to the end
-            var mixedEvents = Generated.EventEnvelopes.Many(5).Concat(existingEvents);
+            // Trying to append events already existing in collection
+            var mixedEvents = Generated.EventEnvelopes.Many(5);
+            mixedEvents = mixedEvents.Concat(mixedEvents.Take(1)).ToArray();
 
             var act = async () =>
                 await
@@ -137,6 +139,108 @@ namespace StreamStore.Testing.StreamStore.Scenarios
 
             // Assert
             await act.Should().ThrowAsync<ArgumentNullException>();
+        }
+
+
+
+        [SkippableTheory]
+        [InlineData(1)]
+        [InlineData(5)]
+        [InlineData(7)]
+        public async Task When_expected_revision_greater_than_actual(int increment)
+        {
+            TrySkip();
+
+            // Arrange
+            IStreamStore store = Environment.Store;
+            var stream = Environment.Container.RandomStream;
+            var existingEvents = stream.Events.Take(1).ToEventEnvelopes();
+
+            // Act
+            var act = async () => await store.BeginWriteAsync(stream.Id, stream.Revision + increment, CancellationToken.None);
+
+            // Assert
+            await act.Should().ThrowAsync<StreamAlreadyChangedException>();
+
+        }
+
+        [SkippableTheory]
+        [InlineData(1)]
+        [InlineData(5)]
+        [InlineData(7)]
+        public async Task When_expected_revision_less_than_actual(int increment)
+        {
+            TrySkip();
+
+            // Arrange
+            IStreamStore store = Environment.Store;
+            var stream = Environment.Container.RandomStream;
+            var existingEvents = stream.Events.Take(1).ToEventEnvelopes();
+
+            // Act
+            var act = async () => await store.BeginWriteAsync(stream.Id, stream.Revision - increment, CancellationToken.None);
+
+            // Assert
+            await act.Should().ThrowAsync<StreamAlreadyChangedException>();
+        }
+
+        [SkippableTheory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task When_writing_many_times(bool isNew)
+        {
+            TrySkip();
+
+            // Arrange
+            IStreamStore store = Environment.Store;
+            Id streamId = Generated.Primitives.Id;
+            Revision revision = Revision.Zero;
+
+            if (!isNew)
+            {
+                var record = Container.RandomStream;
+                streamId = record.Id;
+                revision = record.Revision;
+            }
+
+            // Act
+            await store
+                    .BeginWriteAsync(streamId, revision)
+                        .AppendAsync(Generated.EventEnvelopes.Single)
+                        .AppendAsync(Generated.EventEnvelopes.Single)
+                    .SaveChangesAsync();
+
+            // Assert
+            var stream = await store.ReadToEndAsync(streamId);
+            var actualRevision = stream.Last().Revision;
+            actualRevision!.Should().Be(revision + 2);
+
+            // Act
+            await store
+                    .BeginWriteAsync(streamId, actualRevision)
+                        .AppendAsync(Generated.EventEnvelopes.Single)
+                    .SaveChangesAsync();
+
+
+            // Assert
+            stream = await store.ReadToEndAsync(streamId);
+            actualRevision = stream.Last().Revision;
+            actualRevision!.Should().Be(revision + 2 + 1);
+
+            // Act
+            await store
+                    .BeginWriteAsync(streamId, actualRevision)
+                        .AppendAsync(Generated.EventEnvelopes.Single)
+                        .AppendAsync(Generated.EventEnvelopes.Single)
+                        .AppendAsync(Generated.EventEnvelopes.Single)
+                        .AppendAsync(Generated.EventEnvelopes.Single)
+                        .AppendAsync(Generated.EventEnvelopes.Single)
+                    .SaveChangesAsync();
+
+            // Assert
+            stream = await store.ReadToEndAsync(streamId);
+            actualRevision = stream.Last().Revision;
+            actualRevision!.Should().Be(revision + 2 + 1 + 5);
         }
     }
 }

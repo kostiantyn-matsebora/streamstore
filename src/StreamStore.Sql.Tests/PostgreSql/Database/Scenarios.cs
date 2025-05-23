@@ -4,9 +4,9 @@ using Xunit.Abstractions;
 namespace StreamStore.Sql.Tests.PostgreSql.Storage
 {
     [Collection("Reading Postgres")]
-    public class Getting_actual_revision : Get_actual_revision<PostgresTestEnvironment>
+    public class Getting_stream_metadata : Getting_stream_metadata<PostgresTestEnvironment>
     {
-        public Getting_actual_revision(PostgresStorageFixture fixture) : base(new PostgresTestEnvironment(fixture))
+        public Getting_stream_metadata(PostgresStorageFixture fixture) : base(new PostgresTestEnvironment(fixture))
         {
         }
     }

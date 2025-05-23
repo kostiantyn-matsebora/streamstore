@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Exceptions;
+using StreamStore.Storage;
+using StreamStore.Validation;
 
 
 namespace StreamStore
@@ -8,55 +13,54 @@ namespace StreamStore
     class StreamUnitOfWork : IStreamUnitOfWork
     {
         readonly IStreamWriter writer;
-        readonly EventConverter converter;
+        readonly IEventConverter converter;
+        readonly IStreamMutationRequestValidator validator;
+        readonly List<IStreamEventRecord> uncommited = new List<IStreamEventRecord>();
+        readonly Id streamId;
 
-        public StreamUnitOfWork(IStreamWriter writer, EventConverter converter)
+        Revision revision;
+
+        public StreamUnitOfWork(Id streamId, Revision expectedRevision, IStreamWriter writer, IEventConverter converter, IStreamMutationRequestValidator validator)
         {
+          this.streamId = streamId.ThrowIfHasNoValue(nameof(streamId));
+          this.revision = expectedRevision;
           this.writer = writer ?? throw new ArgumentNullException(nameof(writer));
           this.converter = converter ?? throw new ArgumentNullException(nameof(converter));
+          this.validator = validator.ThrowIfNull(nameof(validator));
         }
 
-        public async Task<IStreamUnitOfWork> AppendAsync(IEventEnvelope envelope, CancellationToken cancellationToken = default)
+        public Task<IStreamUnitOfWork> AppendAsync(IEventEnvelope envelope, CancellationToken cancellationToken = default)
         {
-            if (writer == null) throw new InvalidOperationException("Writing is not started.");
             envelope.ThrowIfNull(nameof(envelope));
+            envelope.Id.ThrowIfHasNoValue(nameof(envelope.Id));
+            envelope.Timestamp.ThrowIfMinValue(nameof(envelope.Timestamp));
+            envelope.Event.ThrowIfNull(nameof(envelope.Event));
 
-            await writer!.AppendAsync(new EventRecord(envelope, converter), cancellationToken);
-            return this;
+            // Since revision is immutable, we need to assign the new value to revision
+            revision = revision.Next();
+
+            var eventRecord = new StreamEventRecord
+            {
+                Id = envelope.Id,
+                Revision = revision,
+                Timestamp = envelope.Timestamp,
+                Data = converter.ConvertToByteArray(envelope.Event)
+            };
+
+            uncommited.Add(eventRecord);
+
+            return Task.FromResult<IStreamUnitOfWork>(this);
         }
 
-        public async Task<Revision> SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            return await writer!.ComitAsync(cancellationToken);
+           validator.ThrowIfNotValid(new StreamMutationRequest(streamId, uncommited.ToArray()));
+           await writer.WriteAsync(streamId, uncommited, cancellationToken);
         }
 
         public void Dispose()
         {
-            Dispose(true);
             GC.SuppressFinalize(this);
-        }
-
-        void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                writer.Dispose();
-            }
-        }
-
-        class EventRecord : IEventRecord
-        {
-            public EventRecord(IEventEnvelope envelope, EventConverter converter)
-            {
-                Id = envelope.Id;
-                Timestamp = envelope.Timestamp;
-                Data = converter.ConvertToByteArray(envelope.Event);
-            }
-            public byte[] Data { get; }
-
-            public Id Id { get; }
-
-            public DateTime Timestamp { get; }
         }
     }
 }

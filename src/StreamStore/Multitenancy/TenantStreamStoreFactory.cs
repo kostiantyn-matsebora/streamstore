@@ -1,20 +1,30 @@
-﻿namespace StreamStore.Multitenancy
+﻿using StreamStore.Store;
+using StreamStore.Validation;
+
+namespace StreamStore.Multitenancy
 {
     class TenantStreamStoreFactory : ITenantStreamStoreFactory
     {
         readonly StreamStoreConfiguration configuration;
         readonly ITenantStreamStorageProvider storageProvider;
-        readonly IEventSerializer serializer;
+        readonly IEventConverter converter;
+        private readonly IStreamMutationRequestValidator validator;
 
-        public TenantStreamStoreFactory(StreamStoreConfiguration configuration, ITenantStreamStorageProvider storageProvider, IEventSerializer serializer)
+        public TenantStreamStoreFactory(StreamStoreConfiguration configuration, ITenantStreamStorageProvider storageProvider, IEventConverter converter, IStreamMutationRequestValidator validator)
         {
            this.configuration = configuration.ThrowIfNull(nameof(configuration));
            this.storageProvider = storageProvider.ThrowIfNull(nameof(storageProvider));
-           this.serializer = serializer.ThrowIfNull(nameof(serializer));
+           this.converter = converter.ThrowIfNull(nameof(converter));
+           this.validator = validator.ThrowIfNull(nameof(validator));
         }
+
         public IStreamStore Create(Id tenantId)
         {
-            return new StreamStore(configuration, storageProvider.GetStorage(tenantId), serializer);
+            var storage = storageProvider.GetStorage(tenantId);
+
+            var enumeratorFactory = new StreamEventEnumeratorFactory(configuration, storage, converter);
+            var uowFactory = new StreamUnitOfWorkFactory(storage, converter, validator);
+            return new StreamStore(enumeratorFactory, configuration, storage, uowFactory);
         }
     }
 }

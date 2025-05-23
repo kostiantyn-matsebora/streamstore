@@ -12,7 +12,7 @@ namespace StreamStore.Stream
     class ProduceConsumeStreamEventEnumerator : IAsyncEnumerator<IStreamEvent>
     {
         readonly IStreamReader reader;
-        readonly EventConverter converter;
+        readonly IEventConverter converter;
         readonly StreamReadingParameters parameters;
         readonly CancellationToken token;
         readonly Channel<IStreamEvent> channel;
@@ -21,7 +21,7 @@ namespace StreamStore.Stream
         public ProduceConsumeStreamEventEnumerator(
             StreamReadingParameters parameters,
             IStreamReader reader, 
-            EventConverter converter, 
+            IEventConverter converter, 
             CancellationToken token)
         {
             this.reader = reader ?? throw new ArgumentNullException(nameof(reader));

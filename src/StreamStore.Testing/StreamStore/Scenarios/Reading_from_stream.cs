@@ -65,7 +65,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             IStreamStore store = Environment.Store;
 
             // Act
-            var act = () => store.BeginReadAsync(stream.Id, stream.Revision.Increment());
+            var act = () => store.BeginReadAsync(stream.Id, stream.Revision.Next());
 
             // Assert
             await act.Should().ThrowAsync<InvalidStartFromException>();

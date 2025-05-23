@@ -55,7 +55,7 @@ namespace StreamStore.ExampleBase.Progress
 
         public void OnError(Exception error)
         {
-            if (error is OptimisticConcurrencyException ex)
+            if (error is StreamAlreadyChangedException ex)
             {
                 ReportActualRevision((int)ex.ActualRevision!);
             }

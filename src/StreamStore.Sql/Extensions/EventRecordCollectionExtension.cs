@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using StreamStore.Storage;
 
 
@@ -18,7 +20,7 @@ namespace StreamStore.Sql
             };
         }
 
-        public static EventEntity[] ToEntityArray(this StreamEventRecordCollection collection, Id streamId)
+        public static EventEntity[] ToEntityArray(this IEnumerable<IStreamEventRecord> collection, Id streamId)
         {
           return collection.Select(r => r.ToEntity(streamId)).ToArray();
         }

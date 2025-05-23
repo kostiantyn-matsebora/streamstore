@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 
@@ -27,12 +26,12 @@ namespace StreamStore
             return await store.BeginReadAsync(streamId, expectedRevision, cancellationToken).ReadToEndAsync(cancellationToken);
         }
 
-        public static Task<Revision> WriteAsync(this IStreamStore store, Id streamId, Revision expectedRevision, IEnumerable<IEventEnvelope> events, CancellationToken token = default)
+        public static Task WriteAsync(this IStreamStore store, Id streamId, Revision expectedRevision, IEnumerable<IEventEnvelope> events, CancellationToken token = default)
         {
             return store.BeginWriteAsync(streamId, expectedRevision, token).WriteAsync(events, token);
         }
 
-        public static Task<Revision> WriteAsync(this IStreamStore store, Id streamId, IEnumerable<IEventEnvelope> events, CancellationToken token = default)
+        public static Task WriteAsync(this IStreamStore store, Id streamId, IEnumerable<IEventEnvelope> events, CancellationToken token = default)
         {
             return store.BeginWriteAsync(streamId,  token).WriteAsync(events, token);
         }

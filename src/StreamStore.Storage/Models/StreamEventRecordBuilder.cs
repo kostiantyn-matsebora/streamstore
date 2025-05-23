@@ -49,5 +49,10 @@ namespace StreamStore.Storage
                 Revision = revision
             };
         }
+
+        public IStreamEventRecordBuilder WithRecord(IStreamEventRecord record)
+        {
+           return WithId(record.Id).Dated(record.Timestamp).WithData(record.Data).WithRevision(record.Revision);
+        }
     }
 }

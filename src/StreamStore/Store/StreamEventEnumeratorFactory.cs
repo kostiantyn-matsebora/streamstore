@@ -9,9 +9,9 @@ namespace StreamStore
     {
         readonly StreamStoreConfiguration configuration;
         readonly IStreamReader reader;
-        readonly EventConverter converter;
+        readonly IEventConverter converter;
 
-        public StreamEventEnumeratorFactory(StreamStoreConfiguration configuration, IStreamReader reader, EventConverter converter)
+        public StreamEventEnumeratorFactory(StreamStoreConfiguration configuration, IStreamReader reader, IEventConverter converter)
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             this.reader = reader ?? throw new ArgumentNullException(nameof(reader));

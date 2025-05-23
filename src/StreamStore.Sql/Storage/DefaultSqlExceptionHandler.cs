@@ -5,9 +5,8 @@ namespace StreamStore.Sql.Storage
 {
     internal class DefaultSqlExceptionHandler : ISqlExceptionHandler
     {
-        public bool IsOptimisticConcurrencyException(Exception ex)
+        public void HandleException(Exception ex, Id streamId)
         {
-            return false;
         }
     }
 }

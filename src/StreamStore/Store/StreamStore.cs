@@ -12,18 +12,15 @@ namespace StreamStore
     class StreamStore : IStreamStore
     {
         readonly IStreamStorage storage;
-        readonly EventConverter converter;
         readonly StreamStoreConfiguration configuration;
         readonly StreamEventEnumeratorFactory enumeratorFactory;
-        public StreamStore(StreamStoreConfiguration configuration, IStreamStorage storage, IEventSerializer serializer)
+        readonly IStreamUnitOfWorkFactory uowFactory;
+        public StreamStore(StreamEventEnumeratorFactory enumeratorFactory, StreamStoreConfiguration configuration, IStreamStorage storage, IStreamUnitOfWorkFactory uowFactory)
         {
-            if (storage == null) throw new ArgumentNullException(nameof(storage));
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
-
-            this.storage = storage;
-            converter = new EventConverter(serializer);
-            enumeratorFactory = new StreamEventEnumeratorFactory(configuration, storage, converter);
-            this.configuration = configuration;
+            this.storage = storage.ThrowIfNull(nameof(storage));
+            this.enumeratorFactory = enumeratorFactory.ThrowIfNull(nameof(enumeratorFactory)); 
+            this.configuration = configuration.ThrowIfNull(nameof(configuration));
+            this.uowFactory = uowFactory.ThrowIfNull(nameof(uowFactory));
         }
 
         public async Task DeleteAsync(Id streamId, CancellationToken cancellationToken = default)
@@ -40,11 +37,11 @@ namespace StreamStore
             if (startFrom < Revision.One)
                 throw new ArgumentOutOfRangeException(nameof(startFrom), "startFrom must be greater than or equal to 1.");
 
-            var revision = await storage.GetActualRevision(streamId, cancellationToken);
-            if (revision == null) throw new StreamNotFoundException(streamId);
+            var metadata = await storage.GetMetadata(streamId, cancellationToken);
+            if (metadata == null) throw new StreamNotFoundException(streamId);
 
-            if (revision.Value < startFrom)
-                throw new InvalidStartFromException(streamId, startFrom, revision.Value);
+            if (metadata.Revision < startFrom)
+                throw new InvalidStartFromException(streamId, startFrom, metadata.Revision);
 
             var parameters = new StreamReadingParameters(streamId, startFrom, configuration.ReadingPageSize);
 
@@ -55,20 +52,16 @@ namespace StreamStore
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
 
-            var revision = await storage.GetActualRevision(streamId, cancellationToken);
+            var metadata = await storage.GetMetadata(streamId, cancellationToken);
 
-            if (revision == null) revision = Revision.Zero;
+            Revision revision = Revision.Zero;
 
+            if (metadata != null) revision = metadata.Revision;
 
-            if (expectedRevision != revision.Value)
-                throw new OptimisticConcurrencyException(expectedRevision, revision.Value, streamId);
+            if (expectedRevision != revision)
+                throw new StreamAlreadyChangedException(expectedRevision, revision, streamId);
 
-            var writer = await storage.BeginAppendAsync(streamId, expectedRevision);
-
-            if (writer == null)
-                throw new InvalidOperationException("Failed to open stream, either stream does not exist or revision is incorrect.");
-
-            return new StreamUnitOfWork(writer, converter);
+            return uowFactory.Create(streamId, expectedRevision);
         }
     }
 }

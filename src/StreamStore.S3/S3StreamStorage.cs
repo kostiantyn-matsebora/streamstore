@@ -7,6 +7,8 @@ using StreamStore.Exceptions;
 using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
 using StreamStore.S3.Storage;
+using System.Collections;
+using System.Collections.Generic;
 
 
 namespace StreamStore.S3
@@ -37,14 +39,7 @@ namespace StreamStore.S3
             await storage.DeletePersistentContainerAsync(streamId, token);
         }
 
-        protected override async Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
-        {
-            var context = new S3StreamContext(streamId, expectedStreamVersion, storageFactory.CreateStorage());
-            await context.Initialize(token);
-            return new S3StreamWriter(lockFactory, context);
-        }
-
-        protected override async Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default)
+        protected override async Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default)
         {
 
             var storage = storageFactory.CreateStorage();
@@ -53,13 +48,55 @@ namespace StreamStore.S3
 
             if (metadata!.State == S3ObjectState.DoesNotExist) return null;
 
-            return new StreamEventMetadataRecordCollection(metadata.Events).MaxRevision;
+            return new StreamMetadata(streamId, new StreamEventMetadataRecordCollection(metadata.Events).MaxRevision);
 
         }
 
-        protected override IStreamEventRecord ConvertToRecord(IStreamEventRecordBuilder builder, IStreamEventRecord entity)
+        protected override void BuildRecord(IStreamEventRecordBuilder builder, IStreamEventRecord entity)
         {
-            return entity;
+            builder.WithRecord(entity);
+        }
+
+        protected override async Task WriteAsyncInternal(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)
+        {
+            var streamContext = new S3StreamContext(streamId, batch.MinRevision().Previous(), storageFactory.CreateStorage());
+
+
+            // Add events to transient storage
+            foreach (var record in batch)
+            {
+                await streamContext.AddTransientEventAsync(record, token);
+            }
+
+            if (!streamContext.NotEmpty)
+                throw new InvalidOperationException("No events to save.");
+
+            ThrowIfStreamAlreadyChanged(batch.MinRevision(), await streamContext.GetPersistentMetadataAsync(token), streamContext);
+
+
+            using var transaction = await new S3StreamTransaction(streamContext, lockFactory).BeginAsync(token);
+
+            try
+            {
+                // Get the current revision
+                var metadata = await streamContext.GetPersistentMetadataAsync(token);
+
+                ThrowIfStreamAlreadyChanged(batch.MinRevision(), metadata, streamContext);
+
+                // Commit transaction
+                await transaction.CommitAsync(token);
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+        void ThrowIfStreamAlreadyChanged(int minRevision, StreamEventMetadataRecordCollection? stream, S3StreamContext streamContext)
+        {
+            if (stream == null) return;
+            if (stream!.MaxRevision >= minRevision)
+                throw new StreamAlreadyChangedException(minRevision, stream!.MaxRevision, streamContext.StreamId);
         }
     }
 }

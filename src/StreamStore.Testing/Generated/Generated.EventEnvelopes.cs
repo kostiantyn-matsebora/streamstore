@@ -7,7 +7,7 @@ namespace StreamStore.Testing
     {
         public static class EventEnvelopes
         {
-            public static RootEvent Single => new Fixture().CreateEvents(1).First();
+            public static TestEventEnvelope Single => new Fixture().Create<TestEventEnvelope>();
 
 
             public static TestEventEnvelope[] Many(int count)

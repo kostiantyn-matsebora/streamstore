@@ -5,6 +5,8 @@ using Dapper;
 using StreamStore.Storage;
 using StreamStore.Exceptions;
 using StreamStore.Sql.API;
+using System;
+using System.Collections.Generic;
 
 
 namespace StreamStore.Sql.Storage
@@ -22,14 +24,6 @@ namespace StreamStore.Sql.Storage
             this.exceptionHandler = exceptionHandler.ThrowIfNull(nameof(exceptionHandler));
         }
 
-        protected override Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
-        {
-            return Task.FromResult((IStreamWriter)
-                new SqlStreamWriter(streamId, expectedStreamVersion, null, connectionFactory, commandFactory, exceptionHandler));
-        }
-
-
-
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
         {
             using (var connection = connectionFactory.GetConnection())
@@ -43,12 +37,17 @@ namespace StreamStore.Sql.Storage
             }
         }
 
-        protected override async Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default)
+        protected override async Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default)
         {
             using (var connection = connectionFactory.GetConnection())
             {
                 await connection.OpenAsync(token);
-                return await connection.ExecuteScalarAsync<int>(commandFactory.CreateGetActualRevisionCommand(streamId));
+                var result = await connection.ExecuteScalarAsync<int>(commandFactory.CreateGetActualRevisionCommand(streamId));
+                if (result == 0)
+                {
+                    return null;
+                }
+                return new StreamMetadata(streamId, result);
             }
         }
 
@@ -66,14 +65,36 @@ namespace StreamStore.Sql.Storage
             }
         }
 
-        protected override IStreamEventRecord ConvertToRecord(IStreamEventRecordBuilder builder, EventEntity entity)
+        protected override void BuildRecord(IStreamEventRecordBuilder builder, EventEntity entity)
         {
-            return builder
+              builder
                  .WithId(entity.Id!)
                  .WithRevision(entity.Revision!)
                  .Dated(entity.Timestamp)
-                 .WithData(entity.Data!)
-                 .Build();
+                 .WithData(entity.Data!);
+        }
+
+        protected override async Task WriteAsyncInternal(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)
+        {
+            using (var connection = connectionFactory.GetConnection())
+            {
+                await connection.OpenAsync(token);
+
+                using (var transaction = await connection.BeginTransactionAsync(token))
+                {
+                    try
+                    {
+                        await connection.ExecuteAsync(commandFactory.CreateAppendEventCommand(streamId, batch.ToEntityArray(streamId), transaction));
+                        await transaction.CommitAsync(token);
+                    }
+                    catch (Exception ex)
+                    {
+                        exceptionHandler.HandleException(ex, streamId);
+                            //throw new OptimisticConcurrencyException(batch.MinRevision(), (await GetMetadataInternal(streamId))!.Revision, streamId);
+                        throw;
+                    }
+                }
+            }
         }
     }
 }

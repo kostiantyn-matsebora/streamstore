@@ -1,15 +1,17 @@
 ﻿
+using System.IO;
 using Cassandra;
 using Cassandra.Mapping;
 using FluentAssertions;
 using Moq;
 using StreamStore.Exceptions;
 using StreamStore.NoSql.Cassandra.Configuration;
-using StreamStore.NoSql.Cassandra.Storage;
 using StreamStore.NoSql.Cassandra.Models;
+using StreamStore.NoSql.Cassandra.Storage;
+using StreamStore.Storage;
 using StreamStore.Testing;
 
-namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking.UnitOfWork
+namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking.Scenarios
 {
     public class Saving_changes : Scenario<CassandraMockTestEnvironment>
     {
@@ -21,14 +23,16 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking.UnitOfWork
             var queries = new CassandraCqlQueries(new CassandraStorageConfiguration());
             var configure = new CassandraStatementConfigurator(new CassandraStorageConfiguration());
             var batch = MockBatch();
-            var uow = Environment.StreamUnitOfWork;
+            var writer = Environment.StreamStorage;
+            var streamId = Generated.Primitives.Id;
 
             Environment.Mapper.Setup(x => x.CreateBatch(It.IsAny<BatchType>())).Returns(batch.Object);
             Environment.Mapper.Setup(x => x.ExecuteConditionalAsync<EventEntity>(It.IsAny<ICqlBatch>())).ReturnsAsync(new AppliedInfo<EventEntity>(true));
 
 
             // Act
-            await uow.ComitAsync(CancellationToken.None);
+            await writer.WriteAsync(streamId, Enumerable.Empty<IStreamEventRecord>(), CancellationToken.None);
+
 
             // Assert
             Environment.MockRepository.VerifyAll();
@@ -40,18 +44,20 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking.UnitOfWork
             // Arrange
             var queries = new CassandraCqlQueries(new CassandraStorageConfiguration());
             var configure = new CassandraStatementConfigurator(new CassandraStorageConfiguration());
-            var uow = Environment.StreamUnitOfWork;
+            var writer = Environment.StreamStorage;
             var batch = MockBatch();
+            var streamId = Generated.Primitives.Id;
 
             Environment.Mapper.Setup(x => x.CreateBatch(BatchType.Logged)).Returns(batch.Object);
             Environment.Mapper.Setup(x => x.ExecuteConditionalAsync<EventEntity>(It.IsAny<ICqlBatch>())).ReturnsAsync(new AppliedInfo<EventEntity>(false));
-            Environment.Mapper.Setup(x => x.SingleAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(10);
+            Environment.Mapper.Setup(x => x.SingleOrDefaultAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(10);
+            Environment.Queries.Setup(x => x.StreamActualRevision(It.IsAny<string>())).Returns(new Cql(string.Empty));
 
             // Act
-            var act = async () => await uow.ComitAsync(CancellationToken.None);
+            var act = async () => await writer.WriteAsync(streamId, Enumerable.Empty<IStreamEventRecord>(), CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<OptimisticConcurrencyException>();
+            await act.Should().ThrowAsync<StreamAlreadyChangedException>();
             Environment.MockRepository.VerifyAll();
         }
 

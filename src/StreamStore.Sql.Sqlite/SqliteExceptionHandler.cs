@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
+using StreamStore.Exceptions;
 using StreamStore.Sql.API;
 
 
@@ -7,14 +8,22 @@ namespace StreamStore.Sql.Sqlite
 {
     internal class SqliteExceptionHandler : ISqlExceptionHandler
     {
-        public bool IsOptimisticConcurrencyException(Exception ex)
+        public void HandleException(Exception ex, Id streamId)
         {
             var sqliteException = ex as SQLiteException;
-            if (sqliteException == null || sqliteException.ErrorCode != 19)
+            if (sqliteException == null || sqliteException.ErrorCode == 19)
             {
-                return false;
+                if (sqliteException!.Message.Contains(".Revision"))
+                {
+                    throw new DuplicateRevisionException(streamId);
+                }
+
+                if (sqliteException.Message.Contains(".Id"))
+                {
+                    throw new DuplicateEventException(streamId);
+                }
             }
-            return true;
+
         }
     }
 }

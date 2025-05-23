@@ -13,6 +13,7 @@ namespace StreamStore.Testing.StreamStorage
 
         public IStreamStorage StreamStorage => Services.GetRequiredService<IStreamStorage>();
 
+        
         public virtual MemoryStorage Container => container;
 
         protected override sealed void RegisterServices(IServiceCollection services)

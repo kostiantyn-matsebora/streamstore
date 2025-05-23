@@ -28,6 +28,9 @@
       <PackagePath>\</PackagePath>
     </None>    
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+  </ItemGroup>
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>

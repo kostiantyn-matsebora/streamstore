@@ -4,6 +4,9 @@ using StreamStore.Configuration;
 using StreamStore.Configuration.Storage;
 using StreamStore.Multitenancy;
 using StreamStore.Provisioning;
+using StreamStore.Storage.Validation;
+using StreamStore.Store;
+using StreamStore.Validation;
 
 
 
@@ -103,7 +106,8 @@ namespace StreamStore
             services
                 .AddSingleton(configuration)
                 .AddSingleton<StreamEventEnumeratorFactory>()
-                .AddSingleton<EventConverter>()
+                .AddSingleton<IEventConverter, EventConverter>()
+                .AddSingleton<IStreamUnitOfWorkFactory, StreamUnitOfWorkFactory>()
                 .AddSingleton<IStreamStore, StreamStore>();
         }
 

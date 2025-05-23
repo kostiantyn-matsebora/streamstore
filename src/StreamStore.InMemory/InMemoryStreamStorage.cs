@@ -6,6 +6,8 @@ using StreamStore.Exceptions;
 using System;
 using System.Linq;
 using StreamStore.Storage;
+using System.Collections.Generic;
+using StreamStore.Validation;
 
 
 namespace StreamStore.InMemory
@@ -13,20 +15,16 @@ namespace StreamStore.InMemory
 
     public sealed class InMemoryStreamStorage : IStreamStorage
     {
-        internal ConcurrentDictionary<string, StreamEventRecordCollection> storage;
-
-        public InMemoryStreamStorage()
+        readonly IStreamMutationRequestValidator validator;
+        internal ConcurrentDictionary<string, List<IStreamEventRecord>> storage;
+        
+        public InMemoryStreamStorage(IStreamMutationRequestValidator validator)
         {
-            storage = new ConcurrentDictionary<string, StreamEventRecordCollection>();
+            this.validator = validator.ThrowIfNull(nameof(validator));
+            storage = new ConcurrentDictionary<string, List<IStreamEventRecord>>();
         }
 
-        public Task<StreamEventRecordCollection?> FindAsync(Id streamId, CancellationToken token = default)
-        {
-            if (!storage.TryGetValue(streamId, out var record))
-                return Task.FromResult<StreamEventRecordCollection?>(null);
-
-            return Task.FromResult<StreamEventRecordCollection?>(record);
-        }
+       
 
         public Task DeleteAsync(Id streamId, CancellationToken token = default)
         {
@@ -36,23 +34,13 @@ namespace StreamStore.InMemory
             return Task.CompletedTask;
         }
 
-        public Task<Revision?> GetActualRevision(Id streamId, CancellationToken token = default)
+        public Task<IStreamMetadata?> GetMetadata(Id streamId, CancellationToken token = default)
         {
             if (!storage.TryGetValue(streamId, out var record))
-                return Task.FromResult<Revision?>(null!);
+                return Task.FromResult<IStreamMetadata?>(null!);
 
-            return Task.FromResult<Revision?>(new StreamEventMetadataRecordCollection(record).MaxRevision);
-        }
-
-        public Task<IStreamWriter> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
-        {
-            if (storage.TryGetValue(streamId, out var existing) && expectedStreamVersion != existing.MaxRevision)
-            {
-                // It seems like stream has been already added, fail fast
-                throw new OptimisticConcurrencyException(expectedStreamVersion, existing.MaxRevision, streamId);
-            }
-
-            return Task.FromResult((IStreamWriter)new InMemoryStreamWriter(streamId, expectedStreamVersion, this.storage, existing));
+            return  
+                Task.FromResult<IStreamMetadata?>(new StreamMetadata(streamId, new StreamEventMetadataRecordCollection(record).MaxRevision));
         }
 
         public async Task<IStreamEventRecord[]> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
@@ -68,14 +56,38 @@ namespace StreamStore.InMemory
             if (stream == null)
                 throw new StreamNotFoundException(streamId);
 
-            if (startFrom > stream.MaxRevision)
+            if (startFrom > stream.MaxRevision())
                 return Array.Empty<IStreamEventRecord>();
 
             return
-                new StreamEventRecordCollection(
                     stream
                         .Where(e => e.Revision >= startFrom)
-                        .Take(count)).ToArray();
+                        .Take(count).ToArray();
+        }
+
+        public Task WriteAsync(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token)
+        {
+            var record = new List<IStreamEventRecord>(batch);
+
+            storage.AddOrUpdate(streamId, record, (key, oldValue) =>
+            {
+                var request = new StreamMutationRequest(key, record.ToArray(), oldValue);
+                validator.ThrowIfNotValid(request);
+
+                oldValue.AddRange(record);
+                return oldValue;
+            });
+
+            return Task.CompletedTask;
+        }
+
+
+        Task<List<IStreamEventRecord>?> FindAsync(Id streamId, CancellationToken token = default)
+        {
+            if (!storage.TryGetValue(streamId, out var record))
+                return Task.FromResult<List<IStreamEventRecord>?>(null);
+
+            return Task.FromResult<List<IStreamEventRecord>?>(record);
         }
     }
 }

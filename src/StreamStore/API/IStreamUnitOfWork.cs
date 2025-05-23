@@ -10,6 +10,6 @@ namespace StreamStore
     {
         Task<IStreamUnitOfWork> AppendAsync(IEventEnvelope envelope, CancellationToken cancellationToken = default);
 
-        Task<Revision> SaveChangesAsync(CancellationToken cancellationToken);
+        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
