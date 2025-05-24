@@ -1,6 +1,4 @@
-﻿
-using System.IO;
-using Cassandra;
+﻿using Cassandra;
 using Cassandra.Mapping;
 using FluentAssertions;
 using Moq;
@@ -8,7 +6,6 @@ using StreamStore.Exceptions;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Models;
 using StreamStore.NoSql.Cassandra.Storage;
-using StreamStore.Storage;
 using StreamStore.Testing;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking.Scenarios

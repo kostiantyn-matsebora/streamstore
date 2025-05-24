@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -21,6 +22,7 @@ namespace StreamStore.ExampleBase.Workers
 
         protected override async Task DoWorkAsync(CancellationToken token)
         {
+
             try
             {
                 TrackProgress(new StartWriting(actualRevision));
@@ -34,25 +36,11 @@ namespace StreamStore.ExampleBase.Workers
                 actualRevision = actualRevision + 3;
                 TrackProgress(new WriteSucceeded(actualRevision, 3));
             }
-            catch (StreamAlreadyChangedException ex)
-            {
-                if (token.IsCancellationRequested) return;
-
-                if (ex.ActualRevision != null)
-                {
-                    actualRevision = ex.ActualRevision!.Value;
-                    TrackError(ex);
-                }
-            }
-            catch (StreamLockedException ex)
-            {
-                TrackError(ex);
-                if (token.IsCancellationRequested) return;
-            }
             catch (ConcurrencyException ex)
             {
                 TrackError(ex);
                 if (token.IsCancellationRequested) return;
+                actualRevision = await GetActualRevision(token);
             }
         }
 
@@ -71,6 +59,12 @@ namespace StreamStore.ExampleBase.Workers
                     Date = fixture.Create<DateTime>()
                 }
             };
+        }
+
+        async Task<int>  GetActualRevision(CancellationToken token)
+        {
+            var stream = await store.ReadToEndAsync(streamId, CancellationToken.None);
+            return stream!= null && stream.Any() ? stream.Last().Revision:  (int)Revision.Zero;
         }
 
         class EventExample

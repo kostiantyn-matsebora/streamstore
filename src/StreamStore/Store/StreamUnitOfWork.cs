@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Exceptions;
 using StreamStore.Storage;
 using StreamStore.Validation;
 
@@ -52,9 +53,8 @@ namespace StreamStore
 
         public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-           validator.ThrowIfNotValid(new StreamMutationRequest(streamId, uncommited.ToArray()));
-           await writer.WriteAsync(streamId, uncommited, cancellationToken);
+            validator.ThrowIfNotValid(new StreamMutationRequest(streamId, uncommited.ToArray()));
+            await writer.WriteAsync(streamId, uncommited, cancellationToken);
         }
-
     }
 }

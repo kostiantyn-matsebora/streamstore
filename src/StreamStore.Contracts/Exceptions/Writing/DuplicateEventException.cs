@@ -1,7 +1,7 @@
 ﻿
 namespace StreamStore.Exceptions
 {
-    public sealed class DuplicateEventException : ConcurrencyException
+    public sealed class DuplicateEventException: StreamStoreException
     {
         public Id? EventId { get; set; }
 

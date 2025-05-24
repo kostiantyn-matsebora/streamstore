@@ -6,6 +6,7 @@ using FluentAssertions;
 using StreamStore.Exceptions;
 
 
+
 namespace StreamStore.Testing.StreamStorage.Scenarios
 {
     public abstract class Writing_to_storage<TEnvironment> : StorageScenario<TEnvironment> where TEnvironment : StorageTestEnvironmentBase, new()

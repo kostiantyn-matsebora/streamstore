@@ -29,7 +29,7 @@ namespace StreamStore.S3.Concurrency
             handle = await @lock.AcquireAsync(token);
 
             if (handle == null)
-                throw new StreamLockedException(ctx.StreamId);
+                throw new PessimisticConcurrencyException(ctx.StreamId);
             return this;
         }
 

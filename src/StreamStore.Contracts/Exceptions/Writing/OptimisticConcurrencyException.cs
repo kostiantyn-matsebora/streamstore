@@ -2,7 +2,16 @@
 
 namespace StreamStore.Exceptions
 {
-    public sealed class StreamAlreadyChangedException : ConcurrencyException
+    public class OptimisticConcurrencyException : ConcurrencyException
+    {
+
+        public OptimisticConcurrencyException(Id streamId, string message) : base(streamId, message)
+        {
+        }
+
+    }
+
+    public class StreamAlreadyChangedException : OptimisticConcurrencyException
     {
         public Revision? ExpectedRevision { get; set; }
         public Revision? ActualRevision { get; set; }
