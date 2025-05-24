@@ -9,11 +9,11 @@
     },
     "PostgreSQL + multitenancy": {
       "commandName": "Project",
-      "commandLineArgs": "--database postgresql --mode multitenancy"
+      "commandLineArgs": "--storage postgresql --mode multitenancy"
     },
     "PostgreSQL + single tenant": {
       "commandName": "Project",
-      "commandLineArgs": "--database postgresql"
+      "commandLineArgs": "--storage postgresql"
     },
     "SQLite + multitenancy": {
       "commandName": "Project",
