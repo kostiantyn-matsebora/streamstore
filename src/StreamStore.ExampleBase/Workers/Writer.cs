@@ -49,6 +49,11 @@ namespace StreamStore.ExampleBase.Workers
                 TrackError(ex);
                 if (token.IsCancellationRequested) return;
             }
+            catch (ConcurrencyException ex)
+            {
+                TrackError(ex);
+                if (token.IsCancellationRequested) return;
+            }
         }
 
         static TestEventEnvelope CreateEvent()

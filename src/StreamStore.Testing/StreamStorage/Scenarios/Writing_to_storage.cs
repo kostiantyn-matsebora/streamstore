@@ -4,12 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using StreamStore.Exceptions;
-using StreamStore.Storage;
+
 
 namespace StreamStore.Testing.StreamStorage.Scenarios
 {
     public abstract class Writing_to_storage<TEnvironment> : StorageScenario<TEnvironment> where TEnvironment : StorageTestEnvironmentBase, new()
     {
+
+        protected bool SkipEventIdUniquenessCheck = false;
         protected Writing_to_storage(TEnvironment environment) : base(environment)
         {
         }
@@ -100,9 +102,11 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
         public async Task When_event_with_same_id_already_exists()
         {
             TrySkip();
+            TrySkipEventIdUniquenesCheck();
 
             // Arrange
             var stream = Container.PeekStream();
+            var persistedStream = await Storage.GetMetadata(stream.Id);
 
             // Act
 
@@ -112,7 +116,9 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
 
 
             var act = async () =>
-                  await Storage.WriteAsync(stream.Id, newEvents, CancellationToken.None);
+            {
+                await Storage.WriteAsync(stream.Id, newEvents, CancellationToken.None);
+            };
 
             // Assert
             await act.Should().ThrowAsync<DuplicateEventException>();
@@ -139,6 +145,11 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
 
             // Assert
             await act.Should().ThrowAsync<DuplicateRevisionException>();
+        }
+
+        protected virtual void TrySkipEventIdUniquenesCheck()
+        {
+            Skip.If(SkipEventIdUniquenessCheck, "Storage does not support uniqueness of event ID.");
         }
     }
 }

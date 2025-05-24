@@ -35,15 +35,15 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             // Arrange
             var stream = Container.PeekStream();
 
-            var actualRevision = await Storage.GetMetadata(stream.Id);
-            actualRevision.Should().NotBeNull();
+            var metadata = await Storage.GetMetadata(stream.Id);
+            metadata.Should().NotBeNull();
 
             // Act
             await Storage.DeleteAsync(stream.Id);
 
             // Assert
-            actualRevision = await Storage.GetMetadata(stream.Id);
-            actualRevision.Should().BeNull();
+            metadata = await Storage.GetMetadata(stream.Id);
+            metadata.Should().BeNull();
         }
 
         [SkippableFact]

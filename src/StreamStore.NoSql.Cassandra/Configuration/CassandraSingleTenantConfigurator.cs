@@ -59,7 +59,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         protected override void ApplySpecificDependencies(IServiceCollection services)
         {
-          services.AddSingleton(builder.Build());
+          services.AddSingleton<ICluster>(builder.Build());
           services.AddSingleton(typeof(ICassandraSessionFactory), sessionFactory);
           services.AddSingleton(typeof(ICassandraMapperProvider), typeof(CassandraMapperProvider));
           services.AddSingleton(new MappingConfiguration().Define(new CassandraStreamMapping(storageConfig)));

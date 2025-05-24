@@ -49,15 +49,14 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking.Scenarios
             var streamId = Generated.Primitives.Id;
 
             Environment.Mapper.Setup(x => x.CreateBatch(BatchType.Logged)).Returns(batch.Object);
-            Environment.Mapper.Setup(x => x.ExecuteConditionalAsync<EventEntity>(It.IsAny<ICqlBatch>())).ReturnsAsync(new AppliedInfo<EventEntity>(false));
-            Environment.Mapper.Setup(x => x.SingleOrDefaultAsync<int?>(It.IsAny<Cql>())).ReturnsAsync(10);
-            Environment.Queries.Setup(x => x.StreamActualRevision(It.IsAny<string>())).Returns(new Cql(string.Empty));
+            Environment.Mapper.Setup(x => x.ExecuteConditionalAsync<EventEntity>(It.IsAny<ICqlBatch>())).ReturnsAsync(new AppliedInfo<EventEntity>(false) { Existing = new EventEntity { Revision = 1 } });
+            
 
             // Act
             var act = async () => await writer.WriteAsync(streamId, Enumerable.Empty<IStreamEventRecord>(), CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<StreamAlreadyChangedException>();
+            await act.Should().ThrowAsync<DuplicateRevisionException>();
             Environment.MockRepository.VerifyAll();
         }
 

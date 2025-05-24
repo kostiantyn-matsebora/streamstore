@@ -11,7 +11,7 @@ namespace StreamStore.NoSql.Cassandra.Storage
         {
             this.config = config.ThrowIfNull(nameof(config));
         }
-        public virtual Cql StreamActualRevision(string streamId)
+        public virtual Cql StreamMetadata(string streamId)
         {
             return new Cql($"SELECT MAX(revision) FROM {config.EventsTableName} WHERE stream_id = ?", streamId);
         }

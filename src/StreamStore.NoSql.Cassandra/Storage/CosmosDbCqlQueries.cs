@@ -9,7 +9,7 @@ namespace StreamStore.NoSql.Cassandra.Storage
         {
         }
 
-        public override Cql StreamActualRevision(string streamId)
+        public override Cql StreamMetadata(string streamId)
         {
             return new Cql($"SELECT revision FROM {config.EventsTableName} WHERE stream_id = ? ORDER BY revision DESC LIMIT 1", streamId);
         }

@@ -26,7 +26,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage.Queries
             var streamId = Generated.Primitives.String;
 
             // Act
-            var cql = queries.StreamActualRevision(streamId);
+            var cql = queries.StreamMetadata(streamId);
 
             // Assert
             cql.Should().NotBeNull();

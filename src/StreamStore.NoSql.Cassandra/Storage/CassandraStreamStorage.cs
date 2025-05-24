@@ -27,8 +27,7 @@ namespace StreamStore.NoSql.Cassandra.Storage
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
         {
-
-                await mapper.ExecuteAsync(configure.Query(queries.DeleteStream(streamId)));
+            await mapper.ExecuteAsync(configure.Query(queries.DeleteStream(streamId)));
         }
 
         protected override void BuildRecord(IStreamEventRecordBuilder builder, EventEntity entity)
@@ -42,7 +41,7 @@ namespace StreamStore.NoSql.Cassandra.Storage
 
         protected override async Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default)
         {
-            var result = await mapper.SingleOrDefaultAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
+            var result = await mapper.SingleOrDefaultAsync<int?>(configure.Query(queries.StreamMetadata(streamId)));
             if (!result.HasValue)
             {
                 return null;
@@ -53,13 +52,12 @@ namespace StreamStore.NoSql.Cassandra.Storage
         
         protected override async Task<EventEntity[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-                return  (await mapper.FetchAsync<EventEntity>(configure.Query(queries.StreamEvents(streamId, startFrom, count)))).ToArray();
+           return  (await mapper.FetchAsync<EventEntity>(configure.Query(queries.StreamEvents(streamId, startFrom, count)))).ToArray();
         }
 
         protected override async Task WriteAsyncInternal(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)
         {
             var cqlBatch = configure.Batch(mapper.CreateBatch(BatchType.Logged));
-
 
             foreach (var record in batch)
             {
@@ -67,22 +65,10 @@ namespace StreamStore.NoSql.Cassandra.Storage
             }
 
             var result = await mapper.ExecuteConditionalAsync<EventEntity>(cqlBatch);
-            await ValidateResult(streamId, batch, result);
-        }
 
-        async Task ValidateResult(Id streamId, IEnumerable<IStreamEventRecord> batch, AppliedInfo<EventEntity> appliedInfo)
-        {
-            if (appliedInfo.Applied)
+            if (!result.Applied)
             {
-                return;
-            }
-            var metadata = await GetMetadataInternal(streamId);
-
-            var actualRevision = metadata?.Revision ?? Revision.Zero;
-
-            if (actualRevision != batch.MaxRevision())
-            {
-                throw new StreamAlreadyChangedException(batch.MaxRevision(), actualRevision, streamId);
+                throw new DuplicateRevisionException(result.Existing.Revision, streamId);
             }
         }
     }

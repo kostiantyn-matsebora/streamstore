@@ -51,7 +51,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
             var serviceProvider = services.BuildServiceProvider();
 
             //Assert
-            var cluster = serviceProvider.GetRequiredService<Cluster>();
+            var cluster = serviceProvider.GetRequiredService<ICluster>();
             cluster.Should().NotBeNull();
 
             // Arrange
@@ -63,7 +63,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
             serviceProvider = services.BuildServiceProvider();
 
             //Assert
-            cluster = serviceProvider.GetRequiredService<Cluster>();
+            cluster = serviceProvider.GetRequiredService<ICluster>();
             cluster.Should().NotBeNull();
         }
     }

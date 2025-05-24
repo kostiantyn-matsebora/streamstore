@@ -9,7 +9,7 @@ namespace StreamStore.Storage
 {
     public abstract class StreamStorageBase<TEntity> : IStreamStorage
     {
-              public async Task DeleteAsync(Id streamId, CancellationToken token = default)
+        public async Task DeleteAsync(Id streamId, CancellationToken token = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
             await DeleteAsyncInternal(streamId, token);

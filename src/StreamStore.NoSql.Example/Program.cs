@@ -16,7 +16,7 @@ namespace StreamStore.Sql.Example
     [ExcludeFromCodeCoverage]
     internal static class Program
     {
-        readonly static int replicationFactor = 3;
+        readonly static int replicationFactor = 1;
         static async Task Main(string[] args)
         {
             var builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder(args);

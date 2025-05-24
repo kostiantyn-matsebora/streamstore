@@ -28,7 +28,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.CosmosDb.Queries
             var queries = new CosmosDbCqlQueries(new CassandraStorageConfiguration());
 
             // Act
-            var result = queries.StreamActualRevision(streamId);
+            var result = queries.StreamMetadata(streamId);
 
             // Assert
             result.Should().NotBeNull();

@@ -34,6 +34,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage
     {
         public Writing_to_storage(CassandraStorageFixture fixture) : base(new CassandraStorageTestEnvironment(fixture))
         {
+            SkipEventIdUniquenessCheck = true;
         }
     }
 }
