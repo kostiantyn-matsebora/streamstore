@@ -97,7 +97,7 @@ namespace StreamStore.S3
         {
             if (stream == null) return;
             if (stream!.MaxRevision >= minRevision)
-                throw new StreamAlreadyChangedException(minRevision, stream!.MaxRevision, streamContext.StreamId);
+                throw new StreamAlreadyMutatedException(minRevision, stream!.MaxRevision, streamContext.StreamId);
         }
     }
 }

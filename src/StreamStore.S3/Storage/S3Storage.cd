@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="StreamStore.S3.Storage.S3Object" Collapsed="true">
+    <Position X="15.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAABIAAAACAAAAgAAAAAAQAAgADAAAAIE=</HashCode>
+      <FileName>Storage\S3Object.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3ObjectContainer">
+    <Position X="8.75" Y="0.5" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAABAAAAECAAAAAQAACAAAAAgAAAAAAIA=</HashCode>
+      <FileName>Storage\S3ObjectContainer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3ObjectStorage&lt;T, TContainer&gt;">
+    <Position X="8.5" Y="3.75" Width="2.25" />
+    <Members>
+      <Method Name="IEnumerable.GetEnumerator" Hidden="true" />
+      <Method Name="S3ObjectStorage" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AABEAAAAAAAAAFAAAAAAAAAAAAAAAAAEAAAAAAgAAIA=</HashCode>
+      <FileName>Storage\S3ObjectStorage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3ContainerStorage&lt;TContainer&gt;" Collapsed="true">
+    <Position X="9.75" Y="7.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Storage\S3ObjectStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3ObjectStorage&lt;TObject&gt;">
+    <Position X="6.25" Y="7.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Storage\S3ObjectStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3StreamContainer">
+    <Position X="13.25" Y="7.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAgAQQIACAAAAAAAAAAAgAAAAAGAAAABAAAAIA=</HashCode>
+      <FileName>Storage\S3StreamContainer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3StreamStorage">
+    <Position X="9.75" Y="8.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAIA=</HashCode>
+      <FileName>Storage\S3StreamStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3BinaryObject" Collapsed="true">
+    <Position X="12.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAABAAAAAAAAAAAAAAABAQAAAAAAAAAAA=</HashCode>
+      <FileName>Storage\S3BinaryObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3EventObject" Collapsed="true">
+    <Position X="14.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAgAAAEABAAAAAAAAAAAgAAAAAQAAAAAAAAAYA=</HashCode>
+      <FileName>Storage\S3EventObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3EventStorage">
+    <Position X="6.5" Y="9.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAQAgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Storage\S3EventStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3LockObject" Collapsed="true">
+    <Position X="16.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAABAAAAAAAAAAAAAAAAAQAAACAAAAAoA=</HashCode>
+      <FileName>Storage\S3LockObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3LockStorage">
+    <Position X="2.5" Y="7.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Storage\S3LockStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.S3.Storage.S3MetadataObject" Collapsed="true">
+    <Position X="19" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAQAABAAAAAAAAAAAgAAAAAQAAAAACAAAYA=</HashCode>
+      <FileName>Storage\S3MetadataObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

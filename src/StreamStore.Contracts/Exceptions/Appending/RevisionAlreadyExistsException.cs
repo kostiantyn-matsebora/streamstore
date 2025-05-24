@@ -1,6 +1,6 @@
 ﻿namespace StreamStore.Exceptions
 {
-    public class RevisionAlreadyExistsException : OptimisticConcurrencyException
+    public sealed class RevisionAlreadyExistsException : OptimisticConcurrencyException
     {
         public Revision? Revision { get; }
 

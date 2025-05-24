@@ -1,6 +1,6 @@
 ﻿namespace StreamStore.Exceptions
 {
-    public class DuplicatedRevisionException : ValidationException
+    public sealed class DuplicatedRevisionException : ValidationException
     {
         public Revision? Revision { get; }
 

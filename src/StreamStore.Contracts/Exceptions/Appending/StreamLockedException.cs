@@ -1,6 +1,6 @@
 ﻿namespace StreamStore.Exceptions
 {
-    public class StreamLockedException: PessimisticConcurrencyException
+    public sealed class StreamLockedException: PessimisticConcurrencyException
     {
         public StreamLockedException(Id streamId) : base(streamId, $"Stream {streamId} is locked for writing.")
         {
