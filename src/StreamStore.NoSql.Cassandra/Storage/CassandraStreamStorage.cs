@@ -68,7 +68,7 @@ namespace StreamStore.NoSql.Cassandra.Storage
 
             if (!result.Applied)
             {
-                throw new DuplicateRevisionException(result.Existing.Revision, streamId);
+                throw new RevisionAlreadyExistsException(result.Existing.Revision, streamId);
             }
         }
     }

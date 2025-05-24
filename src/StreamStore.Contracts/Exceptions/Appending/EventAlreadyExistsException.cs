@@ -1,17 +1,17 @@
 ﻿
 namespace StreamStore.Exceptions
 {
-    public sealed class DuplicateEventException: StreamStoreException
+    public sealed class EventAlreadyExistsException : OptimisticConcurrencyException
     {
         public Id? EventId { get; set; }
 
-        public DuplicateEventException(Id eventId, Id streamId)
+        public EventAlreadyExistsException(Id eventId, Id streamId)
                     : base(streamId, $"Found duplicated event {eventId} for stream.")
         {
             EventId = eventId;
         }
 
-        public DuplicateEventException(Id streamId)
+        public EventAlreadyExistsException(Id streamId)
                   : base(streamId, "Found duplicated event for stream.")
         {
         }

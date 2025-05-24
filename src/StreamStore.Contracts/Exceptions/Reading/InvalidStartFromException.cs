@@ -1,7 +1,7 @@
 ﻿
 namespace StreamStore.Exceptions
 {
-    public class InvalidStartFromException : StreamStoreException
+    public class InvalidStartFromException : ReadingException
     {
 
         public InvalidStartFromException(Id streamId, Revision startFrom, Revision maxRevision) : base(streamId, "Cannot start reading from a revision greater than the current revision.")

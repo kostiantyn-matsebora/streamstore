@@ -125,7 +125,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                         .SaveChangesAsync(CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<DuplicateEventException>();
+            await act.Should().ThrowAsync<DuplicatedEventException>();
         }
 
         [Fact]

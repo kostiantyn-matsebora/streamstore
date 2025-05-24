@@ -7,17 +7,19 @@ namespace StreamStore.InMemory
     public sealed class InMemoryStreamStorageProvider : ITenantStreamStorageProvider
     {
         internal ConcurrentDictionary<string, InMemoryStreamStorage> registry = new ConcurrentDictionary<string, InMemoryStreamStorage>();
-        readonly IStreamMutationRequestValidator validator;
+        readonly IDuplicateEventValidator eventValidator;
+        readonly IDuplicateRevisionValidator revisionValidator;
 
-        public InMemoryStreamStorageProvider(IStreamMutationRequestValidator validator)
+        public InMemoryStreamStorageProvider(IDuplicateEventValidator eventValidator, IDuplicateRevisionValidator revisionValidator)
         {
-           this.validator = validator.ThrowIfNull(nameof(validator));
+           this.eventValidator = eventValidator.ThrowIfNull(nameof(eventValidator));
+           this.revisionValidator = revisionValidator.ThrowIfNull(nameof(revisionValidator));
         }
 
         
         public IStreamStorage GetStorage(Id tenantId)
         {
-            return registry.GetOrAdd(tenantId, _ => new InMemoryStreamStorage(validator));
+            return registry.GetOrAdd(tenantId, _ => new InMemoryStreamStorage(eventValidator, revisionValidator));
         }
     }
 }

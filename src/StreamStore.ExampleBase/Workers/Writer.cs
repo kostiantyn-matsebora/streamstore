@@ -36,7 +36,7 @@ namespace StreamStore.ExampleBase.Workers
                 actualRevision = actualRevision + 3;
                 TrackProgress(new WriteSucceeded(actualRevision, 3));
             }
-            catch (ConcurrencyException ex)
+            catch (AppendingException ex)
             {
                 TrackError(ex);
                 if (token.IsCancellationRequested) return;

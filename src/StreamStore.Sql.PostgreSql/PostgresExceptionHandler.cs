@@ -17,8 +17,8 @@ namespace StreamStore.Sql.PostgreSql
 
             if (exception.SqlState == "23505")
             {
-                if (exception.ConstraintName.Contains("pkey")) throw new DuplicateEventException(streamId);
-                if (exception.ConstraintName.Contains("revision")) throw new DuplicateRevisionException(streamId);
+                if (exception.ConstraintName.Contains("pkey")) throw new EventAlreadyExistsException(streamId);
+                if (exception.ConstraintName.Contains("revision")) throw new RevisionAlreadyExistsException(streamId);
             }
         }
     }

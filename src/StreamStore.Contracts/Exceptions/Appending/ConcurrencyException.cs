@@ -1,9 +1,6 @@
-﻿
-using System;
-
-namespace StreamStore.Exceptions
+﻿namespace StreamStore.Exceptions
 {
-    public abstract class ConcurrencyException : StreamStoreException
+    public abstract class ConcurrencyException : AppendingException
     {
         protected ConcurrencyException(Id streamId, string message) : base(streamId, message)
         {

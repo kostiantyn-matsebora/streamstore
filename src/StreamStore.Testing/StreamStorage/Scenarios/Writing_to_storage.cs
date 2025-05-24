@@ -53,7 +53,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             var act = async () => await Storage.WriteAsync(stream.Id, Generated.StreamEventRecords.Many(stream.Revision - increment, count), CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<DuplicateRevisionException>();
+            await act.Should().ThrowAsync<RevisionAlreadyExistsException>();
         }
 
         [SkippableTheory]
@@ -122,7 +122,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             };
 
             // Assert
-            await act.Should().ThrowAsync<DuplicateEventException>();
+            await act.Should().ThrowAsync<DuplicatedEventException>();
         }
 
 
@@ -145,7 +145,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
                   await Storage.WriteAsync(stream.Id, mixedEvents, CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<DuplicateRevisionException>();
+            await act.Should().ThrowAsync<RevisionAlreadyExistsException>();
         }
 
         protected virtual void TrySkipEventIdUniquenesCheck()

@@ -15,12 +15,12 @@ namespace StreamStore.Sql.Sqlite
             {
                 if (sqliteException!.Message.Contains(".Revision"))
                 {
-                    throw new DuplicateRevisionException(streamId);
+                    throw new RevisionAlreadyExistsException(streamId);
                 }
 
                 if (sqliteException.Message.Contains(".Id"))
                 {
-                    throw new DuplicateEventException(streamId);
+                    throw new EventAlreadyExistsException(streamId);
                 }
             }
 

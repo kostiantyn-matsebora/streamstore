@@ -15,12 +15,14 @@ namespace StreamStore.InMemory
 
     public sealed class InMemoryStreamStorage : IStreamStorage
     {
-        readonly IStreamMutationRequestValidator validator;
+        readonly IDuplicateEventValidator eventValidator;
+        private readonly IDuplicateRevisionValidator revisionValidator;
         internal ConcurrentDictionary<string, List<IStreamEventRecord>> storage;
         
-        public InMemoryStreamStorage(IStreamMutationRequestValidator validator)
+        public InMemoryStreamStorage(IDuplicateEventValidator eventValidator, IDuplicateRevisionValidator revisionValidator)
         {
-            this.validator = validator.ThrowIfNull(nameof(validator));
+            this.eventValidator = eventValidator.ThrowIfNull(nameof(eventValidator));
+            this.revisionValidator = revisionValidator.ThrowIfNull(nameof(revisionValidator));
             storage = new ConcurrentDictionary<string, List<IStreamEventRecord>>();
         }
 
@@ -72,7 +74,13 @@ namespace StreamStore.InMemory
             storage.AddOrUpdate(streamId, record, (key, oldValue) =>
             {
                 var request = new StreamMutationRequest(key, record.ToArray(), oldValue);
-                validator.ThrowIfNotValid(request);
+                var result = eventValidator.Validate(request.Events);
+                if (!result.IsValid)
+                    throw new EventAlreadyExistsException(key);
+
+                result = revisionValidator.Validate(request.Events);
+                if (!result.IsValid)
+                    throw new RevisionAlreadyExistsException(key);
 
                 oldValue.AddRange(record);
                 return oldValue;

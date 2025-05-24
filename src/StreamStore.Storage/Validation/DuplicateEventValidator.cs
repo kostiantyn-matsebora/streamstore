@@ -38,7 +38,7 @@ namespace StreamStore.Storage.Validation
             var result = Validate(request.Events);
 
             if (!result.IsValid)
-                throw new DuplicateEventException((Id)result.Errors[0].CustomState, request.StreamId);
+                throw new DuplicatedEventException((Id)result.Errors[0].CustomState, request.StreamId);
         }
     }
 }

@@ -1,16 +1,16 @@
 ﻿namespace StreamStore.Exceptions
 {
-    public class DuplicateRevisionException : OptimisticConcurrencyException
+    public class DuplicatedRevisionException : ValidationException
     {
         public Revision? Revision { get; }
 
-        public DuplicateRevisionException(Revision revision, Id streamId) : 
+        public DuplicatedRevisionException(Revision revision, Id streamId) : 
             base(streamId, $"Duplicate revision {revision} for stream {streamId}")
         {
             Revision = revision;
         }
 
-        public DuplicateRevisionException(Id streamId) :
+        public DuplicatedRevisionException(Id streamId) :
            base(streamId, $"Duplicate revision for stream {streamId}")
         {
         }

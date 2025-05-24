@@ -53,7 +53,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking.Scenarios
             var act = async () => await writer.WriteAsync(streamId, Enumerable.Empty<IStreamEventRecord>(), CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<DuplicateRevisionException>();
+            await act.Should().ThrowAsync<RevisionAlreadyExistsException>();
             Environment.MockRepository.VerifyAll();
         }
 
