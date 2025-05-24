@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamStore.Exceptions;
 using StreamStore.Storage;
 using StreamStore.Validation;
 
@@ -58,9 +56,5 @@ namespace StreamStore
            await writer.WriteAsync(streamId, uncommited, cancellationToken);
         }
 
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
     }
 }

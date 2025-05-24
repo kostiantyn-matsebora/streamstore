@@ -92,7 +92,7 @@ namespace StreamStore.S3
                 throw;
             }
         }
-        void ThrowIfStreamAlreadyChanged(int minRevision, StreamEventMetadataRecordCollection? stream, S3StreamContext streamContext)
+        static void ThrowIfStreamAlreadyChanged(int minRevision, StreamEventMetadataRecordCollection? stream, S3StreamContext streamContext)
         {
             if (stream == null) return;
             if (stream!.MaxRevision >= minRevision)

@@ -6,6 +6,6 @@ namespace StreamStore
 {
     public interface IStreamWriter
     {
-        Task WriteAsync(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token);
+        Task WriteAsync(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default);
     }
 }

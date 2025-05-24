@@ -28,7 +28,6 @@ namespace StreamStore.Storage.Validation
                                 CustomState = duplicateRevisions[0],
                                 ErrorCode = ErrorCodes.DuplicateEvent
                             });
-                        return;
                     }
                 });
         }

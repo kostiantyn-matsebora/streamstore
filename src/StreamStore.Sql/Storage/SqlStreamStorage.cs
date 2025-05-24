@@ -90,7 +90,6 @@ namespace StreamStore.Sql.Storage
                     catch (Exception ex)
                     {
                         exceptionHandler.HandleException(ex, streamId);
-                            //throw new OptimisticConcurrencyException(batch.MinRevision(), (await GetMetadataInternal(streamId))!.Revision, streamId);
                         throw;
                     }
                 }

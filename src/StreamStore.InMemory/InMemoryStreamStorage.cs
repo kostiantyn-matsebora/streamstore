@@ -51,7 +51,7 @@ namespace StreamStore.InMemory
             if (count <= 0)
                 throw new ArgumentOutOfRangeException(nameof(count), "Count should be greater than zero.");
 
-            var stream = await FindAsync(streamId, token);
+            var stream = await FindAsync(streamId);
 
             if (stream == null)
                 throw new StreamNotFoundException(streamId);
@@ -82,7 +82,7 @@ namespace StreamStore.InMemory
         }
 
 
-        Task<List<IStreamEventRecord>?> FindAsync(Id streamId, CancellationToken token = default)
+        Task<List<IStreamEventRecord>?> FindAsync(Id streamId)
         {
             if (!storage.TryGetValue(streamId, out var record))
                 return Task.FromResult<List<IStreamEventRecord>?>(null);

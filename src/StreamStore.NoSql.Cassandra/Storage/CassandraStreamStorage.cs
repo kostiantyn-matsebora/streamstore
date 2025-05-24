@@ -67,10 +67,10 @@ namespace StreamStore.NoSql.Cassandra.Storage
             }
 
             var result = await mapper.ExecuteConditionalAsync<EventEntity>(cqlBatch);
-            await ValidateResult(streamId, batch, mapper, result);
+            await ValidateResult(streamId, batch, result);
         }
 
-        async Task ValidateResult(Id streamId, IEnumerable<IStreamEventRecord> batch, IMapper mapper, AppliedInfo<EventEntity> appliedInfo)
+        async Task ValidateResult(Id streamId, IEnumerable<IStreamEventRecord> batch, AppliedInfo<EventEntity> appliedInfo)
         {
             if (appliedInfo.Applied)
             {

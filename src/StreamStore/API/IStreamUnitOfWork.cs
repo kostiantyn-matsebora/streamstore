@@ -1,12 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Threading;
 
 
 
 namespace StreamStore
 {
-    public interface IStreamUnitOfWork: IDisposable
+    public interface IStreamUnitOfWork
     {
         Task<IStreamUnitOfWork> AppendAsync(IEventEnvelope envelope, CancellationToken cancellationToken = default);
 
