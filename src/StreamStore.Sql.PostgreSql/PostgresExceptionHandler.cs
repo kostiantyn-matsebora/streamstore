@@ -1,4 +1,5 @@
 ﻿using System;
+using StreamStore.Exceptions;
 using StreamStore.Sql.API;
 
 namespace StreamStore.Sql.PostgreSql
@@ -7,18 +8,19 @@ namespace StreamStore.Sql.PostgreSql
     {
         public void HandleException(Exception ex, Id streamId)
         {
-            throw new NotImplementedException();
-        }
-
-        public bool IsOptimisticConcurrencyException(Exception ex)
-        {
             var exception = ex as Npgsql.PostgresException;
             if (exception == null)
             {
-                return false;
+                return;
             }
+            if (string.IsNullOrEmpty(exception.ConstraintName)) return;
 
-            return exception.SqlState == "23505";
+            if (exception.SqlState == "23505")
+            {
+                
+                if (exception.ConstraintName.Contains("pkey")) throw new DuplicateEventException(streamId);
+                if (exception.ConstraintName.Contains("revision")) throw new DuplicateRevisionException(streamId);
+            }
         }
     }
 }
