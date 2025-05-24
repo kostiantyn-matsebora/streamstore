@@ -37,7 +37,7 @@ namespace StreamStore
             if (startFrom < Revision.One)
                 throw new ArgumentOutOfRangeException(nameof(startFrom), "startFrom must be greater than or equal to 1.");
 
-            var metadata = await storage.GetMetadata(streamId, cancellationToken);
+            var metadata = await storage.GetMetadataAsync(streamId, cancellationToken);
             if (metadata == null) throw new StreamNotFoundException(streamId);
 
             if (metadata.Revision < startFrom)
@@ -52,7 +52,7 @@ namespace StreamStore
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
 
-            var metadata = await storage.GetMetadata(streamId, cancellationToken);
+            var metadata = await storage.GetMetadataAsync(streamId, cancellationToken);
 
             Revision revision = Revision.Zero;
 
@@ -62,6 +62,18 @@ namespace StreamStore
                 throw new InvalidStreamRevisionException(streamId, expectedRevision, revision);
 
             return uowFactory.Create(streamId, expectedRevision);
+        }
+
+        public async Task<IStreamMetadata> GetMetadataAsync(Id streamId, CancellationToken cancellationToken = default)
+        {
+            streamId.ThrowIfHasNoValue(nameof(streamId));
+            var metadata = await storage.GetMetadataAsync(streamId, cancellationToken);
+            if (metadata == null)
+            {
+                throw new StreamNotFoundException(streamId);
+            }
+
+            return metadata;
         }
     }
 }

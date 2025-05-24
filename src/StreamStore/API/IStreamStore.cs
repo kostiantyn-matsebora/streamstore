@@ -11,5 +11,7 @@ namespace StreamStore
         Task<IAsyncEnumerable<IStreamEvent>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default);
 
         Task DeleteAsync(Id streamId, CancellationToken cancellationToken = default);
+
+        Task<IStreamMetadata> GetMetadataAsync(Id streamId, CancellationToken cancellationToken = default);
     }
 }

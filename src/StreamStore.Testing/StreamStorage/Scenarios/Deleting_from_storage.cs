@@ -23,7 +23,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             // Assert
             await act.Should().NotThrowAsync();
 
-            var stream = await Storage.GetMetadata(streamId);
+            var stream = await Storage.GetMetadataAsync(streamId);
             stream.Should().BeNull();
         }
 
@@ -35,14 +35,14 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             // Arrange
             var stream = Container.PeekStream();
 
-            var metadata = await Storage.GetMetadata(stream.Id);
+            var metadata = await Storage.GetMetadataAsync(stream.Id);
             metadata.Should().NotBeNull();
 
             // Act
             await Storage.DeleteAsync(stream.Id);
 
             // Assert
-            metadata = await Storage.GetMetadata(stream.Id);
+            metadata = await Storage.GetMetadataAsync(stream.Id);
             metadata.Should().BeNull();
         }
 
@@ -54,28 +54,28 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             // Arrange
             var stream = Container.PeekStream();
 
-            var actualRevision = await Storage.GetMetadata(stream.Id);
+            var actualRevision = await Storage.GetMetadataAsync(stream.Id);
             actualRevision.Should().NotBeNull();
 
             // Act
             await Storage.DeleteAsync(stream.Id);
 
             // Assert
-            actualRevision = await Storage.GetMetadata(stream.Id);
+            actualRevision = await Storage.GetMetadataAsync(stream.Id);
             actualRevision.Should().BeNull();
 
             // Act
             await Storage.DeleteAsync(stream.Id);
 
             // Assert
-            actualRevision = await Storage.GetMetadata(stream.Id);
+            actualRevision = await Storage.GetMetadataAsync(stream.Id);
             actualRevision.Should().BeNull();
 
             // Act
             await Storage.DeleteAsync(stream.Id);
 
             // Assert
-            actualRevision = await Storage.GetMetadata(stream.Id);
+            actualRevision = await Storage.GetMetadataAsync(stream.Id);
             actualRevision.Should().BeNull();
         }
     }

@@ -78,7 +78,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             await Storage.WriteAsync(streamId, Generated.StreamEventRecords.Many(revision.Next(), 2), CancellationToken.None);
 
             // Assert
-            var actualRevision = (await Storage.GetMetadata(streamId))!.Revision;
+            var actualRevision = (await Storage.GetMetadataAsync(streamId))!.Revision;
             actualRevision.Should().NotBeNull();
             actualRevision!.Should().Be(revision + 2);
 
@@ -86,7 +86,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             await Storage.WriteAsync(streamId, Generated.StreamEventRecords.Many(actualRevision.Next(), 1), CancellationToken.None);
 
             // Assert
-            actualRevision = (await Storage.GetMetadata(streamId))!.Revision;
+            actualRevision = (await Storage.GetMetadataAsync(streamId))!.Revision;
             actualRevision.Should().NotBeNull();
             actualRevision!.Should().Be(revision + 2 + 1);
 
@@ -94,7 +94,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             await Storage.WriteAsync(streamId, Generated.StreamEventRecords.Many(actualRevision.Next(), 5), CancellationToken.None);
 
             // Assert
-            actualRevision = (await Storage.GetMetadata(streamId))!.Revision;
+            actualRevision = (await Storage.GetMetadataAsync(streamId))!.Revision;
             actualRevision.Should().NotBeNull();
             actualRevision!.Should().Be(revision + 2 + 1 + 5);
         }
@@ -107,7 +107,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
 
             // Arrange
             var stream = Container.PeekStream();
-            var persistedStream = await Storage.GetMetadata(stream.Id);
+            var persistedStream = await Storage.GetMetadataAsync(stream.Id);
 
             // Act
 
@@ -122,7 +122,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             };
 
             // Assert
-            await act.Should().ThrowAsync<DuplicatedEventException>();
+            await act.Should().ThrowAsync<EventAlreadyExistsException>();
         }
 
 

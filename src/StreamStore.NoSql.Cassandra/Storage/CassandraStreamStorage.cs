@@ -41,13 +41,13 @@ namespace StreamStore.NoSql.Cassandra.Storage
 
         protected override async Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default)
         {
-            var result = await mapper.SingleOrDefaultAsync<int?>(configure.Query(queries.StreamMetadata(streamId)));
-            if (!result.HasValue)
+            var result = await mapper.FirstOrDefaultAsync<EventMetadataEntity>(configure.Query(queries.StreamMetadata(streamId)));
+            if (result == null)
             {
                 return null;
             }
 
-            return new StreamMetadata(streamId, result.Value);
+            return new StreamMetadata(streamId, result.Revision, result.Timestamp);
         }
         
         protected override async Task<EventEntity[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)

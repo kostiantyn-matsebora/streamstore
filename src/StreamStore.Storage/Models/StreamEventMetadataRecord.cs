@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Serialization;
 
 namespace StreamStore.Storage
 {
@@ -14,6 +16,9 @@ namespace StreamStore.Storage
 
     public class StreamEventMetadataRecordCollection : RevisionedItemCollection<IStreamEventMetadata>
     {
+
+        public DateTime? LastModified => this.Any() ? this.Last().Timestamp : (DateTime?)null;
+
         public StreamEventMetadataRecordCollection() : base()
         {
         }

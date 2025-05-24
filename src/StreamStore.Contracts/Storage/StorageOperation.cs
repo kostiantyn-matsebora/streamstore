@@ -4,9 +4,9 @@
         {
             AppendEvent,
             DeleteStream,
-            GetStreamActualRevision,
+            GetStreamMetadata,
             GetStreamEventCount,
             GetEvents,
-            GetStreamMetadata
+            GetStreamEventsMetadata
         }
 }

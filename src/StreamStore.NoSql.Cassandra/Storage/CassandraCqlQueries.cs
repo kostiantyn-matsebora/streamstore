@@ -1,4 +1,5 @@
-﻿using Cassandra.Mapping;
+﻿using System.Collections.Generic;
+using Cassandra.Mapping;
 using StreamStore.NoSql.Cassandra.Configuration;
 
 namespace StreamStore.NoSql.Cassandra.Storage
@@ -13,7 +14,7 @@ namespace StreamStore.NoSql.Cassandra.Storage
         }
         public virtual Cql StreamMetadata(string streamId)
         {
-            return new Cql($"SELECT MAX(revision) FROM {config.EventsTableName} WHERE stream_id = ?", streamId);
+            return new Cql($"SELECT id, stream_id, revision, timestamp FROM { config.EventsTableName } WHERE stream_id = ? ORDER BY revision DESC LIMIT 1", streamId);
         }
 
         public Cql DeleteStream(string streamId)

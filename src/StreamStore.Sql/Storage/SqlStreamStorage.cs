@@ -42,12 +42,12 @@ namespace StreamStore.Sql.Storage
             using (var connection = connectionFactory.GetConnection())
             {
                 await connection.OpenAsync(token);
-                var result = await connection.ExecuteScalarAsync<int>(commandFactory.CreateGetActualRevisionCommand(streamId));
-                if (result == 0)
+                var result = await connection.QueryFirstOrDefaultAsync<EventMetadataEntity>(commandFactory.CreateGetMetadataCommand(streamId));
+                if (result == null)
                 {
                     return null;
                 }
-                return new StreamMetadata(streamId, result);
+                return new StreamMetadata(streamId, result.Revision, result.Timestamp);
             }
         }
 

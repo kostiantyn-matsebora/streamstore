@@ -15,7 +15,7 @@ namespace StreamStore.Storage
             await DeleteAsyncInternal(streamId, token);
         }
 
-        public async Task<IStreamMetadata?> GetMetadata(Id streamId, CancellationToken token = default)
+        public async Task<IStreamMetadata?> GetMetadataAsync(Id streamId, CancellationToken token = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
             return await GetMetadataInternal(streamId);

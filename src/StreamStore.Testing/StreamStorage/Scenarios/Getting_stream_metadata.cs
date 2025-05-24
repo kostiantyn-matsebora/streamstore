@@ -16,7 +16,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
         {
             TrySkip();
 
-            var metadata = await Storage.GetMetadata(Generated.Primitives.Id);
+            var metadata = await Storage.GetMetadataAsync(Generated.Primitives.Id);
             metadata.Should().BeNull();
         }
 
@@ -30,7 +30,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             var stream = Container.RandomStream;
 
             // Act
-            var metadata = await Storage.GetMetadata(stream.Id);
+            var metadata = await Storage.GetMetadataAsync(stream.Id);
 
             // Assert
             metadata.Should().NotBeNull();

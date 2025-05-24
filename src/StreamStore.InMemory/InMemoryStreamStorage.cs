@@ -36,13 +36,15 @@ namespace StreamStore.InMemory
             return Task.CompletedTask;
         }
 
-        public Task<IStreamMetadata?> GetMetadata(Id streamId, CancellationToken token = default)
+        public Task<IStreamMetadata?> GetMetadataAsync(Id streamId, CancellationToken token = default)
         {
             if (!storage.TryGetValue(streamId, out var record))
                 return Task.FromResult<IStreamMetadata?>(null!);
 
+            var events = new StreamEventMetadataRecordCollection(record);
+
             return  
-                Task.FromResult<IStreamMetadata?>(new StreamMetadata(streamId, new StreamEventMetadataRecordCollection(record).MaxRevision));
+                Task.FromResult<IStreamMetadata?>(new StreamMetadata(streamId, events.MaxRevision, events.LastModified.GetValueOrDefault()));
         }
 
         public async Task<IStreamEventRecord[]> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)

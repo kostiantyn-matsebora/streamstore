@@ -48,7 +48,9 @@ namespace StreamStore.S3
 
             if (metadata!.State == S3ObjectState.DoesNotExist) return null;
 
-            return new StreamMetadata(streamId, new StreamEventMetadataRecordCollection(metadata.Events).MaxRevision);
+            var events = new StreamEventMetadataRecordCollection(metadata.Events);
+
+            return new StreamMetadata(streamId, events.MaxRevision, events.LastModified.GetValueOrDefault());
 
         }
 

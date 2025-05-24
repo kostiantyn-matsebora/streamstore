@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -36,7 +35,7 @@ namespace StreamStore.ExampleBase.Workers
                 actualRevision = actualRevision + 3;
                 TrackProgress(new WriteSucceeded(actualRevision, 3));
             }
-            catch (AppendingException ex)
+            catch (ConcurrencyException ex)
             {
                 TrackError(ex);
                 if (token.IsCancellationRequested) return;
@@ -63,8 +62,8 @@ namespace StreamStore.ExampleBase.Workers
 
         async Task<int>  GetActualRevision(CancellationToken token)
         {
-            var stream = await store.ReadToEndAsync(streamId, CancellationToken.None);
-            return stream!= null && stream.Any() ? stream.Last().Revision:  (int)Revision.Zero;
+            var metadata = await store.GetMetadataAsync(streamId, token);
+            return metadata!= null ? metadata.Revision:  Revision.Zero;
         }
 
         class EventExample
