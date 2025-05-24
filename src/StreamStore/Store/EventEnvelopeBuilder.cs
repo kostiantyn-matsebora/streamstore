@@ -39,5 +39,12 @@ namespace StreamStore
                 Event = @event
             };
         }
+
+        class EventEnvelope : IEventEnvelope
+        {
+            public Id Id { get; set; }
+            public DateTime Timestamp { get; set; }
+            public object Event { get; set; } = null!;
+        }
     }
 }
