@@ -59,7 +59,7 @@ namespace StreamStore
             if (metadata != null) revision = metadata.Revision;
 
             if (expectedRevision != revision)
-                throw new StreamAlreadyChangedException(expectedRevision, revision, streamId);
+                throw new InvalidStreamRevisionException(streamId, expectedRevision, revision);
 
             return uowFactory.Create(streamId, expectedRevision);
         }

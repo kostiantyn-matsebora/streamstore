@@ -73,7 +73,6 @@ namespace StreamStore.S3
 
             ThrowIfStreamAlreadyChanged(batch.MinRevision(), await streamContext.GetPersistentMetadataAsync(token), streamContext);
 
-
             using var transaction = await new S3StreamTransaction(streamContext, lockFactory).BeginAsync(token);
 
             try

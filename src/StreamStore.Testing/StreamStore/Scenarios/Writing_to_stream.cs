@@ -101,7 +101,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
                         .SaveChangesAsync(CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<OptimisticConcurrencyException>();
+            await act.Should().ThrowAsync<InvalidStreamRevisionException>();
         }
 
         [Fact]
@@ -160,7 +160,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             var act = async () => await store.BeginWriteAsync(stream.Id, stream.Revision + increment, CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<OptimisticConcurrencyException>();
+            await act.Should().ThrowAsync<InvalidStreamRevisionException>();
 
         }
 
@@ -181,7 +181,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             var act = async () => await store.BeginWriteAsync(stream.Id, stream.Revision - increment, CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<OptimisticConcurrencyException>();
+            await act.Should().ThrowAsync<InvalidStreamRevisionException>();
         }
 
         [SkippableTheory]

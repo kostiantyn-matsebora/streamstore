@@ -55,7 +55,7 @@ namespace StreamStore.ExampleBase.Progress
 
         public void OnError(Exception error)
         {
-            if (error is StreamAlreadyChangedException ex)
+            if (error is InvalidStreamRevisionException ex)
             {
                 ReportActualRevision((int)ex.ActualRevision!);
             }
