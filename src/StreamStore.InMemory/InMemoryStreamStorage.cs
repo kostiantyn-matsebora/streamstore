@@ -69,7 +69,7 @@ namespace StreamStore.InMemory
                         .Take(count).ToArray();
         }
 
-        public Task WriteAsync(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token)
+        public Task WriteAsync(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)
         {
             var record = new List<IStreamEventRecord>(batch);
 

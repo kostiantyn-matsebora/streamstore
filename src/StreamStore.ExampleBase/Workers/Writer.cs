@@ -27,7 +27,7 @@ namespace StreamStore.ExampleBase.Workers
             {
                 TrackProgress(new StartWriting(revision));
 
-                await store.BeginWriteAsync(streamId, revision, token)
+                await store.BeginAppendAsync(streamId, revision, token)
                                 .AppendAsync(CreateEvent(), token)
                                 .AppendAsync(CreateEvent(), token)
                                 .AppendAsync(CreateEvent(), token)

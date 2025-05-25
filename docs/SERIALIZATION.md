@@ -1,6 +1,7 @@
 # Serialization
 
 Serialization is quite important aspect of event sourcing solution.  
+
 `StreamStore` supports binary serialization and JSON serialization out of the box, as well provides compression optionally:
 
 | Method                                                                                                            | Library                                                                             | Description      |
@@ -46,6 +47,7 @@ Taking into account that events needs to be deserialized to original type, seria
 
 ## Customization
 
+
 To be able to use your own serialization/deserialization implementation you need to implement `IEventSerializer` interface:
 
 ```csharp
@@ -81,6 +83,10 @@ Then register it in DI container:
 ```csharp
   services.AddSingleton<ITypeRegistry, MyCustomTypeRegistry>();
 ```
+
+## Class diagram
+
+![StreamStore class diagram](diagrams/serialization.png)
 
 ## Benchmarking
 

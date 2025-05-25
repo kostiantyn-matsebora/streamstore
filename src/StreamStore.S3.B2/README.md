@@ -2,6 +2,9 @@
 
 [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)
 
+> [!WARNING]
+  Currently broken due to bug in client library.
+
 [Backblaze B2] storage for [StreamStore] asynchronous event sourcing library.
 
 ## Installation

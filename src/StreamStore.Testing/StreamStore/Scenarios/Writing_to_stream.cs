@@ -55,7 +55,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             // Act 2: Second way to append to stream
             act = async () =>
                   await store
-                    .BeginWriteAsync(streamId, firstBatchCount, CancellationToken.None)
+                    .BeginAppendAsync(streamId, firstBatchCount, CancellationToken.None)
                         .AppendRangeAsync(events)
                     .SaveChangesAsync(CancellationToken.None);
 
@@ -120,7 +120,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             var act = async () =>
                 await
                     store
-                        .BeginWriteAsync(stream.Id, stream.Revision, CancellationToken.None)
+                        .BeginAppendAsync(stream.Id, stream.Revision, CancellationToken.None)
                         .AppendRangeAsync(mixedEvents)
                         .SaveChangesAsync(CancellationToken.None);
 
@@ -157,7 +157,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             var existingEvents = stream.Events.Take(1).ToEventEnvelopes();
 
             // Act
-            var act = async () => await store.BeginWriteAsync(stream.Id, stream.Revision + increment, CancellationToken.None);
+            var act = async () => await store.BeginAppendAsync(stream.Id, stream.Revision + increment, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<InvalidStreamRevisionException>();
@@ -178,7 +178,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             var existingEvents = stream.Events.Take(1).ToEventEnvelopes();
 
             // Act
-            var act = async () => await store.BeginWriteAsync(stream.Id, stream.Revision - increment, CancellationToken.None);
+            var act = async () => await store.BeginAppendAsync(stream.Id, stream.Revision - increment, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<InvalidStreamRevisionException>();
@@ -205,7 +205,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
 
             // Act
             await store
-                    .BeginWriteAsync(streamId, revision)
+                    .BeginAppendAsync(streamId, revision)
                         .AppendAsync(Generated.EventEnvelopes.Single)
                         .AppendAsync(Generated.EventEnvelopes.Single)
                     .SaveChangesAsync();
@@ -217,7 +217,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
 
             // Act
             await store
-                    .BeginWriteAsync(streamId, actualRevision)
+                    .BeginAppendAsync(streamId, actualRevision)
                         .AppendAsync(Generated.EventEnvelopes.Single)
                     .SaveChangesAsync();
 
@@ -229,7 +229,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
 
             // Act
             await store
-                    .BeginWriteAsync(streamId, actualRevision)
+                    .BeginAppendAsync(streamId, actualRevision)
                         .AppendAsync(Generated.EventEnvelopes.Single)
                         .AppendAsync(Generated.EventEnvelopes.Single)
                         .AppendAsync(Generated.EventEnvelopes.Single)

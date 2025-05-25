@@ -21,7 +21,7 @@ namespace StreamStore.Storage
             return await GetMetadataInternal(streamId);
         }
 
-        public async Task WriteAsync(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token)
+        public async Task WriteAsync(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)
         {
             await WriteAsyncInternal(streamId, batch, token);
         }

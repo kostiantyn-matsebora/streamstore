@@ -48,7 +48,7 @@ namespace StreamStore
             return new StreamEventEnumerable(parameters, enumeratorFactory);
         }
 
-        public async Task<IStreamUnitOfWork> BeginWriteAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
+        public async Task<IStreamUnitOfWork> BeginAppendAsync(Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
 

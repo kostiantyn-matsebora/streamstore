@@ -8,7 +8,7 @@ namespace StreamStore
     {
         public static async Task<IStreamUnitOfWork> BeginWriteAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
         {
-            return await store.BeginWriteAsync(streamId, Revision.Zero, cancellationToken);
+            return await store.BeginAppendAsync(streamId, Revision.Zero, cancellationToken);
         }
 
         public static async Task<IAsyncEnumerable<IStreamEvent>> BeginReadAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
@@ -28,7 +28,7 @@ namespace StreamStore
 
         public static Task WriteAsync(this IStreamStore store, Id streamId, Revision expectedRevision, IEnumerable<IEventEnvelope> events, CancellationToken token = default)
         {
-            return store.BeginWriteAsync(streamId, expectedRevision, token).WriteAsync(events, token);
+            return store.BeginAppendAsync(streamId, expectedRevision, token).WriteAsync(events, token);
         }
 
         public static Task WriteAsync(this IStreamStore store, Id streamId, IEnumerable<IEventEnvelope> events, CancellationToken token = default)
