@@ -21,9 +21,9 @@ namespace StreamStore
             this.value = revision;
         }
 
-        public Revision Increment() => new Revision(Value + 1);
+        public Revision Next() => new Revision(Value + 1);
 
-        public Revision Decrement() => new Revision(Value - 1);
+        public Revision Previous() => new Revision(Value - 1);
 
         public bool Equals(Revision other)
         {

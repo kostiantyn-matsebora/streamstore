@@ -11,7 +11,7 @@
     <Authors>kostiantyn-matsebora</Authors>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>StreamStore</PackageId>
-    <Version>0.16.0</Version>
+    <Version>0.17.0</Version>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>event sourcing; streams; stream store; stream; async</PackageTags>
@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
     <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">
@@ -41,6 +42,9 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="API\Exceptions\" />
   </ItemGroup>
 
   <PropertyGroup>

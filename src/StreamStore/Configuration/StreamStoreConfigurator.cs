@@ -1,17 +1,19 @@
 using System;
-using System.Runtime.CompilerServices;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Configuration;
 using StreamStore.Configuration.Storage;
 using StreamStore.Multitenancy;
 using StreamStore.Provisioning;
+using StreamStore.Storage.Validation;
+using StreamStore.Store;
+using StreamStore.Validation;
 
 
 
 namespace StreamStore
 {
 
-    public class StreamStoreConfigurator : IStreamStoreConfigurator
+    class StreamStoreConfigurator : IStreamStoreConfigurator
     {
         StreamReadingMode mode = StreamReadingMode.Default;
         IStreamStorageConfigurator? storageConfigurator;
@@ -104,7 +106,8 @@ namespace StreamStore
             services
                 .AddSingleton(configuration)
                 .AddSingleton<StreamEventEnumeratorFactory>()
-                .AddSingleton<EventConverter>()
+                .AddSingleton<IEventConverter, EventConverter>()
+                .AddSingleton<IStreamUnitOfWorkFactory, StreamUnitOfWorkFactory>()
                 .AddSingleton<IStreamStore, StreamStore>();
         }
 
@@ -120,6 +123,7 @@ namespace StreamStore
             services.AddSingleton<ITenantStreamStoreFactory, TenantStreamStoreFactory>();
             if (schemaProvisioningEnabled) services.AddHostedService<TenantSchemaProvisioningService>();
         }
+
 #pragma warning restore S1172 // Unused method parameters should be removed
     }
 }

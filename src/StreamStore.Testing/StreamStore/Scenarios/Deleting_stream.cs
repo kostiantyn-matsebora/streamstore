@@ -6,7 +6,7 @@ using StreamStore.Exceptions;
 using StreamStore.Testing.StreamStore;
 
 
-namespace StreamStore.Tests.StreamStore
+namespace StreamStore.Tests.StreamStore.Scenarios
 {
     public abstract class Deleting_stream<TEnvironment> : StreamStoreScenario<TEnvironment> where TEnvironment : StreamStoreTestEnvironmentBase, new()
     {

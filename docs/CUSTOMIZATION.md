@@ -25,30 +25,7 @@ To create your own storage implementation, you need to implement the following i
 - [`IStreamStorage`][IStreamStorage] - provides methods for working with streams.
   Create your own implementation based on [`StreamStorageBase`](../src/StreamStore.Storage/StreamStorageBase.cs) abstract class.
 
-- [`IStreamWriter`][IStreamWriter] - provides methods for appending events to the stream and committing changes.  
-  Create your own implementation based on [`StreamWriterBase`](../src/StreamStore.Storage/StreamWriterBase.cs)
-  and override following methods:
-
-  ```csharp
-    class MyStreamWriter: StreamWriterBase
-    {
-      protected override Task CommitAsync(EventRecordCollection uncommited, CancellationToken token)
-      {
-        // Implement saving logic
-      }
-  
-      protected override Task OnEventAdded(EventRecord @event, CancellationToken token)
-      {
-            // Optionally implement logic for handling event added, 
-            // such as instance logging, puting event to outbox or temporary storage etc.
-      }
-
-     protected override void Dispose(bool disposing)
-     {
-        // Optionally implement disposing logic
-     }
-    }
-  ```
+![Storage class diagram](diagrams/storage.png)
 
 ### Implement storage provisioning
 

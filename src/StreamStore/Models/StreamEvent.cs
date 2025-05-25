@@ -1,10 +1,8 @@
 ﻿using System;
-
-
 namespace StreamStore
 {
-    public sealed class StreamEvent: IHasRevision {
-        public Id EventId { get; }
+    class StreamEvent: IStreamEvent {
+        public Id Id { get; }
         public DateTime Timestamp { get; }
         public int Revision { get; }
         public object Event { get;  }
@@ -17,7 +15,7 @@ namespace StreamStore
                 throw new ArgumentOutOfRangeException(nameof(timestamp));
             if (@event == null) 
                 throw new ArgumentNullException(nameof(@event));
-            EventId = id;
+            Id = id;
             Timestamp = timestamp;
             Revision = revision;
             Event = @event;

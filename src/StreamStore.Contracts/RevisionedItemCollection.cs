@@ -11,6 +11,8 @@ namespace StreamStore
 
         public Revision MaxRevision => items.Any()? items.Last().Key : Revision.Zero;
 
+        public Revision MinRevision => items.Any() ? items.First().Key : Revision.Zero;
+
         public RevisionedItemCollection(): this(Enumerable.Empty<T>())
         {
         }

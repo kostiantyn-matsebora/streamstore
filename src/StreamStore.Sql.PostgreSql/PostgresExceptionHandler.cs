@@ -1,19 +1,25 @@
 ﻿using System;
+using StreamStore.Exceptions;
 using StreamStore.Sql.API;
 
 namespace StreamStore.Sql.PostgreSql
 {
     internal class PostgresExceptionHandler : ISqlExceptionHandler
     {
-        public bool IsOptimisticConcurrencyException(Exception ex)
+        public void HandleException(Exception ex, Id streamId)
         {
             var exception = ex as Npgsql.PostgresException;
             if (exception == null)
             {
-                return false;
+                return;
             }
+            if (string.IsNullOrEmpty(exception.ConstraintName)) return;
 
-            return exception.SqlState == "23505";
+            if (exception.SqlState == "23505")
+            {
+                if (exception.ConstraintName.Contains("pkey")) throw new EventAlreadyExistsException(streamId);
+                if (exception.ConstraintName.Contains("revision")) throw new RevisionAlreadyExistsException(streamId);
+            }
         }
     }
 }

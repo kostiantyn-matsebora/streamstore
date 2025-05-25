@@ -47,7 +47,7 @@ namespace StreamStore.ExampleBase.Progress
         {
             stopwatch.Stop();
             ReportCompletion(
-                message: $"Completed appending stream to {progress.ActualRevision} revision by adding {progress.Count} events", 
+                message: $"Completed appending stream having {progress.ActualRevision} revision by adding {progress.Count} events", 
                 elapsed: stopwatch.ElapsedMilliseconds);
         }
 

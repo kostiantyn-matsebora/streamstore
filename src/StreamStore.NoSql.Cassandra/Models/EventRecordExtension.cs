@@ -2,7 +2,7 @@
 {
     public static class EventRecordExtension
     {
-        internal static EventEntity ToEntity(this EventRecord record, Id streamId)
+        internal static EventEntity ToEntity(this IStreamEventRecord record, Id streamId)
         {
             return new EventEntity
             {

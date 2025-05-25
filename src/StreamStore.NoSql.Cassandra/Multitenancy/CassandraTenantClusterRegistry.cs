@@ -8,7 +8,7 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
 
         readonly IClusterConfigurator clusterConfigurator;
         readonly ITenantClusterConfigurator tenantConfigurator;
-        readonly ConcurrentDictionary<Id, Cluster> clusters = new ConcurrentDictionary<Id, Cluster>();
+        readonly ConcurrentDictionary<Id, ICluster> clusters = new ConcurrentDictionary<Id, ICluster>();
 
         public CassandraTenantClusterRegistry(IClusterConfigurator clusterConfigurator, ITenantClusterConfigurator tenantConfigurator)
         {
@@ -16,12 +16,12 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
             this.tenantConfigurator = tenantConfigurator.ThrowIfNull(nameof(tenantConfigurator));
         }
 
-        public Cluster GetCluster(Id tenantId)
+        public ICluster GetCluster(Id tenantId)
         {
             return clusters.GetOrAdd(tenantId, CreateCluster);
         }
 
-        Cluster CreateCluster(Id tenantId)
+        ICluster CreateCluster(Id tenantId)
         {
             var builder = Cluster.Builder();
             clusterConfigurator.Configure(builder);

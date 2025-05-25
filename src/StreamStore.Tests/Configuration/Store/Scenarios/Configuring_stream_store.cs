@@ -60,14 +60,9 @@ namespace StreamStore.Tests.Configuration.Store
                         .Should().NotBeNull()
                         .And.BeOfType<StreamEventEnumeratorFactory>();
 
-            provider.GetRequiredService<EventConverter>()
+            provider.GetRequiredService<IEventConverter>()
                         .Should().NotBeNull()
                         .And.BeOfType<EventConverter>();
-
-            provider.GetRequiredService<EventConverter>()
-                        .Should().NotBeNull()
-                        .And.BeOfType<EventConverter>();
-
 
             var configuration = provider.GetRequiredService<StreamStoreConfiguration>();
 
@@ -108,14 +103,9 @@ namespace StreamStore.Tests.Configuration.Store
                         .Should().NotBeNull()
                         .And.BeOfType<DefaultTenantProvider>();
 
-            provider.GetRequiredService<EventConverter>()
+            provider.GetRequiredService<IEventConverter>()
                         .Should().NotBeNull()
                         .And.BeOfType<EventConverter>();
-
-            provider.GetRequiredService<EventConverter>()
-                        .Should().NotBeNull()
-                        .And.BeOfType<EventConverter>();
-
 
             var configuration = provider.GetRequiredService<StreamStoreConfiguration>();
 

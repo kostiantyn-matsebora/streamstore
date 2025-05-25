@@ -1,14 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Provisioning;
-using System;
+﻿using System;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Provisioning;
 
 namespace StreamStore.Configuration.Storage
 {
-    public class SingleTenantConfigurator : ISingleTenantConfigurator
+    class SingleTenantConfigurator : ConfiguratorBase, ISingleTenantConfigurator
     {
-        readonly ServiceCollection services = new ServiceCollection();
-
         public SingleTenantConfigurator()
         {
             services.AddSingleton(typeof(ISchemaProvisioner), typeof(DefaultSchemaProvisioner));
@@ -18,6 +16,7 @@ namespace StreamStore.Configuration.Storage
         {
             services.AddSingleton(typeof(IStreamStorage), typeof(TStorage));
             services.AddSingleton(typeof(IStreamReader), provider => provider.GetRequiredService<IStreamStorage>());
+            services.AddSingleton(typeof(IStreamWriter), provider => provider.GetRequiredService<IStreamStorage>());
             if (dependencies != null) dependencies.Invoke(services);
             ValidateConfiguration(services);
             return this;
@@ -27,6 +26,7 @@ namespace StreamStore.Configuration.Storage
         {
             services.AddSingleton(typeof(IStreamStorage), storage);
             services.AddSingleton(typeof(IStreamReader), storage);
+            services.AddSingleton(typeof(IStreamWriter), storage);
             return this;
         }
 

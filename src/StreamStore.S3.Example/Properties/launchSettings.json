@@ -11,7 +11,8 @@
       "commandName": "Project"
     },
     "B2 + single tenant": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "--storage b2"
     },
     "Help": {
       "commandName": "Project",

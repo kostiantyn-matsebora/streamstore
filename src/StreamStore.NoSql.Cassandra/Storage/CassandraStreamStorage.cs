@@ -5,10 +5,13 @@ using Cassandra.Mapping;
 using StreamStore.Storage;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Models;
+using Cassandra;
+using StreamStore.Exceptions;
+using System.Collections.Generic;
 
 namespace StreamStore.NoSql.Cassandra.Storage
 {
-    internal class CassandraStreamStorage : StreamStorageBase
+    internal class CassandraStreamStorage : StreamStorageBase<EventEntity>
     {
         readonly CassandraStatementConfigurator configure;
         readonly ICassandraCqlQueries queries;
@@ -22,27 +25,51 @@ namespace StreamStore.NoSql.Cassandra.Storage
             mapper = mapperProvider.OpenMapper();
         }
 
-        protected override Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
-        {
-            return Task.FromResult<IStreamWriter>(
-                new CassandraStreamWriter(streamId, expectedStreamVersion, null, mapper, configure, queries));
-        }
-
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
         {
-
-                await mapper.ExecuteAsync(configure.Query(queries.DeleteStream(streamId)));
+            await mapper.ExecuteAsync(configure.Query(queries.DeleteStream(streamId)));
         }
 
-        protected override async Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default)
+        protected override void BuildRecord(IStreamEventRecordBuilder builder, EventEntity entity)
         {
-            return await mapper.SingleOrDefaultAsync<int?>(configure.Query(queries.StreamActualRevision(streamId)));
+            builder
+              .WithId(entity.Id)
+              .Dated(entity.Timestamp)
+              .WithRevision(entity.Revision)
+              .WithData(entity.Data!);
+        }
+
+        protected override async Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default)
+        {
+            var result = await mapper.FirstOrDefaultAsync<EventMetadataEntity>(configure.Query(queries.StreamMetadata(streamId)));
+            if (result == null)
+            {
+                return null;
+            }
+
+            return new StreamMetadata(streamId, result.Revision, result.Timestamp);
         }
         
-        protected override async Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        protected override async Task<EventEntity[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-                var events = await mapper.FetchAsync<EventEntity>(configure.Query(queries.StreamEvents(streamId, startFrom, count)));
-                return events.ToArray().ToRecords();
+           return  (await mapper.FetchAsync<EventEntity>(configure.Query(queries.StreamEvents(streamId, startFrom, count)))).ToArray();
+        }
+
+        protected override async Task WriteAsyncInternal(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)
+        {
+            var cqlBatch = configure.Batch(mapper.CreateBatch(BatchType.Logged));
+
+            foreach (var record in batch)
+            {
+                cqlBatch.InsertIfNotExists(record.ToEntity(streamId));
+            }
+
+            var result = await mapper.ExecuteConditionalAsync<EventEntity>(cqlBatch);
+
+            if (!result.Applied)
+            {
+                throw new RevisionAlreadyExistsException(result.Existing.Revision, streamId);
+            }
         }
     }
 }

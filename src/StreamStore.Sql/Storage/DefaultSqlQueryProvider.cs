@@ -19,13 +19,13 @@ namespace StreamStore.Sql.Storage
             StorageOperation.DeleteStream => DeleteStream,
             StorageOperation.AppendEvent => AppendEvent,
             StorageOperation.GetEvents => GetEvents,
-            StorageOperation.GetStreamActualRevision => GetStreamActualRevision,
-            StorageOperation.GetStreamEventCount => GetStreamEventCount,
             StorageOperation.GetStreamMetadata => GetStreamMetadata,
+            StorageOperation.GetStreamEventCount => GetStreamEventCount,
+            StorageOperation.GetStreamEventsMetadata => GetStreamEventsMetadata,
             _ => throw new ArgumentOutOfRangeException(nameof(operation), $"Not expected query type value: {operation}"),
         };
 
-        string GetStreamMetadata => $"SELECT Id, Revision, Timestamp FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
+        string GetStreamEventsMetadata => $"SELECT Id, Revision, Timestamp FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
 
         string GetStreamEventCount => $"SELECT COUNT(Id)  FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
 
@@ -36,6 +36,6 @@ namespace StreamStore.Sql.Storage
 
         string AppendEvent => $"INSERT INTO {configuration.FullTableName} (Id, StreamId, Revision, Timestamp, Data) VALUES (@Id, @StreamId, @Revision, @Timestamp, @Data)";
 
-        string GetStreamActualRevision => $"SELECT MAX(Revision) FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
+        string GetStreamMetadata => $"SELECT  Id, Revision, Timestamp, StreamId FROM {configuration.FullTableName} WHERE StreamId = @StreamId ORDER BY Revision DESC LIMIT 1";
     }
 }

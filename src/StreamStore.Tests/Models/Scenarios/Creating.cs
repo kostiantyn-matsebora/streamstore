@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using StreamStore.Storage;
 using StreamStore.Testing;
 
 namespace StreamStore.Tests.Models
@@ -11,10 +12,10 @@ namespace StreamStore.Tests.Models
         {
             // Arrange
             var fixture = new Fixture();
-            var records = fixture.CreateMany<EventMetadataRecord>(10);
+            var records = fixture.CreateMany<StreamEventMetadataRecord>(10);
 
             // Act
-            var collection = new EventMetadataRecordCollection(records);
+            var collection = new StreamEventMetadataRecordCollection(records);
 
             // Assert
             collection.Should().HaveSameCount(records);
@@ -26,7 +27,7 @@ namespace StreamStore.Tests.Models
         {
             // Arrange
             var fixture = new Fixture();
-            var records = fixture.CreateMany<EventMetadataRecord>(10);
+            var records = fixture.CreateMany<StreamEventMetadataRecord>(10);
 
             // Act
             var act = () => new StreamEvent(Id.None, Generated.Primitives.Revision, Generated.Primitives.DateTime, Generated.Objects.Single<object>());

@@ -12,7 +12,7 @@ namespace StreamStore.Tests.Configuration.SingleTenant
         public static ISingleTenantConfigurator CreateConfigurator() => new SingleTenantConfigurator();
 
 
-        public static IServiceCollection CreateServiceCollection() => new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+        public static IServiceCollection CreateServiceCollection() => new ServiceCollection();
 
         public static Mock<IStreamStorage> MockStreamStorage => Generated.Mocks.Single<IStreamStorage>();
 

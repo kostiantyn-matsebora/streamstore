@@ -3,7 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Storage;
 using StreamStore.Testing.Models;
 
 namespace StreamStore.Testing
@@ -48,10 +50,7 @@ namespace StreamStore.Testing
             // Copying events from source
             var tasks = store.Select(async pair =>
             {
-                await storage
-                 .BeginAppendAsync(pair.Key)
-                 .AppendManyAsync(pair.Value.Events)
-                 .CommitAsync();
+                await storage.WriteAsync(pair.Key, pair.Value.Events, CancellationToken.None);
             });
 
             Task.WaitAll(tasks.ToArray());
@@ -69,7 +68,7 @@ namespace StreamStore.Testing
 
         static StreamRecord GenerateStream(Id id, int eventPerStream)
         {
-            return new StreamRecord(id, Generated.Many(eventPerStream));
+            return new StreamRecord(id, Generated.StreamEventRecords.Many(eventPerStream));
         }
 
         int RandomStreamIndex()

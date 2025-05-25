@@ -3,16 +3,17 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using StreamStore.ExampleBase.Progress;
 using StreamStore.ExampleBase.Progress.Model;
 using StreamStore.Exceptions;
+using StreamStore.Testing;
 
 namespace StreamStore.ExampleBase.Workers
 {
     [ExcludeFromCodeCoverage]
     internal class Writer : WorkerBase
     {
-        Revision actualRevision = Revision.Zero;
+        Revision revision = Revision.Zero;
+
         protected override int InitialSleepPeriod => 0;
 
         public Writer(WriterIdentifier identifier, IStreamStore store, Id streamId) : base(identifier, store, streamId)
@@ -21,43 +22,39 @@ namespace StreamStore.ExampleBase.Workers
 
         protected override async Task DoWorkAsync(CancellationToken token)
         {
+
             try
             {
-                TrackProgress(new StartWriting(actualRevision));
-                actualRevision =
-                await store.BeginWriteAsync(streamId, actualRevision, token)
-                                .AppendEventAsync(CreateEvent(), token)
-                                .AppendEventAsync(CreateEvent(), token)
-                                .AppendEventAsync(CreateEvent(), token)
-                            .SaveChangesAsync(token);
-                
-                TrackProgress(new WriteSucceeded(actualRevision, 3));
-            }
-            catch (OptimisticConcurrencyException ex)
-            {
-                if (token.IsCancellationRequested) return;
+                TrackProgress(new StartWriting(revision));
 
-                if (ex.ActualRevision != null)
-                {
-                    actualRevision = ex.ActualRevision!.Value;
-                    TrackError(ex);
-                }
+                await store.BeginAppendAsync(streamId, revision, token)
+                                .AppendAsync(CreateEvent(), token)
+                                .AppendAsync(CreateEvent(), token)
+                                .AppendAsync(CreateEvent(), token)
+                            .SaveChangesAsync(token);
+
+                TrackProgress(new WriteSucceeded(revision, 3));
             }
-            catch (StreamLockedException ex)
+            catch (ConcurrencyException ex)
             {
                 TrackError(ex);
                 if (token.IsCancellationRequested) return;
             }
+            finally
+            {
+                var metadata = await store.GetMetadataAsync(streamId, token);
+                revision = metadata != null ? metadata.Revision : Revision.Zero;
+            }
         }
 
-        static Event CreateEvent()
+        static TestEventEnvelope CreateEvent()
         {
             var fixture = new Fixture();
-            return new Event
+            return new TestEventEnvelope
             {
                 Id = fixture.Create<Id>(),
                 Timestamp = fixture.Create<DateTime>(),
-                EventObject = new EventExample
+                Event = new EventExample
                 {
                     InvoiceId = fixture.Create<Guid>(),
                     Name = fixture.Create<string>(),

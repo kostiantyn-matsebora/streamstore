@@ -2,7 +2,6 @@
 using Moq;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Storage;
-using StreamStore.Testing;
 using StreamStore.Testing.Framework;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking
@@ -14,10 +13,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage.Mocking
         internal readonly Mock<ICassandraCqlQueries> Queries;
         internal readonly Mock<IMapper> Mapper;
         internal readonly CassandraStreamStorage StreamStorage;
-        internal CassandraStreamWriter StreamUnitOfWork =>
-            new CassandraStreamWriter(Generated.Primitives.Id, Generated.Primitives.Revision, null, Mapper.Object, 
-                    new CassandraStatementConfigurator(new CassandraStorageConfiguration()),
-                    new CassandraCqlQueries(new CassandraStorageConfiguration()));
+
 
         public CassandraMockTestEnvironment()
         {

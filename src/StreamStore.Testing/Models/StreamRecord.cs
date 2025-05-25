@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace StreamStore.Testing.Models
 {
-    public abstract class StreamRecord<T> where T : EventMetadataRecord
+    public abstract class StreamRecord<T> where T : IStreamEventMetadata
     {
         public Revision Revision => Events.MaxRevision;
 
@@ -23,10 +24,10 @@ namespace StreamStore.Testing.Models
         }
     }
 
-    public sealed class StreamRecord : StreamRecord<EventRecord>
+    public sealed class StreamRecord : StreamRecord<IStreamEventRecord>
     {
-        public StreamRecord(Id streamId) : this(streamId, Array.Empty<EventRecord>()) { }
-        public StreamRecord(Id streamId, IEnumerable<EventRecord> records) : base(streamId, records) { }
+        public StreamRecord(Id streamId) : this(streamId, Array.Empty<IStreamEventRecord>()) { }
+        public StreamRecord(Id streamId, IEnumerable<IStreamEventRecord> records) : base(streamId, records) { }
 
         public bool IsEmpty => !Events.Any();
     }

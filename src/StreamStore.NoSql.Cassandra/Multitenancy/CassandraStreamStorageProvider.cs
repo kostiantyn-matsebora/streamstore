@@ -11,6 +11,7 @@ namespace StreamStore.NoSql.Cassandra.Multitenancy
         private readonly ICassandraCqlQueriesProvider cqlQueriesProvider;
 
         public CassandraStreamStorageProvider(
+
             ICassandraTenantMapperProvider mapperProvider,
             ICassandraTenantStorageConfigurationProvider configProvider,
             ICassandraCqlQueriesProvider cqlQueriesProvider)

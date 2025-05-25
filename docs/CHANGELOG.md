@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.17.0] - 2025-05-25
+
+### Added
+
+- Added support for custom storage implementations via `StreamStore.Storage` package.
+
+### Changed
+
+- Moved all consistency logic from `IStreamStorage` to `IStreamUnitOfWork`.
+- Added getting stream metadata to `IStreamStore`.
+
+### Fixed
+
+- Cassandra bug with not registered 'ICluster' in DI container.
+- Fixed multiple issues with example applications.
+
 ## [0.16.0] - 2025-04-04
 
 ### Added

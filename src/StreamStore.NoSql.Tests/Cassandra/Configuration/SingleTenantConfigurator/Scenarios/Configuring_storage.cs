@@ -26,7 +26,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration.SingleTenantConfigurat
             var provider = services.BuildServiceProvider();
 
             // Assert
-            provider.GetRequiredService<Cluster>().Configuration.ClientOptions.DefaultKeyspace
+            provider.GetRequiredService<ICluster>().Configuration.ClientOptions.DefaultKeyspace
                     .Should().Be("default_keyspace");
             provider.GetRequiredService<ICassandraSessionFactory>()
                     .Should().BeOfType<FakeSessionFactory>();

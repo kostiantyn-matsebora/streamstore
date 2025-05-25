@@ -16,16 +16,18 @@ Designed to be easily extended with custom storage backends.
 Despite the fact that component implements a logical layer for storing and querying events as a stream,
  `it does not provide functionality of DDD aggregate`, such as state mutation, conflict resolution etc., but serves more as `persistence layer`  for it.
 
+ ![StreamStore class diagram](diagrams/store.png)
+
 ## Storage packages
 
-  | Package                | Description                                                                            |        Multitenancy        |  Package   |
-  | ---------------------------- | ------------------------------------------------------------------------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | [StreamStore.NoSql.Cassandra] | [`Apache Cassandra`] and [`Azure Cosmos DB for Apache Cassandra`] port | :white_check_mark: | [![NuGet version (StreamStore.NoSql.Cassandra)](https://img.shields.io/nuget/v/StreamStore.NoSql.Cassandra.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.NoSql.Cassandra/)  
-  | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) port | :white_check_mark: | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
-  | [StreamStore.Sql.Sqlite]     | [`SQLite`](https://www.sqlite.org/index.html) port | :white_check_mark: | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
-  | [StreamStore.InMemory]       | `In-memory` port is provided **for testing and educational purposes only** | :white_check_mark: | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
-  | [StreamStore.S3.AWS]         | [`Amazon S3`] port                                                         | :x: |[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
-  | [StreamStore.S3.B2]          | [`Backblaze B2`] port                                                      | :x: |[![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
+  | Package                | Description                                                                            |        Multitenancy        | Event Duplication Detection | Package   |
+  | ---------------------------- | ------------------------------------------------------------------------------------ | ----------------- | -----------|--------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | [StreamStore.NoSql.Cassandra] | [`Apache Cassandra`] and [`Azure Cosmos DB for Apache Cassandra`] port | :white_check_mark: | :x: | [![NuGet version (StreamStore.NoSql.Cassandra)](https://img.shields.io/nuget/v/StreamStore.NoSql.Cassandra.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.NoSql.Cassandra/)  
+  | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) port | :white_check_mark: | :white_check_mark: | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
+  | [StreamStore.Sql.Sqlite]     | [`SQLite`](https://www.sqlite.org/index.html) port | :white_check_mark: |  :white_check_mark: | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
+  | [StreamStore.InMemory]       | `In-memory` port is provided **for testing and educational purposes only** | :white_check_mark: | :white_check_mark: | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
+  | [StreamStore.S3.AWS]         | [`Amazon S3`] port                                                         | :x: | :x: |[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
+  | [StreamStore.S3.B2]          | [`Backblaze B2`] port                                                      | :x: | :x: |[![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
 
 ## Concepts
 
@@ -152,8 +154,8 @@ or from NuGet Package Manager Console:
 
   try {
     store
-      .BeginWriteAsync("stream-1")       // Open stream like new since revision is not provided
-         .AppendEventAsync(x =>          // Append events one by one using fluent API
+      .BeginAppendAsync("stream-1")       // Open stream like new since revision is not provided
+         .AppendAsync(x =>          // Append events one by one using fluent API
             x.WithId("event-3")
              .Dated(DateTime.Now)
              .WithEvent(eventObject)
@@ -162,26 +164,27 @@ or from NuGet Package Manager Console:
         .AppendRangeAsync(events)  // Or append range of events by passing IEnumerable<Event>
       .SaveChangesAsync(token);
 
-  } catch (StreamConcurrencyException ex) {
+  } catch (ConcurrencyException ex) {
 
-    // Read from stream and implement your logic for handling optimistic concurrency exception
+
+    // Read from stream and implement your logic for handling optimistic concurrency exception (optional)
     await foreach(var @event in await store.BeginReadAsync("stream-1", token)) {
         ...
     }
     
+    // Get stream metadata to get actual revision
+    var metadata = await store.GetMetadataAsync("stream-1", token);
+
     // Push result to the end of stream
     store
-        .BeginWriteAsync("stream-1", ex.ActualRevision)
-           .AppendEventAsync(x =>                // Append events one by one using fluent API
+        .BeginAppendAsync("stream-1", metadata.Revision) // Open stream with revision to handle concurrency
+           .AppendAsync(x =>                       // Append events one by one using fluent API
             x.WithId( "event-4")
              .Dated(DateTime.Now)
              .WithEvent(yourEventObject)
            )
         ...
         .SaveChangesAsync(streamId);
-  } catch (StreamLockedException ex) {
-    // Some storage backends like S3 do not support optimistic concurrency control
-    // So, the only way to handle concurrency is to lock the stream
   }
 ```
 
@@ -204,9 +207,13 @@ For getting all running options simply run the application with `--help` argumen
 
 For configuring application via configuration file, create `appsettings.Development.json` file.
 
-## Create your own storage implementation
+## Customization
 
 How to create your own storage implementation you can find in [CUSTOMIZATION.md](CUSTOMIZATION.md).
+
+## Error handling
+
+How to handle errors and exceptions in your application you can find in [ERRORHANDLING.md](ERRORHANDLING.md).
 
 ## Contributing
 

@@ -31,10 +31,10 @@ namespace StreamStore.Sql.Storage
                 transaction: transaction);
         }
 
-        public CommandDefinition CreateGetActualRevisionCommand(Id streamId)
+        public CommandDefinition CreateGetMetadataCommand(Id streamId)
         {
             return new CommandDefinition(
-                 commandText: queryProvider.GetQuery(StorageOperation.GetStreamActualRevision),
+                 commandText: queryProvider.GetQuery(StorageOperation.GetStreamMetadata),
                  parameters: new { StreamId = streamId.Value });
         }
 
@@ -52,10 +52,10 @@ namespace StreamStore.Sql.Storage
               parameters: new { StreamId = (string)streamId, Revision = (int)startFrom, Count = count });
         }
 
-        public CommandDefinition CreateGetStreamMetadataCommand(Id streamId)
+        public CommandDefinition CreateGetStreamEventsMetadataCommand(Id streamId)
         {
             return new CommandDefinition(
-              commandText: queryProvider.GetQuery(StorageOperation.GetStreamMetadata),
+              commandText: queryProvider.GetQuery(StorageOperation.GetStreamEventsMetadata),
               parameters: new { StreamId = streamId.Value });
         }
 

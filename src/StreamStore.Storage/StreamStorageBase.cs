@@ -1,56 +1,63 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
 
 namespace StreamStore.Storage
 {
-    public abstract class StreamStorageBase : IStreamStorage
+    public abstract class StreamStorageBase<TEntity> : IStreamStorage
     {
-        public async Task<IStreamWriter> BeginAppendAsync(Id streamId, Revision expectedStreamVersion, CancellationToken token = default)
-        {
-            streamId.ThrowIfHasNoValue(nameof(streamId));
-            if (expectedStreamVersion < 0)
-                throw new ArgumentOutOfRangeException(nameof(expectedStreamVersion), "Expected stream version must be equal or greater than 0.");
-
-            var actualRevision = await GetActualRevisionInternal(streamId);
-            if (actualRevision == null) actualRevision = Revision.Zero;
-            if (actualRevision != expectedStreamVersion)
-                throw new OptimisticConcurrencyException(expectedStreamVersion, actualRevision.Value, streamId);
-            
-            return await BeginAppendAsyncInternal(streamId, expectedStreamVersion, token);
-        }
-
         public async Task DeleteAsync(Id streamId, CancellationToken token = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
             await DeleteAsyncInternal(streamId, token);
         }
 
-        public async Task<Revision?> GetActualRevision(Id streamId, CancellationToken token = default)
+        public async Task<IStreamMetadata?> GetMetadataAsync(Id streamId, CancellationToken token = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
-            var actualRevision = await GetActualRevisionInternal(streamId);
-            return actualRevision == Revision.Zero ? null : (Revision?)actualRevision;
+            return await GetMetadataInternal(streamId);
         }
 
-        public async Task<EventRecordCollection> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        public async Task WriteAsync(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)
         {
-           if (startFrom <= 0)
-                throw new ArgumentOutOfRangeException(nameof(startFrom), "Revision must be equal or greater 1.");
+            await WriteAsyncInternal(streamId, batch, token);
+        }
 
-           var actualRevision = await GetActualRevisionInternal(streamId);
+        public async Task<IStreamEventRecord[]> ReadAsync(Id streamId, Revision startFrom, int count, CancellationToken token = default)
+        {
+            if (startFrom <= Revision.Zero)
+                throw new ArgumentOutOfRangeException(nameof(startFrom), "Revision is less than or equal to zero");
 
-            if (actualRevision == null || actualRevision == Revision.Zero)
+            var metadata = await GetMetadataInternal(streamId);
+
+
+            if (metadata == null || metadata.Revision == Revision.Zero)
                 throw new StreamNotFoundException(streamId);
 
-            return new EventRecordCollection(await ReadAsyncInternal(streamId, startFrom, count, token));
+            var entities = await ReadAsyncInternal(streamId, startFrom, count, token);
+
+            if (entities == null || !entities.Any())
+                return Array.Empty<IStreamEventRecord>();
+
+            var result = new List<IStreamEventRecord>();
+
+            foreach ( var entity in entities)
+            {
+                var builder = new StreamEventRecordBuilder();
+                BuildRecord(builder, entity);
+                result.Add(builder.Build());
+            }
+           
+            return result.ToArray();
         }
 
-        protected abstract Task<EventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default);
+        protected abstract void BuildRecord(IStreamEventRecordBuilder builder, TEntity entity);
+        protected abstract Task<TEntity[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default);
         protected abstract Task DeleteAsyncInternal(Id streamId, CancellationToken token = default);
-        protected abstract Task<IStreamWriter> BeginAppendAsyncInternal(Id streamId, Revision expectedStreamVersion, CancellationToken token = default);
-        protected abstract Task<Revision?> GetActualRevisionInternal(Id streamId, CancellationToken token = default);
-
+        protected abstract Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default);
+        protected abstract Task WriteAsyncInternal(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default);
     }
 }

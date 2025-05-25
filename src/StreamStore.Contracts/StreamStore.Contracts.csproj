@@ -11,7 +11,7 @@
     <Authors>kostiantyn-matsebora</Authors>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>StreamStore.Contracts</PackageId>
-    <Version>0.12.0</Version>
+    <Version>0.13.0</Version>
     <RootNamespace>StreamStore</RootNamespace>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -29,6 +29,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
   </ItemGroup>
 </Project>

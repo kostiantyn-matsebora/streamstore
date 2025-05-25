@@ -10,19 +10,19 @@
     },
     "Cassandra + single tenant": {
       "commandName": "Project",
-      "commandLineArgs": "--database cassandra --mode single"
+      "commandLineArgs": "--storage cassandra --mode single"
     },
     "Cassandra + multitenancy": {
       "commandName": "Project",
-      "commandLineArgs": "--database cassandra --mode multitenancy"
+      "commandLineArgs": "--storage cassandra --mode multitenancy"
     },
     "CosmosDB Cassandra API + single tenant": {
       "commandName": "Project",
-      "commandLineArgs": "--database cosmosdbcassandra --mode single"
+      "commandLineArgs": "--storage cosmosdbcassandra --mode single"
     },
     "CosmosDB Cassandra API + multitenancy": {
       "commandName": "Project",
-      "commandLineArgs": "--database cosmosdbcassandra --mode multitenancy"
+      "commandLineArgs": "--storage cosmosdbcassandra --mode multitenancy"
     }
   }
 }

@@ -3,6 +3,7 @@ using Moq;
 using StreamStore.S3.Client;
 using StreamStore.S3.Storage;
 using StreamStore.Serialization;
+using StreamStore.Storage;
 using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.Storage.StreamContainer
@@ -32,9 +33,9 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
             // Arrange
             var streamContainer = Environment.CreateS3StreamContainer();
             Environment.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
-            var events = new EventMetadataRecordCollection(new[]
+            var events = new StreamEventMetadataRecordCollection(new[]
             {
-                new EventMetadataRecord { Id = "1", Revision = Revision.One }
+                new StreamEventMetadataRecord { Id = "1", Revision = Revision.One }
             });
             Environment.MockS3Client.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default))
                               .ReturnsAsync(new FindObjectResponse { Data = Converter.ToByteArray(events.ToArray()) });
@@ -53,13 +54,13 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
             // Arrange
             var streamContainer = Environment.CreateS3StreamContainer();
             Environment.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
-            var metadata = new EventMetadataRecordCollection(new[]
+            var metadata = new StreamEventMetadataRecordCollection(new[]
             {
-                new EventMetadataRecord { Id = "1", Revision = Revision.One },
-                new EventMetadataRecord { Id = "2", Revision = 2 }
+                new StreamEventMetadataRecord { Id = "1", Revision = Revision.One },
+                new StreamEventMetadataRecord { Id = "2", Revision = 2 }
             });
 
-            var @event = new EventRecord { Id = "2", Revision = 2, Data = Generated.Objects.ByteArray };
+            var @event = new StreamEventRecord { Id = "2", Revision = 2, Data = Generated.Objects.ByteArray };
 
             Environment.MockS3Client
                 .SetupSequence(x => x.FindObjectAsync(It.IsAny<string>(), default))

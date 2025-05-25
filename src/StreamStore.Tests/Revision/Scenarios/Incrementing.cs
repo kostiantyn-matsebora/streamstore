@@ -14,7 +14,7 @@ namespace StreamStore.Tests.RevisionObject
             var revision = RevisionTestEnvironment.CreateRevision();
 
             // Act
-            var result = revision.Increment();
+            var result = revision.Next();
 
             // Assert
             result.Should().NotBe(revision);

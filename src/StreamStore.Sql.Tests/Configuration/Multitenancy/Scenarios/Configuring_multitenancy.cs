@@ -8,6 +8,7 @@ using StreamStore.Sql.Configuration;
 using Microsoft.Extensions.Configuration;
 using StreamStore.Multitenancy;
 using StreamStore.Sql.Multitenancy;
+using StreamStore.Configuration;
 
 
 
@@ -34,7 +35,7 @@ namespace StreamStore.Sql.Tests.Configuration.MultiTenant
         {
             // Arrange
             var services = new ServiceCollection();
-            var configurator = new StreamStoreConfigurator();
+            var configurator = ConfiguratorFactory.StoreConfigurator;
 
             // Act
             configurator.WithMultitenancy(x => 
@@ -70,7 +71,7 @@ namespace StreamStore.Sql.Tests.Configuration.MultiTenant
         {
             // Arrange
             var services = new ServiceCollection();
-            var configurator = new StreamStoreConfigurator();
+            var configurator = ConfiguratorFactory.StoreConfigurator;
             var appSettings = new Dictionary<string, string?>
             {
                 {"ConnectionStrings:StreamStore", "connectionString"},

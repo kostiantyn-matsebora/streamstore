@@ -5,6 +5,7 @@ using StreamStore.Sql.Configuration;
 using FluentAssertions;
 using StreamStore.Sql.API;
 using StreamStore.Configuration.Storage;
+using StreamStore.Configuration;
 
 namespace StreamStore.Sql.Tests.PostgreSql.Configuration.Configurator
 {
@@ -15,7 +16,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Configuration.Configurator
         {
 
             // Arrange
-            var configurator = new SingleTenantConfigurator();
+            var configurator = ConfiguratorFactory.SingleTenantConfigurator;
             var connectionString = Generated.Primitives.String;
 
             // Act

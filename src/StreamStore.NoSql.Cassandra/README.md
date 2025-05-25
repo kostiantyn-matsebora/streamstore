@@ -4,6 +4,9 @@
 
 [Apache Cassandra] and [Azure Cosmos DB for Apache Cassandra] storage for [StreamStore] asynchronous event sourcing library built on top of [CassandraCSharpDriver].
 
+> [!IMPORTANT]
+> Does not support **event duplication detection based on event ID** due to lack of unique constraints.
+
 ## ACID compliance and considerations
 
 Despite the fact that [Apache Cassandra] is not ACID compliant DBMS, library provides ACID guarantees for the operations that are performed within a single partition key - stream identifier.  
