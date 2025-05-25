@@ -207,9 +207,13 @@ For getting all running options simply run the application with `--help` argumen
 
 For configuring application via configuration file, create `appsettings.Development.json` file.
 
-## Create your own storage implementation
+## Customization
 
 How to create your own storage implementation you can find in [CUSTOMIZATION.md](CUSTOMIZATION.md).
+
+## Error handling
+
+How to handle errors and exceptions in your application you can find in [ERRORHANDLING.md](ERRORHANDLING.md).
 
 ## Contributing
 
