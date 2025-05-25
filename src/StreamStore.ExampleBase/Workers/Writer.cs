@@ -12,7 +12,8 @@ namespace StreamStore.ExampleBase.Workers
     [ExcludeFromCodeCoverage]
     internal class Writer : WorkerBase
     {
-        Revision actualRevision = Revision.Zero;
+        Revision revision = Revision.Zero;
+
         protected override int InitialSleepPeriod => 0;
 
         public Writer(WriterIdentifier identifier, IStreamStore store, Id streamId) : base(identifier, store, streamId)
@@ -24,22 +25,25 @@ namespace StreamStore.ExampleBase.Workers
 
             try
             {
-                TrackProgress(new StartWriting(actualRevision));
+                TrackProgress(new StartWriting(revision));
 
-                await store.BeginWriteAsync(streamId, actualRevision, token)
+                await store.BeginWriteAsync(streamId, revision, token)
                                 .AppendAsync(CreateEvent(), token)
                                 .AppendAsync(CreateEvent(), token)
                                 .AppendAsync(CreateEvent(), token)
                             .SaveChangesAsync(token);
 
-                actualRevision = actualRevision + 3;
-                TrackProgress(new WriteSucceeded(actualRevision, 3));
+                TrackProgress(new WriteSucceeded(revision, 3));
             }
             catch (ConcurrencyException ex)
             {
                 TrackError(ex);
                 if (token.IsCancellationRequested) return;
-                actualRevision = await GetActualRevision(token);
+            }
+            finally
+            {
+                var metadata = await store.GetMetadataAsync(streamId, token);
+                revision = metadata != null ? metadata.Revision : Revision.Zero;
             }
         }
 
@@ -58,12 +62,6 @@ namespace StreamStore.ExampleBase.Workers
                     Date = fixture.Create<DateTime>()
                 }
             };
-        }
-
-        async Task<int>  GetActualRevision(CancellationToken token)
-        {
-            var metadata = await store.GetMetadataAsync(streamId, token);
-            return metadata!= null ? metadata.Revision:  Revision.Zero;
         }
 
         class EventExample
