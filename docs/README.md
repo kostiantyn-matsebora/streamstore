@@ -43,7 +43,7 @@ The general idea is to highlight the common characteristics and features of even
 - [x] Event ordering.
 - [x] Serialization/deserialization of events.
 - [x] Optimistic concurrency control.
-- [x] Event duplication detection based on event ID (supported only by ACID storages).
+- [x] Event duplication detection based on event ID.
 - [x] Storage agnostic test framework.
 - [x] Binary serialization support.
 

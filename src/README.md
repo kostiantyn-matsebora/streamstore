@@ -14,14 +14,15 @@ Despite the fact that component implements a logical layer for storing and query
 
 ## Storage packages
 
-  | Package                | Description                                                                            |        Multitenancy        |  Package   |
-  | ---------------------------- | ------------------------------------------------------------------------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | [StreamStore.NoSql.Cassandra] | [`Apache Cassandra`] and [`Azure Cosmos DB for Apache Cassandra`] port | :white_check_mark: | [![NuGet version (StreamStore.NoSql.Cassandra)](https://img.shields.io/nuget/v/StreamStore.NoSql.Cassandra.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.NoSql.Cassandra/)  
-  | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) port | :white_check_mark: | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
-  | [StreamStore.Sql.Sqlite]     | [`SQLite`](https://www.sqlite.org/index.html) port | :white_check_mark: | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
-  | [StreamStore.InMemory]       | `In-memory` port is provided **for testing and educational purposes only** | :white_check_mark: | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
-  | [StreamStore.S3.AWS]         | [`Amazon S3`] port                                                         | :x: |[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
-  | [StreamStore.S3.B2]          | [`Backblaze B2`] port                                                      | :x: |[![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
+  | Package                | Description                                                                            |        Multitenancy        | Event Duplication Detection | Package   |
+  | ---------------------------- | ------------------------------------------------------------------------------------ | ----------------- | -----------|--------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | [StreamStore.NoSql.Cassandra] | [`Apache Cassandra`] and [`Azure Cosmos DB for Apache Cassandra`] port | :white_check_mark: | :x: | [![NuGet version (StreamStore.NoSql.Cassandra)](https://img.shields.io/nuget/v/StreamStore.NoSql.Cassandra.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.NoSql.Cassandra/)  
+  | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) port | :white_check_mark: | :white_check_mark: | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
+  | [StreamStore.Sql.Sqlite]     | [`SQLite`](https://www.sqlite.org/index.html) port | :white_check_mark: |  :white_check_mark: | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
+  | [StreamStore.InMemory]       | `In-memory` port is provided **for testing and educational purposes only** | :white_check_mark: | :white_check_mark: | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
+  | [StreamStore.S3.AWS]         | [`Amazon S3`] port                                                         | :x: | :x: |[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
+  | [StreamStore.S3.B2]          | [`Backblaze B2`] port                                                      | :x: | :x: |[![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
+
 
 ## Features
 
