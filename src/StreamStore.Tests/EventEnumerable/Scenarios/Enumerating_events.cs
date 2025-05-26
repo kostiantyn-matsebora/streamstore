@@ -65,7 +65,7 @@ namespace StreamStore.Tests.EventEnumerable {
             var parameters = new StreamReadingParameters(stream.Id, startFrom, pageSize);
 
             var enumerable = Environment.CreateEnumerable(parameters);
-            var events = new List<IStreamEvent>();
+            var events = new List<IStreamEventEnvelope>();
             // Act
             await foreach (var _ in enumerable)
             {
@@ -91,7 +91,7 @@ namespace StreamStore.Tests.EventEnumerable {
             var parameters = new StreamReadingParameters(stream.Id, Revision.One, pageSize);
 
             var enumerable = Environment.CreateEnumerable(parameters);
-            var events = new List<IStreamEvent>();
+            var events = new List<IStreamEventEnvelope>();
             // Act
             await foreach (var _ in enumerable)
             {
@@ -129,7 +129,7 @@ namespace StreamStore.Tests.EventEnumerable {
             var parameters = new StreamReadingParameters(stream.Id, startFrom, pageSize);
 
             var enumerable = Environment.CreateEnumerable(parameters);
-            var events = new List<IStreamEvent>();
+            var events = new List<IStreamEventEnvelope>();
             // Act
             await foreach (var _ in enumerable)
             {

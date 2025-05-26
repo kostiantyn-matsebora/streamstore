@@ -1,7 +1,8 @@
 ﻿
 namespace StreamStore
 {
-    public interface IStreamEventRecord : IEventRecord, IStreamEventMetadata
+    public interface IStreamEventRecord : IStreamEventMetadata
     {
+        byte[] Data { get; }
     }
 }

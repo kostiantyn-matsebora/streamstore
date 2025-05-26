@@ -8,7 +8,7 @@ namespace StreamStore.Testing
     {
         public static class EventRecords
         {
-            public static IEventRecord Single => new Fixture().CreateStreamEventRecords(1).First();
+            public static IStreamEventRecord Single => new Fixture().CreateStreamEventRecords(1).First();
 
         }
     }

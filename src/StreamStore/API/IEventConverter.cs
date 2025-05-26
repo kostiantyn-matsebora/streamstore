@@ -2,7 +2,8 @@
 {
     public interface IEventConverter
     {
-        IStreamEvent ConvertToEvent(IStreamEventRecord record);
+        IStreamEventEnvelope ConvertToEnvelope(IStreamEventRecord record);
+
         byte[] ConvertToByteArray(object @event);
     }
 }

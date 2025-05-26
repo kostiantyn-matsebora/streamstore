@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StreamStore.Stream
 {
-    class DefaultStreamEventEnumerator : IAsyncEnumerator<IStreamEvent>
+    class DefaultStreamEventEnumerator : IAsyncEnumerator<IStreamEventEnvelope>
     {
         readonly IStreamReader reader;
         private readonly IEventConverter converter;
@@ -30,7 +30,7 @@ namespace StreamStore.Stream
             Current = null!;
         }
 
-        public IStreamEvent Current { get; private set; }
+        public IStreamEventEnvelope Current { get; private set; }
 
         public async ValueTask<bool> MoveNextAsync()
         {
@@ -65,7 +65,7 @@ namespace StreamStore.Stream
         {
             if (queue.TryDequeue(out IStreamEventRecord record))
             {
-                Current = converter.ConvertToEvent(record);
+                Current = converter.ConvertToEnvelope(record);
                 nextRevision = Current.Revision + 1;
                 return true;
             }

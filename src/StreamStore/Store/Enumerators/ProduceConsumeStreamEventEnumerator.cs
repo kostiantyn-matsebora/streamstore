@@ -9,13 +9,13 @@ using StreamStore.Exceptions;
 
 namespace StreamStore.Stream
 {
-    class ProduceConsumeStreamEventEnumerator : IAsyncEnumerator<IStreamEvent>
+    class ProduceConsumeStreamEventEnumerator : IAsyncEnumerator<IStreamEventEnvelope>
     {
         readonly IStreamReader reader;
         readonly IEventConverter converter;
         readonly StreamReadingParameters parameters;
         readonly CancellationToken token;
-        readonly Channel<IStreamEvent> channel;
+        readonly Channel<IStreamEventEnvelope> channel;
         readonly Task producer;
 
         public ProduceConsumeStreamEventEnumerator(
@@ -43,7 +43,7 @@ namespace StreamStore.Stream
 
         public async ValueTask<bool> MoveNextAsync()
         {
-            IStreamEvent streamEvent = null!;
+            IStreamEventEnvelope streamEvent = null!;
             try
             {
                 streamEvent = await channel.Reader.ReadAsync();
@@ -62,7 +62,7 @@ namespace StreamStore.Stream
             Current = streamEvent;
             return true;
         }
-        public IStreamEvent Current { get; private set; }
+        public IStreamEventEnvelope Current { get; private set; }
 
         Task DisposeAsync(bool disposing)
         {
@@ -79,9 +79,9 @@ namespace StreamStore.Stream
             return Task.CompletedTask;
         }
 
-        Channel<IStreamEvent> CreateChannel(int pageSize)
+        Channel<IStreamEventEnvelope> CreateChannel(int pageSize)
         {
-            return Channel.CreateBounded<IStreamEvent>(
+            return Channel.CreateBounded<IStreamEventEnvelope>(
                 new BoundedChannelOptions(pageSize)
                 {
                     FullMode = BoundedChannelFullMode.Wait,
@@ -123,7 +123,7 @@ namespace StreamStore.Stream
             {
                 if (token.IsCancellationRequested) return cursor;
 
-                await channel.Writer.WriteAsync(converter.ConvertToEvent(record), token);
+                await channel.Writer.WriteAsync(converter.ConvertToEnvelope(record), token);
 
                 cursor = record.Revision + 1;
             }

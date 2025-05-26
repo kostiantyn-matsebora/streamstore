@@ -30,7 +30,7 @@ namespace StreamStore
             await storage.DeleteAsync(streamId, cancellationToken);
         }
 
-        public async Task<IAsyncEnumerable<IStreamEvent>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
+        public async Task<IAsyncEnumerable<IStreamEventEnvelope>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
 

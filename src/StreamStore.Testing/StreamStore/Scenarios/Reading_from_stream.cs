@@ -96,7 +96,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             // Arrange
             var stream = Environment.Container.RandomStream;
             IStreamStore store = Environment.Store;
-            List<IStreamEvent> result = new List<IStreamEvent>();
+            List<IStreamEventEnvelope> result = new List<IStreamEventEnvelope>();
 
             // Act
             await foreach(var @event in await store.BeginReadAsync(stream.Id, CancellationToken.None))

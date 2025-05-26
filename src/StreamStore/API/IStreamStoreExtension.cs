@@ -11,17 +11,17 @@ namespace StreamStore
             return await store.BeginAppendAsync(streamId, Revision.Zero, cancellationToken);
         }
 
-        public static async Task<IAsyncEnumerable<IStreamEvent>> BeginReadAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
+        public static async Task<IAsyncEnumerable<IStreamEventEnvelope>> BeginReadAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
         {
             return await store.BeginReadAsync(streamId, Revision.One, cancellationToken);
         }
 
-        public static async Task<IStreamEvent[]> ReadToEndAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
+        public static async Task<IStreamEventEnvelope[]> ReadToEndAsync(this IStreamStore store, Id streamId, CancellationToken cancellationToken = default)
         {
             return await store.BeginReadAsync(streamId, cancellationToken).ReadToEndAsync(cancellationToken);
         }
 
-        public static async Task<IStreamEvent[]> ReadToEndAsync(this IStreamStore store, Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
+        public static async Task<IStreamEventEnvelope[]> ReadToEndAsync(this IStreamStore store, Id streamId, Revision expectedRevision, CancellationToken cancellationToken = default)
         {
             return await store.BeginReadAsync(streamId, expectedRevision, cancellationToken).ReadToEndAsync(cancellationToken);
         }

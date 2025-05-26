@@ -1,7 +1,7 @@
 ﻿using System;
 namespace StreamStore
 {
-    class StreamEvent: IStreamEvent {
+    class StreamEvent: IStreamEventEnvelope {
         public Id Id { get; }
         public DateTime Timestamp { get; }
         public int Revision { get; }

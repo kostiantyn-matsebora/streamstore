@@ -19,7 +19,7 @@ namespace StreamStore.ExampleBase.Workers
 
         protected override async Task DoWorkAsync(CancellationToken token)
         {
-            IAsyncEnumerator<IStreamEvent> enumerator;
+            IAsyncEnumerator<IStreamEventEnvelope> enumerator;
 
             TrackProgress(new StartReading());
 
