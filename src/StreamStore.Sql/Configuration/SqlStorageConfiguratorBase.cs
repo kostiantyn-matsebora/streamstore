@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Sql.API;
+using StreamStore.Sql.Migrations;
 using StreamStore.Sql.Storage;
 
 namespace StreamStore.Sql.Configuration
@@ -10,8 +12,8 @@ namespace StreamStore.Sql.Configuration
     {
         readonly SqlStorageConfigurationBuilder configurationBuilder;
 
-
         Type sqlExceptionHandlerType = typeof(DefaultSqlExceptionHandler);
+        Assembly migrationAssembly = typeof(Initial).Assembly;
 
         readonly IServiceCollection services;
 
@@ -25,6 +27,12 @@ namespace StreamStore.Sql.Configuration
         public TConfigurator WithExceptionHandling<THandler>() where THandler : ISqlExceptionHandler
         {
             sqlExceptionHandlerType = typeof(THandler);
+            return (TConfigurator)this;
+        }
+
+        public TConfigurator WithMigrationAssenbly(Assembly assembly)
+        {
+            migrationAssembly = assembly;
             return (TConfigurator)this;
         }
 
@@ -58,6 +66,7 @@ namespace StreamStore.Sql.Configuration
         {
             services.AddSingleton(configuration);
             services.AddSingleton(typeof(ISqlExceptionHandler), sqlExceptionHandlerType);
+            services.AddSingleton(new MigrationConfiguration { MigrationAssembly = migrationAssembly });
         }
     }
 }

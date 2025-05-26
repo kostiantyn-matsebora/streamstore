@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.Configuration;
 using StreamStore.Sql.Configuration;
+using StreamStore.Sql.PostgreSql.Provisioning;
 
 
 namespace StreamStore.Sql.PostgreSql
@@ -29,6 +30,7 @@ namespace StreamStore.Sql.PostgreSql
             configurator.WithConnectionFactory<PostgresConnectionFactory>();
             configurator.WithExceptionHandling<PostgresExceptionHandler>();
             configurator.WithProvisioingQueryProvider<PostgresProvisioningQueryProvider>();
+            configurator.WithMigrator<PostgreSqlMigrator>();
         }
     }
 }

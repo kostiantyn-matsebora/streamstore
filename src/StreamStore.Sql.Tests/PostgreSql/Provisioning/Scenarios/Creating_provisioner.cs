@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using StreamStore.Sql.Configuration;
+using StreamStore.Sql.Multitenancy;
 using StreamStore.Sql.PostgreSql;
 using StreamStore.Sql.Provisioning;
 using StreamStore.Testing;
@@ -13,7 +14,13 @@ namespace StreamStore.Sql.Tests.PostgreSql.Provisioning
         {
 
             // Act
-            var act = () => new PostgresSchemaProvisionerFactory(null!);
+            var act = () => new PostgresSchemaProvisionerFactory(null!, Generated.Objects.Single<MigrationConfiguration>());
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>();
+
+            // Act
+            act = () => new PostgresSchemaProvisionerFactory(Generated.Objects.Single<SqlTenantStorageConfigurationProvider>(), null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
@@ -25,7 +32,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Provisioning
             // Arrange
             var configurationProvider = Environment.MockSqlConfigurationProvider;
             var tenantId = Generated.Primitives.Id;
-            var factory = new PostgresSchemaProvisionerFactory(configurationProvider.Object);
+            var factory = new PostgresSchemaProvisionerFactory(configurationProvider.Object, Generated.Objects.Single<MigrationConfiguration>());
 
             configurationProvider
                 .Setup(provider => provider.GetConfiguration(tenantId))

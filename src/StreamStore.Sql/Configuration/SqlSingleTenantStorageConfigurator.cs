@@ -9,13 +9,15 @@ using StreamStore.Sql.Provisioning;
 
 namespace StreamStore.Sql.Configuration
 {
-    public sealed class SqlSingleTenantStorageConfigurator: SqlStorageConfiguratorBase<SqlSingleTenantStorageConfigurator>
+    public sealed class SqlSingleTenantStorageConfigurator : SqlStorageConfiguratorBase<SqlSingleTenantStorageConfigurator>
     {
         Type? connectionFactoryType;
         Type sqlQueryProviderType = typeof(DefaultSqlQueryProvider);
         Type? sqlProvisionQueryProviderType;
         Type commandFactoryType = typeof(DefaultDapperCommandFactory);
-        public SqlSingleTenantStorageConfigurator(IServiceCollection services, SqlStorageConfiguration defaultConfig): base(services, defaultConfig)
+        Type? migratorType;
+
+        public SqlSingleTenantStorageConfigurator(IServiceCollection services, SqlStorageConfiguration defaultConfig) : base(services, defaultConfig)
         {
         }
 
@@ -44,6 +46,14 @@ namespace StreamStore.Sql.Configuration
             return this;
         }
 
+        public SqlSingleTenantStorageConfigurator WithMigrator<TMigrator>() where TMigrator : IMigrator
+        {
+            migratorType = typeof(TMigrator);
+            return this;
+        }
+
+
+
         protected override void ApplySpecificDependencies(SqlStorageConfiguration configuration, IServiceCollection services)
         {
             if (connectionFactoryType == null)
@@ -52,11 +62,15 @@ namespace StreamStore.Sql.Configuration
             if (sqlProvisionQueryProviderType == null)
                 throw new InvalidOperationException("ISqlProvisionQueryProvider type not set");
 
+            if (migratorType == null)
+                throw new InvalidOperationException("IMigrator type not set");
+
             services.AddSingleton(typeof(IDbConnectionFactory), connectionFactoryType);
             services.AddSingleton(typeof(ISqlQueryProvider), sqlQueryProviderType);
             services.AddSingleton(typeof(ISqlProvisioningQueryProvider), sqlProvisionQueryProviderType);
             services.AddSingleton<ISchemaProvisioner, SqlSchemaProvisioner>();
             services.AddSingleton(typeof(IDapperCommandFactory), commandFactoryType);
+            services.AddSingleton(typeof(IMigrator), migratorType);
         }
     }
 }
