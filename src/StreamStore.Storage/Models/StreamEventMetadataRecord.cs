@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
+using StreamStore.Models;
+using StreamStore.Storage.Models;
 
 namespace StreamStore.Storage
 {
@@ -12,6 +13,8 @@ namespace StreamStore.Storage
         public DateTime Timestamp { get; set; }
 
         public int Revision { get; set; }
+
+        public ICustomProperties CustomProperties { get; set; } = new EventCustomProperties();
     }
 
     public class StreamEventMetadataRecordCollection : RevisionedItemCollection<IStreamEventMetadata>

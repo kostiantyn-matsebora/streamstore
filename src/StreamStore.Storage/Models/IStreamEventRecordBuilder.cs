@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace StreamStore.Storage
 {
@@ -9,5 +10,7 @@ namespace StreamStore.Storage
         IStreamEventRecordBuilder WithId(Id id);
         IStreamEventRecordBuilder WithRevision(Revision revision);
         IStreamEventRecordBuilder WithRecord(IStreamEventRecord record);
+
+        IStreamEventRecordBuilder WithCustomProperties(IEnumerable<KeyValuePair<string, string>> keyValuePairs);
     }
 }

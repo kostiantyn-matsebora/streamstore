@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using StreamStore.Models;
 using StreamStore.Storage;
 using StreamStore.Testing;
 
@@ -30,19 +31,25 @@ namespace StreamStore.Tests.Models
             var records = fixture.CreateMany<StreamEventMetadataRecord>(10);
 
             // Act
-            var act = () => new StreamEvent(Id.None, Generated.Primitives.Revision, Generated.Primitives.DateTime, Generated.Objects.Single<object>());
+            var act = () => new StreamEventEnvelope(Id.None, Generated.Primitives.Revision, Generated.Primitives.DateTime, Generated.Objects.Single<object>(), Generated.Objects.Single<ICustomProperties>());
 
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>();
 
             // Act
-            act = () => new StreamEvent(Generated.Primitives.Id, Generated.Primitives.Revision, default, Generated.Objects.Single<object>());
+            act = () => new StreamEventEnvelope(Generated.Primitives.Id, Generated.Primitives.Revision, default, Generated.Objects.Single<object>(), Generated.Objects.Single<ICustomProperties>());
 
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>();
 
             // Act
-            act = () => new StreamEvent(Generated.Primitives.Id, Generated.Primitives.Revision, Generated.Primitives.DateTime,  null!);
+            act = () => new StreamEventEnvelope(Generated.Primitives.Id, Generated.Primitives.Revision, Generated.Primitives.DateTime,  null!, Generated.Objects.Single<ICustomProperties>());
+
+            // Assert
+            act.Should().Throw<ArgumentNullException>();
+
+            // Act
+            act = () => new StreamEventEnvelope(Generated.Primitives.Id, Generated.Primitives.Revision, Generated.Primitives.DateTime, Generated.Objects.Single<object>(), null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();

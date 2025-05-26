@@ -1,4 +1,5 @@
 ﻿using System;
+using StreamStore.Models;
 
 namespace StreamStore
 {
@@ -6,5 +7,7 @@ namespace StreamStore
     {
         Id Id { get;  }
         DateTime Timestamp { get; }
+
+        public ICustomProperties CustomProperties { get; }
     }
 }

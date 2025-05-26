@@ -12,7 +12,7 @@
         public IStreamEventEnvelope ConvertToEnvelope(IStreamEventRecord record)
         {
             var data = serializer.Deserialize(record.Data!);
-            return new StreamEvent(record.Id, record.Revision, record.Timestamp, data);
+            return new StreamEventEnvelope(record.Id, record.Revision, record.Timestamp, data, record.CustomProperties);
         }
 
         public byte[] ConvertToByteArray(object @event)
