@@ -4,9 +4,9 @@ using Xunit.Abstractions;
 namespace StreamStore.Sql.Tests.Sqlite.Storage
 {
     [Collection("Reading Sqlite")]
-    public class Getting_actual_revision : Getting_stream_metadata<SqliteTestEnvironment>
+    public class Getting_stream_metadata : Getting_stream_metadata<SqliteTestEnvironment>
     {
-        public Getting_actual_revision(SqliteStorageFixture fixture) : base(new SqliteTestEnvironment(fixture))
+        public Getting_stream_metadata(SqliteStorageFixture fixture) : base(new SqliteTestEnvironment(fixture))
         {
         }
     }

@@ -2,6 +2,7 @@
 using FluentAssertions;
 using StreamStore.Models;
 using StreamStore.Storage;
+using StreamStore.Storage.Models;
 using StreamStore.Testing;
 
 namespace StreamStore.Tests.Models
@@ -13,7 +14,7 @@ namespace StreamStore.Tests.Models
         {
             // Arrange
             var fixture = new Fixture();
-            var records = fixture.CreateMany<StreamEventMetadataRecord>(10);
+            var records = Generated.StreamEventRecords.Many(1, 10).ToArray();
 
             // Act
             var collection = new StreamEventMetadataRecordCollection(records);
@@ -28,22 +29,22 @@ namespace StreamStore.Tests.Models
         {
             // Arrange
             var fixture = new Fixture();
-            var records = fixture.CreateMany<StreamEventMetadataRecord>(10);
+            var records = Generated.StreamEventRecords.Many(1, 10).ToArray();
 
             // Act
-            var act = () => new StreamEventEnvelope(Id.None, Generated.Primitives.Revision, Generated.Primitives.DateTime, Generated.Objects.Single<object>(), Generated.Objects.Single<ICustomProperties>());
+            var act = () => new StreamEventEnvelope(Id.None, Generated.Primitives.Revision, Generated.Primitives.DateTime, Generated.Objects.Single<object>(), Generated.Objects.Single<EventCustomProperties>());
 
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>();
 
             // Act
-            act = () => new StreamEventEnvelope(Generated.Primitives.Id, Generated.Primitives.Revision, default, Generated.Objects.Single<object>(), Generated.Objects.Single<ICustomProperties>());
+            act = () => new StreamEventEnvelope(Generated.Primitives.Id, Generated.Primitives.Revision, default, Generated.Objects.Single<object>(), Generated.Objects.Single<EventCustomProperties>());
 
             // Assert
             act.Should().Throw<ArgumentOutOfRangeException>();
 
             // Act
-            act = () => new StreamEventEnvelope(Generated.Primitives.Id, Generated.Primitives.Revision, Generated.Primitives.DateTime,  null!, Generated.Objects.Single<ICustomProperties>());
+            act = () => new StreamEventEnvelope(Generated.Primitives.Id, Generated.Primitives.Revision, Generated.Primitives.DateTime,  null!, Generated.Objects.Single<EventCustomProperties>());
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
