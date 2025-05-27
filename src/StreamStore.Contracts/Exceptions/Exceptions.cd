@@ -113,12 +113,5 @@
       <FileName>Exceptions\Appending\StreamLockedException.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="StreamStore.Exceptions.CustomPropertyException" Collapsed="true">
-    <Position X="8.5" Y="0.5" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Exceptions\CustomProperty\CustomPropertyException.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
