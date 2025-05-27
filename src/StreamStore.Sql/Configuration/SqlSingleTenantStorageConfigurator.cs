@@ -13,7 +13,6 @@ namespace StreamStore.Sql.Configuration
     {
         Type? connectionFactoryType;
         Type sqlQueryProviderType = typeof(DefaultSqlQueryProvider);
-        Type? sqlProvisionQueryProviderType;
         Type commandFactoryType = typeof(DefaultDapperCommandFactory);
         Type? migratorType;
 
@@ -31,12 +30,6 @@ namespace StreamStore.Sql.Configuration
         public SqlSingleTenantStorageConfigurator WithQueryProvider<TProvider>() where TProvider : ISqlQueryProvider
         {
             sqlQueryProviderType = typeof(TProvider);
-            return this;
-        }
-
-        public SqlSingleTenantStorageConfigurator WithProvisioingQueryProvider<TProvisioningProvider>() where TProvisioningProvider : ISqlProvisioningQueryProvider
-        {
-            sqlProvisionQueryProviderType = typeof(TProvisioningProvider);
             return this;
         }
 
@@ -59,15 +52,11 @@ namespace StreamStore.Sql.Configuration
             if (connectionFactoryType == null)
                 throw new InvalidOperationException("IDbConnectionFactory type not set");
 
-            if (sqlProvisionQueryProviderType == null)
-                throw new InvalidOperationException("ISqlProvisionQueryProvider type not set");
-
             if (migratorType == null)
                 throw new InvalidOperationException("IMigrator type not set");
 
             services.AddSingleton(typeof(IDbConnectionFactory), connectionFactoryType);
             services.AddSingleton(typeof(ISqlQueryProvider), sqlQueryProviderType);
-            services.AddSingleton(typeof(ISqlProvisioningQueryProvider), sqlProvisionQueryProviderType);
             services.AddSingleton<ISchemaProvisioner, SqlSchemaProvisioner>();
             services.AddSingleton(typeof(IDapperCommandFactory), commandFactoryType);
             services.AddSingleton(typeof(IMigrator), migratorType);

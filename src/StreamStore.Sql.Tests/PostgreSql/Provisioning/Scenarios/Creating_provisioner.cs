@@ -20,7 +20,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Provisioning
             act.Should().Throw<ArgumentNullException>();
 
             // Act
-            act = () => new PostgresSchemaProvisionerFactory(Generated.Objects.Single<SqlTenantStorageConfigurationProvider>(), null!);
+            act = () => new PostgresSchemaProvisionerFactory(new SqlTenantStorageConfigurationProvider(Generated.Objects.Single<SqlStorageConfiguration>(), new SqlDefaultConnectionStringProvider()), null!);
 
             // Assert
             act.Should().Throw<ArgumentNullException>();

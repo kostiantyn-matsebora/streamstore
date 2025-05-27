@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using StreamStore.Sql.Configuration;
-using System;
+using StreamStore.Sql.PostgreSql.Provisioning;
 
 namespace StreamStore.Sql.PostgreSql
 {
@@ -38,6 +39,7 @@ namespace StreamStore.Sql.PostgreSql
         static void ConfigureRequiredDependencies(SqlMultiTenantStorageConfigurator configurator)
         {
             configurator.WithExceptionHandling<PostgresExceptionHandler>();
+            configurator.WithMigrationAssembly(typeof(PostgreSqlMigrator).Assembly);
         }
     }
 }

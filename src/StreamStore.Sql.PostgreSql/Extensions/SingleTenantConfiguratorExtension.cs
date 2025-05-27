@@ -29,8 +29,8 @@ namespace StreamStore.Sql.PostgreSql
         {
             configurator.WithConnectionFactory<PostgresConnectionFactory>();
             configurator.WithExceptionHandling<PostgresExceptionHandler>();
-            configurator.WithProvisioingQueryProvider<PostgresProvisioningQueryProvider>();
             configurator.WithMigrator<PostgreSqlMigrator>();
+            configurator.WithMigrationAssembly(typeof(PostgreSqlMigrator).Assembly);
         }
     }
 }

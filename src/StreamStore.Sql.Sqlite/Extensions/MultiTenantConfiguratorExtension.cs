@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using StreamStore.Sql.Configuration;
+using StreamStore.Sql.Sqlite.Migrations;
 using System;
 
 namespace StreamStore.Sql.Sqlite
@@ -36,6 +37,7 @@ namespace StreamStore.Sql.Sqlite
         static void ConfigureRequiredDependencies(SqlMultiTenantStorageConfigurator configurator)
         {
             configurator.WithExceptionHandling<SqliteExceptionHandler>();
+            configurator.WithMigrationAssembly(typeof(SqliteMigrator).Assembly);
         }
     }
 }

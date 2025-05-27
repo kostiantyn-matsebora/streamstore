@@ -1,5 +1,6 @@
 ﻿using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Provisioning;
 
@@ -20,6 +21,7 @@ namespace StreamStore.Sql.PostgreSql.Provisioning
         public void Migrate()
         {
             var serviceProvider = new ServiceCollection()
+                    .AddSingleton(storageConfig)
                     .AddFluentMigratorCore()
                     .ConfigureRunner(rb => rb
                     .AddPostgres()
@@ -29,6 +31,8 @@ namespace StreamStore.Sql.PostgreSql.Provisioning
                     .BuildServiceProvider(false);
 
             serviceProvider.GetRequiredService<IMigrationRunner>().MigrateUp();
+
+
         }
     }
 }

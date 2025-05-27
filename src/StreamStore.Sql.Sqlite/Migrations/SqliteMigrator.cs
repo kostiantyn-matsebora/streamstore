@@ -4,7 +4,7 @@ using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Provisioning;
 
 
-namespace StreamStore.Sql.Sqlite.Provisioning
+namespace StreamStore.Sql.Sqlite.Migrations
 {
     internal class SqliteMigrator: IMigrator
     {
@@ -20,6 +20,7 @@ namespace StreamStore.Sql.Sqlite.Provisioning
         public void Migrate()
         {
             var serviceProvider = new ServiceCollection()
+                    .AddSingleton(storageConfig)
                     .AddFluentMigratorCore()
                     .ConfigureRunner(rb => rb
                     .AddSQLite()

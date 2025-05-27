@@ -1,10 +1,12 @@
 ﻿using System.Reflection;
-using StreamStore.Sql.Migrations;
+
 
 namespace StreamStore.Sql.Configuration
 {
     public class MigrationConfiguration
     {
-        public Assembly MigrationAssembly { get; set; } = typeof(Initial).Assembly;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+        public Assembly MigrationAssembly { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     }
 }

@@ -3,7 +3,8 @@ using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Multitenancy;
 
 using StreamStore.Sql.Provisioning;
-using StreamStore.Sql.Sqlite.Provisioning;
+using StreamStore.Sql.Sqlite.Migrations;
+
 
 namespace StreamStore.Sql.Sqlite
 {

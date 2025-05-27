@@ -16,11 +16,26 @@ namespace StreamStore.Sql.Tests.Configuration.MultiTenant
 {
     public abstract class Configuring_multitenancy<TEnvironment> : Scenario<TEnvironment> where TEnvironment : MultitenantConfiguratorTestEnvironmentBase, new()
     {
+
+        [Fact]
+        public void When_migration_assembly_is_not_set()
+        {
+            // Arrange
+            var configurator = Environment.CreateSqlStorageConfigurator(new ServiceCollection());
+
+            // Act
+            var act = () => configurator.Apply();
+
+            //Assert
+            act.Should().Throw<InvalidOperationException>()
+                .WithMessage("Migration assembly is not set");
+        }
+
         [Fact]
         public void When_connection_string_provider_is_not_set()
         {
             // Arrange
-            var configurator = Environment.CreateSqlStorageConfigurator(new ServiceCollection());
+            var configurator = Environment.CreateSqlStorageConfigurator(new ServiceCollection()).WithMigrationAssembly(typeof(Scenario).Assembly);
 
             // Act
             var act = () => configurator.Apply();

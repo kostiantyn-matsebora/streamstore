@@ -34,7 +34,6 @@ namespace StreamStore.Sql.Tests.PostgreSql.Configuration.Configurator
             configuration.TableName.Should().Be("Events");
             provider.GetService<IDbConnectionFactory>().Should().BeOfType<PostgresConnectionFactory>();
             provider.GetService<ISqlExceptionHandler>().Should().BeOfType<PostgresExceptionHandler>();
-            provider.GetService<ISqlProvisioningQueryProvider>().Should().BeOfType<PostgresProvisioningQueryProvider>();
         }
     }
 }

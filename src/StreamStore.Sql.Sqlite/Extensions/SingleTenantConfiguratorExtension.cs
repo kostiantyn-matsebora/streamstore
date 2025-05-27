@@ -2,8 +2,7 @@
 
 using Microsoft.Extensions.Configuration;
 using StreamStore.Sql.Configuration;
-using StreamStore.Sql.Sqlite.Provisioning;
-
+using StreamStore.Sql.Sqlite.Migrations;
 
 namespace StreamStore.Sql.Sqlite
 {
@@ -29,8 +28,8 @@ namespace StreamStore.Sql.Sqlite
         {
             configurator.WithConnectionFactory<SqliteDbConnectionFactory>();
             configurator.WithExceptionHandling<SqliteExceptionHandler>();
-            configurator.WithProvisioingQueryProvider<SqliteProvisioningQueryProvider>();
             configurator.WithMigrator<SqliteMigrator>();
+            configurator.WithMigrationAssembly(typeof(SqliteMigrator).Assembly);
         }
     }
 }
