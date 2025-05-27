@@ -1,6 +1,4 @@
-﻿using StreamStore.Models;
-
-namespace StreamStore
+﻿namespace StreamStore
 {
     public interface IStreamEventMetadata: IEventMetadata, IHasRevision
     {

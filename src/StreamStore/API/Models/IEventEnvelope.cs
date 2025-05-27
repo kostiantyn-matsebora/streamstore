@@ -1,10 +1,9 @@
-﻿using StreamStore.Models;
-
+﻿using System.Collections.Generic;
 namespace StreamStore
 {
     public interface IEventEnvelope: IEventMetadata
     {
         object Event { get; }
-        ICustomProperties CustomProperties { get; }
+        IReadOnlyDictionary<string,string>? CustomProperties { get; }
     }
 }

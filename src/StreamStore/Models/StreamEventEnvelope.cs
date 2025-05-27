@@ -1,5 +1,5 @@
 ﻿using System;
-using StreamStore.Models;
+using System.Collections.Generic;
 namespace StreamStore
 {
     class StreamEventEnvelope: IStreamEventEnvelope {
@@ -8,9 +8,9 @@ namespace StreamStore
         public int Revision { get; }
         public object Event { get;  }
 
-        public ICustomProperties CustomProperties { get; } 
+        public IReadOnlyDictionary<string,string> CustomProperties { get; } 
 
-        public StreamEventEnvelope(Id id, Revision revision, DateTime timestamp, object @event, ICustomProperties customProperties)
+        public StreamEventEnvelope(Id id, Revision revision, DateTime timestamp, object @event, IReadOnlyDictionary<string,string> customProperties)
         {
             if (id == Id.None)
                 throw new ArgumentOutOfRangeException(nameof(id), "Id cannot be empty.");

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using StreamStore.Models;
-using StreamStore.Storage;
 using StreamStore.Storage.Models;
 
 
@@ -36,8 +36,15 @@ namespace StreamStore
         {
             foreach (var kv in keyValuePairs)
             {
-                customProperties.Add(kv.Key, kv.Value);
+               WithCustomProperty(kv.Key, kv.Value);
             }
+            return this;
+        }
+
+        public IEventEnvelopeBuilder WithCustomProperty(string key, string value)
+        {
+            key.ThrowIfNull(nameof(key));
+            customProperties.Add(key, value);
             return this;
         }
 
@@ -51,7 +58,8 @@ namespace StreamStore
             {
                 Id = id,
                 Timestamp = timestamp,
-                Event = @event
+                Event = @event,
+                CustomProperties = customProperties.Any() ? customProperties : null
             };
         }
 
@@ -62,7 +70,7 @@ namespace StreamStore
             public DateTime Timestamp { get; set; }
             public object Event { get; set; } = null!;
 
-            public ICustomProperties CustomProperties { get; set; } = EventCustomProperties.Empty();
+            public IReadOnlyDictionary<string,string>? CustomProperties { get; set; }
         }
     }
 }

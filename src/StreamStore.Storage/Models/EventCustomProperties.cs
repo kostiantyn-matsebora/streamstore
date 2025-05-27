@@ -1,13 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using StreamStore.Extensions;
-using StreamStore.Models;
+
 
 
 namespace StreamStore.Storage.Models
 {
-    public class EventCustomProperties : Dictionary<string, string>, ICustomProperties
+    public class EventCustomProperties : Dictionary<string, string>
     {
         public static EventCustomProperties Empty() => new EventCustomProperties();
 
