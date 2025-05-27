@@ -31,7 +31,7 @@ namespace StreamStore.ExampleBase.Workers
 
                 await store.BeginAppendAsync(streamId, revision, token)
                                 .AppendAsync(CreateEvent(), token)
-                                .AppendAsync(CreateEvent(), token)
+                                .AppendAsync(CreateEvent(false), token)
                                 .AppendAsync(CreateEvent(), token)
                             .SaveChangesAsync(token);
 
@@ -49,7 +49,7 @@ namespace StreamStore.ExampleBase.Workers
             }
         }
 
-        static TestEventEnvelope CreateEvent()
+        static TestEventEnvelope CreateEvent(bool withCustomProperties = true)
         {
             var fixture = new Fixture();
             var @event =  new TestEventEnvelope
@@ -63,8 +63,12 @@ namespace StreamStore.ExampleBase.Workers
                     Number = fixture.Create<int>(),
                     Date = fixture.Create<DateTime>()
                 },
-                CustomProperties = new EventCustomProperties(fixture.Create<Dictionary<string, string>>())
             };
+
+            if (withCustomProperties)
+            {
+                @event.CustomProperties = new EventCustomProperties(fixture.Create<Dictionary<string, string>>());
+            }
             return @event;
         }
 
