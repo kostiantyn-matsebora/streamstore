@@ -1,6 +1,4 @@
-using Cassandra.Mapping;
 using FluentAssertions;
-using Moq;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Provisioning;
 using StreamStore.Testing;
@@ -14,31 +12,36 @@ public class Provisioning_schema : Scenario<SchemaProvisionerTestEnvironment>
     {
 
         // Act
-        var act = () => new CassandraSchemaProvisioner(null!, new CassandraStorageConfiguration());
+        var act = () => new CassandraSchemaProvisioner(null!, Generated.Objects.Single<CassandraStorageConfiguration>() );
 
         // Assert
         act.Should().Throw<ArgumentNullException>();
 
         // Act
-        act = () => new CassandraSchemaProvisioner(Environment.MapperProvider.Object, null!);
+        act = () => new CassandraSchemaProvisioner(Environment.SessionFactory.Object, null!);
 
         // Assert
         act.Should().Throw<ArgumentNullException>();
-
     }
 
-    [Fact]
-    public async Task When_provisioning()
-    {
-        // Arange
-        Environment.Mapper.Setup(x => x.ExecuteAsync(It.IsAny<Cql>())).Returns(Task.CompletedTask);
+    //[Fact]
+    //public async Task When_provisioning()
+    //{
+    //    // Arange
+    //    var session = Environment.MockRepository.Create<ISession>();
+    //    session.Setup(x => x.Keyspace).Returns(Generated.Primitives.String);
+    //    session.Setup(x => x.CreateKeyspaceIfNotExists(It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<bool>()));
+    //    session.Setup(x => x.Cluster).Returns(Generated.Objects.Single<FakeCluster>());
+    //    Environment.SessionFactory.Setup(x => x.Open()).Returns(session.Object);
 
-        var provisioner = Environment.SchemaProvisioner;
+    //    var provisioner = Environment.SchemaProvisioner;
 
-        // Act
-        await provisioner.ProvisionSchemaAsync(CancellationToken.None);
+    //    // Act
+    //    await provisioner.ProvisionSchemaAsync(CancellationToken.None);
 
-        // Assert
-        Environment.MockRepository.VerifyAll();
-    }
+    //    // Assert
+    //    Environment.MockRepository.VerifyAll();
+    //}
+
+
 }

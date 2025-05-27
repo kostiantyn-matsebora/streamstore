@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using StreamStore.Models;
-using StreamStore.Storage.Models;
+
 
 namespace StreamStore.Storage
 {
@@ -14,7 +14,7 @@ namespace StreamStore.Storage
 
         public int Revision { get; set; }
 
-        public ICustomProperties CustomProperties { get; set; } = new EventCustomProperties();
+        public IReadOnlyDictionary<string,string>? CustomProperties { get; set; }
     }
 
     public class StreamEventMetadataRecordCollection : RevisionedItemCollection<IStreamEventMetadata>

@@ -16,8 +16,9 @@ public class Creating_provisioner : Scenario<ProvisionerFactoryTestEnvironment>
         // Arrange
         var tenantId = Generated.Primitives.Id;
         Environment.ConfigurationProvider.Setup(x => x.GetConfiguration(tenantId)).Returns(new CassandraStorageConfiguration());
-        Environment.TenantMapperProvider.Setup(x => x.GetMapperProvider(tenantId)).Returns(Environment.MockRepository.Create<ICassandraMapperProvider>().Object);
-        var provisionerFactory = new CassandraSchemaProvisionerFactory(Environment.ConfigurationProvider.Object, Environment.TenantMapperProvider.Object);
+        Environment.ClusterRegistry.Setup(x => x.GetCluster(tenantId)).Returns(Environment.MockRepository.Create<ICluster>().Object);
+       
+        var provisionerFactory = new CassandraSchemaProvisionerFactory(Environment.ConfigurationProvider.Object, Environment.ClusterRegistry.Object);
 
         // Act
         var provisioner = provisionerFactory.Create(tenantId);

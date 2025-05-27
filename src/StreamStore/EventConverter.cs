@@ -1,4 +1,6 @@
-﻿namespace StreamStore
+﻿using StreamStore.Storage.Models;
+
+namespace StreamStore
 {
     class EventConverter: IEventConverter
     {
@@ -12,7 +14,12 @@
         public IStreamEventEnvelope ConvertToEnvelope(IStreamEventRecord record)
         {
             var data = serializer.Deserialize(record.Data!);
-            return new StreamEventEnvelope(record.Id, record.Revision, record.Timestamp, data, record.CustomProperties);
+            return new StreamEventEnvelope(
+                record.Id, 
+                record.Revision, 
+                record.Timestamp, 
+                data, 
+                new EventCustomProperties(record.CustomProperties));
         }
 
         public byte[] ConvertToByteArray(object @event)

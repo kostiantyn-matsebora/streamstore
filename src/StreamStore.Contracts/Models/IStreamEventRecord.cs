@@ -1,5 +1,6 @@
 ﻿
-using StreamStore.Models;
+using System.Collections.Generic;
+
 
 namespace StreamStore
 {
@@ -7,6 +8,6 @@ namespace StreamStore
     {
         byte[] Data { get; }
 
-        ICustomProperties CustomProperties { get; }
+        IReadOnlyDictionary<string,string>? CustomProperties { get; }
     }
 }

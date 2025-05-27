@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using StreamStore.Exceptions;
+using StreamStore.Extensions;
 using StreamStore.Models;
 
 namespace StreamStore.Testing.StreamStore.Scenarios
@@ -121,7 +122,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         public async Task When_reading_events_with_custom_properties()
         {
             // Arrange
-            var stream = Environment.Container.Where(s => s.Events.Any(e => e.CustomProperties != null && e.CustomProperties.Any())).FirstOrDefault();
+            var stream = Environment.Container.Where(s => s.Events.Any(e => e.CustomProperties.NotNullAndNotEmpty())).FirstOrDefault();
             if (stream == null)
                 throw new InvalidOperationException("There should be at least one stream with custom properties for this test to run.");
             IStreamStore store = Environment.Store;

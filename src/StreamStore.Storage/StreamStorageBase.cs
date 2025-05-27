@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
+using StreamStore.Extensions;
 
 namespace StreamStore.Storage
 {
@@ -39,7 +40,7 @@ namespace StreamStore.Storage
 
             var entities = await ReadAsyncInternal(streamId, startFrom, count, token);
 
-            if (entities == null || !entities.Any())
+            if (entities.NullOrEmpty())
                 return Array.Empty<IStreamEventRecord>();
 
             var result = new List<IStreamEventRecord>();

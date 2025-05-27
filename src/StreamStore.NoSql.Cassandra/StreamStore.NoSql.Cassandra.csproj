@@ -20,8 +20,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Cassandra.Fluent.Migrator" Version="1.0.4" />
     <PackageReference Include="CassandraCSharpDriver" Version="3.22.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" />

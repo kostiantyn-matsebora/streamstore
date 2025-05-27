@@ -11,6 +11,6 @@ namespace StreamStore.Storage
         IStreamEventRecordBuilder WithRevision(Revision revision);
         IStreamEventRecordBuilder WithRecord(IStreamEventRecord record);
 
-        IStreamEventRecordBuilder WithCustomProperties(IEnumerable<KeyValuePair<string, string>> keyValuePairs);
+        IStreamEventRecordBuilder WithCustomProperties(IEnumerable<KeyValuePair<string, string>>? keyValuePairs);
     }
 }

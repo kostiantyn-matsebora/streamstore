@@ -1,23 +1,19 @@
-using Cassandra.Mapping;
 using Moq;
-using StreamStore.NoSql.Cassandra.Configuration;
-using StreamStore.NoSql.Cassandra.Storage;
 using StreamStore.NoSql.Cassandra.Provisioning;
 using StreamStore.Testing.Framework;
+using StreamStore.NoSql.Cassandra.API;
+using StreamStore.NoSql.Cassandra.Configuration;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Provisioning;
 
 public class SchemaProvisionerTestEnvironment: TestEnvironment
 {
 
-    internal Mock<ICassandraMapperProvider> MapperProvider { get; }
-    internal Mock<IMapper> Mapper { get; }
-    internal CassandraSchemaProvisioner SchemaProvisioner => new CassandraSchemaProvisioner(MapperProvider.Object, new CassandraStorageConfiguration());
+    internal Mock<ICassandraSessionFactory> SessionFactory { get; }
+    internal CassandraSchemaProvisioner SchemaProvisioner => new CassandraSchemaProvisioner(SessionFactory.Object, Testing.Generated.Objects.Single<CassandraStorageConfiguration>());
 
     public SchemaProvisionerTestEnvironment()
     {
-        MapperProvider = MockRepository.Create<ICassandraMapperProvider>();
-        Mapper = MockRepository.Create<IMapper>();
-        MapperProvider.Setup(x => x.OpenMapper()).Returns(Mapper.Object);
+        SessionFactory = MockRepository.Create<ICassandraSessionFactory>();
     }
 }

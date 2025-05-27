@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using StreamStore.Extensions;
 
 
 namespace StreamStore.Sql
@@ -16,7 +17,7 @@ namespace StreamStore.Sql
                 Revision = record.Revision,
                 Timestamp = record.Timestamp,
                 Data = record.Data!,
-                CustomProperties = record.CustomProperties != null && record.CustomProperties.Any() ? JsonSerializer.Serialize<IReadOnlyDictionary<string,string>>(record.CustomProperties): null
+                CustomProperties = record.CustomProperties.NotNullAndNotEmpty() ? JsonSerializer.Serialize(record.CustomProperties!): null
             };
         }
 

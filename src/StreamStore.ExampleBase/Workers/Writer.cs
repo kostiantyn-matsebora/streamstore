@@ -52,7 +52,7 @@ namespace StreamStore.ExampleBase.Workers
         static TestEventEnvelope CreateEvent()
         {
             var fixture = new Fixture();
-            return new TestEventEnvelope
+            var @event =  new TestEventEnvelope
             {
                 Id = fixture.Create<Id>(),
                 Timestamp = fixture.Create<DateTime>(),
@@ -65,6 +65,7 @@ namespace StreamStore.ExampleBase.Workers
                 },
                 CustomProperties = new EventCustomProperties(fixture.Create<Dictionary<string, string>>())
             };
+            return @event;
         }
 
         class EventExample

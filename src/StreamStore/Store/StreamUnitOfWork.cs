@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
+using StreamStore.Extensions;
 using StreamStore.Storage;
 using StreamStore.Validation;
 
@@ -43,7 +45,8 @@ namespace StreamStore
                 Id = envelope.Id,
                 Revision = revision,
                 Timestamp = envelope.Timestamp,
-                Data = converter.ConvertToByteArray(envelope.Event)
+                Data = converter.ConvertToByteArray(envelope.Event),
+                CustomProperties = envelope!.CustomProperties
             };
 
             uncommited.Add(eventRecord);

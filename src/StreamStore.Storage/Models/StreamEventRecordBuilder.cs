@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using StreamStore.Extensions;
 using StreamStore.Storage.Models;
 
 
@@ -11,7 +12,7 @@ namespace StreamStore.Storage
         DateTime timestamp = DateTime.Now;
         byte[] data = null!;
         Revision revision;
-        EventCustomProperties customProperties = EventCustomProperties.Empty();
+        EventCustomProperties? customProperties;
 
         public IStreamEventRecordBuilder WithId(Id id)
         {
@@ -57,13 +58,10 @@ namespace StreamStore.Storage
             };
         }
 
-        public IStreamEventRecordBuilder WithCustomProperties(IEnumerable<KeyValuePair<string, string>> keyValuePairs)
+        public IStreamEventRecordBuilder WithCustomProperties(IEnumerable<KeyValuePair<string, string>>? keyValuePairs)
         {
-            foreach (var kv in keyValuePairs)
-            {
-                customProperties.Add(kv.Key, kv.Value);
-            }
-            return this;
+          customProperties = new EventCustomProperties(keyValuePairs);
+          return this;
         }
 
         public IStreamEventRecordBuilder WithRecord(IStreamEventRecord record)

@@ -1,7 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Cassandra.Fluent.Migrator;
+using Cassandra.Fluent.Migrator.Core;
+using Microsoft.Extensions.DependencyInjection;
+using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Configuration;
-using StreamStore.NoSql.Cassandra.Storage;
+using StreamStore.NoSql.Cassandra.Provisioning.Migrations;
 using StreamStore.Provisioning;
 
 
@@ -9,20 +13,29 @@ namespace StreamStore.NoSql.Cassandra.Provisioning
 {
     internal class CassandraSchemaProvisioner : ISchemaProvisioner
     {
-        readonly ICassandraMapperProvider mapperProvider;
-        readonly CassandraCqlQueries queries;
+        readonly ICassandraSessionFactory sessionFactory;
+        private readonly CassandraStorageConfiguration config;
 
-        public CassandraSchemaProvisioner(ICassandraMapperProvider mapperProvider, CassandraStorageConfiguration config)
+        public CassandraSchemaProvisioner(ICassandraSessionFactory sessionFactory, CassandraStorageConfiguration config)
         {
-
-            this.mapperProvider = mapperProvider.ThrowIfNull(nameof(mapperProvider));
-            this.queries = new CassandraCqlQueries(config.ThrowIfNull(nameof(config)));
+            this.sessionFactory = sessionFactory.ThrowIfNull(nameof(sessionFactory));
+            this.config = config.ThrowIfNull(nameof(config));
         }
 
-        public async Task ProvisionSchemaAsync(CancellationToken token)
+        public Task ProvisionSchemaAsync(CancellationToken token)
         {
-            var mapper = mapperProvider.OpenMapper();
-            await mapper.ExecuteAsync(queries.CreateEventsTable());
+            var serviceProvider = new ServiceCollection()
+                .AddLogging()
+                .AddSingleton(sessionFactory.Open())
+                .AddSingleton(config)
+                .AddCassandraFluentMigratorServices()
+                .AddSingleton<IMigrator, InitialMigration>()
+                .AddSingleton<IMigrator, AddCustomProperties>()
+                .BuildServiceProvider();
+            
+            var migrator = serviceProvider.GetRequiredService<ICassandraMigrator>();
+            migrator.Migrate();
+            return Task.CompletedTask;
         }
     }
 }
