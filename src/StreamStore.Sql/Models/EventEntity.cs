@@ -9,5 +9,7 @@ namespace StreamStore.Sql
         public int Revision { get; set; }
         public DateTime Timestamp { get; set; }
         public byte[]? Data { get; set; }
+
+        public string? CustomProperties { get; set; }
     }
 }

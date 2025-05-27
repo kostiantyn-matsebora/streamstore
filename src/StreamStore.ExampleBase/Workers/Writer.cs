@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using StreamStore.ExampleBase.Progress.Model;
 using StreamStore.Exceptions;
+using StreamStore.Storage.Models;
 using StreamStore.Testing;
 
 namespace StreamStore.ExampleBase.Workers
@@ -60,7 +62,8 @@ namespace StreamStore.ExampleBase.Workers
                     Name = fixture.Create<string>(),
                     Number = fixture.Create<int>(),
                     Date = fixture.Create<DateTime>()
-                }
+                },
+                CustomProperties = new EventCustomProperties(fixture.Create<Dictionary<string, string>>())
             };
         }
 

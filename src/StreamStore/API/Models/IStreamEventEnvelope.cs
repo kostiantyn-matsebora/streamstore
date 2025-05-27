@@ -2,5 +2,6 @@
 {
     public interface IStreamEventEnvelope: IEventEnvelope, IHasRevision
     {
+
     }
 }

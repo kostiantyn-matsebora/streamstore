@@ -12,7 +12,7 @@ namespace StreamStore
         Id id;
         DateTime timestamp = DateTime.Now;
         object @event = null!;
-        EventCustomProperties customProperties = EventCustomProperties.Empty;
+        EventCustomProperties customProperties = EventCustomProperties.Empty();
 
         public IEventEnvelopeBuilder WithId(Id id)
         {
@@ -62,7 +62,7 @@ namespace StreamStore
             public DateTime Timestamp { get; set; }
             public object Event { get; set; } = null!;
 
-            public ICustomProperties CustomProperties { get; set; } = EventCustomProperties.Empty;
+            public ICustomProperties CustomProperties { get; set; } = EventCustomProperties.Empty();
         }
     }
 }

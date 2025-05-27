@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -152,6 +153,30 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             events!.First().Revision.Should().Be(startFrom);
             events!.Last().Revision.Should().Be(stream.Revision);
             events.Should().HaveCount(expectedCount);
+        }
+
+
+        [SkippableFact]
+        public async Task When_reading_events_with_custom_properties()
+        {
+            TrySkip();
+
+            // Arrange
+            var stream = Container.RandomStream;
+
+            var @event = stream.Events.Where(e => e.CustomProperties != null && e.CustomProperties.Any()).FirstOrDefault();
+
+            if (@event == null)
+            {
+              throw new InvalidOperationException("No event with custom properties found in the stream.");
+            }
+
+            // Act
+            var events = await Storage.ReadAsync(stream.Id, @event.Revision, 1);
+
+            // Assert
+            events.Should().NotBeNullOrEmpty();
+            events.First().CustomProperties.Should().BeEquivalentTo(stream.Events.First().CustomProperties);
         }
     }
 }

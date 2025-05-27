@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using StreamStore.Storage;
+using System.Text.Json;
 
 
 namespace StreamStore.Sql
@@ -16,7 +15,8 @@ namespace StreamStore.Sql
                 StreamId = streamId,
                 Revision = record.Revision,
                 Timestamp = record.Timestamp,
-                Data = record.Data!
+                Data = record.Data!,
+                CustomProperties = record.CustomProperties != null && record.CustomProperties.Any() ? JsonSerializer.Serialize<IReadOnlyDictionary<string,string>>(record.CustomProperties): null
             };
         }
 

@@ -11,7 +11,7 @@ namespace StreamStore.Storage
         DateTime timestamp = DateTime.Now;
         byte[] data = null!;
         Revision revision;
-        EventCustomProperties customProperties = EventCustomProperties.Empty;
+        EventCustomProperties customProperties = EventCustomProperties.Empty();
 
         public IStreamEventRecordBuilder WithId(Id id)
         {

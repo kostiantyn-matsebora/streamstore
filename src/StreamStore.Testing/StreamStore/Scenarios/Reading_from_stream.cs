@@ -90,6 +90,8 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         }
 
 
+
+
         [Fact]
         public async Task When_iterating_events()
         {
@@ -113,5 +115,25 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             result.Should().BeInAscendingOrder(e => e.Revision);
             result.Select(e => e.Id).Should().BeEquivalentTo(stream.Events.Select(e => e.Id));
         }
+
+
+        [Fact]
+        public async Task When_reading_events_with_custom_properties()
+        {
+            // Arrange
+            var stream = Environment.Container.Where(s => s.Events.Any(e => e.CustomProperties != null && e.CustomProperties.Any())).FirstOrDefault();
+            if (stream == null)
+                throw new InvalidOperationException("There should be at least one stream with custom properties for this test to run.");
+            IStreamStore store = Environment.Store;
+
+            // Act
+            var result = await store.ReadToEndAsync(stream.Id);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.First().CustomProperties.Should().BeEquivalentTo(stream.Events.First().CustomProperties);
+            result.Last().CustomProperties.Should().BeEquivalentTo(stream.Events.Last().CustomProperties);
+        }
+
     }
 }

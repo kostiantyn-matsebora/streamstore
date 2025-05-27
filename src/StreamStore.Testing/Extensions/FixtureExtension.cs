@@ -24,7 +24,7 @@ namespace StreamStore.Testing
                     .Build<StreamEventRecord>()
                     .With(x => x.Revision, () => revision++)
                     .With(x => x.Data, serializer.Serialize(CreateEvents(fixture, 1).First()))
-                    .With(x => x.CustomProperties, fixture.Create<EventCustomProperties>())
+                    .With(x => x.CustomProperties, new EventCustomProperties(fixture.Create<Dictionary<string,string>>()))
                     .CreateMany(count)
                     .ToArray();
 
