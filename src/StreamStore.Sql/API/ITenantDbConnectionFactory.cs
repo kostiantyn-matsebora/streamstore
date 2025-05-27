@@ -1,7 +1,7 @@
 ﻿namespace StreamStore.Sql.API
 {
-    public interface ITenantDbConnectionFactory
-    {
-        IDbConnectionFactory GetConnectionFactory(Id tenantId);
-    }
+    //public interface ITenantDbConnectionFactory
+    //{
+    //    IDbConnectionFactory GetConnectionFactory(Id tenantId);
+    //}
 }

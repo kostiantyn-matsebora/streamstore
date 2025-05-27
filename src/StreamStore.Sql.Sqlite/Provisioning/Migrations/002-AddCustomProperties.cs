@@ -1,7 +1,7 @@
 ﻿using FluentMigrator;
 using StreamStore.Sql.Configuration;
 
-namespace StreamStore.Sql.Sqlite.Migrations
+namespace StreamStore.Sql.Sqlite.Provisioning.Migrations
 {
     [Migration(2, "Add custom properties column to the event table")]
     public class AddCustomProperties : Migration
@@ -15,7 +15,6 @@ namespace StreamStore.Sql.Sqlite.Migrations
 
         public override void Down()
         {
-
         }
 
         public override void Up()

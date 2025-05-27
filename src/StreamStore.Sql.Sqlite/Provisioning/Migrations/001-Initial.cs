@@ -2,7 +2,7 @@
 using StreamStore.Sql.Configuration;
 
 
-namespace StreamStore.Sql.Migrations
+namespace StreamStore.Sql.Sqlite.Provisioning.Migrations
 {
     [Migration(1)]
     public class Initial : Migration
@@ -28,6 +28,7 @@ namespace StreamStore.Sql.Migrations
                     Data BLOB NOT NULL,
                     PRIMARY KEY (Id, StreamId)
                 );
+
 
                 CREATE INDEX IF NOT EXISTS {configuration.SchemaName}.ix_streams_stream_id ON {configuration.TableName}(StreamId);
                 CREATE INDEX IF NOT EXISTS {configuration.SchemaName}.ix_streams_stream_revision ON {configuration.TableName}(Revision);

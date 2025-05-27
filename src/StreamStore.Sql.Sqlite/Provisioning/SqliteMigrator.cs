@@ -1,10 +1,11 @@
 ﻿using FluentMigrator.Runner;
+using FluentMigrator.Runner.VersionTableInfo;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Provisioning;
 
 
-namespace StreamStore.Sql.Sqlite.Migrations
+namespace StreamStore.Sql.Sqlite.Provisioning
 {
     internal class SqliteMigrator: IMigrator
     {
@@ -21,11 +22,12 @@ namespace StreamStore.Sql.Sqlite.Migrations
         {
             var serviceProvider = new ServiceCollection()
                     .AddSingleton(storageConfig)
+                    .AddSingleton<IVersionTableMetaData, VersionTableMetaData>()
                     .AddFluentMigratorCore()
                     .ConfigureRunner(rb => rb
-                    .AddSQLite()
-                    .WithGlobalConnectionString(storageConfig.ConnectionString)
-                    .ScanIn(migrationConfig.MigrationAssembly).For.All())
+                        .AddSQLite()
+                        .WithGlobalConnectionString(storageConfig.ConnectionString)
+                        .ScanIn(migrationConfig.MigrationAssembly).For.All())
                     .AddLogging(lb => lb.AddFluentMigratorConsole())
                     .BuildServiceProvider(false);
 

@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Configuration;
 using StreamStore.Sql.Configuration;
-using StreamStore.Sql.Sqlite.Migrations;
+using StreamStore.Sql.Sqlite.Provisioning;
 
 namespace StreamStore.Sql.Sqlite
 {

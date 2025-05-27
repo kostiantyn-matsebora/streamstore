@@ -4,7 +4,7 @@ using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Provisioning;
 using StreamStore.Sql.Sqlite;
-using StreamStore.Sql.Sqlite.Migrations;
+using StreamStore.Sql.Sqlite.Provisioning;
 using StreamStore.Testing;
 
 namespace StreamStore.Sql.Tests.DependencyConfigurator

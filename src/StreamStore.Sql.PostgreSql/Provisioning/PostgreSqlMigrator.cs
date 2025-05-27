@@ -1,4 +1,6 @@
 ﻿using FluentMigrator.Runner;
+using FluentMigrator.Runner.Processors.Postgres;
+using FluentMigrator.Runner.VersionTableInfo;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
@@ -22,11 +24,13 @@ namespace StreamStore.Sql.PostgreSql.Provisioning
         {
             var serviceProvider = new ServiceCollection()
                     .AddSingleton(storageConfig)
+                    .AddSingleton<IVersionTableMetaData, VersionTableMetaData>()
                     .AddFluentMigratorCore()
                     .ConfigureRunner(rb => rb
-                    .AddPostgres()
-                    .WithGlobalConnectionString(storageConfig.ConnectionString)
-                    .ScanIn(migrationConfig.MigrationAssembly).For.All())
+                        .AddPostgres92()
+                        .WithGlobalConnectionString(storageConfig.ConnectionString)
+                        .ScanIn(migrationConfig.MigrationAssembly).For.All())
+                    .AddSingleton(new PostgresOptions { ForceQuote = false })
                     .AddLogging(lb => lb.AddFluentMigratorConsole())
                     .BuildServiceProvider(false);
 

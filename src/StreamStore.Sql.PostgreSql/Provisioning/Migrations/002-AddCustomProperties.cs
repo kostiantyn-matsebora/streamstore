@@ -1,7 +1,7 @@
 ﻿using FluentMigrator;
 using StreamStore.Sql.Configuration;
 
-namespace StreamStore.Sql.PostgreSql.Migrations
+namespace StreamStore.Sql.PostgreSql.Provisioning.Migrations
 {
     [Migration(2, "Add custom properties column to the event table")]
     public class AddCustomProperties : Migration
@@ -20,13 +20,12 @@ namespace StreamStore.Sql.PostgreSql.Migrations
 
         public override void Up()
         {
-           Create
-                .Column("CustomProperties")
-                .OnTable(config.TableName)
-                .InSchema(config.SchemaName)
-                .AsString()
-                .Nullable()
-                .WithColumnDescription("Custom properties for the event, serialized as JSON.");
+            Create
+                 .Column("CustomProperties")
+                 .OnTable(config.TableName)
+                 .AsString()
+                 .Nullable()
+                 .WithColumnDescription("Custom properties for the event, serialized as JSON.");
         }
     }
 }

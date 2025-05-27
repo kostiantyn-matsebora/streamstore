@@ -2,7 +2,7 @@
 using StreamStore.Sql.Configuration;
 
 
-namespace StreamStore.Sql.PostgreSql.Migrations
+namespace StreamStore.Sql.PostgreSql.Provisioning.Migrations
 {
     [Migration(1)]
     public class Initial : Migration

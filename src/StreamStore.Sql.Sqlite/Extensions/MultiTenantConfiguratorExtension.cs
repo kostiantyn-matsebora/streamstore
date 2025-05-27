@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using StreamStore.Sql.Configuration;
-using StreamStore.Sql.Sqlite.Migrations;
+using StreamStore.Sql.Sqlite.Provisioning;
 using System;
 
 namespace StreamStore.Sql.Sqlite
