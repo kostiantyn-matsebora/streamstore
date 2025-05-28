@@ -43,7 +43,6 @@ namespace StreamStore.Storage
             id.ThrowIfHasNoValue(nameof(id));
             timestamp.ThrowIfMinValue(nameof(timestamp));
             data.ThrowIfNull(nameof(data));
-            customProperties.ThrowIfNull(nameof(customProperties));
 
             if (revision == Revision.Zero)
                 throw new ArgumentOutOfRangeException(nameof(revision));

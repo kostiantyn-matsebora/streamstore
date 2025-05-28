@@ -28,6 +28,14 @@ namespace StreamStore.Testing
                     return new Revision(new Random().Next(0, Int32.MaxValue));
                 }
             }
+
+            public static Guid Guid
+            {
+                get
+                {
+                    return Guid.NewGuid();
+                }
+            }
         }
     }
 }

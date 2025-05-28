@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using StreamStore.ExampleBase.Progress.Model;
 using StreamStore.Exceptions;
-using StreamStore.Storage.Models;
+
 using StreamStore.Testing;
 
 namespace StreamStore.ExampleBase.Workers
@@ -28,11 +28,17 @@ namespace StreamStore.ExampleBase.Workers
             try
             {
                 TrackProgress(new StartWriting(revision));
-
+                var @event = CreateEvent();
                 await store.BeginAppendAsync(streamId, revision, token)
                                 .AppendAsync(CreateEvent(), token)
                                 .AppendAsync(CreateEvent(false), token)
-                                .AppendAsync(CreateEvent(), token)
+                                .AppendAsync(builder => builder
+                                    .WithId(Generated.Primitives.Id)
+                                    .Dated(Generated.Primitives.DateTime)
+                                    .WithEvent(Generated.Objects.Single<EventExample>())
+                                    .WithCustomProperty(Generated.Primitives.String, Generated.Primitives.String)
+                                    .WithCustomProperties(Generated.Objects.Single<Dictionary<string, string>>())
+                                    , token)
                             .SaveChangesAsync(token);
 
                 TrackProgress(new WriteSucceeded(revision, 3));
@@ -54,21 +60,18 @@ namespace StreamStore.ExampleBase.Workers
             var fixture = new Fixture();
             var @event =  new TestEventEnvelope
             {
-                Id = fixture.Create<Id>(),
-                Timestamp = fixture.Create<DateTime>(),
+                Id = Generated.Primitives.Id,
+                Timestamp = Generated.Primitives.DateTime,
                 Event = new EventExample
                 {
-                    InvoiceId = fixture.Create<Guid>(),
-                    Name = fixture.Create<string>(),
-                    Number = fixture.Create<int>(),
-                    Date = fixture.Create<DateTime>()
+                    InvoiceId = Generated.Primitives.Guid,
+                    Name = Generated.Primitives.String,
+                    Number = Generated.Primitives.Int,
+                    Date = Generated.Primitives.DateTime,
                 },
+                CustomProperties = withCustomProperties ? Generated.Objects.Single<Dictionary<string, string>>() : null
             };
 
-            if (withCustomProperties)
-            {
-                @event.CustomProperties = new EventCustomProperties(fixture.Create<Dictionary<string, string>>());
-            }
             return @event;
         }
 

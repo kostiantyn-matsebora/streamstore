@@ -82,6 +82,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             actualRevision.Should().NotBeNull();
             actualRevision!.Should().Be(revision + 2);
 
+
             // Act
             await Storage.WriteAsync(streamId, Generated.StreamEventRecords.Many(actualRevision.Next(), 1), CancellationToken.None);
 
@@ -97,6 +98,14 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             actualRevision = (await Storage.GetMetadataAsync(streamId))!.Revision;
             actualRevision.Should().NotBeNull();
             actualRevision!.Should().Be(revision + 2 + 1 + 5);
+
+            var events = await Storage.ReadAsync(streamId, Revision.One, actualRevision);
+
+            events.Should().NotBeNullOrEmpty();
+            events.Count().Should().Be(actualRevision);
+
+            events.First().CustomProperties.Should().NotBeNullOrEmpty();
+            events.Last().CustomProperties.Should().NotBeNullOrEmpty();
         }
 
         [SkippableFact]
