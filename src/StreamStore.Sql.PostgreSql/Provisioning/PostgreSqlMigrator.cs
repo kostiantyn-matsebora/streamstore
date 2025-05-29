@@ -1,14 +1,15 @@
-﻿using FluentMigrator.Runner;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentMigrator.Runner;
 using FluentMigrator.Runner.Processors.Postgres;
 using FluentMigrator.Runner.VersionTableInfo;
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Provisioning;
 
 
 namespace StreamStore.Sql.PostgreSql.Provisioning
 {
+    [ExcludeFromCodeCoverage]
     internal class PostgreSqlMigrator: IMigrator
     {
         readonly SqlStorageConfiguration storageConfig;

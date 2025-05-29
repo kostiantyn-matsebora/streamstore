@@ -1,4 +1,5 @@
-﻿using FluentMigrator.Runner;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Sql.Configuration;
@@ -7,6 +8,7 @@ using StreamStore.Sql.Provisioning;
 
 namespace StreamStore.Sql.Sqlite.Provisioning
 {
+    [ExcludeFromCodeCoverage]
     internal class SqliteMigrator: IMigrator
     {
         readonly SqlStorageConfiguration storageConfig;
