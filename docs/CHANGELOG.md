@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.18.0] - 2025-05-29
+
+### Added
+
+- Added support of custom event properties.
+  
+### Changed
+
+- Switched to FluentMigrator for SQL-based database migrations.
+- Switched to Cassandra.FluentMigrator for Cassandra database migrations.
+
+### Fixed
+
+- Fixed issue with storing stream metadata in S3 storages.
+  
 ## [0.17.0] - 2025-05-25
 
 ### Added
