@@ -15,7 +15,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Interface Name="StreamStore.IStreamReader">
-    <Position X="3" Y="1.5" Width="6.5" />
+    <Position X="4" Y="1.5" Width="6.5" />
     <TypeIdentifier />
   </Interface>
   <Interface Name="StreamStore.IStreamStorage">
@@ -23,7 +23,7 @@
     <TypeIdentifier />
   </Interface>
   <Interface Name="StreamStore.IStreamWriter">
-    <Position X="12.75" Y="1.5" Width="5" />
+    <Position X="11.25" Y="1.5" Width="5" />
     <TypeIdentifier />
   </Interface>
   <Font Name="Segoe UI" Size="9" />
