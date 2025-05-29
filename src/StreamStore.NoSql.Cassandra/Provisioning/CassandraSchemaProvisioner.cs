@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using Cassandra.Fluent.Migrator;
 using Cassandra.Fluent.Migrator.Core;
@@ -11,6 +12,7 @@ using StreamStore.Provisioning;
 
 namespace StreamStore.NoSql.Cassandra.Provisioning
 {
+    [ExcludeFromCodeCoverage]
     internal class CassandraSchemaProvisioner : ISchemaProvisioner
     {
         readonly ICassandraSessionFactory sessionFactory;
