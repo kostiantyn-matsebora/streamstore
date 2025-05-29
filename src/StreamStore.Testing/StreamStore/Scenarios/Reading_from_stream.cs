@@ -69,7 +69,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             var act = () => store.BeginReadAsync(stream.Id, stream.Revision.Next());
 
             // Assert
-            await act.Should().ThrowAsync<InvalidStartFromException>();
+            await act.Should().ThrowAsync<InvalidFromRevisionException>();
         }
 
         [Fact]

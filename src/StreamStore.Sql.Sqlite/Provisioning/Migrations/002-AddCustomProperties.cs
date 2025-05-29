@@ -1,8 +1,10 @@
-﻿using FluentMigrator;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentMigrator;
 using StreamStore.Sql.Configuration;
 
 namespace StreamStore.Sql.Sqlite.Provisioning.Migrations
 {
+    [ExcludeFromCodeCoverage]
     [Migration(2, "Add custom properties column to the event table")]
     public class AddCustomProperties : Migration
     {

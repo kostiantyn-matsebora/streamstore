@@ -1,9 +1,11 @@
-﻿using FluentMigrator;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentMigrator;
 using StreamStore.Sql.Configuration;
 
 
 namespace StreamStore.Sql.PostgreSql.Provisioning.Migrations
 {
+    [ExcludeFromCodeCoverage]
     [Migration(1)]
     public class Initial : Migration
     {

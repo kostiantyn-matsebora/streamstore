@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using StreamStore.Models;
 using StreamStore.Storage.Models;
 
 
@@ -12,7 +11,7 @@ namespace StreamStore
         Id id;
         DateTime timestamp = DateTime.Now;
         object @event = null!;
-        EventCustomProperties customProperties = EventCustomProperties.Empty();
+        readonly EventCustomProperties customProperties = EventCustomProperties.Empty();
 
         public IEventEnvelopeBuilder WithId(Id id)
         {
