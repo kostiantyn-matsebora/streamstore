@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Cassandra;
 using Cassandra.Fluent.Migrator.Core;
@@ -7,6 +8,7 @@ using StreamStore.NoSql.Cassandra.Configuration;
 
 namespace StreamStore.NoSql.Cassandra.Provisioning.Migrations
 {
+    [ExcludeFromCodeCoverage]
     internal class AddCustomProperties: IMigrator
     {
         
