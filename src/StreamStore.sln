@@ -78,6 +78,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Diagrams", "Diagrams", "{02
 		StreamStore\Store\Store.cd = StreamStore\Store\Store.cd
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.EventFlow", "StreamStore.EventFlow\StreamStore.EventFlow.csproj", "{52997325-EA7E-4450-BF9C-EC87282E0CD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +182,10 @@ Global
 		{88227196-D819-4F7E-90A1-F205C57486D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88227196-D819-4F7E-90A1-F205C57486D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88227196-D819-4F7E-90A1-F205C57486D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52997325-EA7E-4450-BF9C-EC87282E0CD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52997325-EA7E-4450-BF9C-EC87282E0CD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52997325-EA7E-4450-BF9C-EC87282E0CD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52997325-EA7E-4450-BF9C-EC87282E0CD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

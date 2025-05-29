@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using StreamStore.Extensions;
 using StreamStore.Storage.Models;
 
 
 namespace StreamStore.Storage
 {
-    class StreamEventRecordBuilder : IStreamEventRecordBuilder
+    public class StreamEventRecordBuilder : IStreamEventRecordBuilder
     {
         Id id;
         DateTime timestamp = DateTime.Now;
