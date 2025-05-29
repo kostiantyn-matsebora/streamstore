@@ -43,7 +43,7 @@ namespace StreamStore.ExampleBase.Workers
 
                 TrackProgress(new WriteSucceeded(revision, 3));
             }
-            catch (ConcurrencyException ex)
+            catch (ConcurrencyControlException ex)
             {
                 TrackError(ex);
                 if (token.IsCancellationRequested) return;
