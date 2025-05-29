@@ -23,7 +23,7 @@ namespace StreamStore.NoSql.Cassandra.Provisioning.Migrations
 
         public string Name => "AddCustomProperties";
 
-        public Version Version => new Version(0, 15, 0, 0);
+        public Version Version => new Version(0, 7, 0, 0);
 
         public string Description => "Add CustomProperties column to the Events table in Cassandra NoSQL StreamStore.";
 

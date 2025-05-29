@@ -24,7 +24,7 @@ namespace StreamStore.NoSql.Cassandra.Provisioning.Migrations
 
         public string Name => "Initial";
 
-        public Version Version => new Version(0, 14, 0, 0);
+        public Version Version => new Version(0, 6, 0, 0);
 
         public string Description => "Initial migration for Cassandra NoSQL StreamStore.";
 
