@@ -8,9 +8,9 @@ namespace StreamStore
 {
     static  class AsyncEnumerableExtension
     {
-        public static async Task<IStreamEvent[]> ReadToEndAsync(this IAsyncEnumerable<IStreamEvent> enumerable, CancellationToken cancellationToken = default)
+        public static async Task<IStreamEventEnvelope[]> ReadToEndAsync(this IAsyncEnumerable<IStreamEventEnvelope> enumerable, CancellationToken cancellationToken = default)
         {
-            var results = new List<IStreamEvent>();
+            var results = new List<IStreamEventEnvelope>();
 
             await foreach (var item in enumerable)
             {
@@ -19,7 +19,7 @@ namespace StreamStore
             return new StreamEventCollection(results).ToArray();
         }
 
-        public static async Task<IStreamEvent[]> ReadToEndAsync(this Task<IAsyncEnumerable<IStreamEvent>> enumerable, CancellationToken cancellationToken = default)
+        public static async Task<IStreamEventEnvelope[]> ReadToEndAsync(this Task<IAsyncEnumerable<IStreamEventEnvelope>> enumerable, CancellationToken cancellationToken = default)
         {
             return await FuncExtension.ThrowOriginalExceptionIfOccured(async () => await enumerable.GetAwaiter().GetResult().ReadToEndAsync(cancellationToken));
         }

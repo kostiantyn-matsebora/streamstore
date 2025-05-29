@@ -30,11 +30,11 @@ namespace StreamStore.Sql.Storage
         string GetStreamEventCount => $"SELECT COUNT(Id)  FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
 
 
-        string GetEvents => $"SELECT Id, Revision, Timestamp, Data FROM {configuration.FullTableName} WHERE StreamId = @StreamId and Revision >= @Revision ORDER BY Revision ASC LIMIT @Count";
+        string GetEvents => $"SELECT Id, Revision, Timestamp, Data, CustomProperties FROM {configuration.FullTableName} WHERE StreamId = @StreamId and Revision >= @Revision ORDER BY Revision ASC LIMIT @Count";
     
         string DeleteStream => $"DELETE FROM {configuration.FullTableName} WHERE StreamId = @StreamId";
 
-        string AppendEvent => $"INSERT INTO {configuration.FullTableName} (Id, StreamId, Revision, Timestamp, Data) VALUES (@Id, @StreamId, @Revision, @Timestamp, @Data)";
+        string AppendEvent => $"INSERT INTO {configuration.FullTableName} (Id, StreamId, Revision, Timestamp, Data, CustomProperties) VALUES (@Id, @StreamId, @Revision, @Timestamp, @Data, @CustomProperties)";
 
         string GetStreamMetadata => $"SELECT  Id, Revision, Timestamp, StreamId FROM {configuration.FullTableName} WHERE StreamId = @StreamId ORDER BY Revision DESC LIMIT 1";
     }

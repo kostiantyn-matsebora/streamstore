@@ -1,6 +1,6 @@
 ﻿namespace StreamStore.Exceptions
 {
-    public class InvalidStreamRevisionException: ConcurrencyException
+    public class InvalidStreamRevisionException: ConcurrencyControlException
     {
         public Revision? ExpectedRevision { get; set; }
         public Revision? ActualRevision { get; set; }

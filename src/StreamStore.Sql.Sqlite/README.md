@@ -38,6 +38,7 @@ If you want to create table manually, you can use the following script:
       Timestamp datetime2 NOT NULL, 
       Revision INTEGER NOT NULL,
       Data BLOB NOT NULL,
+      CustomProperties TEXT,
       PRIMARY KEY (Id, StreamId)
   );
 

@@ -2,7 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
+using StreamStore.Sql.Provisioning;
 using StreamStore.Sql.Sqlite;
+using StreamStore.Sql.Sqlite.Provisioning;
 using StreamStore.Testing;
 
 namespace StreamStore.Sql.Tests.DependencyConfigurator
@@ -20,7 +22,6 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator
         {
             // Arrange
             var configurator = CreateConfigurator();
-            configurator.WithProvisioingQueryProvider<SqliteProvisioningQueryProvider>();
 
             // Act
             Action act = () => configurator.Apply();
@@ -29,19 +30,6 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator
             act.Should().Throw<InvalidOperationException>();
         }
 
-        [Fact]
-        public void When_provisioning_query_provider_is_not_set()
-        {
-            // Arrange
-            var configurator = CreateConfigurator();
-            configurator.WithConnectionFactory<SqliteDbConnectionFactory>();
-
-            // Act
-            Action act = () => configurator.Apply();
-
-            // Assert
-            act.Should().Throw<InvalidOperationException>();
-        }
 
         [Fact]
         public void When_required_dependencies_are_set()
@@ -50,9 +38,9 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator
             var serviceCollection = new ServiceCollection();
             var configurator = CreateConfigurator(serviceCollection);
             configurator.WithConnectionFactory<SqliteDbConnectionFactory>();
-            configurator.WithProvisioingQueryProvider<SqliteProvisioningQueryProvider>();
             configurator.WithExceptionHandling<SqliteExceptionHandler>();
-
+            configurator.WithMigrator<SqliteMigrator>();
+            configurator.WithMigrationAssembly(typeof(SqliteMigrator).Assembly);
 
             // Act
             configurator.Apply();
@@ -62,8 +50,8 @@ namespace StreamStore.Sql.Tests.DependencyConfigurator
             serviceCollection.Should().Contain(x => x.ServiceType == typeof(IDapperCommandFactory));
             serviceCollection.Should().Contain(x => x.ServiceType == typeof(ISqlQueryProvider));
             serviceCollection.Should().Contain(x => x.ServiceType == typeof(IDbConnectionFactory) && x.ImplementationType == typeof(SqliteDbConnectionFactory));
-            serviceCollection.Should().Contain(x => x.ServiceType == typeof(ISqlProvisioningQueryProvider) && x.ImplementationType == typeof(SqliteProvisioningQueryProvider));
             serviceCollection.Should().Contain(x => x.ServiceType == typeof(ISqlExceptionHandler) && x.ImplementationType == typeof(SqliteExceptionHandler));
+            serviceCollection.Should().Contain(x => x.ServiceType == typeof(IMigrator) && x.ImplementationType == typeof(SqliteMigrator));
         }
     }
 

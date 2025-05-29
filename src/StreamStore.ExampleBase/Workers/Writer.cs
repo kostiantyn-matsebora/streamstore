@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using StreamStore.ExampleBase.Progress.Model;
 using StreamStore.Exceptions;
+
 using StreamStore.Testing;
 
 namespace StreamStore.ExampleBase.Workers
@@ -26,42 +28,58 @@ namespace StreamStore.ExampleBase.Workers
             try
             {
                 TrackProgress(new StartWriting(revision));
-
+                var @event = CreateEvent();
                 await store.BeginAppendAsync(streamId, revision, token)
                                 .AppendAsync(CreateEvent(), token)
-                                .AppendAsync(CreateEvent(), token)
-                                .AppendAsync(CreateEvent(), token)
+                                .AppendAsync(CreateEvent(false), token)
+                                .AppendAsync(builder => builder
+                                    .WithId(Generated.Primitives.Id)
+                                    .Dated(Generated.Primitives.DateTime)
+                                    .WithEvent(Generated.Objects.Single<EventExample>())
+                                    .WithCustomProperty(Generated.Primitives.String, Generated.Primitives.String)
+                                    .WithCustomProperties(Generated.Objects.Single<Dictionary<string, string>>())
+                                    , token)
                             .SaveChangesAsync(token);
 
                 TrackProgress(new WriteSucceeded(revision, 3));
             }
-            catch (ConcurrencyException ex)
+            catch (ConcurrencyControlException ex)
             {
                 TrackError(ex);
                 if (token.IsCancellationRequested) return;
             }
             finally
             {
-                var metadata = await store.GetMetadataAsync(streamId, token);
-                revision = metadata != null ? metadata.Revision : Revision.Zero;
+                try
+                {
+                    var metadata = await store.GetMetadataAsync(streamId, token);
+                    revision = metadata.Revision;
+                } catch (StreamNotFoundException ex)
+                {
+                    TrackError(ex);
+                }
+
             }
         }
 
-        static TestEventEnvelope CreateEvent()
+        static TestEventEnvelope CreateEvent(bool withCustomProperties = true)
         {
             var fixture = new Fixture();
-            return new TestEventEnvelope
+            var @event =  new TestEventEnvelope
             {
-                Id = fixture.Create<Id>(),
-                Timestamp = fixture.Create<DateTime>(),
+                Id = Generated.Primitives.Id,
+                Timestamp = Generated.Primitives.DateTime,
                 Event = new EventExample
                 {
-                    InvoiceId = fixture.Create<Guid>(),
-                    Name = fixture.Create<string>(),
-                    Number = fixture.Create<int>(),
-                    Date = fixture.Create<DateTime>()
-                }
+                    InvoiceId = Generated.Primitives.Guid,
+                    Name = Generated.Primitives.String,
+                    Number = Generated.Primitives.Int,
+                    Date = Generated.Primitives.DateTime,
+                },
+                CustomProperties = withCustomProperties ? Generated.Objects.Single<Dictionary<string, string>>() : null
             };
+
+            return @event;
         }
 
         class EventExample

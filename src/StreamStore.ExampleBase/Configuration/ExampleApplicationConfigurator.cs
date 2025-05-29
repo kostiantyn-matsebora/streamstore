@@ -94,11 +94,11 @@ namespace StreamStore.ExampleBase.Configuration
             builder.Services
                 .AddSingleton<WorkerRegistry>()
                 .AddHostedService<Writer1>()
-                .AddHostedService<Writer2>()
-                .AddHostedService<Writer3>()
+                //.AddHostedService<Writer2>()
+                //.AddHostedService<Writer3>()
                 .AddHostedService<Reader1>()
-                .AddHostedService<Reader2>()
-                .AddHostedService<Reader3>()
+                //.AddHostedService<Reader2>()
+                //.AddHostedService<Reader3>()
                 .AddHostedService<ReaderToEnd1>()
                 ;
         }

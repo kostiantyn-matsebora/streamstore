@@ -8,6 +8,5 @@ namespace StreamStore.NoSql.Cassandra.Storage
         Cql StreamMetadata(string streamId);
         Cql DeleteStream(string streamId);
         Cql StreamEvents(string streamId, int from, int count);
-        Cql CreateEventsTable();
     }
 }

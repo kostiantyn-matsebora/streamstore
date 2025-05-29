@@ -19,7 +19,7 @@ namespace StreamStore.Tests.Enumerator
             this.mode = mode;
         }
 
-        internal IAsyncEnumerable<IStreamEvent> CreateEnumerable(StreamReadingParameters parameters)
+        internal IAsyncEnumerable<IStreamEventEnvelope> CreateEnumerable(StreamReadingParameters parameters)
         {
             return new StreamEventEnumerable(parameters, Services.GetRequiredService<StreamEventEnumeratorFactory>());
         }

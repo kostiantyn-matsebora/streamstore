@@ -9,5 +9,15 @@ namespace StreamStore.Extensions
         {
             return string.Join(", ", enumerable.Select(x => x!.ToString()));
         }
+
+        public static bool NotNullAndNotEmpty<T>(this IEnumerable<T>? enumerable)
+        {
+           return enumerable != null && enumerable.Any();
+        }
+
+        public static bool NullOrEmpty<T>(this IEnumerable<T>? enumerable)
+        {
+            return enumerable == null || !enumerable.Any();
+        }
     }
 }

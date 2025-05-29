@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using StreamStore.Exceptions;
+using StreamStore.Extensions;
 using StreamStore.Models;
 
 namespace StreamStore.Testing.StreamStore.Scenarios
@@ -68,7 +69,7 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             var act = () => store.BeginReadAsync(stream.Id, stream.Revision.Next());
 
             // Assert
-            await act.Should().ThrowAsync<InvalidStartFromException>();
+            await act.Should().ThrowAsync<InvalidFromRevisionException>();
         }
 
         [Fact]
@@ -90,13 +91,15 @@ namespace StreamStore.Testing.StreamStore.Scenarios
         }
 
 
+
+
         [Fact]
         public async Task When_iterating_events()
         {
             // Arrange
             var stream = Environment.Container.RandomStream;
             IStreamStore store = Environment.Store;
-            List<IStreamEvent> result = new List<IStreamEvent>();
+            List<IStreamEventEnvelope> result = new List<IStreamEventEnvelope>();
 
             // Act
             await foreach(var @event in await store.BeginReadAsync(stream.Id, CancellationToken.None))
@@ -113,5 +116,25 @@ namespace StreamStore.Testing.StreamStore.Scenarios
             result.Should().BeInAscendingOrder(e => e.Revision);
             result.Select(e => e.Id).Should().BeEquivalentTo(stream.Events.Select(e => e.Id));
         }
+
+
+        [Fact]
+        public async Task When_reading_events_with_custom_properties()
+        {
+            // Arrange
+            var stream = Environment.Container.Where(s => s.Events.Any(e => e.CustomProperties.NotNullAndNotEmpty())).FirstOrDefault();
+            if (stream == null)
+                throw new InvalidOperationException("There should be at least one stream with custom properties for this test to run.");
+            IStreamStore store = Environment.Store;
+
+            // Act
+            var result = await store.ReadToEndAsync(stream.Id);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.First().CustomProperties.Should().BeEquivalentTo(stream.Events.First().CustomProperties);
+            result.Last().CustomProperties.Should().BeEquivalentTo(stream.Events.Last().CustomProperties);
+        }
+
     }
 }

@@ -1,12 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using StreamStore.Storage;
 using StreamStore.Exceptions;
 using StreamStore.Sql.API;
-using System;
-using System.Collections.Generic;
+using StreamStore.Storage;
 
 
 namespace StreamStore.Sql.Storage
@@ -16,6 +17,7 @@ namespace StreamStore.Sql.Storage
         readonly IDbConnectionFactory connectionFactory;
         readonly IDapperCommandFactory commandFactory;
         readonly ISqlExceptionHandler exceptionHandler;
+        const string EmptyJson = "{}";
 
         public SqlStreamStorage(IDbConnectionFactory connectionFactory, IDapperCommandFactory commandFactory, ISqlExceptionHandler exceptionHandler)
         {
@@ -67,11 +69,14 @@ namespace StreamStore.Sql.Storage
 
         protected override void BuildRecord(IStreamEventRecordBuilder builder, EventEntity entity)
         {
-              builder
-                 .WithId(entity.Id!)
-                 .WithRevision(entity.Revision!)
-                 .Dated(entity.Timestamp)
-                 .WithData(entity.Data!);
+            builder
+               .WithId(entity.Id!)
+               .WithRevision(entity.Revision!)
+               .Dated(entity.Timestamp)
+               .WithData(entity.Data!);
+            if (entity.CustomProperties != null && entity.CustomProperties != EmptyJson)
+                builder.WithCustomProperties(
+                    JsonSerializer.Deserialize<IReadOnlyDictionary<string, string>>(entity.CustomProperties)!);
         }
 
         protected override async Task WriteAsyncInternal(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)

@@ -16,7 +16,8 @@ namespace StreamStore.NoSql.Cassandra.Storage
                      .Column(e => e.Revision, cm => cm.WithName("revision"))
                      .Column(e => e.Id, cm => cm.WithName("id"))
                      .Column(e => e.Timestamp, cm => cm.WithName("timestamp"))
-                     .Column(e => e.Data, cm => cm.WithName("data"));
+                     .Column(e => e.Data, cm => cm.WithName("data"))
+                     .Column(e => e.CustomProperties, cm => cm.WithName("custom_properties"));
             For<EventMetadataEntity>()
                 .TableName(config.EventsTableName)
                      .PartitionKey(e => e.StreamId)

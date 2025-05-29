@@ -18,16 +18,24 @@ Despite the fact that component implements a logical layer for storing and query
 
  ![StreamStore class diagram](diagrams/store.png)
 
-## Storage packages
+## Packages
 
-  | Package                | Description                                                                            |        Multitenancy        | Event Duplication Detection | Package   |
-  | ---------------------------- | ------------------------------------------------------------------------------------ | ----------------- | -----------|--------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | [StreamStore.NoSql.Cassandra] | [`Apache Cassandra`] and [`Azure Cosmos DB for Apache Cassandra`] port | :white_check_mark: | :x: | [![NuGet version (StreamStore.NoSql.Cassandra)](https://img.shields.io/nuget/v/StreamStore.NoSql.Cassandra.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.NoSql.Cassandra/)  
-  | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) port | :white_check_mark: | :white_check_mark: | [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
-  | [StreamStore.Sql.Sqlite]     | [`SQLite`](https://www.sqlite.org/index.html) port | :white_check_mark: |  :white_check_mark: | [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
-  | [StreamStore.InMemory]       | `In-memory` port is provided **for testing and educational purposes only** | :white_check_mark: | :white_check_mark: | [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
-  | [StreamStore.S3.AWS]         | [`Amazon S3`] port                                                         | :x: | :x: |[![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
-  | [StreamStore.S3.B2]          | [`Backblaze B2`] port                                                      | :x: | :x: |[![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/)          |
+| Name | Description | Package |
+| ---- | ----------- | ------- |
+| [StreamStore] | Asynchronous event streaming | [![NuGet version (StreamStore)](https://img.shields.io/nuget/v/StreamStore.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore/) |
+| [StreamStore.Storage] | Base implementation of storage | [![NuGet version (StreamStore.Testing)](https://img.shields.io/nuget/v/StreamStore.Storage.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage/) |
+| [StreamStore.Serialization.Protobuf] | Protobuf event serializer | [![NuGet version (StreamStore.Testing)](https://img.shields.io/nuget/v/StreamStore.Serialization.Protobuf.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Serialization.Protobuf/) |
+
+### Storage packages
+
+  | Name  | Description  | Concurrency Control  | Multitenancy | Event Duplication Detection |  Package  |
+  | ------| ------------ |--------------------- | ------------ | ----------------------------- |-------------------|
+  | [StreamStore.NoSql.Cassandra] | [`Apache Cassandra`] and [`Azure Cosmos DB for Apache Cassandra`] storage | [`Optimistic`] | :white_check_mark: | :x: |   [![NuGet version (StreamStore.NoSql.Cassandra)](https://img.shields.io/nuget/v/StreamStore.NoSql.Cassandra.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.NoSql.Cassandra/)
+  | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) storage | [`Optimistic`] | :white_check_mark: | :white_check_mark: |   [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
+  | [StreamStore.Sql.Sqlite]     | [`SQLite`](https://www.sqlite.org/index.html) storage | [`Optimistic`] | :white_check_mark: |  :white_check_mark: |  [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
+  | [StreamStore.InMemory]       | **In-memory** storage is provided **for testing and educational purposes only** | [`Optimistic`] | :white_check_mark: | :white_check_mark: |   [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
+  | [StreamStore.S3.AWS]         | [`Amazon S3`] storage                                                         | [`Pessimistic`] |:x: | :x: | [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
+  | [StreamStore.S3.B2]          | [`Backblaze B2`] storage (not working at the moment!)                                                      |[`Pessimistic`] |:x: | :x: |  [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/) |
 
 ## Concepts
 
@@ -46,7 +54,8 @@ The general idea is to highlight the common characteristics and features of even
 - [x] Event duplication detection based on event ID.
 - [x] Storage agnostic test framework.
 - [x] Binary serialization support.
-
+- [x] Custom event properties.
+  
 ## Storages
 
 Also add implementations of particular storage, such as:
@@ -67,7 +76,6 @@ Also add implementations of particular storage, such as:
 ## Roadmap
 
 - [ ] Composite stream identifier
-- [ ] Custom event properties (?).
 - [ ] External transaction support (?).
 - [ ] Transactional outbox pattern implementation (?).
 
@@ -154,11 +162,15 @@ or from NuGet Package Manager Console:
 
   try {
     store
-      .BeginAppendAsync("stream-1")       // Open stream like new since revision is not provided
-         .AppendAsync(x =>          // Append events one by one using fluent API
-            x.WithId("event-3")
-             .Dated(DateTime.Now)
-             .WithEvent(eventObject)
+      .BeginAppendAsync("stream-1")   // Open stream like new since revision is not provided
+         .AppendAsync(x =>            // Append events one by one using fluent API
+            x.WithId("event-3")       // Specify event ID
+             .Dated(DateTime.Now)     // Specify event timestamp
+             .WithEvent(eventObject)  // Specify event object
+             // Optional. Add custom property to event
+             .WithCustomProperty("property-name", "property-value") 
+             // Or use WithCustomProperties method to add multiple custom properties              
+             .WithCustomProperties(new Dictionary<string, object> { { "property-name", "property-value" } }) 
          )
         ...
         .AppendRangeAsync(events)  // Or append range of events by passing IEnumerable<Event>
@@ -198,7 +210,7 @@ Example projects provides a simple console application that demonstrates how to 
 
 `Single storage` examples demonstrates:
 
-- optimistic concurrency control
+- Concurrency control
 - asynchronous reading and writing operations
   
 `Multitenancy` examples, in turn, demonstrates asynchronous reading and writing operations in **isolated tenant storage**.
@@ -242,3 +254,8 @@ to contribute, feel free to [open an issue][issues] or
 [`Binary Object`]: https://en.wikipedia.org/wiki/Object_storage
 [`Apache Cassandra`]: https://cassandra.apache.org/_/index.html
 [`Azure Cosmos DB for Apache Cassandra`]: https://learn.microsoft.com/en-us/azure/cosmos-db/cassandra/introduction
+[`Optimistic`]: https://en.wikipedia.org/wiki/Optimistic_concurrency_control
+[`Pessimistic`]: https://en.wikipedia.org/wiki/Lock_(computer_science)
+[StreamStore]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore
+[StreamStore.Serialization.Protobuf]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Serialization.Protobuf
+[StreamStore.Storage]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Storage

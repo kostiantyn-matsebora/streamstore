@@ -8,6 +8,7 @@ using StreamStore.NoSql.Cassandra.Models;
 using Cassandra;
 using StreamStore.Exceptions;
 using System.Collections.Generic;
+using StreamStore.Extensions;
 
 namespace StreamStore.NoSql.Cassandra.Storage
 {
@@ -36,7 +37,8 @@ namespace StreamStore.NoSql.Cassandra.Storage
               .WithId(entity.Id)
               .Dated(entity.Timestamp)
               .WithRevision(entity.Revision)
-              .WithData(entity.Data!);
+              .WithData(entity.Data!)
+              .WithCustomProperties(entity.CustomProperties);
         }
 
         protected override async Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default)

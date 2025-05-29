@@ -8,11 +8,11 @@
       <NewMemberFileName>Exceptions\Writing\DuplicateEventException.cs</NewMemberFileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="StreamStore.Exceptions.InvalidStartFromException" Collapsed="true">
+  <Class Name="StreamStore.Exceptions.InvalidFromRevisionException" Collapsed="true">
     <Position X="11" Y="3.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Exceptions\Reading\InvalidStartFromException.cs</FileName>
+      <FileName>Exceptions\Reading\InvalidFromRevisionException.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="StreamStore.Exceptions.StreamNotFoundException" Collapsed="true">
@@ -37,7 +37,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="StreamStore.Exceptions.ReadingException" Collapsed="true">
-    <Position X="9.5" Y="2" Width="1.5" />
+    <Position X="9.75" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\Reading\ReadingException.cs</FileName>
@@ -50,15 +50,8 @@
       <FileName>Exceptions\StreamStoreException.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="StreamStore.Exceptions.ConcurrencyException" Collapsed="true">
-    <Position X="13.5" Y="3.5" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Exceptions\Appending\ConcurrencyException.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="StreamStore.Exceptions.AppendingException" Collapsed="true">
-    <Position X="14.25" Y="2" Width="1.5" />
+    <Position X="14.75" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\Appending\AppendingException.cs</FileName>
@@ -111,6 +104,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\Appending\StreamLockedException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.ConcurrencyControlException" Collapsed="true">
+    <Position X="13.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Appending\ConcurrencyControlException.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

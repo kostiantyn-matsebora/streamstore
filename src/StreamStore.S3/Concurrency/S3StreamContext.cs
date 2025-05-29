@@ -27,7 +27,7 @@ namespace StreamStore.S3.Concurrency
          
         }
 
-        public async Task Initialize(CancellationToken token)
+        public async Task InitializeAsync(CancellationToken token)
         {
            await CopyPersistentMetadataToTransient(CancellationToken.None);
         }

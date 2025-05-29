@@ -73,6 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Diagrams", "Diagrams", "{02
 	ProjectSection(SolutionItems) = preProject
 		StreamStore.Contracts\Exceptions\Exceptions.cd = StreamStore.Contracts\Exceptions\Exceptions.cd
 		StreamStore.S3\Storage\S3Storage.cd = StreamStore.S3\Storage\S3Storage.cd
+		StreamStore.Serialization\Serialization.cd = StreamStore.Serialization\Serialization.cd
 		StreamStore.Storage\Storage.cd = StreamStore.Storage\Storage.cd
 		StreamStore\Store\Store.cd = StreamStore\Store\Store.cd
 	EndProjectSection

@@ -7,7 +7,6 @@ using StreamStore.Exceptions;
 using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
 using StreamStore.S3.Storage;
-using System.Collections;
 using System.Collections.Generic;
 
 
@@ -61,28 +60,28 @@ namespace StreamStore.S3
 
         protected override async Task WriteAsyncInternal(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)
         {
-            var streamContext = new S3StreamContext(streamId, batch.MinRevision().Previous(), storageFactory.CreateStorage());
-
+            var context = new S3StreamContext(streamId, batch.MinRevision().Previous(), storageFactory.CreateStorage());
+            await context.InitializeAsync(token);
 
             // Add events to transient storage
             foreach (var record in batch)
             {
-                await streamContext.AddTransientEventAsync(record, token);
+                await context.AddTransientEventAsync(record, token);
             }
 
-            if (!streamContext.NotEmpty)
+            if (!context.NotEmpty)
                 throw new InvalidOperationException("No events to save.");
 
-            ThrowIfStreamAlreadyChanged(batch.MinRevision(), await streamContext.GetPersistentMetadataAsync(token), streamContext);
+            ThrowIfStreamAlreadyChanged(batch.MinRevision(), await context.GetPersistentMetadataAsync(token), context);
 
-            using var transaction = await new S3StreamTransaction(streamContext, lockFactory).BeginAsync(token);
+            using var transaction = await new S3StreamTransaction(context, lockFactory).BeginAsync(token);
 
             try
             {
                 // Get the current revision
-                var metadata = await streamContext.GetPersistentMetadataAsync(token);
+                var metadata = await context.GetPersistentMetadataAsync(token);
 
-                ThrowIfStreamAlreadyChanged(batch.MinRevision(), metadata, streamContext);
+                ThrowIfStreamAlreadyChanged(batch.MinRevision(), metadata, context);
 
                 // Commit transaction
                 await transaction.CommitAsync(token);

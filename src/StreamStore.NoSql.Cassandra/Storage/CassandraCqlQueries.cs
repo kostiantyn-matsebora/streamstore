@@ -24,19 +24,7 @@ namespace StreamStore.NoSql.Cassandra.Storage
 
         public Cql StreamEvents(string streamId, int from, int count)
         {
-            return new Cql($"SELECT id, stream_id, timestamp, revision, data FROM {config.EventsTableName} WHERE stream_id = ? AND revision >= ? LIMIT ?", streamId, from, count);
-        }
-
-        public Cql CreateEventsTable()
-        {
-            return new Cql(@$"CREATE TABLE IF NOT EXISTS {config.EventsTableName}
-                        (id text,
-                        stream_id text,
-                        revision int,
-                        timestamp timestamp,
-                        data blob,
-                        PRIMARY KEY(stream_id, revision)
-                        );");
+            return new Cql($"SELECT id, stream_id, timestamp, revision, data, custom_properties FROM {config.EventsTableName} WHERE stream_id = ? AND revision >= ? LIMIT ?", streamId, from, count);
         }
     }
 }

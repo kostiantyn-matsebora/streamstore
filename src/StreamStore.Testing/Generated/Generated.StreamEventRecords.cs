@@ -16,6 +16,9 @@ namespace StreamStore.Testing
             {
                 return new Fixture().CreateStreamEventRecords(count).ToArray();
             }
+
+            public static StreamEventRecord[] Single => new Fixture().CreateStreamEventRecords(1,1).ToArray();
+           
         }
     }
 }

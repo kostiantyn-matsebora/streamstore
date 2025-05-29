@@ -11,15 +11,18 @@
     <Authors>kostiantyn-matsebora</Authors>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>StreamStore</PackageId>
-    <Version>0.17.0</Version>
+    <Version>0.18.0</Version>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>event sourcing; streams; stream store; stream; async</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="API\Exceptions\**" />
     <Compile Remove="Domain\**" />
+    <EmbeddedResource Remove="API\Exceptions\**" />
     <EmbeddedResource Remove="Domain\**" />
+    <None Remove="API\Exceptions\**" />
     <None Remove="Domain\**" />
   </ItemGroup>
   <ItemGroup>
@@ -42,9 +45,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
     <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="API\Exceptions\" />
   </ItemGroup>
 
   <PropertyGroup>

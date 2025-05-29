@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace StreamStore.Storage
+﻿namespace StreamStore.Storage
 {
     public class StreamEventRecord : StreamEventMetadataRecord, IStreamEventRecord
     {

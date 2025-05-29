@@ -30,20 +30,20 @@ namespace StreamStore
             await storage.DeleteAsync(streamId, cancellationToken);
         }
 
-        public async Task<IAsyncEnumerable<IStreamEvent>> BeginReadAsync(Id streamId, Revision startFrom, CancellationToken cancellationToken = default)
+        public async Task<IAsyncEnumerable<IStreamEventEnvelope>> BeginReadAsync(Id streamId, Revision fromRevision, CancellationToken cancellationToken = default)
         {
             streamId.ThrowIfHasNoValue(nameof(streamId));
 
-            if (startFrom < Revision.One)
-                throw new ArgumentOutOfRangeException(nameof(startFrom), "startFrom must be greater than or equal to 1.");
+            if (fromRevision < Revision.One)
+                throw new ArgumentOutOfRangeException(nameof(fromRevision), "fromRevision must be greater than or equal to 1.");
 
             var metadata = await storage.GetMetadataAsync(streamId, cancellationToken);
             if (metadata == null) throw new StreamNotFoundException(streamId);
 
-            if (metadata.Revision < startFrom)
-                throw new InvalidStartFromException(streamId, startFrom, metadata.Revision);
+            if (metadata.Revision < fromRevision)
+                throw new InvalidFromRevisionException(streamId, fromRevision, metadata.Revision);
 
-            var parameters = new StreamReadingParameters(streamId, startFrom, configuration.ReadingPageSize);
+            var parameters = new StreamReadingParameters(streamId, fromRevision, configuration.ReadingPageSize);
 
             return new StreamEventEnumerable(parameters, enumeratorFactory);
         }

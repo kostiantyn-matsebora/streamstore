@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Reflection.Metadata;
+using FluentAssertions;
 using StreamStore.Testing;
 
 namespace StreamStore.Tests.BuildingEvents
@@ -58,14 +59,28 @@ namespace StreamStore.Tests.BuildingEvents
             var timestamp = Generated.Primitives.DateTime;
             var @event = Generated.EventEnvelopes.Single;
 
+            var customProperties = Generated.Objects.Single<Dictionary<string, string>>();
+            var customPropertyName = Generated.Primitives.String;
+            var customPropertyValue = Generated.Primitives.String;
+
             // Act
-            builder.WithId(id).Dated(timestamp).WithEvent(@event);
+            builder
+                .WithId(id)
+                .Dated(timestamp)
+                .WithEvent(@event)
+                .WithCustomProperty(customPropertyName, customPropertyValue)
+                .WithCustomProperties(customProperties);
+
             var result =  builder.Build();
 
             // Assert
             result.Id.Should().Be(id);
             result.Timestamp.Should().Be(timestamp);
             result.Event.Should().Be(@event);
+            result.CustomProperties.Should().ContainKey(customPropertyName);
+            result.CustomProperties.Should().ContainValue(customPropertyValue);
+            result.CustomProperties.Should().IntersectWith(customProperties);
+
         }
     }
 }

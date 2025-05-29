@@ -1,43 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Interface Name="StreamStore.IStreamUnitOfWork">
-    <Position X="8" Y="3" Width="7.25" />
+    <Position X="10" Y="4.5" Width="7.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>API\IStreamUnitOfWork.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="StreamStore.IStreamEvent">
-    <Position X="3" Y="5.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>API\Models\IStreamEvent.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
   <Interface Name="StreamStore.IEventEnvelope">
-    <Position X="5.5" Y="5.75" Width="1.75" />
+    <Position X="7.5" Y="0.5" Width="4.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>API\Models\IEventEnvelope.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="StreamStore.IEventMetadata">
-    <Position X="5.25" Y="2.75" Width="2.25" />
+    <Position X="6.75" Y="2.5" Width="2.25" />
     <TypeIdentifier />
   </Interface>
-  <Interface Name="StreamStore.IStreamEventMetadata" Collapsed="true">
-    <Position X="2.75" Y="3" Width="2" />
+  <Interface Name="StreamStore.IStreamEventMetadata">
+    <Position X="3" Y="5" Width="2" />
     <TypeIdentifier />
   </Interface>
   <Interface Name="StreamStore.IStreamStore">
-    <Position X="8" Y="0.5" Width="8.75" />
+    <Position X="10" Y="2.5" Width="8.75" />
     <TypeIdentifier>
-      <HashCode>AAAAgAAAAAIAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <HashCode>AAACgAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
       <FileName>API\IStreamStore.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="StreamStore.IStreamMetadata">
-    <Position X="5" Y="0.5" Width="2.5" />
+    <Position X="4.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="StreamStore.IStreamEventEnvelope">
+    <Position X="5.25" Y="5" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>API\Models\IStreamEventEnvelope.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="StreamStore.IHasRevision">
+    <Position X="4.5" Y="2.5" Width="1.75" />
     <TypeIdentifier />
   </Interface>
   <Font Name="Segoe UI" Size="9" />

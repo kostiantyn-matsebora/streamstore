@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamStore.Storage;
 using StreamStore.Testing.Models;
 
 namespace StreamStore.Testing

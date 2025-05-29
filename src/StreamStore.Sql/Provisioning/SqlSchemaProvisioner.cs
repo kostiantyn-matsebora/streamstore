@@ -1,29 +1,24 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Dapper;
 using StreamStore.Provisioning;
-using StreamStore.Sql.API;
+
 
 namespace StreamStore.Sql.Provisioning
 {
     internal sealed class SqlSchemaProvisioner: ISchemaProvisioner
     {
-        readonly IDbConnectionFactory connectionFactory;
-        readonly ISqlProvisioningQueryProvider queryProvider;
+        private readonly IMigrator migrator;
 
-        public SqlSchemaProvisioner(IDbConnectionFactory connectionFactory, ISqlProvisioningQueryProvider queryProvider)
+
+        public SqlSchemaProvisioner(IMigrator migrator)
         {
-            this.connectionFactory = connectionFactory.ThrowIfNull(nameof(connectionFactory));
-            this.queryProvider = queryProvider.ThrowIfNull(nameof(queryProvider));
+            this.migrator = migrator.ThrowIfNull(nameof(migrator));
         }
 
-        public async Task ProvisionSchemaAsync(CancellationToken token)
+        public Task ProvisionSchemaAsync(CancellationToken token)
         {
-            using (var connection = connectionFactory.GetConnection())
-            {
-                await connection.OpenAsync(token);
-                await connection.ExecuteAsync(queryProvider.GetSchemaProvisioningQuery());
-            }
+            migrator.Migrate();
+            return Task.CompletedTask;
         }
     }
 }

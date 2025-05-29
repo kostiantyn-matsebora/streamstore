@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using StreamStore.Extensions;
+using StreamStore.Storage.Models;
 
 
 namespace StreamStore.Storage
@@ -9,6 +12,8 @@ namespace StreamStore.Storage
         DateTime timestamp = DateTime.Now;
         byte[] data = null!;
         Revision revision;
+        EventCustomProperties? customProperties;
+
         public IStreamEventRecordBuilder WithId(Id id)
         {
             this.id = id;
@@ -38,6 +43,7 @@ namespace StreamStore.Storage
             id.ThrowIfHasNoValue(nameof(id));
             timestamp.ThrowIfMinValue(nameof(timestamp));
             data.ThrowIfNull(nameof(data));
+
             if (revision == Revision.Zero)
                 throw new ArgumentOutOfRangeException(nameof(revision));
 
@@ -46,13 +52,24 @@ namespace StreamStore.Storage
                 Id = id,
                 Timestamp = timestamp,
                 Data = data,
-                Revision = revision
+                Revision = revision,
+                CustomProperties = customProperties
             };
+        }
+
+        public IStreamEventRecordBuilder WithCustomProperties(IEnumerable<KeyValuePair<string, string>>? keyValuePairs)
+        {
+          customProperties = new EventCustomProperties(keyValuePairs);
+          return this;
         }
 
         public IStreamEventRecordBuilder WithRecord(IStreamEventRecord record)
         {
-           return WithId(record.Id).Dated(record.Timestamp).WithData(record.Data).WithRevision(record.Revision);
+           return WithId(record.Id)
+                 .Dated(record.Timestamp)
+                 .WithData(record.Data)
+                 .WithRevision(record.Revision)
+                 .WithCustomProperties(record.CustomProperties);
         }
     }
 }

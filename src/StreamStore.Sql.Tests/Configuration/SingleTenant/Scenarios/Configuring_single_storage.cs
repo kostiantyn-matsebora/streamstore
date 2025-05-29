@@ -15,10 +15,24 @@ namespace StreamStore.Sql.Tests.Configuration.SingleTenant
     public abstract class Configuring_single_storage<TEnvironment> : Scenario<TEnvironment> where TEnvironment : SingleTenantConfiguratorTestEnvironmentBase, new()
     {
         [Fact]
-        public void When_storage_db_connection_factory_is_not_set()
+        public void When_migration_assembly_is_not_set()
         {
             // Arrange
             var configurator = Environment.CreateSqlStorageConfigurator(new ServiceCollection());
+
+            // Act
+            var act = () => configurator.Apply();
+
+            //Assert
+            act.Should().Throw<InvalidOperationException>()
+                .WithMessage("Migration assembly is not set");
+        }
+
+        [Fact]
+        public void When_storage_db_connection_factory_is_not_set()
+        {
+            // Arrange
+            var configurator = Environment.CreateSqlStorageConfigurator(new ServiceCollection()).WithMigrationAssembly(typeof(Scenario).Assembly);
 
             // Act
             var act = () => configurator.Apply();
@@ -56,7 +70,7 @@ namespace StreamStore.Sql.Tests.Configuration.SingleTenant
             provider.GetRequiredService<IDbConnectionFactory>().Should().NotBeNull();
             provider.GetRequiredService<IDapperCommandFactory>().Should().NotBeNull();
             provider.GetRequiredService<ISqlQueryProvider>().Should().NotBeNull();
-            provider.GetRequiredService<ISqlProvisioningQueryProvider>().Should().NotBeNull();
+
 
             var configuration = provider.GetRequiredService<SqlStorageConfiguration>();
             configuration.ConnectionString.Should().Be("connectionString");
@@ -98,7 +112,7 @@ namespace StreamStore.Sql.Tests.Configuration.SingleTenant
             provider.GetRequiredService<IDbConnectionFactory>().Should().NotBeNull();
             provider.GetRequiredService<IDapperCommandFactory>().Should().NotBeNull();
             provider.GetRequiredService<ISqlQueryProvider>().Should().NotBeNull();
-            provider.GetRequiredService<ISqlProvisioningQueryProvider>().Should().NotBeNull();
+
 
             var configuration = provider.GetRequiredService<SqlStorageConfiguration>();
             configuration.ConnectionString.Should().Be("connectionString");

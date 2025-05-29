@@ -18,7 +18,7 @@ namespace StreamStore.S3.Tests.Storage.EventStorage
             Id eventId = Generated.Primitives.Id;
             var fixture = new Fixture();
             CancellationToken token = default(global::System.Threading.CancellationToken);
-            var record = fixture.Create<StreamEventRecord>();
+            var record = Generated.StreamEventRecords.Many(1, 1).First();
             var response = new FindObjectResponse
             {
                 VersionId = Generated.Primitives.String,
