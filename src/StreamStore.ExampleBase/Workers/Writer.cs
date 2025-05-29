@@ -50,8 +50,15 @@ namespace StreamStore.ExampleBase.Workers
             }
             finally
             {
-                var metadata = await store.GetMetadataAsync(streamId, token);
-                revision = metadata != null ? metadata.Revision : Revision.Zero;
+                try
+                {
+                    var metadata = await store.GetMetadataAsync(streamId, token);
+                    revision = metadata.Revision;
+                } catch (StreamNotFoundException ex)
+                {
+                    TrackError(ex);
+                }
+
             }
         }
 
