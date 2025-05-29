@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS events
     revision int,
     timestamp timestamp,
     data blob,
+    custom_properties map<text,text>,
     PRIMARY KEY(stream_id, revision)
     );
 ```
