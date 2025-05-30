@@ -78,6 +78,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Diagrams", "Diagrams", "{02
 		StreamStore\Store\Store.cd = StreamStore\Store\Store.cd
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.Serialization.Contracts", "StreamStore.Serialization.Contracts\StreamStore.Serialization.Contracts.csproj", "{AA1DD998-190C-40E1-A82E-EFFC252A09D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +182,10 @@ Global
 		{88227196-D819-4F7E-90A1-F205C57486D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88227196-D819-4F7E-90A1-F205C57486D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88227196-D819-4F7E-90A1-F205C57486D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA1DD998-190C-40E1-A82E-EFFC252A09D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA1DD998-190C-40E1-A82E-EFFC252A09D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA1DD998-190C-40E1-A82E-EFFC252A09D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA1DD998-190C-40E1-A82E-EFFC252A09D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -204,6 +210,7 @@ Global
 		{2659C1AB-E659-440C-BB15-F1DF33385F76} = {B088C377-25AC-4BA6-AF83-33DC2733BE97}
 		{D39E9075-E36B-4DFA-8BD7-27430865F09F} = {B088C377-25AC-4BA6-AF83-33DC2733BE97}
 		{0364ACFC-A846-407D-AE6D-93BC2BD6BD95} = {5E8E5B65-C4EB-478C-88E0-C1BE992C381F}
+		{AA1DD998-190C-40E1-A82E-EFFC252A09D3} = {DFEC3388-4A7D-402C-9CAA-3F1B8FFBB6CC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B91B9475-41C6-4A0C-8FA4-2894665CE39D}

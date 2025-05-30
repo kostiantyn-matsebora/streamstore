@@ -10,6 +10,6 @@
     <PackageReference Include="System.Text.Json" Version="9.0.5" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StreamStore.Contracts\StreamStore.Contracts.csproj" />
+    <ProjectReference Include="..\StreamStore.Serialization.Contracts\StreamStore.Serialization.Contracts.csproj" />
   </ItemGroup>
 </Project>

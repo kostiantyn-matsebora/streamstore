@@ -32,4 +32,7 @@
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.5" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StreamStore.Serialization.Contracts\StreamStore.Serialization.Contracts.csproj" />
+  </ItemGroup>
 </Project>
