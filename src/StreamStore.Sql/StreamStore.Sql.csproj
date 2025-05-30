@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="FluentMigrator" Version="7.1.0" />
     <PackageReference Include="FluentMigrator.Runner.Core" Version="7.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.5" />
