@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentMigrator;
+using StreamStore.Extensions;
 using StreamStore.Sql.Configuration;
 
 namespace StreamStore.Sql.Sqlite.Provisioning.Migrations

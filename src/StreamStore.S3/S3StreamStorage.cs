@@ -8,6 +8,8 @@ using StreamStore.S3.Client;
 using StreamStore.S3.Concurrency;
 using StreamStore.S3.Storage;
 using System.Collections.Generic;
+using StreamStore.Exceptions.Appending;
+using StreamStore.Exceptions.Reading;
 
 
 namespace StreamStore.S3

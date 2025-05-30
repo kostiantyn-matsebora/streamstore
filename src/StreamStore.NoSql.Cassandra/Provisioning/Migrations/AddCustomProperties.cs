@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Cassandra;
 using Cassandra.Fluent.Migrator.Core;
+using StreamStore.Extensions;
 using StreamStore.NoSql.Cassandra.Configuration;
 
 

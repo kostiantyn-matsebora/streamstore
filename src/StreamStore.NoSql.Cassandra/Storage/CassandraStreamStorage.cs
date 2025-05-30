@@ -9,6 +9,7 @@ using Cassandra;
 using StreamStore.Exceptions;
 using System.Collections.Generic;
 using StreamStore.Extensions;
+using StreamStore.Exceptions.Appending;
 
 namespace StreamStore.NoSql.Cassandra.Storage
 {

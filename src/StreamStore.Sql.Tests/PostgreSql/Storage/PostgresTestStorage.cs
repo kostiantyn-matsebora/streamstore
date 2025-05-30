@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using StreamStore.Extensions;
 using StreamStore.Sql.Tests.Storage;
 
 namespace StreamStore.Sql.Tests.PostgreSql.Storage

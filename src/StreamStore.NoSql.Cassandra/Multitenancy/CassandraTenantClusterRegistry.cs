@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Cassandra;
+using StreamStore.Extensions;
 
 namespace StreamStore.NoSql.Cassandra.Multitenancy
 {

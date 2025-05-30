@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Configuration;
-using StreamStore.InMemory;
+
 
 namespace StreamStore.Serialization.Tests.SystemTextJson
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
+using StreamStore.Extensions;
 
 
 namespace StreamStore.Sql.Configuration

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using StreamStore.Multitenancy;
 
 namespace StreamStore.Provisioning
 {

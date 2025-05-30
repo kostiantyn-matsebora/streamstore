@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using StreamStore.Exceptions;
+using StreamStore.Exceptions.Reading;
+using StreamStore.Extensions;
 using StreamStore.Sql.API;
 using StreamStore.Storage;
 

@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
-using StreamStore.Models;
 using StreamStore.Serialization;
-using StreamStore.Storage;
-using StreamStore.Storage.Models;
+using StreamStore.Testing.Models;
 
 
 namespace StreamStore.Testing
@@ -24,7 +22,7 @@ namespace StreamStore.Testing
                     .Build<StreamEventRecord>()
                     .With(x => x.Revision, () => revision++)
                     .With(x => x.Data, serializer.Serialize(CreateEvents(fixture, 1).First()))
-                    .With(x => x.CustomProperties, new EventCustomProperties(fixture.Create<Dictionary<string,string>>()))
+                    .With(x => x.CustomProperties, fixture.Create<Dictionary<string,string>>())
                     .CreateMany(count)
                     .ToArray();
 

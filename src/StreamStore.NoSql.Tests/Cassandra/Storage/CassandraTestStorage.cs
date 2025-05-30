@@ -1,4 +1,5 @@
 ﻿using Cassandra;
+using StreamStore.Extensions;
 using StreamStore.Testing.Framework;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Storage

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using StreamStore.Extensions;
 using StreamStore.Multitenancy;
 using StreamStore.Validation;
 

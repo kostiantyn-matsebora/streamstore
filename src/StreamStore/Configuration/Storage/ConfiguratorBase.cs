@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Storage.Validation;
-using StreamStore.Validation;
+
 
 namespace StreamStore.Configuration.Storage
 {
@@ -12,9 +11,7 @@ namespace StreamStore.Configuration.Storage
         protected ConfiguratorBase()
         {
             // Register default validators
-            services.AddSingleton<IStreamMutationRequestValidator, StreamMutationRequestValidator>();
-            services.AddSingleton<IDuplicateEventValidator, DuplicateEventValidator>();
-            services.AddSingleton<IDuplicateRevisionValidator, DuplicateRevisionValidator>();
+            services.RegisterDomainValidation();
         }
     }
 }

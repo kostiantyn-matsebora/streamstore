@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using StreamStore.Models;
 using StreamStore.Storage;
 using StreamStore.Storage.Models;
 using StreamStore.Testing;

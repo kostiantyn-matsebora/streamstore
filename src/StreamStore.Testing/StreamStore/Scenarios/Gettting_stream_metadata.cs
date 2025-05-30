@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using StreamStore.Exceptions;
+using StreamStore.Exceptions.Reading;
 
 
 namespace StreamStore.Testing.StreamStore.Scenarios

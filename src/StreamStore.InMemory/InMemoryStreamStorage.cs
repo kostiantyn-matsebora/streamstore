@@ -2,12 +2,14 @@ using System.Threading.Tasks;
 
 using System.Threading;
 using System.Collections.Concurrent;
-using StreamStore.Exceptions;
 using System;
 using System.Linq;
 using StreamStore.Storage;
 using System.Collections.Generic;
 using StreamStore.Validation;
+using StreamStore.Extensions;
+using StreamStore.Exceptions.Appending;
+using StreamStore.Exceptions.Reading;
 
 
 namespace StreamStore.InMemory

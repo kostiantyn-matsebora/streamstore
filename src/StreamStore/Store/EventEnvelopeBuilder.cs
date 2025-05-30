@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using StreamStore.Storage.Models;
+using StreamStore.Extensions;
 
 
 namespace StreamStore

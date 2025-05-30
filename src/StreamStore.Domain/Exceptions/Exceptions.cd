@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="StreamStore.Exceptions.Appending.EventAlreadyExistsException" Collapsed="true">
+    <Position X="18.25" Y="6.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Appending\EventAlreadyExistsException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Reading.InvalidFromRevisionException" Collapsed="true">
+    <Position X="30" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Reading\InvalidFromRevisionException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Appending.RevisionAlreadyExistsException" Collapsed="true">
+    <Position X="21.25" Y="6.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Appending\RevisionAlreadyExistsException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.StreamStoreException" Collapsed="true">
+    <Position X="21" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\StreamStoreException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Appending.DuplicatedEventException" Collapsed="true">
+    <Position X="9.25" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Appending\DuplicatedEventException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Appending.DuplicatedRevisionException" Collapsed="true">
+    <Position X="12" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Appending\DuplicatedRevisionException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Appending.InvalidStreamRevisionException" Collapsed="true">
+    <Position X="15" Y="4.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Exceptions\Appending\InvalidStreamRevisionException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Appending.StreamAlreadyMutatedException" Collapsed="true">
+    <Position X="24.5" Y="6.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Exceptions\Appending\StreamAlreadyMutatedException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Appending.AppendingException" Collapsed="true">
+    <Position X="18.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Appending\AppendingException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Appending.ConcurrencyControlException" Collapsed="true">
+    <Position X="21.5" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Appending\ConcurrencyControlException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Appending.OptimisticConcurrencyException" Collapsed="true">
+    <Position X="20.25" Y="4.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Appending\OptimisticConcurrencyException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Appending.PessimisticConcurrencyException" Collapsed="true">
+    <Position X="26.25" Y="4.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Appending\PessimisticConcurrencyException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Appending.StreamLockedException" Collapsed="true">
+    <Position X="27.75" Y="6.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Appending\StreamLockedException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Appending.ValidationException" Collapsed="true">
+    <Position X="11" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Appending\ValidationException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Reading.ReadingException" Collapsed="true">
+    <Position X="31.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Reading\ReadingException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StreamStore.Exceptions.Reading.StreamNotFoundException" Collapsed="true">
+    <Position X="32.75" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Exceptions\Reading\StreamNotFoundException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

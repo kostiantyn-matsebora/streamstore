@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Cassandra.Fluent.Migrator;
 using Cassandra.Fluent.Migrator.Core;
 using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Extensions;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Provisioning.Migrations;

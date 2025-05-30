@@ -1,4 +1,5 @@
-﻿using StreamStore.Multitenancy;
+﻿using StreamStore.Extensions;
+using StreamStore.Multitenancy;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Storage;

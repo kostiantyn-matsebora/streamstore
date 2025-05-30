@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
+using StreamStore.Exceptions.Reading;
 using StreamStore.Extensions;
 
 namespace StreamStore.Storage

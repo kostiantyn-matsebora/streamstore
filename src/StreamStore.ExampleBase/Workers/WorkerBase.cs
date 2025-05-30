@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using StreamStore.ExampleBase.Progress.Model;
 using static System.Collections.Specialized.BitVector32;
+using StreamStore.Extensions;
 
 
 

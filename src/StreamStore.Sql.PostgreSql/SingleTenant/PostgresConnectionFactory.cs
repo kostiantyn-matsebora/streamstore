@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Npgsql;
+using StreamStore.Extensions;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 

@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using ShellProgressBar;
 using StreamStore.ExampleBase.Progress.Model;
 using StreamStore.ExampleBase.Workers;
-using StreamStore.Exceptions;
+using StreamStore.Exceptions.Appending;
 
 
 namespace StreamStore.ExampleBase.Progress

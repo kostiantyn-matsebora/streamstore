@@ -2,10 +2,10 @@
 using System.Threading;
 
 using System.Diagnostics.CodeAnalysis;
-using StreamStore.Exceptions;
 
 using StreamStore.ExampleBase.Progress.Model;
 using System.Linq;
+using StreamStore.Exceptions.Reading;
 
 
 

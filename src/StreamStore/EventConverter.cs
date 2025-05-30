@@ -1,6 +1,4 @@
-﻿using StreamStore.Storage.Models;
-
-namespace StreamStore
+﻿namespace StreamStore
 {
     class EventConverter: IEventConverter
     {

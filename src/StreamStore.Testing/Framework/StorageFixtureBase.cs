@@ -2,6 +2,7 @@
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Configuration;
+using StreamStore.Extensions;
 using StreamStore.Provisioning;
 
 namespace StreamStore.Testing.Framework

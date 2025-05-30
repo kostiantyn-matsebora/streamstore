@@ -1,7 +1,7 @@
-﻿using StreamStore.Multitenancy;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.Extensions.Hosting;
+using StreamStore.Extensions;
 
 namespace StreamStore.Provisioning
 {

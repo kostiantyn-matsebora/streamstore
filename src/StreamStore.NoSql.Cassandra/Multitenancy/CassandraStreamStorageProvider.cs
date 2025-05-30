@@ -1,4 +1,5 @@
-﻿using StreamStore.Multitenancy;
+﻿using StreamStore.Extensions;
+using StreamStore.Multitenancy;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Storage;
 

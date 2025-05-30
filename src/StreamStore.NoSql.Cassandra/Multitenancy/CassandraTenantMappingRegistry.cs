@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using Cassandra.Mapping;
+using StreamStore.Extensions;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Storage;
 

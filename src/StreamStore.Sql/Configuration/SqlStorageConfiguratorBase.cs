@@ -2,6 +2,7 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Extensions;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Storage;
 

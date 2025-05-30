@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using StreamStore.Models;
 using System.Linq;
+using StreamStore.Extensions;
 
 namespace StreamStore
 {

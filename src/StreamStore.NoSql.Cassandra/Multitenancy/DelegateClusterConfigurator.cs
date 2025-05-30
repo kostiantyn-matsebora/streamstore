@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cassandra;
+using StreamStore.Extensions;
 
 namespace StreamStore.NoSql.Cassandra.Multitenancy
 {

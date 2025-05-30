@@ -9,7 +9,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Text.Json" Version="9.0.5" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\StreamStore.Serialization.Contracts\StreamStore.Serialization.Contracts.csproj" />
-  </ItemGroup>
 </Project>

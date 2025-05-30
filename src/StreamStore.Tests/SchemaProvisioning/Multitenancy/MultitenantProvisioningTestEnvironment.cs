@@ -1,5 +1,4 @@
 ﻿using Moq;
-using StreamStore.Multitenancy;
 using StreamStore.Provisioning;
 using StreamStore.Testing.Framework;
 

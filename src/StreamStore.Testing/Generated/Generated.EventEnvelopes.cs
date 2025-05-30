@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using AutoFixture;
-using StreamStore.Storage.Models;
 
 namespace StreamStore.Testing
 {
@@ -16,7 +16,7 @@ namespace StreamStore.Testing
                 var records =
                         new Fixture()
                         .Build<TestEventEnvelope>()
-                        .With(x => x.CustomProperties, fixture.Create<EventCustomProperties>())
+                        .With(x => x.CustomProperties, fixture.Create<Dictionary<string,string>>())
                         .CreateMany(count)
                         .ToArray();
 

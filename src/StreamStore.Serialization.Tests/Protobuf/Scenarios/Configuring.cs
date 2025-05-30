@@ -1,7 +1,5 @@
 ﻿using StreamStore.Testing;
 using StreamStore.Serialization.Protobuf;
-using Microsoft.Extensions.DependencyInjection;
-using StreamStore.InMemory;
 using FluentAssertions;
 using StreamStore.Configuration;
 

@@ -1,4 +1,5 @@
-﻿using StreamStore.Store;
+﻿using StreamStore.Extensions;
+using StreamStore.Store;
 using StreamStore.Validation;
 
 namespace StreamStore.Multitenancy

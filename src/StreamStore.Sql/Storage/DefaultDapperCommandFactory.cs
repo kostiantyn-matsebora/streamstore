@@ -2,6 +2,7 @@
 using Dapper;
 using StreamStore.Storage;
 using StreamStore.Sql.API;
+using StreamStore.Extensions;
 
 
 namespace StreamStore.Sql.Storage

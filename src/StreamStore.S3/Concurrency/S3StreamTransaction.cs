@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
+using StreamStore.Exceptions.Appending;
 using StreamStore.S3.Client;
 
 
