@@ -35,7 +35,7 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
             Environment.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
             var events = new StreamEventMetadataRecordCollection(new[]
             {
-                new StreamEventMetadataRecord { Id = "1", Revision = Revision.One }
+                new StreamEventMetadata { Id = "1", Revision = Revision.One }
             });
             Environment.MockS3Client.Setup(x => x.FindObjectAsync(It.IsAny<string>(), default))
                               .ReturnsAsync(new FindObjectResponse { Data = Converter.ToByteArray(events.ToArray()) });
@@ -56,8 +56,8 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
             Environment.MockS3Client.Setup(x => x.DisposeAsync()).Returns(default(ValueTask));
             var metadata = new StreamEventMetadataRecordCollection(new[]
             {
-                new StreamEventMetadataRecord { Id = "1", Revision = Revision.One },
-                new StreamEventMetadataRecord { Id = "2", Revision = 2 }
+                new StreamEventMetadata { Id = "1", Revision = Revision.One },
+                new StreamEventMetadata { Id = "2", Revision = 2 }
             });
 
             var @event = new StreamEventRecord { Id = "2", Revision = 2, Data = Generated.Objects.ByteArray };
@@ -76,5 +76,7 @@ namespace StreamStore.S3.Tests.Storage.StreamContainer
             streamContainer.Events.First().Event!.Id.Should().Be("2");
             streamContainer.Events.First().Event!.Revision.Should().Be(2);
         }
+
+
     }
 }

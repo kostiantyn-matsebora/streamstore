@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-namespace StreamStore
+﻿namespace StreamStore.S3.Tests.Storage
 {
-    internal class StreamEventMetadataRecord : IStreamEventMetadata
+    class StreamEventMetadata : IStreamEventMetadata
     {
         public Id Id { get; set; }
 
