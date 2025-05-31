@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using StreamStore.ExampleBase.Progress.Model;
-using StreamStore.Exceptions;
-
+using StreamStore.Exceptions.Appending;
+using StreamStore.Exceptions.Reading;
 using StreamStore.Testing;
 
 namespace StreamStore.ExampleBase.Workers

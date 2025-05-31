@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using AutoFixture;
-using StreamStore.Storage;
+using StreamStore.Testing.Models;
 namespace StreamStore.Testing
 {
     public static partial class Generated

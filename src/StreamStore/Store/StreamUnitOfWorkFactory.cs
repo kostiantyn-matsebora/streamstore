@@ -1,4 +1,5 @@
 ﻿
+using StreamStore.Extensions;
 using StreamStore.Validation;
 
 namespace StreamStore.Store

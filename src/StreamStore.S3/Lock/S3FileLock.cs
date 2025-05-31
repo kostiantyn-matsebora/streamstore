@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Extensions;
 using StreamStore.S3.Client;
 using StreamStore.S3.Storage;
 using StreamStore.Serialization;

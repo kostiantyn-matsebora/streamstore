@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentAssertions;
+using StreamStore.Extensions;
 using Xunit.Abstractions;
 
 namespace StreamStore.Testing.Serializer.Scenarios

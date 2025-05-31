@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore.Configuration.Storage;
-using StreamStore.Multitenancy;
 using StreamStore.Provisioning;
 using StreamStore.Testing;
 using StreamStore.Testing.Framework;

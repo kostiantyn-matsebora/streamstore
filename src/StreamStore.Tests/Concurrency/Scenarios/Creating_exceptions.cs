@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using StreamStore.Exceptions;
+using StreamStore.Exceptions.Appending;
 using StreamStore.Testing;
 
 namespace StreamStore.Tests.Concurrency

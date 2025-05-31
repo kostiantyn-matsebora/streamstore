@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>0.14.0</Version>
+    <Version>0.15.0</Version>
     <Authors>kostiantyn-matsebora</Authors>
     <Description>Backblaze B2 storage for [StreamStore] asynchronous event sourcing library.</Description>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
@@ -24,9 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Backblaze.Client" Version="1.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.5" />
   </ItemGroup>
 
   <ItemGroup>

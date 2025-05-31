@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Extensions;
 using StreamStore.Provisioning;
 
 

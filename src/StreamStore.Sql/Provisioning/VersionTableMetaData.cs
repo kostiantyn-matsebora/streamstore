@@ -1,4 +1,5 @@
 ﻿using FluentMigrator.Runner.VersionTableInfo;
+using StreamStore.Extensions;
 using StreamStore.Sql.Configuration;
 
 namespace StreamStore.Sql.Provisioning

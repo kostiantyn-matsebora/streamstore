@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using StreamStore.Extensions;
 using StreamStore.Multitenancy;
 
 namespace StreamStore.ExampleBase.Services.Multitenancy

@@ -1,5 +1,5 @@
-﻿using Cassandra;
-using Cassandra.Mapping;
+﻿using Cassandra.Mapping;
+using StreamStore.Extensions;
 using StreamStore.NoSql.Cassandra.Configuration;
 
 namespace StreamStore.NoSql.Cassandra.Storage

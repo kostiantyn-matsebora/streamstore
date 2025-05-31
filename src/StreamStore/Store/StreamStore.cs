@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Exceptions;
+using StreamStore.Exceptions.Appending;
+using StreamStore.Exceptions.Reading;
+using StreamStore.Extensions;
 using StreamStore.Stream;
 
 

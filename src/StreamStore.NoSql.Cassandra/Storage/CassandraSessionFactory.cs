@@ -1,5 +1,6 @@
 ﻿using System;
 using Cassandra;
+using StreamStore.Extensions;
 using StreamStore.NoSql.Cassandra.API;
 using StreamStore.NoSql.Cassandra.Configuration;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using StreamStore.Exceptions;
+using StreamStore.Exceptions.Appending;
 using StreamStore.Sql.API;
 
 namespace StreamStore.Sql.PostgreSql

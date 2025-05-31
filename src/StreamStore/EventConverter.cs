@@ -1,4 +1,4 @@
-﻿using StreamStore.Storage.Models;
+﻿using StreamStore.Serialization;
 
 namespace StreamStore
 {

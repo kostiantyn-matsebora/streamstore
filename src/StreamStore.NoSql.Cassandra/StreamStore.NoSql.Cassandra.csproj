@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>0.8.0</Version>
+    <Version>0.9.0</Version>
     <Company>kostiantyn-matsebora</Company>
     <Description>Apache Cassandra and Azure CosmosDB fort Appache Cassandra storage for StreamStore asynchronous event sourcing library.</Description>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
@@ -21,9 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Cassandra.Fluent.Migrator" Version="1.0.4" />
-    <PackageReference Include="CassandraCSharpDriver" Version="3.22.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" />

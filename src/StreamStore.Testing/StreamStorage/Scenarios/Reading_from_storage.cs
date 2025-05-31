@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using StreamStore.Exceptions;
+using StreamStore.Exceptions.Reading;
 using Xunit.Abstractions;
 
 namespace StreamStore.Testing.StreamStorage.Scenarios

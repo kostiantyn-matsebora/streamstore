@@ -2,6 +2,7 @@
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.VersionTableInfo;
 using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Extensions;
 using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Provisioning;
 

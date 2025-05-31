@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using StreamStore.InMemory;
 using StreamStore.Testing.Framework;
+using StreamStore.InMemory;
 
 namespace StreamStore.S3.Tests.InMemory
 {

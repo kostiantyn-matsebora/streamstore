@@ -1,4 +1,5 @@
-﻿using StreamStore.Sql.Configuration;
+﻿using StreamStore.Extensions;
+using StreamStore.Sql.Configuration;
 
 namespace StreamStore.Sql.Multitenancy
 {

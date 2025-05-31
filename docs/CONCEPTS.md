@@ -45,9 +45,9 @@ Despite the fact that event timestamp can be used to order events, it is not rea
 
 Collection of additional data you can store and retrieve for event. Can be used to store event metadata specific for particular solution.
 
-### StreamStore
+### Stream Storage
 
-Stream store is an abstraction of particular storage that allows to read and write events to the stream sequentially.
+Storage is a physical implementation of the event stream i.e. persistence layer. It is responsible for storing and retrieving events from the stream.
 
 ## Considerations
 

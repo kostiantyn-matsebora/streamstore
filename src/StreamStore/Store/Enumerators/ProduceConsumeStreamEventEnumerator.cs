@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using StreamStore.Exceptions;
+using StreamStore.Exceptions.Reading;
 
 
 namespace StreamStore.Stream

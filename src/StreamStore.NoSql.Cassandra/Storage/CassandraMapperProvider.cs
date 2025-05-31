@@ -1,4 +1,5 @@
 ﻿using Cassandra.Mapping;
+using StreamStore.Extensions;
 using StreamStore.NoSql.Cassandra.API;
 
 

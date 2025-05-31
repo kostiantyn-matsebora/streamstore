@@ -1,6 +1,6 @@
 ﻿
 using FluentAssertions;
-using StreamStore.Exceptions;
+using StreamStore.Exceptions.Reading;
 using StreamStore.Testing;
 using StreamStore.Tests.Enumerator;
 

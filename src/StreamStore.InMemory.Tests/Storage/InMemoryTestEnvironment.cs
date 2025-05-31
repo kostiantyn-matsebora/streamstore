@@ -1,5 +1,5 @@
-﻿using StreamStore.InMemory.Extensions;
-using StreamStore.Testing.StreamStorage;
+﻿using StreamStore.Testing.StreamStorage;
+using StreamStore.InMemory.Extensions;
 
 namespace StreamStore.InMemory.Tests.StreamStorage
 {

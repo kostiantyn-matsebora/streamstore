@@ -1,4 +1,5 @@
-﻿using StreamStore.Provisioning;
+﻿using StreamStore.Extensions;
+using StreamStore.Provisioning;
 using StreamStore.Sql.Configuration;
 using StreamStore.Sql.Multitenancy;
 using StreamStore.Sql.PostgreSql.Provisioning;

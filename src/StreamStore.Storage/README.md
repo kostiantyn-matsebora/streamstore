@@ -1,5 +1,5 @@
 # StreamStore.Storage
 
-Base implementation of storage for StreamStore library.
+Base abstract implementation of persistence layer for StreamStore library.
 
-More information you can find [here](https://github.com/kostiantyn-matsebora/streamstore/blob/master/docs/CUSTOMIZATION.md).
+More information you can find [here](https://github.com/kostiantyn-matsebora/streamstore/blob/master/docs/STORAGE.md).

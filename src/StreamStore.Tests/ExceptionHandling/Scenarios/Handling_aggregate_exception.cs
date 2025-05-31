@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using StreamStore.Extensions;
 using StreamStore.Testing;
 
 namespace StreamStore.Tests.ExceptionHandling

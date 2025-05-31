@@ -2,6 +2,7 @@
 using StreamStore.Storage;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
+using StreamStore.Extensions;
 
 namespace StreamStore.Sql.Storage
 {

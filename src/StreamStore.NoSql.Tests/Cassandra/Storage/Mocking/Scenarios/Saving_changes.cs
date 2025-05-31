@@ -2,7 +2,7 @@
 using Cassandra.Mapping;
 using FluentAssertions;
 using Moq;
-using StreamStore.Exceptions;
+using StreamStore.Exceptions.Appending;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.NoSql.Cassandra.Models;
 using StreamStore.NoSql.Cassandra.Storage;

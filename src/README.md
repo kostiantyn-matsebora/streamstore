@@ -10,15 +10,18 @@ Heavily inspired by Greg Young's Event Store and [`Streamstone`](https://github.
 
 Designed to be easily extended with custom storage backends.
 Despite the fact that component implements a logical layer for storing and querying events as a stream,
- `it does not provide functionality of DDD aggregate`, such as state mutation, conflict resolution etc., but serves more as `persistence layer` for it.
+ `it does not provide functionality of domain aggregate`, such as state mutation, conflict resolution etc., but serves more as `persistence layer`  for it.
+
+ ![StreamStore class diagram](diagrams/store.png)
 
 ## Packages
 
-  | Name | Description                                                                        | Package |
-  | ---- | -----------------------------------------------------------------------------------| ------- |
-  | [StreamStore] | Asynchronous event streaming | [![NuGet version (StreamStore)](https://img.shields.io/nuget/v/StreamStore.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore/) |
-  | [StreamStore.Storage] | Base implementation of storage | [![NuGet version (StreamStore.Testing)](https://img.shields.io/nuget/v/StreamStore.Storage.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage/) |
-  | [StreamStore.Serialization.Protobuf] | Protobuf event serializer | [![NuGet version (StreamStore.Testing)](https://img.shields.io/nuget/v/StreamStore.Serialization.Protobuf.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Serialization.Protobuf/) |
+| Name | Description | Package |
+| ---- | ----------- | ------- |
+| [StreamStore] | Asynchronous event streaming | [![NuGet version (StreamStore)](https://img.shields.io/nuget/v/StreamStore.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore/) |
+| [StreamStore.Storage] | Base abstract implementation of persistence layer of StreamStore component. | [![NuGet version (StreamStore.Storage)](https://img.shields.io/nuget/v/StreamStore.Storage.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage/) |
+| [StreamStore.Storage.Contracts] | Persistence layer interfaces of StreamStore component.| [![NuGet version (StreamStore.Storage.Contracts)](https://img.shields.io/nuget/v/StreamStore.Storage.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage.Contracts/) |
+| [StreamStore.Serialization.Protobuf] | Protobuf event serializer/deserializer. | [![NuGet version (StreamStore.Testing)](https://img.shields.io/nuget/v/StreamStore.Serialization.Protobuf.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Serialization.Protobuf/) |
 
 ### Storage packages
 
@@ -63,3 +66,4 @@ More information you can find in the [documentation](https://github.com/kostiant
 [StreamStore]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore
 [StreamStore.Serialization.Protobuf]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Serialization.Protobuf
 [StreamStore.Storage]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Storage
+[StreamStore.Storage.Contracts]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Storage.Contracts
