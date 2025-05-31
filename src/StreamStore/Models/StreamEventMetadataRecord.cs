@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 
 namespace StreamStore
 {
-    internal class StreamEventMetadataRecord: IStreamEventMetadata
+    internal class StreamEventMetadataRecord : IStreamEventMetadata
     {
         public Id Id { get; set; }
 
@@ -13,20 +12,6 @@ namespace StreamStore
 
         public int Revision { get; set; }
 
-        public IReadOnlyDictionary<string,string>? CustomProperties { get; set; }
-    }
-
-    public class StreamEventMetadataRecordCollection : RevisionedItemCollection<IStreamEventMetadata>
-    {
-
-        public DateTime? LastModified => this.Any() ? this.Last().Timestamp : (DateTime?)null;
-
-        public StreamEventMetadataRecordCollection() : base()
-        {
-        }
-
-        public StreamEventMetadataRecordCollection(IEnumerable<IStreamEventMetadata> records) : base(records)
-        {
-        }
+        public IReadOnlyDictionary<string, string>? CustomProperties { get; set; }
     }
 }
