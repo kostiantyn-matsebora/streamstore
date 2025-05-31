@@ -4,6 +4,7 @@ using StreamStore.Configuration;
 using StreamStore.Configuration.Storage;
 using StreamStore.Multitenancy;
 using StreamStore.Provisioning;
+using StreamStore.Serialization;
 using StreamStore.Store;
 
 

@@ -1,9 +1,8 @@
 ﻿using System;
 
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Serialization;
 
-namespace StreamStore
+namespace StreamStore.Serialization
 {
     public interface ISerializationConfigurator
     {

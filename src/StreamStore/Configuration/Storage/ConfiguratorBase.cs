@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Extensions;
 
 
 namespace StreamStore.Configuration.Storage

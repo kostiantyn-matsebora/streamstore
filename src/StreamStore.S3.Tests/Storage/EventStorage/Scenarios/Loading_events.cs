@@ -3,7 +3,6 @@ using FluentAssertions;
 using Moq;
 using StreamStore.S3.Client;
 using StreamStore.Serialization;
-using StreamStore.Storage;
 using StreamStore.Testing;
 
 namespace StreamStore.S3.Tests.Storage.EventStorage

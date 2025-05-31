@@ -17,7 +17,6 @@ namespace StreamStore.Serialization.Protobuf
             {
                 Type = envelope.Type,
                 Data = envelope.Data
-
             };
         }
 

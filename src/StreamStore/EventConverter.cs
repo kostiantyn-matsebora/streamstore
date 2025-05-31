@@ -1,4 +1,6 @@
-﻿namespace StreamStore
+﻿using StreamStore.Serialization;
+
+namespace StreamStore
 {
     class EventConverter: IEventConverter
     {

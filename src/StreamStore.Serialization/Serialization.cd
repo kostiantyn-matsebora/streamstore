@@ -37,13 +37,19 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Interface Name="StreamStore.IEventSerializer">
+  <Interface Name="StreamStore.Serialization.IEventSerializer">
     <Position X="9" Y="0.5" Width="1.5" />
-    <TypeIdentifier />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACBAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IEventSerializer.cs</FileName>
+    </TypeIdentifier>
   </Interface>
   <Interface Name="StreamStore.Serialization.ITypeRegistry">
     <Position X="11.25" Y="0.5" Width="1.75" />
-    <TypeIdentifier />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>ITypeRegistry.cs</FileName>
+    </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

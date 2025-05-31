@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StreamStore
+namespace StreamStore.Extensions
 {
     public static class IdExtension
     {

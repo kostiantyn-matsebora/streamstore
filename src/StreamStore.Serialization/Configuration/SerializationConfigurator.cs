@@ -4,7 +4,7 @@ using StreamStore.Serialization;
 
 namespace StreamStore.Configuration
 {
-    class SerializationConfigurator : ISerializationConfigurator
+    public sealed class SerializationConfigurator : ISerializationConfigurator
     {
         readonly ServiceCollection services = new ServiceCollection();
         readonly SerializationConfiguration configuration = new SerializationConfiguration();

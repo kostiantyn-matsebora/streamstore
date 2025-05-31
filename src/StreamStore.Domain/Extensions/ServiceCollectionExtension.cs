@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Validation;
 
-namespace StreamStore
+namespace StreamStore.Extensions
 {
     public static class ServiceCollectionExtension
     {

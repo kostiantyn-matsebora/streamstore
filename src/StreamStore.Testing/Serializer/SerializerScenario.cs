@@ -1,4 +1,6 @@
-﻿namespace StreamStore.Testing.Serializer
+﻿using StreamStore.Serialization;
+
+namespace StreamStore.Testing.Serializer
 {
     public abstract class SerializerScenario<TEnvironment> : Scenario<TEnvironment> where TEnvironment : SerializerTestEnvironmentBase, new()
     {
