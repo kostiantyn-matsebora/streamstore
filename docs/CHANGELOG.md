@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.20.0] - 2025-05-31
+
+### Changed
+
+- Separate storage and serialization contracts into separate projects.
+
 ## [0.19.0] - 2025-05-30
 
 ### Changed

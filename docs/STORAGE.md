@@ -1,6 +1,8 @@
-# Customization
+# Storage
 
-To implement your own storage you do not need StreamStore package, you can either implement all necessary interfaces from StreamStore.Contracts or inherit base abstract implementation from StreamStore.Storage package:
+Storage is a persistence layer for the StreamStore library.
+
+To implement your own storage you do not need StreamStore package, you can either implement all necessary interfaces from `StreamStore.Storage.Contracts` or inherit base abstract implementation from `StreamStore.Storage` package:
 
 ```dotnetcli
   dotnet add package StreamStore.Storage
@@ -12,9 +14,6 @@ or from NuGet Package Manager Console:
   Install-Package StreamStore.Storage
 ```
 
-## Serialization
-
-About serialization you can read in [SERIALIZATION](SERIALIZATION.md) file.
 
 ## Create your own storage implementation
 
@@ -80,7 +79,7 @@ More complex examples you can find in implementations of particular storage.
 
 ## Considerations
 
-- To implement your own storage you do not need StreamStore package, all necessary interfaces are located in [StreamStore.Contracts](https://www.nuget.org/packages/StreamStore.Contracts/) and base implementations in  [StreamStore.Storage](https://www.nuget.org/packages/StreamStore.Storage/) package.
+- To implement your own storage you do not need StreamStore package, all necessary interfaces are located in [StreamStore.Storage.Contracts](https://www.nuget.org/packages/StreamStore.Contracts/) and base implementations in  [StreamStore.Storage](https://www.nuget.org/packages/StreamStore.Storage/) package.
 - _You can register your own storage implementation in the DI container using any kind of lifetime (i.e. Singleton, Transient, Scoped, etc.)_  
 
   However, if you register it as a singleton, you should be aware that it should be thread-safe and preferably stateless.
