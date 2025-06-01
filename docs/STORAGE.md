@@ -79,7 +79,7 @@ More complex examples you can find in implementations of particular storage.
 
 ## Considerations
 
-- To implement your own storage you do not need StreamStore package, all necessary interfaces are located in [StreamStore.Storage.Contracts](https://www.nuget.org/packages/StreamStore.Contracts/) and base implementations in  [StreamStore.Storage](https://www.nuget.org/packages/StreamStore.Storage/) package.
+- To implement your own storage you do not need StreamStore package, all necessary interfaces are located in [StreamStore.Storage.Contracts](https://www.nuget.org/packages/StreamStore.Storage.Contracts/) and base implementations in  [StreamStore.Storage](https://www.nuget.org/packages/StreamStore.Storage/) package.
 - _You can register your own storage implementation in the DI container using any kind of lifetime (i.e. Singleton, Transient, Scoped, etc.)_  
 
   However, if you register it as a singleton, you should be aware that it should be thread-safe and preferably stateless.
