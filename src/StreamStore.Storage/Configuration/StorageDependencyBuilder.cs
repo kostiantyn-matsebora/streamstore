@@ -22,7 +22,6 @@ namespace StreamStore.Storage.Configuration
 
         public StorageDependencyBuilder WithMultitenancyConfigurator(MultitenancyConfiguratorBase? configurator)
         {
-            multitenancyConfigurator.ThrowIfNull(nameof(multitenancyConfigurator));
             multitenancyConfigurator = configurator;
             return this;
         }

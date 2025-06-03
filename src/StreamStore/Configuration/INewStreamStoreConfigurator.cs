@@ -16,6 +16,8 @@ namespace StreamStore
 
         INewStreamStoreConfigurator EnableMultitenancy();
 
+        INewStreamStoreConfigurator EnableSchemaProvisioning();
+
         INewStreamStoreConfigurator ConfigureStorage(Action<IServiceCollection> configure);
     }
 }

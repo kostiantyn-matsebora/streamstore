@@ -41,6 +41,7 @@ namespace StreamStore.Sql.Sqlite
             services.AddSingleton<IDbConnectionFactory, SqliteDbConnectionFactory>();
             services.AddSingleton<IDapperCommandFactory, DefaultDapperCommandFactory>();
             services.AddSingleton<ISqlExceptionHandler, SqliteExceptionHandler>();
+            services.AddSingleton<ISqlQueryProvider, DefaultSqlQueryProvider>();
             services.AddSingleton<IMigrator, SqliteMigrator>();
             services.AddSingleton(new MigrationConfiguration { MigrationAssembly = typeof(SqliteMigrator).Assembly });
         }

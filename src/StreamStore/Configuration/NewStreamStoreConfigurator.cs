@@ -13,7 +13,6 @@ namespace StreamStore.Configuration
     internal class NewStreamStoreConfigurator : INewStreamStoreConfigurator
     {
         readonly ISerializationConfigurator serializationConfigurator = new SerializationConfigurator();
-        readonly ServiceCollection services = new ServiceCollection();
 
         IServiceCollection serializationServices;
         IServiceCollection? storageServices;
@@ -53,7 +52,7 @@ namespace StreamStore.Configuration
             return this;
         }
 
-        public INewStreamStoreConfigurator EnableProvisioning()
+        public INewStreamStoreConfigurator EnableSchemaProvisioning()
         {
             provisioningEnabled = true;
             return this;
@@ -61,7 +60,7 @@ namespace StreamStore.Configuration
 
         public INewStreamStoreConfigurator ConfigureStorage(Action<IServiceCollection> configure)
         {
-            storageServices = 
+            storageServices =
                 new ServiceCollection()
                 .AddSingleton(storageMode);
 
@@ -69,13 +68,13 @@ namespace StreamStore.Configuration
             return this;
         }
 
-        public IServiceCollection Configure()
+        public IServiceCollection Configure(IServiceCollection services)
         {
             if (storageServices == null)
                 throw new InvalidOperationException("Persistence is not configured. Use ConfigureStorage to register storage services.");
 
             // Register stream store configuration
-            RegisterStoreConfiguration();
+            RegisterStoreConfiguration(services);
 
             // Copy serialization and storage services
             services
@@ -85,8 +84,10 @@ namespace StreamStore.Configuration
             return services;
         }
 
-        void RegisterStoreConfiguration()
+        void RegisterStoreConfiguration(IServiceCollection services)
         {
+            services.RegisterDomainValidation();
+
             services.AddSingleton(config)
                     .AddSingleton<StreamEventEnumeratorFactory>()
                     .AddSingleton<IEventConverter, EventConverter>()
@@ -110,15 +111,14 @@ namespace StreamStore.Configuration
 
         void RegisterSchemaProvisioning(IServiceCollection services)
         {
-                if (storageMode == StreamStorageMode.Multitenant)
-                {
-                    services.AddHostedService<TenantSchemaProvisioningService>();
-                }
-                else
-                {
-                    services.AddHostedService<SchemaProvisioningService>();
-                    services.AddHostedService<SchemaProvisioningService>();
-                }
+            if (storageMode == StreamStorageMode.Multitenant)
+            {
+                services.AddHostedService<TenantSchemaProvisioningService>();
+            }
+            else
+            {
+                services.AddHostedService<SchemaProvisioningService>();
+            }
         }
     }
 }

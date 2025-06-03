@@ -17,7 +17,7 @@ namespace StreamStore
         {
             var configurator = new NewStreamStoreConfigurator();
             configure?.Invoke(configurator);
-            return configurator.Configure();
+            return configurator.Configure(services);
         }
     }
 }

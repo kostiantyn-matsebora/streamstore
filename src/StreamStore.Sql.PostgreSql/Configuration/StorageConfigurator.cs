@@ -40,6 +40,7 @@ namespace StreamStore.Sql.PostgreSql
             services.AddSingleton<IDbConnectionFactory, PostgresConnectionFactory>();
             services.AddSingleton<IDapperCommandFactory, DefaultDapperCommandFactory>();
             services.AddSingleton<ISqlExceptionHandler, PostgresExceptionHandler>();
+            services.AddSingleton<ISqlQueryProvider, DefaultSqlQueryProvider>();
             services.AddSingleton<IMigrator, PostgreSqlMigrator>();
             services.AddSingleton(new MigrationConfiguration { MigrationAssembly = typeof(PostgreSqlMigrator).Assembly });
         }

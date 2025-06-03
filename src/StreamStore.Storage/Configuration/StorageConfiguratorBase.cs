@@ -25,6 +25,7 @@ namespace StreamStore.Storage.Configuration
             ConfigureStorage(new StorageDependencyRegistrator(services));
             ConfigureSchemaProvisioner(new SchemaProvisionerRegistrator(services));
             ConfigureAdditionalDependencies(services);
+
         }
     }
 }
