@@ -21,7 +21,7 @@ namespace StreamStore.Testing.Models
             Id = streamId.ThrowIfHasNoValue(nameof(streamId));
             records.ThrowIfNull(nameof(records));
 
-            Events = new RevisionedItemCollection<T>(records.ToArray());
+            Events = [.. records.ToArray()];
         }
     }
 
