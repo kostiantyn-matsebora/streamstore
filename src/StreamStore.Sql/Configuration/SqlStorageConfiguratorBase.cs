@@ -44,7 +44,7 @@ namespace StreamStore.Sql.Configuration
 
         public IServiceCollection ApplyFromConfig(IConfiguration configuration, string sectionName)
         {
-            return Apply(configurationBuilder.ReadFromConfig(configuration, sectionName));
+            return Apply(SqlStorageConfigurationBuilder.ReadFromConfig(configuration, sectionName));
         }
 
         public IServiceCollection Apply()

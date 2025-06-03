@@ -4,6 +4,7 @@ namespace StreamStore
 {
     public interface IStreamStorageConfigurator
     {
+
         public IServiceCollection Configure();
     }
 }

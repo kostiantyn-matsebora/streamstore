@@ -7,12 +7,16 @@ namespace StreamStore.Sql.Configuration
 {
     public class SqlStorageConfigurationBuilder
     {
-        readonly SqlStorageConfiguration defaultConfig;
         readonly SqlStorageConfiguration configuration;
+
+        public SqlStorageConfigurationBuilder()
+            : this(new SqlStorageConfiguration())
+        {
+        }
+
         public SqlStorageConfigurationBuilder(SqlStorageConfiguration defaultConfig)
         {
-            this.defaultConfig = defaultConfig.ThrowIfNull(nameof(defaultConfig));
-            configuration = (SqlStorageConfiguration)defaultConfig.Clone();
+            configuration = defaultConfig;
         }
 
         public SqlStorageConfigurationBuilder WithConnectionString(string connectionString)
@@ -48,19 +52,26 @@ namespace StreamStore.Sql.Configuration
             return (SqlStorageConfiguration)configuration.Clone();
         }
 
-        public SqlStorageConfiguration ReadFromConfig(IConfiguration configuration, string sectionName)
+        public static SqlStorageConfiguration ReadFromConfig(IConfiguration configuration, string sectionName, SqlStorageConfiguration? defaultConfig = null)
         {
+            configuration.ThrowIfNull(nameof(configuration));
+            sectionName.ThrowIfNull(nameof(sectionName));
+
+            var builder = new SqlStorageConfigurationBuilder();
+
+            var config = defaultConfig ?? new SqlStorageConfiguration();
+
             var section = configuration.GetSection(sectionName);
             if (section.Exists())
             {
-                WithTable(section.GetValue("TableName", defaultConfig.TableName)!);
-                WithSchema(section.GetValue("SchemaName", defaultConfig.SchemaName)!);
+                builder.WithTable(section.GetValue("TableName", config.TableName)!);
+                builder.WithSchema(section.GetValue("SchemaName", config.SchemaName)!);
             }
 
             var connectionString = configuration.GetConnectionString("StreamStore");
-            if (!string.IsNullOrWhiteSpace(connectionString)) WithConnectionString(connectionString);
+            if (!string.IsNullOrWhiteSpace(connectionString)) builder.WithConnectionString(connectionString);
 
-            return Build();
+            return builder.Build();
         }
     }
 }

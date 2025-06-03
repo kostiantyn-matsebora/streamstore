@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.Common;
+﻿using System.Data.Common;
 using System.Data.SQLite;
 using StreamStore.Extensions;
 using StreamStore.Sql.API;
