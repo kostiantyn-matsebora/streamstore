@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
 using StreamStore.Multitenancy;
@@ -16,15 +17,17 @@ namespace StreamStore.Configuration
 
         IServiceCollection serializationServices;
         IServiceCollection? storageServices;
+        IServiceCollection storeServices =  new ServiceCollection();
 
         StreamStoreConfiguration config = new StreamStoreConfiguration();
-        StreamStorageMode storageMode = StreamStorageMode.Single;
+        StreamStorageMode mode = StreamStorageMode.Single;
 
-        private bool provisioningEnabled;
+        bool provisioningEnabled;
 
         public NewStreamStoreConfigurator()
         {
             serializationServices = serializationConfigurator.Configure();
+            ConfigureStore();
         }
 
         public INewStreamStoreConfigurator WithReadingMode(StreamReadingMode mode)
@@ -46,24 +49,15 @@ namespace StreamStore.Configuration
             return this;
         }
 
-        public INewStreamStoreConfigurator EnableMultitenancy()
-        {
-            storageMode = StreamStorageMode.Multitenant;
-            return this;
-        }
-
         public INewStreamStoreConfigurator EnableSchemaProvisioning()
         {
             provisioningEnabled = true;
             return this;
         }
 
-        public INewStreamStoreConfigurator ConfigureStorage(Action<IServiceCollection> configure)
+        public INewStreamStoreConfigurator ConfigureStreamStorage(Action<IServiceCollection> configure)
         {
-            storageServices =
-                new ServiceCollection()
-                .AddSingleton(storageMode);
-
+            storageServices = new ServiceCollection().AddSingleton(mode);
             configure(storageServices);
             return this;
         }
@@ -71,47 +65,37 @@ namespace StreamStore.Configuration
         public IServiceCollection Configure(IServiceCollection services)
         {
             if (storageServices == null)
-                throw new InvalidOperationException("Persistence is not configured. Use ConfigureStorage to register storage services.");
+                throw new InvalidOperationException("Persistence is not configured. Use ConfigureStreamStorage to register storage services.");
 
-            // Register stream store configuration
-            RegisterStoreConfiguration(services);
+            services.AddSingleton(config);
+   
+            if (provisioningEnabled)
+                RegisterSchemaProvisioning(services);
 
             // Copy serialization and storage services
             services
+                .CopyFrom(storeServices)
                 .CopyFrom(serializationServices)
                 .CopyFrom(storageServices);
 
             return services;
         }
 
-        void RegisterStoreConfiguration(IServiceCollection services)
+        void ConfigureStore()
         {
-            services.RegisterDomainValidation();
+            storeServices.RegisterDomainValidation();
 
-            services.AddSingleton(config)
+            storeServices
+                    .AddSingleton(StreamStorageMode.Single)
                     .AddSingleton<StreamEventEnumeratorFactory>()
                     .AddSingleton<IEventConverter, EventConverter>()
                     .AddSingleton<IStreamUnitOfWorkFactory, StreamUnitOfWorkFactory>()
                     .AddSingleton<IStreamStore, StreamStore>();
-
-
-            RegisterMultitenancy(services);
-
-            if (provisioningEnabled)
-                RegisterSchemaProvisioning(services);
-        }
-
-        void RegisterMultitenancy(IServiceCollection services)
-        {
-            if (storageMode == StreamStorageMode.Multitenant)
-            {
-                services.AddSingleton<ITenantStreamStoreFactory, TenantStreamStoreFactory>();
-            }
         }
 
         void RegisterSchemaProvisioning(IServiceCollection services)
         {
-            if (storageMode == StreamStorageMode.Multitenant)
+            if (mode == StreamStorageMode.Multitenant)
             {
                 services.AddHostedService<TenantSchemaProvisioningService>();
             }
@@ -119,6 +103,25 @@ namespace StreamStore.Configuration
             {
                 services.AddHostedService<SchemaProvisioningService>();
             }
+        }
+
+        public INewStreamStoreConfigurator EnableMultitenancy<TProvider>() where TProvider : class, ITenantProvider
+        {
+            mode = StreamStorageMode.Multitenant;
+            storeServices.AddSingleton<ITenantProvider, TProvider>();
+            storeServices.AddSingleton<ITenantStreamStoreFactory, TenantStreamStoreFactory>();
+            return this;
+        }
+
+        public INewStreamStoreConfigurator EnableMultitenancy(params Id[] tenants)
+        {
+            if (tenants == null || tenants.Length == 0)
+                throw new ArgumentException("Tenants cannot be null or empty.", nameof(tenants));
+
+            mode = StreamStorageMode.Multitenant;
+            storeServices.AddSingleton<ITenantProvider>(new DefaultTenantProvider(tenants));
+            storeServices.AddSingleton<ITenantStreamStoreFactory, TenantStreamStoreFactory>();
+            return this;
         }
     }
 }

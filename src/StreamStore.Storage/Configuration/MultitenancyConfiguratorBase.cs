@@ -8,6 +8,7 @@ namespace StreamStore.Storage.Configuration
     public abstract class MultitenancyConfiguratorBase
     {
         protected abstract void ConfigureStorageProvider(StorageProviderRegistrator registrator);
+
         protected virtual void ConfigureSchemaProvisionerFactory(SchemaProvisionerFactoryRegistrator registrator)
         {
             // Default implementation does nothing, can be overridden in derived classes

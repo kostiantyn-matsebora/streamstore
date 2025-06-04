@@ -13,7 +13,7 @@ namespace StreamStore
             return configurator.Configure(services);
         }
 
-        public static IServiceCollection NewConfigureStreamStore(this IServiceCollection services, Action<INewStreamStoreConfigurator>? configure = default)
+        public static IServiceCollection AddStreamStore(this IServiceCollection services, Action<INewStreamStoreConfigurator>? configure = default)
         {
             var configurator = new NewStreamStoreConfigurator();
             configure?.Invoke(configurator);

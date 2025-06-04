@@ -28,7 +28,6 @@ namespace StreamStore.Storage.Configuration
 
         public StorageDependencyBuilder WithMode(StreamStorageMode mode)
         {
-          
             this.mode = mode;
             return this;
         }
@@ -45,7 +44,7 @@ namespace StreamStore.Storage.Configuration
             if (mode == StreamStorageMode.Multitenant)
             {
                 if (multitenancyConfigurator == null)
-                    throw new NotSupportedException("Multitenancy is enabled but not supported by storage.");
+                    throw new NotSupportedException("Multitenancy is enabled but not supported by storage or not configured properly.");
 
                 multitenancyConfigurator.Configure(services);
             }

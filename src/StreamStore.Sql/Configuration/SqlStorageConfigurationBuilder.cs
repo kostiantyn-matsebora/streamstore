@@ -14,9 +14,13 @@ namespace StreamStore.Sql.Configuration
         {
         }
 
-        public SqlStorageConfigurationBuilder(SqlStorageConfiguration defaultConfig)
+        public SqlStorageConfigurationBuilder(SqlStorageConfiguration defaultConfig, Action<SqlStorageConfigurationBuilder>? configure = null)
         {
             configuration = defaultConfig;
+            if (configure != null)
+            {
+                configure(this);
+            }
         }
 
         public SqlStorageConfigurationBuilder WithConnectionString(string connectionString)
