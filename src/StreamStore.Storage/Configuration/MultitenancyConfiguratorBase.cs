@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
-using StreamStore.Storage.Provisioning;
 
 
 namespace StreamStore.Storage.Configuration
@@ -9,12 +8,8 @@ namespace StreamStore.Storage.Configuration
     {
         protected abstract void ConfigureStorageProvider(StorageProviderRegistrator registrator);
 
-        protected virtual void ConfigureSchemaProvisionerFactory(SchemaProvisionerFactoryRegistrator registrator)
-        {
-            // Default implementation does nothing, can be overridden in derived classes
-            registrator.RegisterSchemaProvisioningFactory((provider) => NoopSchemaProvisionerFactory.Create);
-        }
-
+        protected abstract void ConfigureSchemaProvisionerFactory(SchemaProvisionerFactoryRegistrator registrator);
+       
 
         protected virtual void ConfigureAdditionalDependencies(IServiceCollection services)
         {

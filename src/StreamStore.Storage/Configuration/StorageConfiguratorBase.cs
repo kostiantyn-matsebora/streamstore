@@ -8,11 +8,7 @@ namespace StreamStore.Storage.Configuration
     public abstract class StorageConfiguratorBase
     {
         protected abstract void ConfigureStorage(StorageDependencyRegistrator registrator);
-        protected virtual void ConfigureSchemaProvisioner(SchemaProvisionerRegistrator registrator)
-        {
-            // Default implementation does nothing, can be overridden in derived classes
-            registrator.RegisterSchemaProvisioner<NoopSchemaProvisioner>();
-        }
+        protected abstract void ConfigureSchemaProvisioner(SchemaProvisionerRegistrator registrator);
 
         protected virtual void ConfigureAdditionalDependencies(IServiceCollection services)
         {

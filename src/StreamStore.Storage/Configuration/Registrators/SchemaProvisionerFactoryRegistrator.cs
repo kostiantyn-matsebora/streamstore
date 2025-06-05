@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
 using StreamStore.Provisioning;
 using StreamStore.Storage.Multitenancy;
+using StreamStore.Storage.Provisioning;
 
 namespace StreamStore.Storage.Configuration
 {
@@ -18,6 +19,11 @@ namespace StreamStore.Storage.Configuration
         public IServiceCollection RegisterSchemaProvisioningFactory(Func<IServiceProvider, Func<Id, ISchemaProvisioner>>  factory)
         {
             return services.AddSingleton<ITenantSchemaProvisionerFactory>(sp => new DelegateSchemaProvisionerFactory(factory(sp)));
+        }
+
+        public IServiceCollection RegisterDummySchemaProvisioningFactory()
+        {
+            return RegisterSchemaProvisioningFactory((provider) => NoopSchemaProvisionerFactory.Create);
         }
     }
 }

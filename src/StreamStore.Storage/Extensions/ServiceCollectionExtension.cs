@@ -6,7 +6,7 @@ namespace StreamStore.Storage
 {
 	public static class ServiceCollectionExtension
 	{
-		public static IServiceCollection ConfigureStorage(this IServiceCollection services, StorageConfiguratorBase configurator, MultitenancyConfiguratorBase? multitenancyConfigurator = null)
+		public static IServiceCollection ConfigurePersistence(this IServiceCollection services, StorageConfiguratorBase configurator, MultitenancyConfiguratorBase? multitenancyConfigurator = null)
 		{
             configurator.ThrowIfNull(nameof(configurator));
 

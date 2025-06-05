@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
 using StreamStore.Provisioning;
+using StreamStore.Storage.Provisioning;
 
 namespace StreamStore.Storage.Configuration
 {
@@ -15,6 +16,11 @@ namespace StreamStore.Storage.Configuration
         {
             services.AddSingleton(typeof(ISchemaProvisioner), typeof(TProvisioner));
             return services;
+        }
+
+        public IServiceCollection RegisterDummSchemaProvisioner()
+        {
+            return RegisterSchemaProvisioner<NoopSchemaProvisioner>();
         }
     }
 }

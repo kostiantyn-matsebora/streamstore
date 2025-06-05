@@ -11,10 +11,10 @@
 //        {
 //        }
 
-//        public override void ConfigureStreamStorage(ISingleTenantConfigurator configurator)
+//        public override void ConfigureStreamPersistence(ISingleTenantConfigurator configurator)
 //        {
 //               configurator.UseSqliteStorage(
-//                    c => c.ConfigureStreamStorage(
+//                    c => c.ConfigureStreamPersistence(
 //                        x => x.WithConnectionString(testStorage.ConnectionString)));
 //        }
 //    }

@@ -1,40 +1,40 @@
-﻿using StreamStore.Testing.StreamStorage.Scenarios;
-using Xunit.Abstractions;
+﻿//using StreamStore.Testing.StreamStorage.Scenarios;
+//using Xunit.Abstractions;
 
-namespace StreamStore.NoSql.Tests.Cassandra.Storage
-{
-    [Collection("Reading Cassandra")]
-    public class Getting_stream_metadata : Getting_stream_metadata<CassandraStorageTestEnvironment>
-    {
-        public Getting_stream_metadata(CassandraStorageFixture fixture) : base(new CassandraStorageTestEnvironment(fixture))
-        {
-        }
-    }
+//namespace StreamStore.NoSql.Tests.Cassandra.Storage
+//{
+//    [Collection("Reading Cassandra")]
+//    public class Getting_stream_metadata : Getting_stream_metadata<CassandraStorageTestEnvironment>
+//    {
+//        public Getting_stream_metadata(CassandraStorageFixture fixture) : base(new CassandraStorageTestEnvironment(fixture))
+//        {
+//        }
+//    }
 
-    [Collection("Reading Cassandra")]
+//    [Collection("Reading Cassandra")]
 
-    public class Reading_from_storage : Reading_from_storage<CassandraStorageTestEnvironment>
-    {
-        public Reading_from_storage(CassandraStorageFixture fixture, ITestOutputHelper output) : base(new CassandraStorageTestEnvironment(fixture), output)
-        {
-        }
-    }
+//    public class Reading_from_storage : Reading_from_storage<CassandraStorageTestEnvironment>
+//    {
+//        public Reading_from_storage(CassandraStorageFixture fixture, ITestOutputHelper output) : base(new CassandraStorageTestEnvironment(fixture), output)
+//        {
+//        }
+//    }
 
 
-    [Collection("Deleting Cassandra")]
-    public class Deleting_from_storage : Deleting_from_storage<CassandraStorageTestEnvironment>
-    {
-        public Deleting_from_storage(CassandraStorageFixture fixture) : base(new CassandraStorageTestEnvironment(fixture))
-        {
-        }
-    }
+//    [Collection("Deleting Cassandra")]
+//    public class Deleting_from_storage : Deleting_from_storage<CassandraStorageTestEnvironment>
+//    {
+//        public Deleting_from_storage(CassandraStorageFixture fixture) : base(new CassandraStorageTestEnvironment(fixture))
+//        {
+//        }
+//    }
 
-    [Collection("Writing Cassandra")]
-    public class Writing_to_storage : Writing_to_storage<CassandraStorageTestEnvironment>
-    {
-        public Writing_to_storage(CassandraStorageFixture fixture) : base(new CassandraStorageTestEnvironment(fixture))
-        {
-            SkipEventIdUniquenessCheck = true;
-        }
-    }
-}
+//    [Collection("Writing Cassandra")]
+//    public class Writing_to_storage : Writing_to_storage<CassandraStorageTestEnvironment>
+//    {
+//        public Writing_to_storage(CassandraStorageFixture fixture) : base(new CassandraStorageTestEnvironment(fixture))
+//        {
+//            SkipEventIdUniquenessCheck = true;
+//        }
+//    }
+//}

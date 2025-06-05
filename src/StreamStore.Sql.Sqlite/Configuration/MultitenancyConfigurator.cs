@@ -2,16 +2,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
 using StreamStore.Sql.Multitenancy;
-using StreamStore.Sql.Sqlite.Configuration;
 using StreamStore.Storage.Configuration;
 
 namespace StreamStore.Sql.Sqlite
 {
     internal class MultitenancyConfigurator : MultitenancyConfiguratorBase
     {
-        readonly Action<SqliteMultitenancyConfigurator> configure;
+        readonly Action<SqlMultitenancyConfigurator> configure;
 
-        public MultitenancyConfigurator(Action<SqliteMultitenancyConfigurator> configure)
+        public MultitenancyConfigurator(Action<SqlMultitenancyConfigurator> configure)
         {
             this.configure = configure.ThrowIfNull(nameof(configure));
         }
@@ -32,7 +31,7 @@ namespace StreamStore.Sql.Sqlite
             services.ThrowIfNull(nameof(services));
             services.AddSingleton<ISqlTenantStorageConfigurationProvider,SqlTenantStorageConfigurationProvider>();
             services.AddSingleton<SqliteTenantStorageProvider>();
-            configure(new SqliteMultitenancyConfigurator(services));
+            configure(new SqlMultitenancyConfigurator(services));
             services.AddSingleton<SqliteSchemaProvisionerFactory>();
         }
     }

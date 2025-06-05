@@ -20,6 +20,6 @@ namespace StreamStore
 
         INewStreamStoreConfigurator EnableSchemaProvisioning();
 
-        INewStreamStoreConfigurator ConfigureStreamStorage(Action<IServiceCollection> configure);
+        INewStreamStoreConfigurator ConfigureStreamPersistence(Action<IServiceCollection> configure);
     }
 }

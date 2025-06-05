@@ -15,5 +15,10 @@ namespace StreamStore.InMemory.Configuration
             base.ConfigureAdditionalDependencies(services);
             services.AddSingleton<InMemoryStreamStorageProvider>();
         }
+
+        protected override void ConfigureSchemaProvisionerFactory(SchemaProvisionerFactoryRegistrator registrator)
+        {
+            registrator.RegisterDummySchemaProvisioningFactory();
+        }
     }
 }

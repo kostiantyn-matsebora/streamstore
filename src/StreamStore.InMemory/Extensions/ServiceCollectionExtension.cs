@@ -9,7 +9,7 @@ namespace StreamStore.InMemory.Extensions
     {
         public static IServiceCollection AddInMemoryStorage(this IServiceCollection services)
         {
-            services.ConfigureStorage(new StorageConfigurator(), new MultitenancyConfigurator());
+            services.ConfigurePersistence(new StorageConfigurator(), new MultitenancyConfigurator());
             return services;
         }
     }
