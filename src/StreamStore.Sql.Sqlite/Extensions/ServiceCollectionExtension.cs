@@ -43,7 +43,7 @@ namespace StreamStore.Sql.Sqlite
         {
             configure.ThrowIfNull(nameof(defaultConfig));
             configure.ThrowIfNull(nameof(configure));
-            services.ConfigurePersistence(
+            services.ConfigurePersistenceMultitenancy(
                 new StorageConfigurator(defaultConfig), 
                 new MultitenancyConfigurator(configure));
             return services;

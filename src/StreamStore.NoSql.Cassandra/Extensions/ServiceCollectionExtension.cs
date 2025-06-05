@@ -33,7 +33,7 @@ namespace StreamStore.NoSql.Cassandra.Extensions
 
             (var storageServices, var config) = ConfigureStorage(configureStorage);
 
-            services.ConfigurePersistence(
+            services.ConfigurePersistenceMultitenancy(
                 new StorageConfigurator(storageServices, config),
                 new MultitenancyConfigurator(ConfigureMultitenancy(configureMultitenancy), config.Mode));
 

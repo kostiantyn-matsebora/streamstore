@@ -6,7 +6,7 @@ namespace StreamStore.Storage
 {
 	public static class ServiceCollectionExtension
 	{
-		public static IServiceCollection ConfigurePersistence(this IServiceCollection services, StorageConfiguratorBase configurator, MultitenancyConfiguratorBase? multitenancyConfigurator = null)
+		public static IServiceCollection ConfigurePersistenceMultitenancy(this IServiceCollection services, StorageConfiguratorBase configurator, MultitenancyConfiguratorBase multitenancyConfigurator)
 		{
             configurator.ThrowIfNull(nameof(configurator));
 
@@ -17,10 +17,21 @@ namespace StreamStore.Storage
                 new StorageDependencyBuilder()
                     .WithStorageConfigurator(configurator)
                     .WithMultitenancyConfigurator(multitenancyConfigurator)
-                    .WithMode(mode)
+                    .WithMode(StreamStorageMode.Multitenant)
                     .Build();
             services.CopyFrom(storageServices);
             return services;
         }
-	}
+        public static IServiceCollection ConfigurePersistence(this IServiceCollection services, StorageConfiguratorBase configurator)
+        {
+            var storageServices =
+               new StorageDependencyBuilder()
+                   .WithStorageConfigurator(configurator)
+                   .WithMode(StreamStorageMode.Single)
+                   .Build();
+            services.CopyFrom(storageServices);
+            return services;
+        }
+
+    }
 }
