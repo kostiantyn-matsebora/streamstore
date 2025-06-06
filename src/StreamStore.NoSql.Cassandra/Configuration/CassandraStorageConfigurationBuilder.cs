@@ -1,5 +1,6 @@
 ﻿using Cassandra;
 using StreamStore.Extensions;
+using StreamStore.NoSql.Cassandra.Storage;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
 {
@@ -42,6 +43,11 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         public CassandraStorageConfigurationBuilder WithSerialConsistencyLevel(ConsistencyLevel serialConsistencyLevel)
         {
             config.SerialConsistencyLevel = serialConsistencyLevel;
+            return this;
+        }
+        internal CassandraStorageConfigurationBuilder WithMode(CassandraMode mode) 
+        {
+            config.Mode = mode;
             return this;
         }
 

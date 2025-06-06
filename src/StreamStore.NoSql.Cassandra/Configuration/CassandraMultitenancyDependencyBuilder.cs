@@ -18,7 +18,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         {
             services.AddSingleton<ITenantClusterConfigurator>(tenantClusterConfigurator);
             services.AddSingleton<ICassandraTenantStorageConfigurationProvider, CassandraStorageConfigurationProvider>();
-            services.AddSingleton<ICassandraKeyspaceProvider, CassandraKeyspaceRegistry>();
+            services.AddSingleton<ICassandraKeyspaceProvider>(keyspaceProvider);
         }
 
         public CassandraMultitenancyDependencyBuilder WithTenantClusterConfigurator(Action<Id, Builder> configurator)
