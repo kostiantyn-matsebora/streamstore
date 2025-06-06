@@ -15,7 +15,7 @@ namespace StreamStore.S3.Tests.AWS.Factory
 
         public AWSS3FactoryTestEnvironment()
         {
-            Settings = new AWSS3StorageSettingsBuilder().Build();
+            Settings = new AWSS3StorageConfigurationBuilder().Build();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
 using StreamStore.Multitenancy;
@@ -49,7 +48,7 @@ namespace StreamStore.Configuration
             return this;
         }
 
-        public INewStreamStoreConfigurator EnableSchemaProvisioning()
+        public INewStreamStoreConfigurator EnableAutomaticProvisioning()
         {
             provisioningEnabled = true;
             return this;
@@ -86,7 +85,6 @@ namespace StreamStore.Configuration
             storeServices.RegisterDomainValidation();
 
             storeServices
-                    .AddSingleton(StreamStorageMode.Single)
                     .AddSingleton<StreamEventEnumeratorFactory>()
                     .AddSingleton<IEventConverter, EventConverter>()
                     .AddSingleton<IStreamUnitOfWorkFactory, StreamUnitOfWorkFactory>()

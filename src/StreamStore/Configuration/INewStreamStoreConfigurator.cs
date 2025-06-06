@@ -18,7 +18,7 @@ namespace StreamStore
 
         INewStreamStoreConfigurator EnableMultitenancy(params Id[] tenants);
 
-        INewStreamStoreConfigurator EnableSchemaProvisioning();
+        INewStreamStoreConfigurator EnableAutomaticProvisioning();
 
         INewStreamStoreConfigurator ConfigureStreamPersistence(Action<IServiceCollection> configure);
     }

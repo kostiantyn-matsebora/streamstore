@@ -18,7 +18,7 @@ namespace StreamStore.Storage.Configuration
             return services;
         }
 
-        public IServiceCollection RegisterDummSchemaProvisioner()
+        public IServiceCollection RegisterDummySchemaProvisioner()
         {
             return RegisterSchemaProvisioner<NoopSchemaProvisioner>();
         }
