@@ -18,7 +18,7 @@ namespace StreamStore.Testing.StreamStorage
 
         protected override sealed void RegisterServices(IServiceCollection services)
         {
-           new NewStreamStoreConfigurator()
+           new StreamStoreConfigurator()
                 .ConfigurePersistence(ConfigureStorage);
         }
 

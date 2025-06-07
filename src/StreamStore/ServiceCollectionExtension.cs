@@ -6,9 +6,9 @@ namespace StreamStore
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddStreamStore(this IServiceCollection services, Action<INewStreamStoreConfigurator>? configure = default)
+        public static IServiceCollection AddStreamStore(this IServiceCollection services, Action<IStreamStoreConfigurator>? configure = default)
         {
-            var configurator = new NewStreamStoreConfigurator();
+            var configurator = new StreamStoreConfigurator();
             configure?.Invoke(configurator);
             return configurator.Configure(services);
         }

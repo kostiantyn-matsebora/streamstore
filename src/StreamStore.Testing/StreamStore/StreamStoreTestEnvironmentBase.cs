@@ -24,6 +24,6 @@ namespace StreamStore.Testing.StreamStore
             storage.CopyTo(Storage);
         }
 
-        protected abstract void ConfigureStreamStore(INewStreamStoreConfigurator configurator);
+        protected abstract void ConfigureStreamStore(IStreamStoreConfigurator configurator);
     }
 }

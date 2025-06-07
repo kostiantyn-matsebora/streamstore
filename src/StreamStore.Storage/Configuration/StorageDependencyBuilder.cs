@@ -9,7 +9,6 @@ namespace StreamStore.Storage.Configuration
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         StorageConfiguratorBase storageConfigurator;
         MultitenancyConfiguratorBase? multitenancyConfigurator;
-        StreamStorageMode mode = StreamStorageMode.Single;
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
@@ -26,12 +25,6 @@ namespace StreamStore.Storage.Configuration
             return this;
         }
 
-        public StorageDependencyBuilder WithMode(StreamStorageMode mode)
-        {
-            this.mode = mode;
-            return this;
-        }
-
         public IServiceCollection Build()
         {
             var services = new ServiceCollection();
@@ -41,11 +34,8 @@ namespace StreamStore.Storage.Configuration
             }
             storageConfigurator.Configure(services);
 
-            if (mode == StreamStorageMode.Multitenant)
+            if (multitenancyConfigurator != null)
             {
-                if (multitenancyConfigurator == null)
-                    throw new NotSupportedException("Multitenancy is enabled but not supported by storage or not configured properly.");
-
                 multitenancyConfigurator.Configure(services);
             }
 

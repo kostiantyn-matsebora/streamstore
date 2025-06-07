@@ -11,13 +11,12 @@ namespace StreamStore.Storage
             configurator.ThrowIfNull(nameof(configurator));
 
             var serviceProvider = services.BuildServiceProvider();
-            var mode = serviceProvider.GetRequiredService<StreamStorageMode>();
+
 
             var storageServices = 
                 new StorageDependencyBuilder()
                     .WithStorageConfigurator(configurator)
                     .WithMultitenancyConfigurator(multitenancyConfigurator)
-                    .WithMode(StreamStorageMode.Multitenant)
                     .Build();
             services.CopyFrom(storageServices);
             return services;
@@ -27,7 +26,6 @@ namespace StreamStore.Storage
             var storageServices =
                new StorageDependencyBuilder()
                    .WithStorageConfigurator(configurator)
-                   .WithMode(StreamStorageMode.Single)
                    .Build();
             services.CopyFrom(storageServices);
             return services;

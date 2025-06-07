@@ -24,7 +24,7 @@ namespace StreamStore.Tests.Enumerator
             return new StreamEventEnumerable(parameters, Services.GetRequiredService<StreamEventEnumeratorFactory>());
         }
 
-        protected override void ConfigureStreamStore(INewStreamStoreConfigurator configurator)
+        protected override void ConfigureStreamStore(IStreamStoreConfigurator configurator)
         {
             configurator.WithReadingMode(mode);
             configurator.ConfigurePersistence(x => x.AddInMemoryStorage());
