@@ -1,9 +1,11 @@
-﻿namespace StreamStore.Testing.Framework
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace StreamStore.Testing.Framework
 {
     public interface IStorageFixture
     {
         MemoryStorage Container { get; }
-        void ConfigureStorage(ISingleTenantConfigurator configurator);
+        void ConfigurePersistence(IServiceCollection services);
 
         bool IsStorageReady { get; }
     }

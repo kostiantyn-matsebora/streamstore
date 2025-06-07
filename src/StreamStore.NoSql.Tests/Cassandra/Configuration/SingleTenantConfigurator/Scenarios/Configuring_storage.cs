@@ -20,7 +20,7 @@
 
 //            // Act
 //            configurator.ConfigureCluster(builder => builder.AddContactPoint("localhost").WithDefaultKeyspace("default_keyspace"));
-//            configurator.ConfigureStorage(c => c.WithKeyspaceName("keyspace"));
+//            configurator.ConfigurePersistence(c => c.WithKeyspaceName("keyspace"));
 //            configurator.WithSessionFactory<FakeSessionFactory>();
 //            configurator.Configure(services);
 //            var provider = services.BuildServiceProvider();

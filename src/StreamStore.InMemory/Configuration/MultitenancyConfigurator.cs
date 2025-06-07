@@ -12,7 +12,6 @@ namespace StreamStore.InMemory.Configuration
 
         protected override void ConfigureAdditionalDependencies(IServiceCollection services)
         {
-            base.ConfigureAdditionalDependencies(services);
             services.AddSingleton<InMemoryStreamStorageProvider>();
         }
 

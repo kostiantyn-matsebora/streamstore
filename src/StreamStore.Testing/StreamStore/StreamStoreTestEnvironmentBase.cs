@@ -16,7 +16,7 @@ namespace StreamStore.Testing.StreamStore
 
         protected override void RegisterServices(IServiceCollection services)
         {
-            services.ConfigureStreamStore(ConfigureStreamStore);
+            services.AddStreamStore(ConfigureStreamStore);
         }
 
         protected override void SetUpInternal()
@@ -24,6 +24,6 @@ namespace StreamStore.Testing.StreamStore
             storage.CopyTo(Storage);
         }
 
-        protected abstract void ConfigureStreamStore(IStreamStoreConfigurator configurator);
+        protected abstract void ConfigureStreamStore(INewStreamStoreConfigurator configurator);
     }
 }

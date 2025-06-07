@@ -1,4 +1,5 @@
-﻿using StreamStore.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Extensions;
 using StreamStore.Testing.Framework;
 
 namespace StreamStore.Testing.StreamStorage
@@ -14,10 +15,11 @@ namespace StreamStore.Testing.StreamStorage
 
         public override MemoryStorage Container => fixture.Container;
 
-        protected override void ConfigureStorage(ISingleTenantConfigurator configurator)
+        protected override void ConfigureStorage(IServiceCollection services)
         {
-           fixture.ConfigureStorage(configurator);
+           fixture.ConfigurePersistence(services);
         }
+
         protected override void SetUpInternal()
         {
         }

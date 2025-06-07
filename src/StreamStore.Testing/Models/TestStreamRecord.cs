@@ -6,7 +6,7 @@ using StreamStore.Extensions;
 
 namespace StreamStore.Testing.Models
 {
-    public abstract class StreamRecord<T> where T : IStreamEventMetadata
+    public abstract class TestStreamRecord<T> where T : IStreamEventMetadata
     {
         public Revision Revision => Events.MaxRevision;
 
@@ -16,7 +16,7 @@ namespace StreamStore.Testing.Models
 
         public Id Id { get; }
 
-        protected StreamRecord(Id streamId, IEnumerable<T> records)
+        protected TestStreamRecord(Id streamId, IEnumerable<T> records)
         {
             Id = streamId.ThrowIfHasNoValue(nameof(streamId));
             records.ThrowIfNull(nameof(records));
@@ -25,10 +25,10 @@ namespace StreamStore.Testing.Models
         }
     }
 
-    public sealed class StreamRecord : StreamRecord<IStreamEventRecord>
+    public sealed class TestStreamRecord : TestStreamRecord<IStreamEventRecord>
     {
-        public StreamRecord(Id streamId) : this(streamId, Array.Empty<IStreamEventRecord>()) { }
-        public StreamRecord(Id streamId, IEnumerable<IStreamEventRecord> records) : base(streamId, records) { }
+        public TestStreamRecord(Id streamId) : this(streamId, Array.Empty<IStreamEventRecord>()) { }
+        public TestStreamRecord(Id streamId, IEnumerable<IStreamEventRecord> records) : base(streamId, records) { }
 
         public bool IsEmpty => !Events.Any();
     }

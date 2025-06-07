@@ -4,7 +4,7 @@ using StreamStore.Extensions;
 using StreamStore.NoSql.Cassandra.Configuration;
 using StreamStore.Storage;
 
-namespace StreamStore.NoSql.Cassandra.Extensions
+namespace StreamStore.NoSql.Cassandra
 {
     public static class ServiceCollectionExtension
     {

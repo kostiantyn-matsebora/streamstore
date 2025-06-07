@@ -18,12 +18,11 @@ namespace StreamStore.Testing.StreamStorage
 
         protected override sealed void RegisterServices(IServiceCollection services)
         {
-            ConfiguratorFactory.StoreConfigurator
-                .WithSingleStorage(ConfigureStorage)
-                .Configure(services);
+           new NewStreamStoreConfigurator()
+                .ConfigurePersistence(ConfigureStorage);
         }
 
-        protected abstract void ConfigureStorage(ISingleTenantConfigurator configurator);
+        protected abstract void ConfigureStorage(IServiceCollection services);
 
         protected override void SetUpInternal()
         {

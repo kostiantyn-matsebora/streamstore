@@ -1,6 +1,6 @@
 ﻿namespace StreamStore.Testing.Models
 {
-    public class StreamEventRecord : StreamEventMetadataRecord, IStreamEventRecord
+    public class TestStreamEventRecord : TestStreamEventMetadataRecord, IStreamEventRecord
     {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         public byte[] Data { get; set; }

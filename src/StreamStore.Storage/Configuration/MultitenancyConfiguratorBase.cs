@@ -9,12 +9,10 @@ namespace StreamStore.Storage.Configuration
         protected abstract void ConfigureStorageProvider(StorageProviderRegistrator registrator);
 
         protected abstract void ConfigureSchemaProvisionerFactory(SchemaProvisionerFactoryRegistrator registrator);
-       
 
-        protected virtual void ConfigureAdditionalDependencies(IServiceCollection services)
-        {
-            // Default implementation does nothing, can be overridden in derived classes
-        }
+
+        protected abstract void ConfigureAdditionalDependencies(IServiceCollection services);
+
 
         public void Configure(IServiceCollection services)
         {

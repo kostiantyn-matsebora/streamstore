@@ -54,7 +54,7 @@ namespace StreamStore.Configuration
             return this;
         }
 
-        public INewStreamStoreConfigurator ConfigureStreamPersistence(Action<IServiceCollection> configure)
+        public INewStreamStoreConfigurator ConfigurePersistence(Action<IServiceCollection> configure)
         {
             storageServices = new ServiceCollection().AddSingleton(mode);
             configure(storageServices);
@@ -64,7 +64,7 @@ namespace StreamStore.Configuration
         public IServiceCollection Configure(IServiceCollection services)
         {
             if (storageServices == null)
-                throw new InvalidOperationException("Persistence is not configured. Use ConfigureStreamPersistence to register storage services.");
+                throw new InvalidOperationException("Persistence is not configured. Use ConfigurePersistence to register storage services.");
 
             services.AddSingleton(config);
    

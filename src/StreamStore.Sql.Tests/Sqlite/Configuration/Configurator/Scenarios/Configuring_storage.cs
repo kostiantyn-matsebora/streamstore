@@ -21,7 +21,7 @@
 
 //            // Act
 //            var serviceCollection = configurator
-//                    .UseSqliteStorage(c => c.ConfigureStreamPersistence(x => x.WithConnectionString(connectionString)))
+//                    .UseSqliteStorage(c => c.ConfigurePersistence(x => x.WithConnectionString(connectionString)))
 //                    .Configure();
 
 

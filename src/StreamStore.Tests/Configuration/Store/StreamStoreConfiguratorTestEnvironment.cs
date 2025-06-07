@@ -8,7 +8,7 @@ namespace StreamStore.Tests.Configuration.Store
     {
 
 
-        public static IStreamStoreConfigurator CreateConfigurator() => ConfiguratorFactory.StoreConfigurator;
+        public static INewStreamStoreConfigurator CreateConfigurator() => new NewStreamStoreConfigurator();
 
 
         public static IServiceCollection CreateServiceCollection() => new ServiceCollection();

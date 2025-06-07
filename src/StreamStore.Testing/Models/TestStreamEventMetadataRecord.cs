@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace StreamStore.Testing.Models
 {
-    public class StreamEventMetadataRecord: IStreamEventMetadata
+    public class TestStreamEventMetadataRecord: IStreamEventMetadata
     {
         public Id Id { get; set; }
 
@@ -16,16 +16,16 @@ namespace StreamStore.Testing.Models
         public IReadOnlyDictionary<string,string>? CustomProperties { get; set; }
     }
 
-    public class StreamEventMetadataRecordCollection : RevisionedItemCollection<IStreamEventMetadata>
+    public class TestStreamEventMetadataRecordCollection : RevisionedItemCollection<IStreamEventMetadata>
     {
 
         public DateTime? LastModified => this.Any() ? this.Last().Timestamp : null;
 
-        public StreamEventMetadataRecordCollection() : base()
+        public TestStreamEventMetadataRecordCollection() : base()
         {
         }
 
-        public StreamEventMetadataRecordCollection(IEnumerable<IStreamEventMetadata> records) : base(records)
+        public TestStreamEventMetadataRecordCollection(IEnumerable<IStreamEventMetadata> records) : base(records)
         {
         }
     }

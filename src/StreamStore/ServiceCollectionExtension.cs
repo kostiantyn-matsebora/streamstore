@@ -6,13 +6,6 @@ namespace StreamStore
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection ConfigureStreamStore(this IServiceCollection services, Action<IStreamStoreConfigurator>? configure = default)
-        {
-            var configurator = new StreamStoreConfigurator();
-            configure?.Invoke(configurator);
-            return configurator.Configure(services);
-        }
-
         public static IServiceCollection AddStreamStore(this IServiceCollection services, Action<INewStreamStoreConfigurator>? configure = default)
         {
             var configurator = new NewStreamStoreConfigurator();

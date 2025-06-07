@@ -10,9 +10,9 @@ namespace StreamStore.Tests
         {
         }
 
-        protected override void ConfigureStreamStore(IStreamStoreConfigurator configurator)
+        protected override void ConfigureStreamStore(INewStreamStoreConfigurator configurator)
         {
-            configurator.WithSingleStorage(x => x.UseInMemoryStorage());
+            configurator.ConfigurePersistence(x => x.AddInMemoryStorage());
         }
     }
 }
