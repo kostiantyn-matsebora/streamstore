@@ -203,22 +203,10 @@ or from NuGet Package Manager Console:
 
 More examples of reading and writing events you can find in test scenarios of [StreamStore.Testing](../src/StreamStore.Testing/StreamStore/Scenarios/) project.
 
-## Example
+## Examples
 
-Each type of storage has its own example project, for instance, you can find an example of usage in the [StreamStore.Sql.Example](../src/StreamStore.Sql.Example) project.
+Examples of using StreamStore with different storage implementations you can find in separate [`streamstore-examples`] repository.
 
-Example projects provides a simple console application that demonstrates how to **configure and use** [`StreamStore`] in your application as single storage or multitenancy.
-
-`Single storage` examples demonstrates:
-
-- Concurrency control
-- asynchronous reading and writing operations
-  
-`Multitenancy` examples, in turn, demonstrates asynchronous reading and writing operations in **isolated tenant storage**.
-
-For getting all running options simply run the application with `--help` argument.
-
-For configuring application via configuration file, create `appsettings.Development.json` file.
 
 ## Customization
 
@@ -263,4 +251,5 @@ to contribute, feel free to [open an issue][issues] or
 [StreamStore.Serialization.Protobuf]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Serialization.Protobuf
 [StreamStore.Storage]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Storage
 [StreamStore.Storage.Contracts]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Storage.Contracts
+[`streamstore-examples`]: https://github.com/kostiantyn-matsebora/streamstore-examples
 
