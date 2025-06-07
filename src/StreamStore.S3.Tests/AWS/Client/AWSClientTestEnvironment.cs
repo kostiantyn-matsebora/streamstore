@@ -23,7 +23,7 @@ namespace StreamStore.S3.Tests.AWS.Client
 
             AmazonClient = MockRepository.Create<IAmazonS3>();
             var configurator =
-                new AWSS3StorageConfigurator(new ServiceCollection());
+                new AWSS3StorageConfigurator(new ServiceCollection(), new AWSS3StorageConfigurationBuilder().Build());
 
            Settings = configurator.Build();
            Client = new AWSS3Client(

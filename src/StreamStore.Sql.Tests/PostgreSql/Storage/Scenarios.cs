@@ -21,7 +21,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Storage
     }
 
 
-   [Collection("Deleting Postgres")]
+    [Collection("Deleting Postgres")]
     public class Deleting_from_storage : Deleting_from_storage<PostgresTestEnvironment>
     {
         public Deleting_from_storage(PostgresStorageFixture fixture) : base(new PostgresTestEnvironment(fixture))
@@ -29,7 +29,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Storage
         }
     }
 
-   [Collection("Writing Postgres")]
+    [Collection("Writing Postgres")]
     public class Writing_to_storage : Writing_to_storage<PostgresTestEnvironment>
     {
         public Writing_to_storage(PostgresStorageFixture fixture) : base(new PostgresTestEnvironment(fixture))

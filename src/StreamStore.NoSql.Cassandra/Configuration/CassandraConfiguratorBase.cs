@@ -1,6 +1,4 @@
 ﻿using System;
-using Cassandra;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.Storage;
 
@@ -17,7 +15,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         protected void ConfigureStorageInstance(Action<CassandraStorageConfigurationBuilder> configure)
         {
-            var builder = new CassandraStorageConfigurationBuilder();
+            var builder = new CassandraStorageConfigurationBuilder(new CassandraStorageConfiguration());
             configure(builder);
             storageConfig = builder.Build();
         }

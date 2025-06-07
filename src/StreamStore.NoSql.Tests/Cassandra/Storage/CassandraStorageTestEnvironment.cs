@@ -9,7 +9,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage
         {
         }
 
-        public CassandraStorageTestEnvironment(CassandraStorageFixture fixture): base(fixture)
+        public CassandraStorageTestEnvironment(CassandraStorageFixture fixture) : base(fixture)
         {
         }
 

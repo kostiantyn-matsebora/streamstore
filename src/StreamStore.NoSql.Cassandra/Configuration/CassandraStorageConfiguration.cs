@@ -1,5 +1,6 @@
 ﻿using System;
 using Cassandra;
+using StreamStore.NoSql.Cassandra.Storage;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
 {
@@ -8,10 +9,12 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         public string Keyspace { get; set; } = "streamstore";
         public string EventsTableName { get; set; } = "events";
 
-        public ConsistencyLevel WriteConsistencyLevel { get; set; } = ConsistencyLevel.All;
-        public ConsistencyLevel ReadConsistencyLevel { get; set; } = ConsistencyLevel.All;
+        public ConsistencyLevel WriteConsistencyLevel { get; set; } = ConsistencyLevel.Quorum;
+        public ConsistencyLevel ReadConsistencyLevel { get; set; } = ConsistencyLevel.Quorum;
 
         public ConsistencyLevel SerialConsistencyLevel { get; set; } = ConsistencyLevel.Serial;
+
+        internal CassandraMode Mode { get; set; } = CassandraMode.Cassandra;
 
         public object Clone()
         {
@@ -21,7 +24,8 @@ namespace StreamStore.NoSql.Cassandra.Configuration
                 EventsTableName = EventsTableName,
                 WriteConsistencyLevel = WriteConsistencyLevel,
                 ReadConsistencyLevel = ReadConsistencyLevel,
-                SerialConsistencyLevel = SerialConsistencyLevel
+                SerialConsistencyLevel = SerialConsistencyLevel,
+                Mode = Mode
             };
         }
     }

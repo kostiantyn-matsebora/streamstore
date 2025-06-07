@@ -88,7 +88,7 @@ namespace StreamStore.S3.AWS
 
             var response = await client!.ListVersionsAsync(request);
 
-            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK || !response.Versions.Any())
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK || response.Versions == null || !response.Versions.Any())
                 return null;
 
             return new ObjectDescriptor
@@ -110,7 +110,7 @@ namespace StreamStore.S3.AWS
             };
             var response = await client!.ListVersionsAsync(request);
 
-            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK)
+            if (response.HttpStatusCode != System.Net.HttpStatusCode.OK || response.Versions == null)
                 return null;
 
             return new ListS3ObjectsResponse

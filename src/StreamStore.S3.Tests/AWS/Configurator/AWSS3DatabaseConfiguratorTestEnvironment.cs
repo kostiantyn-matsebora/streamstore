@@ -39,7 +39,7 @@ namespace StreamStore.S3.Tests.AWS.Configurator
                  d.Lifetime == ServiceLifetime.Singleton))
              );
 
-            return new AWSS3StorageConfigurator(ServiceCollection.Object);
+            return new AWSS3StorageConfigurator(ServiceCollection.Object, new AWSS3StorageConfigurationBuilder().Build());
         }
 
         public AWSS3StorageConfiguratorTestEnvironment()

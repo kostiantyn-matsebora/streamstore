@@ -50,8 +50,7 @@ namespace StreamStore.Sql.Tests.Configuration.StorageConfigurator
             var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemoryConfig).Build();
 
             // Act
-            var builder = CreateStorageConfigurationBuilder();
-            var config = builder.ReadFromConfig(configuration, "StreamStore:Sql");
+            var config = SqlStorageConfigurationBuilder.ReadFromConfig(configuration, "StreamStore:Sql");
 
 
             // Assert

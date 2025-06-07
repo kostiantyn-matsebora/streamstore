@@ -11,7 +11,7 @@ namespace StreamStore.Testing
     {
         readonly static TypeRegistry registry  = new TypeRegistry();
 
-        public static StreamEventRecord[] CreateStreamEventRecords(this Fixture fixture, int initialRevision, int count)
+        public static TestStreamEventRecord[] CreateStreamEventRecords(this Fixture fixture, int initialRevision, int count)
         {
             var serializer = new NewtonsoftEventSerializer(registry, false);
 
@@ -19,7 +19,7 @@ namespace StreamStore.Testing
 
             var records =
                     fixture
-                    .Build<StreamEventRecord>()
+                    .Build<TestStreamEventRecord>()
                     .With(x => x.Revision, () => revision++)
                     .With(x => x.Data, serializer.Serialize(CreateEvents(fixture, 1).First()))
                     .With(x => x.CustomProperties, fixture.Create<Dictionary<string,string>>())
@@ -34,7 +34,7 @@ namespace StreamStore.Testing
             return fixture.CreateMany<RootEvent>().ToArray();
         }
 
-        public static StreamEventRecord[] CreateStreamEventRecords(this Fixture fixture,  int count)
+        public static TestStreamEventRecord[] CreateStreamEventRecords(this Fixture fixture,  int count)
         {
             return CreateStreamEventRecords(fixture, 1, count);
         }

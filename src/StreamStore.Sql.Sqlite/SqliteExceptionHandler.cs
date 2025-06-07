@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.SQLite;
-using StreamStore.Exceptions;
 using StreamStore.Exceptions.Appending;
 using StreamStore.Sql.API;
 

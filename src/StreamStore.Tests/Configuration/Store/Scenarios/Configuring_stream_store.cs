@@ -11,18 +11,6 @@ namespace StreamStore.Tests.Configuration.Store
 {
     public class Configuring_stream_store : Scenario<StreamStoreConfiguratorTestEnvironment>
     {
-        [Fact]
-        public void When_storage_is_not_configured()
-        {
-            // Arrange
-            var configurator = StreamStoreConfiguratorTestEnvironment.CreateConfigurator();
-
-            // Act
-            var act = () => configurator.Configure(StreamStoreConfiguratorTestEnvironment.CreateServiceCollection());
-
-            //Assert
-            act.Should().Throw<InvalidOperationException>().WithMessage("Storage backend is not registered");
-        }
 
         [Fact]
         public void When_store_configured_in_single_mode()
@@ -38,10 +26,9 @@ namespace StreamStore.Tests.Configuration.Store
             // Act
             configurator.WithReadingPageSize(pageSize);
             configurator.WithReadingMode(mode);
-            configurator.WithSingleStorage(x => x.UseInMemoryStorage());
-            configurator.EnableSchemaProvisioning();
+            configurator.ConfigurePersistence(x => x.AddInMemoryStorage());
+            configurator.EnableAutomaticProvisioning();
 
-            configurator.Configure(services);
 
             var provider = services.BuildServiceProvider();
 
@@ -85,10 +72,9 @@ namespace StreamStore.Tests.Configuration.Store
             // Act
             configurator.WithReadingPageSize(pageSize);
             configurator.WithReadingMode(mode);
-            configurator.WithMultitenancy(x => x.UseInMemoryStorage());
-            configurator.EnableSchemaProvisioning();
-
-            configurator.Configure(services);
+            configurator.EnableMultitenancy();
+            configurator.ConfigurePersistence(x => x.AddInMemoryStorageWithMultitenancy());
+            configurator.EnableAutomaticProvisioning();
 
             var provider = services.BuildServiceProvider();
 

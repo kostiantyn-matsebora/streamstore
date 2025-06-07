@@ -16,10 +16,10 @@ namespace StreamStore.Testing
 
         public int EventPerStream { get; set; } = 100;
     }
-    public class MemoryStorage: IEnumerable<StreamRecord>
+    public class MemoryStorage: IEnumerable<TestStreamRecord>
     {
 
-        readonly ConcurrentDictionary<Id, StreamRecord> store = new ConcurrentDictionary<Id, StreamRecord>();
+        readonly ConcurrentDictionary<Id, TestStreamRecord> store = new ConcurrentDictionary<Id, TestStreamRecord>();
 
         public MemoryStorage() : this(new MemoryStorageOptions())
         {
@@ -32,10 +32,10 @@ namespace StreamStore.Testing
 
         public Id RandomId => store.Keys.Skip(RandomStreamIndex()).First();
 
-        public StreamRecord RandomStream => store[RandomId];
+        public TestStreamRecord RandomStream => store[RandomId];
 
 
-        public StreamRecord PeekStream()
+        public TestStreamRecord PeekStream()
         {
             lock (store)
             {
@@ -65,9 +65,9 @@ namespace StreamStore.Testing
             return Enumerable.Range(0, capacity).Select(i => Generated.Primitives.Id).ToArray();
         }
 
-        static StreamRecord GenerateStream(Id id, int eventPerStream)
+        static TestStreamRecord GenerateStream(Id id, int eventPerStream)
         {
-            return new StreamRecord(id, Generated.StreamEventRecords.Many(eventPerStream));
+            return new TestStreamRecord(id, Generated.StreamEventRecords.Many(eventPerStream));
         }
 
         int RandomStreamIndex()
@@ -75,7 +75,7 @@ namespace StreamStore.Testing
             return RandomNumberGenerator.GetInt32(0, store.Keys.Count - 1);
         }
 
-        public IEnumerator<StreamRecord> GetEnumerator()
+        public IEnumerator<TestStreamRecord> GetEnumerator()
         {
             return store.Values.GetEnumerator();
         }
