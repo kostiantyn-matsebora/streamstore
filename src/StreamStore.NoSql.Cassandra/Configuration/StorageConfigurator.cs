@@ -24,10 +24,14 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             registrator.RegisterStorage<CassandraStreamStorage>();
         }
 
+        protected override void ConfigureSchemaProvisioner(SchemaProvisionerRegistrator registrator)
+        {
+            registrator.RegisterSchemaProvisioner<CassandraSchemaProvisioner>();
+        }
+
         protected override void ConfigureAdditionalDependencies(IServiceCollection services)
         {
             var serviceProvider = this.services.BuildServiceProvider();
-            var config = serviceProvider.GetRequiredService<CassandraStorageConfiguration>();
             services
                 .CopyFrom(this.services)
                 .AddSingleton(config)
@@ -37,9 +41,6 @@ namespace StreamStore.NoSql.Cassandra.Configuration
                 .AddSingleton<ICassandraCqlQueries>(new CassandraCqlQueriesProvider(config.Mode).GetCqlQueries(config));
         }
 
-        protected override void ConfigureSchemaProvisioner(SchemaProvisionerRegistrator registrator)
-        {
-            registrator.RegisterSchemaProvisioner<CassandraSchemaProvisioner>();
-        }
+
     }
 }

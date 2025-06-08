@@ -7,7 +7,7 @@ namespace StreamStore.Configuration
 {
     public class ComponentSpecificationBase: IComponentSpecification
     {
-        List<Type> requiredDependencies = new List<Type>();
+        readonly List<Type> requiredDependencies = new List<Type>();
 
         public Type[] RequiredDependencies => requiredDependencies.ToArray();
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Cassandra;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.API;
