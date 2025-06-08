@@ -10,9 +10,6 @@ namespace StreamStore.Storage
 		{
             configurator.ThrowIfNull(nameof(configurator));
 
-            var serviceProvider = services.BuildServiceProvider();
-
-
             var storageServices = 
                 new StorageDependencyBuilder()
                     .WithStorageConfigurator(configurator)

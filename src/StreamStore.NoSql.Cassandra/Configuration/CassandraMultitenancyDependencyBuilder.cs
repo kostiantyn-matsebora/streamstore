@@ -11,7 +11,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         DelegateTenantClusterConfigurator tenantClusterConfigurator = new DelegateTenantClusterConfigurator();
         readonly CassandraKeyspaceRegistry keyspaceProvider = new CassandraKeyspaceRegistry();
-        IServiceCollection services = new ServiceCollection();
+        readonly IServiceCollection services = new ServiceCollection();
 
         public CassandraMultitenancyDependencyBuilder()
         {

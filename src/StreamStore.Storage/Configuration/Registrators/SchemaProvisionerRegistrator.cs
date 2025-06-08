@@ -7,7 +7,8 @@ namespace StreamStore.Storage.Configuration
 {
     public sealed class SchemaProvisionerRegistrator
     {
-        readonly IServiceCollection services = new ServiceCollection();
+        readonly IServiceCollection services;
+
         public SchemaProvisionerRegistrator(IServiceCollection services)
         {
             this.services = services.ThrowIfNull(nameof(services));

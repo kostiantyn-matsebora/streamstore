@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
-using StreamStore.Provisioning;
 using StreamStore.Sql.API;
 using StreamStore.Sql.Configuration;
 using StreamStore.Sql.PostgreSql.Provisioning;
@@ -12,7 +11,7 @@ namespace StreamStore.Sql.PostgreSql
 {
     internal class StorageConfigurator : StorageConfiguratorBase
     {
-        SqlStorageConfiguration config = PostgresConfiguration.DefaultConfiguration;
+        readonly SqlStorageConfiguration config = PostgresConfiguration.DefaultConfiguration;
 
         public StorageConfigurator()
         {

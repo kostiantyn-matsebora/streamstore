@@ -23,7 +23,12 @@ namespace StreamStore.Storage.Configuration
 
         public IServiceCollection RegisterDummySchemaProvisioningFactory()
         {
-            return RegisterSchemaProvisioningFactory((provider) => NoopSchemaProvisionerFactory.Create);
+            return RegisterSchemaProvisioningFactory((provider) => Create);
+        }
+
+        static ISchemaProvisioner Create(Id tenantId)
+        {
+            return new NoopSchemaProvisioner();
         }
     }
 }

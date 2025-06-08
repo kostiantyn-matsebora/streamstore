@@ -31,7 +31,6 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         protected override void ConfigureAdditionalDependencies(IServiceCollection services)
         {
-            var serviceProvider = this.services.BuildServiceProvider();
             services
                 .CopyFrom(this.services)
                 .AddSingleton(config)

@@ -11,8 +11,8 @@ namespace StreamStore.Sql.Sqlite
 {
     internal class StorageConfigurator: StorageConfiguratorBase
     {
-        
-        SqlStorageConfiguration config = SqliteConfiguration.DefaultConfiguration;
+
+        readonly SqlStorageConfiguration config = SqliteConfiguration.DefaultConfiguration;
 
         public StorageConfigurator()
         {

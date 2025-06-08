@@ -12,12 +12,13 @@ namespace StreamStore.Configuration
     internal class StreamStoreConfigurator : IStreamStoreConfigurator
     {
         readonly ISerializationConfigurator serializationConfigurator = new SerializationConfigurator();
+        readonly IServiceCollection storeServices = new ServiceCollection();
+        readonly StreamStoreConfiguration config = new StreamStoreConfiguration();
 
         IServiceCollection serializationServices;
         IServiceCollection? storageServices;
-        IServiceCollection storeServices =  new ServiceCollection();
 
-        StreamStoreConfiguration config = new StreamStoreConfiguration();
+
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         public StreamStoreConfigurator()
@@ -26,8 +27,6 @@ namespace StreamStore.Configuration
             RegisterDefaultSerialization();
             RegisterStore();
         }
-
-        
 
         public IStreamStoreConfigurator WithReadingMode(StreamReadingMode mode)
         {
@@ -66,7 +65,6 @@ namespace StreamStore.Configuration
             if (storageServices == null)
                 throw new InvalidOperationException("Persistence is not configured. Use ConfigurePersistence to register storage services.");
 
-   
             if (config.ProvisioningEnabled)
                 RegisterSchemaProvisioning(services);
 

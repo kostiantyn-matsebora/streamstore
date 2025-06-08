@@ -7,7 +7,7 @@ namespace StreamStore.Storage.Configuration
 {
     public sealed class StorageDependencyRegistrator
     {
-        readonly IServiceCollection services = new ServiceCollection();
+        readonly IServiceCollection services;
         public StorageDependencyRegistrator(IServiceCollection services)
         {
             this.services = services.ThrowIfNull(nameof(services));
@@ -27,20 +27,6 @@ namespace StreamStore.Storage.Configuration
             services.AddSingleton(typeof(IStreamReader), storage);
             services.AddSingleton(typeof(IStreamWriter), storage);
             return this;
-        }
-
-
-        void ValidateConfiguration()
-        {
-            if (!services.Any(s => s.ServiceType == typeof(IStreamStorage)))
-            {
-                throw new InvalidOperationException("Storage backend (IStreamStorage) is not registered");
-            }
-
-            if (!services.Any(s => s.ServiceType == typeof(IStreamReader)))
-            {
-                throw new InvalidOperationException("Storage backend (IStreamReader) is not registered");
-            }
         }
     }
 }

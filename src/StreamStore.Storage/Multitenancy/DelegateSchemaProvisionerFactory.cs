@@ -6,7 +6,7 @@ namespace StreamStore.Storage.Multitenancy
 {
     internal class DelegateSchemaProvisionerFactory: ITenantSchemaProvisionerFactory
     {
-        Func<Id, ISchemaProvisioner> factory;
+        readonly Func<Id, ISchemaProvisioner> factory;
         public DelegateSchemaProvisionerFactory(Func<Id, ISchemaProvisioner> factory)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));

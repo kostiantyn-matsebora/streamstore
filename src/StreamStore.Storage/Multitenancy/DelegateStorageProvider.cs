@@ -6,7 +6,7 @@ namespace StreamStore.Storage.Multitenancy
 {
     internal class DelegateStorageProvider : ITenantStreamStorageProvider
     {
-        Func<Id, IStreamStorage> provider;
+        readonly Func<Id, IStreamStorage> provider;
         public DelegateStorageProvider(Func<Id, IStreamStorage> provider)
         {
             this.provider = provider.ThrowIfNull(nameof(provider));
