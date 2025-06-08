@@ -9,8 +9,8 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         public string Keyspace { get; set; } = "streamstore";
         public string EventsTableName { get; set; } = "events";
 
-        public ConsistencyLevel WriteConsistencyLevel { get; set; } = ConsistencyLevel.Quorum;
-        public ConsistencyLevel ReadConsistencyLevel { get; set; } = ConsistencyLevel.Quorum;
+        public ConsistencyLevel WriteConsistencyLevel { get; set; } = ConsistencyLevel.All;
+        public ConsistencyLevel ReadConsistencyLevel { get; set; } = ConsistencyLevel.All;
 
         public ConsistencyLevel SerialConsistencyLevel { get; set; } = ConsistencyLevel.Serial;
 
