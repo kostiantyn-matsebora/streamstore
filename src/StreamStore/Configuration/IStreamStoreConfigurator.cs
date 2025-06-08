@@ -21,5 +21,7 @@ namespace StreamStore
         IStreamStoreConfigurator EnableAutomaticProvisioning();
 
         IStreamStoreConfigurator ConfigurePersistence(Action<IServiceCollection> configure);
+
+        public IServiceCollection Configure(IServiceCollection services);
     }
 }

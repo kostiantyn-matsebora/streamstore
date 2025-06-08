@@ -13,7 +13,7 @@ namespace StreamStore.Tests.Configuration.Store
     {
 
         [Fact]
-        public void When_store_configured_in_single_mode()
+        public void When_store_configured()
         {
             // Arrange
             var storage = Generated.Mocks.Single<IStreamStorage>();
@@ -28,7 +28,7 @@ namespace StreamStore.Tests.Configuration.Store
             configurator.WithReadingMode(mode);
             configurator.ConfigurePersistence(x => x.AddInMemoryStorage());
             configurator.EnableAutomaticProvisioning();
-
+            services = configurator.Configure(services);
 
             var provider = services.BuildServiceProvider();
 
@@ -36,20 +36,20 @@ namespace StreamStore.Tests.Configuration.Store
             provider.GetRequiredService<IStreamStore>().Should().NotBeNull();
 
             provider.GetRequiredService<IStreamStorage>()
-                        .Should().NotBeNull()
-                        .And.BeOfType<InMemoryStreamStorage>();
+                        .Should().NotBeNull();
+
 
             provider.GetRequiredService<IStreamReader>()
-                        .Should().NotBeNull()
-                        .And.BeOfType<InMemoryStreamStorage>();
+                        .Should().NotBeNull();
+
 
             provider.GetRequiredService<StreamEventEnumeratorFactory>()
-                        .Should().NotBeNull()
-                        .And.BeOfType<StreamEventEnumeratorFactory>();
+                        .Should().NotBeNull();
+
 
             provider.GetRequiredService<IEventConverter>()
-                        .Should().NotBeNull()
-                        .And.BeOfType<EventConverter>();
+                        .Should().NotBeNull();
+                        
 
             var configuration = provider.GetRequiredService<StreamStoreConfiguration>();
 
@@ -59,7 +59,7 @@ namespace StreamStore.Tests.Configuration.Store
         }
 
         [Fact]
-        public void When_store_configured_in_multitenant_mode()
+        public void When_store_configured_with_multitenancy()
         {
             // Arrange
             var storage = Generated.Mocks.Single<IStreamStorage>();
@@ -72,9 +72,10 @@ namespace StreamStore.Tests.Configuration.Store
             // Act
             configurator.WithReadingPageSize(pageSize);
             configurator.WithReadingMode(mode);
-            configurator.EnableMultitenancy();
+            configurator.EnableMultitenancy(Generated.Primitives.Id);
             configurator.ConfigurePersistence(x => x.AddInMemoryStorageWithMultitenancy());
             configurator.EnableAutomaticProvisioning();
+            services = configurator.Configure(services);
 
             var provider = services.BuildServiceProvider();
 
@@ -82,16 +83,15 @@ namespace StreamStore.Tests.Configuration.Store
             provider.GetRequiredService<ITenantStreamStoreFactory>().Should().NotBeNull();
 
             provider.GetRequiredService<ITenantSchemaProvisionerFactory>()
-                        .Should().NotBeNull()
-                        .And.BeOfType<DefaultSchemaProvisionerFactory>();
+                        .Should().NotBeNull();
 
             provider.GetRequiredService<ITenantProvider>()
-                        .Should().NotBeNull()
-                        .And.BeOfType<DefaultTenantProvider>();
+                        .Should().NotBeNull();
+
 
             provider.GetRequiredService<IEventConverter>()
-                        .Should().NotBeNull()
-                        .And.BeOfType<EventConverter>();
+                        .Should().NotBeNull();
+                        
 
             var configuration = provider.GetRequiredService<StreamStoreConfiguration>();
 

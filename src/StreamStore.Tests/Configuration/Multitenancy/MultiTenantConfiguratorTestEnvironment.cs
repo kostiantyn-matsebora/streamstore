@@ -4,7 +4,6 @@ using StreamStore.Configuration.Storage;
 using StreamStore.Provisioning;
 using StreamStore.Testing;
 using StreamStore.Testing.Framework;
-using StreamStore.Tests.Configuration.SingleTenant;
 namespace StreamStore.Tests.Configuration.MultiTenant
 {
     public class MultiTenantConfiguratorTestEnvironment : TestEnvironmentBase
@@ -20,7 +19,7 @@ namespace StreamStore.Tests.Configuration.MultiTenant
         {
             public ISchemaProvisioner Create(Id tenantId)
             {
-                return new SingleTenantConfiguratorTestEnvironment.FakeSchemaProvisioner();
+                return new FakeSchemaProvisioner();
             }
         }
 
@@ -30,6 +29,14 @@ namespace StreamStore.Tests.Configuration.MultiTenant
             {
                 return Enumerable.Empty<Id>();
             }
+        }
+    }
+
+    class FakeSchemaProvisioner : ISchemaProvisioner
+    {
+        public Task ProvisionSchemaAsync(CancellationToken token)
+        {
+            return Task.CompletedTask;
         }
     }
 }

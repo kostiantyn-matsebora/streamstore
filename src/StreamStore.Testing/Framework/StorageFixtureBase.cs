@@ -45,9 +45,11 @@ namespace StreamStore.Testing.Framework
 
         ServiceProvider BuildServiceProvider()
         {
-            var serviceCollection = new ServiceCollection();
-            new StreamStoreConfigurator()
-                .ConfigurePersistence(ConfigurePersistence);
+            var serviceCollection = 
+                new StreamStoreConfigurator()
+                .ConfigurePersistence(ConfigurePersistence)
+                .Configure(new ServiceCollection());
+
             return serviceCollection.BuildServiceProvider();
         }
 
