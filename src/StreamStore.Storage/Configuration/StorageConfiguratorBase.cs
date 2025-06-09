@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
-using StreamStore.Storage.Provisioning;
 
 
 namespace StreamStore.Storage.Configuration
@@ -9,11 +8,7 @@ namespace StreamStore.Storage.Configuration
     {
         protected abstract void ConfigureStorage(StorageDependencyRegistrator registrator);
         protected abstract void ConfigureSchemaProvisioner(SchemaProvisionerRegistrator registrator);
-
-        protected virtual void ConfigureAdditionalDependencies(IServiceCollection services)
-        {
-            // Default implementation does nothing, can be overridden in derived classes
-        }
+        protected abstract void ConfigureAdditionalDependencies(IServiceCollection services);
 
         public void Configure(IServiceCollection services)
         {

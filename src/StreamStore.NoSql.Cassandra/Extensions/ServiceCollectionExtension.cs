@@ -20,8 +20,6 @@ namespace StreamStore.NoSql.Cassandra
             return services;
         }
 
-
-
         public static IServiceCollection AddCassandraWithMultitenancy(
             this IServiceCollection services, 
             Action<CassandraStorageDependencyBuilder> configureStorage, 
@@ -46,6 +44,7 @@ namespace StreamStore.NoSql.Cassandra
             configureMultitenancy(multitenancyBuilder);
             return multitenancyBuilder.Build();
         }
+
         static (IServiceCollection, CassandraStorageConfiguration) ConfigureStorage(Action<CassandraStorageDependencyBuilder> configure)
         {
             var builder = new CassandraStorageDependencyBuilder();
