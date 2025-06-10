@@ -9,6 +9,7 @@ namespace StreamStore.Storage
 		public static IServiceCollection ConfigurePersistenceMultitenancy(this IServiceCollection services, StorageConfiguratorBase configurator, MultitenancyConfiguratorBase multitenancyConfigurator)
 		{
             configurator.ThrowIfNull(nameof(configurator));
+            multitenancyConfigurator.ThrowIfNull(nameof(multitenancyConfigurator));
 
             var storageServices = 
                 new StorageDependencyBuilder()
@@ -20,6 +21,8 @@ namespace StreamStore.Storage
         }
         public static IServiceCollection ConfigurePersistence(this IServiceCollection services, StorageConfiguratorBase configurator)
         {
+            configurator.ThrowIfNull(nameof(configurator));
+
             var storageServices =
                new StorageDependencyBuilder()
                    .WithStorageConfigurator(configurator)
