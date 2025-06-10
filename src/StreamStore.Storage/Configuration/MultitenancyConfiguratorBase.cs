@@ -13,7 +13,6 @@ namespace StreamStore.Storage.Configuration
 
         protected abstract void ConfigureAdditionalDependencies(IServiceCollection services);
 
-
         public void Configure(IServiceCollection services)
         {
             services.ThrowIfNull(nameof(services));
