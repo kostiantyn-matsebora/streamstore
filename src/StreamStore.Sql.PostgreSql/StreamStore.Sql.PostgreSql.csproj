@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StreamStore.Sql\StreamStore.Sql.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\StreamStore.Sql\StreamStore.Sql.csproj"  />
     <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" />
     <ProjectReference Include="..\StreamStore.Storage.Contracts\StreamStore.Storage.Contracts.csproj" />
     <ProjectReference Include="..\StreamStore.Domain\StreamStore.Domain.csproj" />
