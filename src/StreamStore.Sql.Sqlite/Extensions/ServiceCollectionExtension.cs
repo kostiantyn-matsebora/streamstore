@@ -10,13 +10,13 @@ namespace StreamStore.Sql.Sqlite
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddSqlite(this IServiceCollection services)
+        public static IServiceCollection UseSqlite(this IServiceCollection services)
         {
             services.ConfigurePersistence(new StorageConfigurator(SqliteConfiguration.DefaultConfiguration));
             return services;
         }
 
-        public static IServiceCollection AddSqlite(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection UseSqlite(this IServiceCollection services, IConfiguration configuration)
         {
             configuration.ThrowIfNull(nameof(configuration));
             services.ConfigurePersistence(
@@ -28,7 +28,7 @@ namespace StreamStore.Sql.Sqlite
             return services;
         }
 
-        public static IServiceCollection AddSqlite(this IServiceCollection services, Action<SqlStorageConfigurationBuilder> configure)
+        public static IServiceCollection UseSqlite(this IServiceCollection services, Action<SqlStorageConfigurationBuilder> configure)
         {
             configure.ThrowIfNull(nameof(configure));
             services.ConfigurePersistence(
@@ -39,7 +39,7 @@ namespace StreamStore.Sql.Sqlite
             return services;
         }
 
-        public static IServiceCollection AddSqliteWithMultitenancy(this IServiceCollection services, SqlStorageConfiguration defaultConfig, Action<SqlMultitenancyConfigurator> configure)
+        public static IServiceCollection UseSqliteWithMultitenancy(this IServiceCollection services, SqlStorageConfiguration defaultConfig, Action<SqlMultitenancyConfigurator> configure)
         {
             configure.ThrowIfNull(nameof(defaultConfig));
             configure.ThrowIfNull(nameof(configure));
@@ -49,9 +49,9 @@ namespace StreamStore.Sql.Sqlite
             return services;
         }
 
-        public static IServiceCollection AddSqliteWithMultitenancy(this IServiceCollection services, Action<SqlMultitenancyConfigurator> configure)
+        public static IServiceCollection UseSqliteWithMultitenancy(this IServiceCollection services, Action<SqlMultitenancyConfigurator> configure)
         {
-            return services.AddSqliteWithMultitenancy(SqliteConfiguration.DefaultConfiguration, configure);
+            return services.UseSqliteWithMultitenancy(SqliteConfiguration.DefaultConfiguration, configure);
         }
     }
 }

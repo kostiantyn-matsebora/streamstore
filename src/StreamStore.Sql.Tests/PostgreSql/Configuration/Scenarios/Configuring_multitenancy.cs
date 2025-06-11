@@ -32,7 +32,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Configuration
             var connectionString = Generated.Primitives.String;
 
             // Act
-            services.AddPostgresWithMultitenancy(c => c.WithConnectionString(tenantId, connectionString));
+            services.UsePostgreSqlWithMultitenancy(c => c.WithConnectionString(tenantId, connectionString));
 
             // Assert
             var provider = services.BuildServiceProvider();
@@ -55,7 +55,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Configuration
             };
 
             // Act
-            services.AddPostgresWithMultitenancy(config, c => { });
+            services.UsePostgreSqlWithMultitenancy(config, c => { });
 
             // Assert
             provider = services.BuildServiceProvider();

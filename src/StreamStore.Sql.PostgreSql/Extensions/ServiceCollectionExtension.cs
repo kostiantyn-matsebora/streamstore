@@ -10,13 +10,13 @@ namespace StreamStore.Sql.PostgreSql
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddPostgres(this IServiceCollection services)
+        public static IServiceCollection UsePostgreSql(this IServiceCollection services)
         {
             services.ConfigurePersistence(new StorageConfigurator(PostgresConfiguration.DefaultConfiguration));
             return services;
         }
 
-        public static IServiceCollection AddPostgres(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection UsePostgreSql(this IServiceCollection services, IConfiguration configuration)
         {
             services.ThrowIfNull(nameof(services));
             configuration.ThrowIfNull(nameof(configuration));
@@ -29,7 +29,7 @@ namespace StreamStore.Sql.PostgreSql
                             PostgresConfiguration.DefaultConfiguration)));
         }
 
-        public static IServiceCollection AddPostgres(this IServiceCollection services, Action<SqlStorageConfigurationBuilder> configure)
+        public static IServiceCollection UsePostgreSql(this IServiceCollection services, Action<SqlStorageConfigurationBuilder> configure)
         {
             configure.ThrowIfNull(nameof(configure));
             services.ConfigurePersistence(
@@ -39,19 +39,20 @@ namespace StreamStore.Sql.PostgreSql
             return services;
         }
 
-        public static IServiceCollection AddPostgresWithMultitenancy(this IServiceCollection services, SqlStorageConfiguration defaultConfig, Action<SqlMultitenancyConfigurator> configure)
+        public static IServiceCollection UsePostgreSqlWithMultitenancy(this IServiceCollection services, SqlStorageConfiguration defaultConfig, Action<SqlMultitenancyConfigurator> configure)
         {
             configure.ThrowIfNull(nameof(defaultConfig));
             configure.ThrowIfNull(nameof(configure));
+
             services.ConfigurePersistenceMultitenancy(
                 new StorageConfigurator(defaultConfig),
                 new MultitenancyConfigurator(configure));
             return services;
         }
 
-        public static IServiceCollection AddPostgresWithMultitenancy(this IServiceCollection services, Action<SqlMultitenancyConfigurator> configure)
+        public static IServiceCollection UsePostgreSqlWithMultitenancy(this IServiceCollection services, Action<SqlMultitenancyConfigurator> configure)
         {
-            return services.AddPostgresWithMultitenancy(PostgresConfiguration.DefaultConfiguration, configure);
+            return services.UsePostgreSqlWithMultitenancy(PostgresConfiguration.DefaultConfiguration, configure);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace StreamStore.NoSql.Cassandra
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddCassandra(this IServiceCollection services, Action<ICassandraStorageDependencyBuilder> configure)
+        public static IServiceCollection UseCassandra(this IServiceCollection services, Action<ICassandraStorageDependencyBuilder> configure)
         {
             services.ThrowIfNull(nameof(services));
             configure.ThrowIfNull(nameof(configure));
@@ -21,7 +21,7 @@ namespace StreamStore.NoSql.Cassandra
             return services;
         }
 
-        public static IServiceCollection AddCassandraWithMultitenancy(
+        public static IServiceCollection UseCassandraWithMultitenancy(
             this IServiceCollection services, 
             Action<ICassandraStorageDependencyBuilder> configureStorage, 
             Action<ICassandraMultitenancyDependencyBuilder> configureMultitenancy)

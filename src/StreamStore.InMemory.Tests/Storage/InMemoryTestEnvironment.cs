@@ -12,7 +12,7 @@ namespace StreamStore.InMemory.Tests.StreamStorage
 
         protected override void ConfigureStorage(IServiceCollection services)
         {
-            services.AddInMemoryStorage();
+            services.UseInMemoryStorage();
         }
     }
 }

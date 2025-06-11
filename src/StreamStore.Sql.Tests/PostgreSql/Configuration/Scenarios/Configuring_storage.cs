@@ -23,7 +23,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Configuration
             var services = new ServiceCollection();
 
             // Act
-            services.AddPostgres();
+            services.UsePostgreSql();
 
             // Assert
             var provider = services.BuildServiceProvider();
@@ -34,7 +34,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Configuration
             var tableName = Generated.Primitives.String;
 
             //Act
-            services.AddPostgres(c => c.WithTable(tableName));
+            services.UsePostgreSql(c => c.WithTable(tableName));
 
             // Assert
             provider = services.BuildServiceProvider();

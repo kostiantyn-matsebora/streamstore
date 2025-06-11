@@ -7,7 +7,7 @@ namespace StreamStore.S3.B2
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddB2(this IServiceCollection services, Action<B2StorageConfigurator> configure)
+        public static IServiceCollection UseB2(this IServiceCollection services, Action<B2StorageConfigurator> configure)
         {
             configure.ThrowIfNull(nameof(configure));
             var configurator = new B2StorageConfigurator();

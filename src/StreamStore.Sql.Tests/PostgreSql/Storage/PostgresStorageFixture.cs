@@ -15,7 +15,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Storage
 
         public override void ConfigurePersistence(IServiceCollection services)
         {
-            services.AddPostgres(c => c.WithConnectionString(testStorage.ConnectionString));
+            services.UsePostgreSql(c => c.WithConnectionString(testStorage.ConnectionString));
         }
     }
 }

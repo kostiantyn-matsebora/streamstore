@@ -38,7 +38,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage
 
         public override void ConfigurePersistence(IServiceCollection services)
         {
-            services.AddCassandra(c =>
+            services.UseCassandra(c =>
                          c.ConfigureCluster(x => ConfigureCluster(x))
                           .ConfigureStorage(k => k.WithKeyspaceName(testStorage.Keyspace.Name)));
         }

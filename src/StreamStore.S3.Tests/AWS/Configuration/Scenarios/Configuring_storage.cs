@@ -22,7 +22,7 @@ namespace StreamStore.S3.Tests.AWS.Configuration
 
 
             // Act
-            services.AddAmazonS3(builder => builder.WithBucketName("test-bucket"));
+            services.UseAmazonS3(builder => builder.WithBucketName("test-bucket"));
 
             // Assert
             var provider = services.BuildServiceProvider();

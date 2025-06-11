@@ -34,7 +34,7 @@ namespace StreamStore.Tests.StreamStore.Configuration
             var provider =
               new StreamStoreConfigurator()
              .EnableAutomaticProvisioning()
-             .ConfigurePersistence(s => s.AddInMemoryStorage())
+             .ConfigurePersistence(s => s.UseInMemoryStorage())
              .Configure(services)
              .BuildServiceProvider();
 
@@ -56,7 +56,7 @@ namespace StreamStore.Tests.StreamStore.Configuration
               new StreamStoreConfigurator()
              .EnableMultitenancy(Generated.Primitives.Id, Generated.Primitives.Id)
              .EnableAutomaticProvisioning()
-             .ConfigurePersistence(s => s.AddInMemoryStorageWithMultitenancy())
+             .ConfigurePersistence(s => s.UseInMemoryStorageWithMultitenancy())
              .Configure(services)
              .BuildServiceProvider();
 
@@ -79,7 +79,7 @@ namespace StreamStore.Tests.StreamStore.Configuration
               new StreamStoreConfigurator()
              .EnableMultitenancy<TenantProvider>()
              .EnableAutomaticProvisioning()
-             .ConfigurePersistence(s => s.AddInMemoryStorageWithMultitenancy())
+             .ConfigurePersistence(s => s.UseInMemoryStorageWithMultitenancy())
              .Configure(services)
              .BuildServiceProvider();
 
@@ -116,7 +116,7 @@ namespace StreamStore.Tests.StreamStore.Configuration
 
             IServiceCollection services = new ServiceCollection();
             var readingPageSize = Generated.Primitives.Int;
-            var configurator = new StreamStoreConfigurator().ConfigurePersistence(s => s.AddInMemoryStorageWithMultitenancy());
+            var configurator = new StreamStoreConfigurator().ConfigurePersistence(s => s.UseInMemoryStorageWithMultitenancy());
 
             // Act
             services =

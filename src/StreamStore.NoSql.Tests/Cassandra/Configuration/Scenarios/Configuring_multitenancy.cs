@@ -69,7 +69,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration
             var tableName = Generated.Primitives.String;
 
             // Act
-            services.AddCassandraWithMultitenancy(
+            services.UseCassandraWithMultitenancy(
                 b =>
                     b.ConfigureStorage(c => c.WithEventsTableName(tableName))
                     .ConfigureCluster(c => c.AddContactPoint("localhost")),

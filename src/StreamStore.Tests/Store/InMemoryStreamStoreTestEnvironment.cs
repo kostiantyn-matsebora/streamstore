@@ -12,7 +12,7 @@ namespace StreamStore.Tests
 
         protected override void ConfigureStreamStore(IStreamStoreConfigurator configurator)
         {
-            configurator.ConfigurePersistence(x => x.AddInMemoryStorage());
+            configurator.ConfigurePersistence(x => x.UseInMemoryStorage());
         }
     }
 }

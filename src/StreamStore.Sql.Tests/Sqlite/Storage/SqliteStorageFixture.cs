@@ -14,7 +14,7 @@ namespace StreamStore.Sql.Tests.Sqlite.Storage
 
         public override void ConfigurePersistence(IServiceCollection services)
         {
-            services.AddSqlite(c => c.WithConnectionString(testStorage.ConnectionString));
+            services.UseSqlite(c => c.WithConnectionString(testStorage.ConnectionString));
         }
     }
 }
