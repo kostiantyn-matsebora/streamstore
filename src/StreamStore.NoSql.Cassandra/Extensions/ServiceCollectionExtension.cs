@@ -44,13 +44,5 @@ namespace StreamStore.NoSql.Cassandra
 
             return services;
         }
-
-
-        static (ICluster, IClusterConfigurator, CassandraStorageConfiguration) ConfigureStorage(Action<CassandraStorageDependencyBuilder> configure)
-        {
-            var builder = new CassandraStorageDependencyBuilder();
-            configure(builder);
-            return builder.Build();
-        }
     }
 }
