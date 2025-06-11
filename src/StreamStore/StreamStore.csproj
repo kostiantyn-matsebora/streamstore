@@ -26,7 +26,7 @@
     <None Remove="Domain\**" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StreamStore.Domain\StreamStore.Domain.csproj"/>
+    <ProjectReference Include="..\StreamStore.Domain\StreamStore.Domain.csproj" PrivateAssets="All"/>
     <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" PrivateAssets="All" />
     <ProjectReference Include="..\StreamStore.Storage.Contracts\StreamStore.Storage.Contracts.csproj" PrivateAssets="All" />
   </ItemGroup>

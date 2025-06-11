@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StreamStore.Domain\StreamStore.Domain.csproj" />
+    <ProjectReference Include="..\StreamStore.Domain\StreamStore.Domain.csproj" PrivateAssets="All"/>
   </ItemGroup>
    <ItemGroup>
     <None Update="README.md">
