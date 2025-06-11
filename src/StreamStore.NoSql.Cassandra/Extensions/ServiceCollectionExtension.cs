@@ -1,51 +1,52 @@
 ﻿using System;
+using Cassandra;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
 using StreamStore.NoSql.Cassandra.Configuration;
+using StreamStore.NoSql.Cassandra.Multitenancy;
 using StreamStore.Storage;
 
 namespace StreamStore.NoSql.Cassandra
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddCassandra(this IServiceCollection services, Action<CassandraStorageDependencyBuilder> configure)
+        public static IServiceCollection AddCassandra(this IServiceCollection services, Action<ICassandraStorageDependencyBuilder> configure)
         {
             services.ThrowIfNull(nameof(services));
             configure.ThrowIfNull(nameof(configure));
             
-            (var storageServices, var config) = ConfigureStorage(configure);
+            var storageConfigurator = new StorageConfigurator();
+            configure(storageConfigurator);
 
-            services.ConfigurePersistence(new StorageConfigurator(storageServices, config));
+            services.ConfigurePersistence(storageConfigurator);
 
             return services;
         }
 
         public static IServiceCollection AddCassandraWithMultitenancy(
             this IServiceCollection services, 
-            Action<CassandraStorageDependencyBuilder> configureStorage, 
-            Action<CassandraMultitenancyDependencyBuilder> configureMultitenancy)
+            Action<ICassandraStorageDependencyBuilder> configureStorage, 
+            Action<ICassandraMultitenancyDependencyBuilder> configureMultitenancy)
         {
             services.ThrowIfNull(nameof(services));
             configureStorage.ThrowIfNull(nameof(configureStorage));
             configureMultitenancy.ThrowIfNull(nameof(configureMultitenancy));
 
-            (var storageServices, var config) = ConfigureStorage(configureStorage);
+            var storageConfigurator = new StorageConfigurator();
+            configureStorage(storageConfigurator);
+            
+            var mode = storageConfigurator.GetCassandraMode();
 
-            services.ConfigurePersistenceMultitenancy(
-                new StorageConfigurator(storageServices, config),
-                new MultitenancyConfigurator(ConfigureMultitenancy(configureMultitenancy), config.Mode));
+            var multitenancyConfigurator = new MultitenancyConfigurator(mode);
+            configureMultitenancy(multitenancyConfigurator);
+
+            services.ConfigurePersistenceMultitenancy(storageConfigurator,multitenancyConfigurator);
 
             return services;
         }
 
-        static IServiceCollection ConfigureMultitenancy(Action<CassandraMultitenancyDependencyBuilder> configureMultitenancy)
-        {
-            var multitenancyBuilder = new CassandraMultitenancyDependencyBuilder();
-            configureMultitenancy(multitenancyBuilder);
-            return multitenancyBuilder.Build();
-        }
 
-        static (IServiceCollection, CassandraStorageConfiguration) ConfigureStorage(Action<CassandraStorageDependencyBuilder> configure)
+        static (ICluster, IClusterConfigurator, CassandraStorageConfiguration) ConfigureStorage(Action<CassandraStorageDependencyBuilder> configure)
         {
             var builder = new CassandraStorageDependencyBuilder();
             configure(builder);

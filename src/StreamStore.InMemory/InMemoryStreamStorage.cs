@@ -28,7 +28,6 @@ namespace StreamStore.InMemory
             storage = new ConcurrentDictionary<string, List<IStreamEventRecord>>();
         }
 
-       
 
         public Task DeleteAsync(Id streamId, CancellationToken token = default)
         {

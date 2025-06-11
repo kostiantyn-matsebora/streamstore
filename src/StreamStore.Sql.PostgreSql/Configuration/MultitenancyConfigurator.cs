@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
 using StreamStore.Sql.Multitenancy;
+using StreamStore.Storage;
 using StreamStore.Storage.Configuration;
 
 namespace StreamStore.Sql.PostgreSql

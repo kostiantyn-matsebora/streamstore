@@ -4,7 +4,7 @@ using StreamStore.Extensions;
 
 namespace StreamStore.Storage.Configuration
 {
-    public abstract class StorageConfiguratorBase
+    public abstract class StorageConfiguratorBase: IStorageConfigurator
     {
         protected abstract void ConfigureStorage(StorageDependencyRegistrator registrator);
         protected abstract void ConfigureSchemaProvisioner(SchemaProvisionerRegistrator registrator);

@@ -54,7 +54,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
             return UseCosmosDb(connectionString, remoteCertValidationCallback);
         }
 
-        public (IServiceCollection, CassandraStorageConfiguration) Build()
+        internal (ICluster, IClusterConfigurator, CassandraStorageConfiguration) Build()
         {
             var builder = new Builder();
             clusterConfigurator.Configure(builder);
@@ -67,7 +67,7 @@ namespace StreamStore.NoSql.Cassandra.Configuration
                 .AddSingleton(storageConfig);
 
 
-            return (services, storageConfig);
+            return (builder.Build(), clusterConfigurator, storageConfig);
         }
     }
 }

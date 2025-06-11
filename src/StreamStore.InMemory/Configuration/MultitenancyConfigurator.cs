@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Extensions;
 using StreamStore.Storage.Configuration;
 
 namespace StreamStore.InMemory.Configuration
 {
     internal class MultitenancyConfigurator : MultitenancyConfiguratorBase
     {
+        
         protected override void ConfigureStorageProvider(StorageProviderRegistrator registrator)
         {
             registrator.RegisterStorageProvider(serviceProvider => serviceProvider.GetRequiredService<InMemoryStreamStorageProvider>().GetStorage);
@@ -12,6 +14,7 @@ namespace StreamStore.InMemory.Configuration
 
         protected override void ConfigureAdditionalDependencies(IServiceCollection services)
         {
+            services.RegisterDomainValidation();
             services.AddSingleton<InMemoryStreamStorageProvider>();
         }
 
