@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" />
+    <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" PrivateAssets="All"/>
     <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" />
   </ItemGroup>
 

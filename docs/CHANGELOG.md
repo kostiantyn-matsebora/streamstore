@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.22.0] - 2025-06-11
+
+### Fixed
+
+- Fixed references to projects in the solution file.
+  
 ## [0.21.0] - 2025-06-11
 
 ### Changed
