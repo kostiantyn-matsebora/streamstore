@@ -27,11 +27,11 @@ or from Nuget Package Manager Console:
 - Register store in DI container
   
 ```csharp
-  services.ConfigureStreamStore(x => 
-      x.WithSingleStorage(c => 
-        c.UseInMemoryStorage()
-      )
-  ); // Register StreamStore
+    // Single tenant mode
+    services.UseInMemoryStorage();
+    // Multitenant mode
+    services.UseInMemoryStorageWithMultitenancy();
+
 ```
 
 - How to use store in your application you can find in [StreamStore](https://github.com/kostiantyn-matsebora/streamstore/tree/master#usage) documentation.

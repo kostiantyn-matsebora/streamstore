@@ -42,12 +42,10 @@ or you can provide the configuration in code, see section below.
 ### Register in DI container
 
 ```csharp
-   services.ConfigureStreamStore(x =>
-      x.WithSingleStorage(c =>
-         c.UseAWSStorage(
-            c => c.WithBucketName("bucket-name")) // Bucket name, optional, by default "streamstore"
-      )
-   );
+    services.UseAmazonS3(
+      c => c.WithBucketName("bucket-name")); // Bucket name, optional, by default "streamstore"
+      
+
 ```
 
 If you want to use advanced scenarios for configuring the S3 client, you can create and register your own ``IAmazonS3ClientFactory``:

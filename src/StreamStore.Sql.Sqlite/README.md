@@ -69,28 +69,19 @@ You can define configuration of the library in `appsettings.json` file:
 ### Register in DI container
 
 ```csharp
-services.ConfigureStreamStore(x =>...
-
+  
   // Register single storage implementation
-  x.WithSingleStorage(c => ...
-      c.UseSqliteStorage(x =>
-          c => c.ConfigureStorage(x =>                        // Configure storage options.
-            x.WithConnectionString("your-connection-string")   // Required. Connection string.
-            x.WithSchema("your-schema-name");                  // Optional. Schema name, default is "main".
-            x.WithTableName("your-table-name");                // Optional. Table name, default is "Events".
-      )
-  )
+  service.UseSqlite(x =>
+        x.WithConnectionString("your-connection-string")   // Required. Connection string.
+        x.WithSchema("your-schema-name");                  // Optional. Schema name, default is "public".
+        x.WithTableName("your-table-name");                // Optional. Table name, default is "Events".
+  );
 
   // Or enable multitenancy
-  x.WithMultitenancy(c => ...
-      c.UseSqliteStorage(x => 
+  service.UseSqliteWithMultitenancy(c => ...
           x.WithConnectionStringProvider<Provider>()          // Required. Register your 
                                                               // ISqlTenantConnectionStringProvider implementation.
-          c => c.ConfigureStorage(x =>...)                   // Optional. Configure storage options will be used as 
-                                                              // template for tenant storage configuration, optional.
-      )
-  )
-); 
+      );
 ```
 
 ### Use in application code

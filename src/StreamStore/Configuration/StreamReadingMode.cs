@@ -2,7 +2,7 @@ namespace StreamStore
 {
 	public enum StreamReadingMode
 	{
-		Default,
+		Queue,
 		ProduceConsume
 	}
 

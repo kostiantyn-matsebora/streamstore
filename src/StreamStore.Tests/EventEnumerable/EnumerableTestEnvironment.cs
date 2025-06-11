@@ -10,7 +10,7 @@ namespace StreamStore.Tests.Enumerator
     {
         readonly StreamReadingMode mode;
 
-        public EnumerableTestEnvironment(): this(StreamReadingMode.Default)
+        public EnumerableTestEnvironment(): this(StreamReadingMode.Queue)
         {
         }
 

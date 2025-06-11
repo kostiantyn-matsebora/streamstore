@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## [0.21.0] - 2025-06-11
+
+### Changed
+
+- Reimplement DI container registration for StreamStore and storage implementations.
+
 ## [0.20.0] - 2025-05-31
 
 ### Changed

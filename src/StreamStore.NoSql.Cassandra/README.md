@@ -70,31 +70,30 @@ API of [CassandraCSharpDriver].
 However, in case if you decided to use library with [Azure Cosmos DB for Apache Cassandra], there is extension simplifies configuration by only connection string required.
 
 ```csharp
-services.ConfigureStreamStore(x =>...
-  
+
   // Register single tenant implementation
-  x.WithSingleStorage(c => ...
-      c.UseCassandra(x => {
+      services.UseCassandra(x => {
           x.UseCosmosDb(connectionString);            // Optional. Required  if you want to use Azure Cosmos DB for Apache Cassandra
           x.ConfigureCluster(c =>                     // Required. Configure cluster options. Optional if you decided to use CosmosDB (see above).
               c.AddContactPoint("localhost"));        // Configure contact points.
          }
       )
-  )
+
 
   // Or enable multitenancy
-  x.WithMultitenancy(c => ...
-      c.UseTenantProvider<MyTenantProvider>()          // Optional. Register your  ITenantProvider implementation.
-                                                       // Required if you want schema to be provisioned for each tenant.
-      c.UseCassandra(x => {
-          x.WithKeyspaceProvider<Provider>();           // Required. Register your  ITenantKeyspaceProvider implementation.
-          x.UseCosmosDb(connectionString);              // Optional. Required  if you want to use Azure Cosmos DB for Apache Cassandra
-          x.ConfigureDefaultCluster(c =>                // Required. Configure cluster options. Optional if you decided to use CosmosDB (see above).
-                  c.AddContactPoint("localhost"));      // Configure contact points.
-        }
-      )
-  )
-); 
+  x.UseCassandraWithMultitenancy(
+  // Configure storage options
+   c => 
+      c.UseCosmosDb(connectionString)              // Optional. Required  if you want to use Azure Cosmos DB for Apache Cassandra
+       .Configureluster(x =>                        // Required. Configure cluster options. Optional if you decided to use CosmosDB (see above).
+              x.AddContactPoint("localhost")),      // Configure contact points.
+
+    // Configure multitenancy options
+    x =>
+      x.WithKeyspaceProvider<Provider>()                 // Required. Register your  ITenantKeyspaceProvider implementation.
+       .UseTenantProvider<MyTenantProvider>();           // Optional. Register your ITenantProvider implementation.
+  );
+
 ```
 
 Full list of configuration options you can find in the [Configuration options](#Configuration-options) section.
@@ -117,9 +116,8 @@ In order to run tests placed in [StreamStore.NoSql.Tests/Cassandra/Storage](http
 Below you can find the list of configuration options that can be used to configure the library.
 
 ```csharp
-// Register single tenant implementation
-  x.WithSingleStorage(c => ...
-      c.UseCassandra(x => 
+// Register single tenant implementation 
+    services.UseCassandra(x => 
          {
             x.UseCosmosDb(connectionString);                                    // Optional. Required  if you want to use Azure Cosmos DB for Apache Cassandra.
             x.UseCosmosDb(Configuration, connectionStringName);                 // You can also provide IConfiguration and connection string name to Cosmos DB, by default "StreamStore".
@@ -133,33 +131,24 @@ Below you can find the list of configuration options that can be used to configu
                      .WithWriteConsistencyLevel(ConsistencyLevel.Quorum)        // Optional. Write consistency level. Default is All.
                      .WithSerialConsistencyLevel(ConsistencyLevel.SerialLocal)  // Optional. Serial consistency level. Default is Serial.
             );
-            x.WithSessionFactory<TFactory>();                                   // Optional. Register your ISessionFactory implementation.
-          }    
-      )
-  )
+            x.WithSessionFactory<TFactory>()                                    // Optional. Register your ISessionFactory implementation.
+          }
+      );
+  
 
   // Or enable multitenancy
-  x.WithMultitenancy(c => ...
-                                                                                // More information about multitenancy configuration you can find in the StreamStore.
-     c.UseCassandra(x => 
+  // More information about multitenancy configuration you can find in the StreamStore.
+     services.UseCassandraWithMultitenancy(
+        // Configure storage options, see above
+        c => ...,
+        // Configure multitenancy options
+        x => 
          {
             x.WithKeyspaceProvider<Provider>();                                 // Required. Register your ITenantKeyspaceProvider implementation.
-            x.UseCosmosDb(connectionString);                                    // Optional. Required if you want to use Azure Cosmos DB for Apache Cassandra.
-            x.UseCosmosDb(Configuration, connectionStringName);                 // You can also provide IConfiguration and connection string name to Cosmos DB, by default "StreamStore".
-            x.ConfigureDefaultCluster(c =>                                      // Required. Configure default cluster options. Optional if you decided to use CosmosDB (see above).
-                    c.AddContactPoint("localhost"));                            // Configure contact points at least.
-                                                                                // There is much more cluster options available.
-            x.ConfigureStoragePrototype(c =>                                    // Optional. Configure storage options as prototype for tenant storage configuration.
-                    c.WithEventsTableName("tablename")                          // Optional. Table name. Default is events.
-                     .WithReadConsistencyLevel(ConsistencyLevel.Quorum)         // Optional. Read consistency level. Default is All.
-                     .WithWriteConsistencyLevel(ConsistencyLevel.Quorum)        // Optional. Write consistency level. Default is All.
-                     .WithSerialConsistencyLevel(ConsistencyLevel.SerialLocal)  // Optional. Serial consistency level. Default is Serial.
-            );
             x.WithTenantClusterConfigurator(c => ...);                          // Optional. Register delegate for configuring tenant cluster configuration based on default cluster.
             x.WithStorageConfigurationProvider<TProvider>();                    // Optional. Register your ITenantStorageConfigurationProvider implementation.
           }
-      )
-  )
+      );
 ```
 
 ## License
