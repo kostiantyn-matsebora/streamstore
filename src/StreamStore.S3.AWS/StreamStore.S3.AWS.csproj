@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.S3\StreamStore.S3.csproj" PrivateAssets="All" />
-    <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" />
     <ProjectReference Include="..\StreamStore.Storage.Contracts\StreamStore.Storage.Contracts.csproj" />
     <ProjectReference Include="..\StreamStore.Domain\StreamStore.Domain.csproj"  />
   </ItemGroup>
