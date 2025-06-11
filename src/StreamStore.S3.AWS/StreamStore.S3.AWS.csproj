@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>0.15.0</Version>
+    <Version>0.16.0</Version>
     <Company>kostiantyn-matsebora</Company>
     <Description>Amazon S3 storage for StreamStore asynchronous event sourcing library.</Description>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
@@ -29,6 +29,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.S3\StreamStore.S3.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\StreamStore.Storage.Contracts\StreamStore.Storage.Contracts.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\StreamStore.Domain\StreamStore.Domain.csproj" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>

@@ -35,6 +35,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Serialization\StreamStore.Serialization.csproj" />
+    <ProjectReference Include="..\StreamStore.Storage.Contracts\StreamStore.Storage.Contracts.csproj" />
+    <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" />
     <ProjectReference Include="..\StreamStore\StreamStore.csproj" />
   </ItemGroup>
 
