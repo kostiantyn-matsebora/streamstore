@@ -4,6 +4,7 @@
 //using StreamStore.NoSql.Cassandra.API;
 //using StreamStore.NoSql.Cassandra.Configuration;
 //using StreamStore.NoSql.Cassandra.Multitenancy;
+//using StreamStore.NoSql.Cassandra.Storage;
 //using StreamStore.Testing;
 
 //namespace StreamStore.NoSql.Tests.Cassandra.Configuration.MultitenantConfigurator
@@ -16,8 +17,9 @@
 //        public void When_default_cluster_not_configured()
 //        {
 //            // Arrange
-//            var configurator = new CassandraMultitenantConfigurator();
+           
 //            var services = new ServiceCollection();
+//            var configurator = new MultitenancyConfigurator(services, CassandraMode.Cassandra);
 
 //            // Act
 //            var act = () => configurator.Configure(services);
@@ -30,8 +32,10 @@
 //        public void When_default_cluster_configured()
 //        {
 //            // Arrange
-//            var configurator = new CassandraMultitenantConfigurator();
 //            var services = new ServiceCollection();
+//            var configurator = new MultitenancyConfigurator(services, CassandraMode.Cassandra);
+
+
 
 //            // Act
 //            configurator

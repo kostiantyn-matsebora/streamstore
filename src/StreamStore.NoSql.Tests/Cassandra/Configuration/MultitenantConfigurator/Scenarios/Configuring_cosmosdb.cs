@@ -9,7 +9,7 @@
 
 //namespace StreamStore.NoSql.Tests.Cassandra.Configuration.MultitenantConfigurator;
 
-//public class Configuring_cosmosdb: Scenario
+//public class Configuring_cosmosdb : Scenario
 //{
 
 //    [Fact]
@@ -17,7 +17,7 @@
 //    {
 //        // Arrange
 //        var configuration = new ConfigurationBuilder().Build();
-//        var configurator = new CassandraMultitenantConfigurator();
+//        var configurator = new MultitenancyConfigurator();
 
 //        // Act
 //        var act = () => configurator.UseCosmosDb(configuration);
@@ -56,7 +56,7 @@
 //        cluster.Should().NotBeNull();
 
 //        // Arrange
-//        configurator = new CassandraMultitenantConfigurator();
+//        configurator = new MultitenancyConfigurator();
 //        services = new ServiceCollection();
 
 //        // Act
