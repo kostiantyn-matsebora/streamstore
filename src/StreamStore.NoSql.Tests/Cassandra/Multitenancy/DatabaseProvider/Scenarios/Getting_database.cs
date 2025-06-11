@@ -19,7 +19,6 @@ public class Getting_storage: Scenario
         var tenantMapperProvider = Environment.MockRepository.Create<ICassandraTenantMapperProvider>();
         var mapperProvider = Environment.MockRepository.Create<ICassandraMapperProvider>();
         tenantMapperProvider.Setup(x => x.GetMapperProvider(tenant)).Returns(mapperProvider.Object);
-        mapperProvider.Setup(x => x.OpenMapper()).Returns(Environment.MockRepository.Create<IMapper>().Object);
         
         var tenantStorageConfigurationProvider = Generated.Mocks.Single<ICassandraTenantStorageConfigurationProvider>();
         tenantStorageConfigurationProvider.Setup(x => x.GetConfiguration(tenant)).Returns(new CassandraStorageConfiguration());

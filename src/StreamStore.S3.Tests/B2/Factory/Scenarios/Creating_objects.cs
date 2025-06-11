@@ -30,7 +30,6 @@ namespace StreamStore.S3.Tests.B2.Factory {
         {
             // Arrange
             var client = new Mock<IStorageClient>();
-            Environment.FactoryMock.Setup(m => m.Create()).Returns(client.Object);
             client.Setup(client => client.Connect(Environment.Settings.Credential!.UserName, Environment.Settings.Credential!.Password));
 
             // Act
