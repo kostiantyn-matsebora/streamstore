@@ -1,4 +1,6 @@
-﻿using StreamStore.NoSql.Cassandra.API;
+﻿using System;
+using Cassandra;
+using StreamStore.NoSql.Cassandra.API;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
 {
@@ -7,5 +9,6 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         ICassandraMultitenancyDependencyBuilder WithStorageConfigurationProvider<TStorageConfigurationProvider>() where TStorageConfigurationProvider : ICassandraTenantStorageConfigurationProvider;
         ICassandraMultitenancyDependencyBuilder WithKeyspaceProvider<TKeyspaceProvider>() where TKeyspaceProvider : ICassandraKeyspaceProvider;
         ICassandraMultitenancyDependencyBuilder AddKeyspace(Id tenantId, string keyspace);
+        ICassandraMultitenancyDependencyBuilder WithTenantClusterConfigurator(Action<Id, Builder> configurator);
     }
 }
