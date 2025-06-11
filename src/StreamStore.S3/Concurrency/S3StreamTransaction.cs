@@ -54,8 +54,8 @@ namespace StreamStore.S3.Concurrency
             if (rolledBack) return;
             try
             {
-                rolledBack = true;
                 await ctx.RollBackAsync(CancellationToken.None);
+                rolledBack = true;
             }
             finally
             {

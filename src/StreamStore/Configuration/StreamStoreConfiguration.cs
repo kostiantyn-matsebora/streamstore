@@ -1,7 +1,11 @@
 namespace StreamStore
 {
     public sealed class StreamStoreConfiguration {
-        public StreamReadingMode ReadingMode { get; set; }
-        public int ReadingPageSize { get; set; }
+        public StreamReadingMode ReadingMode { get; set; } = StreamReadingMode.Queue;
+        public int ReadingPageSize { get; set; } = 1000;
+
+        public bool ProvisioningEnabled { get; set; } = false;
+
+        public bool MultitenancyEnabled { get; set; } = false;
     }
 }

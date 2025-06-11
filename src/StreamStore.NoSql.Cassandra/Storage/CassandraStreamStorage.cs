@@ -10,6 +10,7 @@ using StreamStore.Exceptions;
 using System.Collections.Generic;
 using StreamStore.Extensions;
 using StreamStore.Exceptions.Appending;
+using System;
 
 namespace StreamStore.NoSql.Cassandra.Storage
 {
@@ -17,19 +18,20 @@ namespace StreamStore.NoSql.Cassandra.Storage
     {
         readonly CassandraStatementConfigurator configure;
         readonly ICassandraCqlQueries queries;
-        readonly IMapper mapper;
+        
+        readonly Lazy<IMapper> mapper;
         public CassandraStreamStorage(ICassandraMapperProvider mapperProvider, ICassandraCqlQueries queries, CassandraStorageConfiguration config)
         {
             config = config.ThrowIfNull(nameof(config));
             configure = new CassandraStatementConfigurator(config);
             this.queries = queries.ThrowIfNull(nameof(queries));
             mapperProvider.ThrowIfNull(nameof(mapperProvider));
-            mapper = mapperProvider.OpenMapper();
+            mapper =  new Lazy<IMapper>(() => mapperProvider.OpenMapper());
         }
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
         {
-            await mapper.ExecuteAsync(configure.Query(queries.DeleteStream(streamId)));
+            await mapper.Value.ExecuteAsync(configure.Query(queries.DeleteStream(streamId)));
         }
 
         protected override void BuildRecord(IStreamEventRecordBuilder builder, EventEntity entity)
@@ -44,7 +46,7 @@ namespace StreamStore.NoSql.Cassandra.Storage
 
         protected override async Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default)
         {
-            var result = await mapper.FirstOrDefaultAsync<EventMetadataEntity>(configure.Query(queries.StreamMetadata(streamId)));
+            var result = await mapper.Value.FirstOrDefaultAsync<EventMetadataEntity>(configure.Query(queries.StreamMetadata(streamId)));
             if (result == null)
             {
                 return null;
@@ -55,19 +57,19 @@ namespace StreamStore.NoSql.Cassandra.Storage
         
         protected override async Task<EventEntity[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
-           return  (await mapper.FetchAsync<EventEntity>(configure.Query(queries.StreamEvents(streamId, startFrom, count)))).ToArray();
+           return  (await mapper.Value.FetchAsync<EventEntity>(configure.Query(queries.StreamEvents(streamId, startFrom, count)))).ToArray();
         }
 
         protected override async Task WriteAsyncInternal(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)
         {
-            var cqlBatch = configure.Batch(mapper.CreateBatch(BatchType.Logged));
+            var cqlBatch = configure.Batch(mapper.Value.CreateBatch(BatchType.Logged));
 
             foreach (var record in batch)
             {
                 cqlBatch.InsertIfNotExists(record.ToEntity(streamId));
             }
 
-            var result = await mapper.ExecuteConditionalAsync<EventEntity>(cqlBatch);
+            var result = await mapper.Value.ExecuteConditionalAsync<EventEntity>(cqlBatch);
 
             if (!result.Applied)
             {

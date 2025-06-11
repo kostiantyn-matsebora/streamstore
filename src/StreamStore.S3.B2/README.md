@@ -55,22 +55,16 @@ or you can provide the configuration in code, see section below.
 
 ```csharp
    // Adding B2 storage with configuration from appsettings.json
-   services.ConfigureStreamStore(x => 
-      x => x.WithSingleStorage(c =>
-              c.UseB2Storage(Configuration)
-            )
-   );
+   c.UseB2(Configuration);
+   
 
   // Or configuring it manually
-   services.ConfigureStreamStore(x =>
-      x => x.WithSingleStorage(c =>
-         c.UseB2Storage(c => {
-            c.WithBucketId("your-bucket-id");
-            c.WithBucketName("your-bucket-name");
-            c.WithCredential("your-access-key-id","your-access-key");
-        })
-      )
-   );
+
+  services.UseB2(c => {
+      c.WithBucketId("your-bucket-id");
+      c.WithBucketName("your-bucket-name");
+      c.WithCredential("your-access-key-id","your-access-key");
+  });
 
 ```
 

@@ -16,7 +16,7 @@ namespace StreamStore.Testing.StreamStore
 
         protected override void RegisterServices(IServiceCollection services)
         {
-            services.ConfigureStreamStore(ConfigureStreamStore);
+            services.AddStreamStore(ConfigureStreamStore);
         }
 
         protected override void SetUpInternal()

@@ -41,15 +41,15 @@ namespace StreamStore.Testing.Framework
             return new MemoryStorage();
         }
 
-        public abstract void ConfigureStorage(ISingleTenantConfigurator configurator);
+        public abstract void ConfigurePersistence(IServiceCollection services);
 
         ServiceProvider BuildServiceProvider()
         {
-            var serviceCollection = new ServiceCollection();
-            var configurator = ConfiguratorFactory.StoreConfigurator;
-            configurator
-                .WithSingleStorage(ConfigureStorage)
-                .Configure(serviceCollection);
+            var serviceCollection = 
+                new StreamStoreConfigurator()
+                .ConfigurePersistence(ConfigurePersistence)
+                .Configure(new ServiceCollection());
+
             return serviceCollection.BuildServiceProvider();
         }
 

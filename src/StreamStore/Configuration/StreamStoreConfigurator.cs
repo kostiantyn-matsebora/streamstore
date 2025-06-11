@@ -1,127 +1,128 @@
-using System;
+﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using StreamStore.Configuration;
-using StreamStore.Configuration.Storage;
+using StreamStore.Extensions;
 using StreamStore.Multitenancy;
 using StreamStore.Provisioning;
 using StreamStore.Serialization;
 using StreamStore.Store;
 
 
-namespace StreamStore
+namespace StreamStore.Configuration
 {
-
-    class StreamStoreConfigurator : IStreamStoreConfigurator
+    internal class StreamStoreConfigurator : IStreamStoreConfigurator
     {
-        StreamReadingMode mode = StreamReadingMode.Default;
-        IStreamStorageConfigurator? storageConfigurator;
         readonly ISerializationConfigurator serializationConfigurator = new SerializationConfigurator();
+        readonly IServiceCollection storeServices = new ServiceCollection();
+        readonly StreamStoreConfiguration config = new StreamStoreConfiguration();
 
-        bool schemaProvisioningEnabled = false;
-        int pageSize = 1_000;
+        IServiceCollection serializationServices;
+        IServiceCollection? storageServices;
 
+
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         public StreamStoreConfigurator()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         {
+            RegisterDefaultSerialization();
+            RegisterStore();
         }
 
         public IStreamStoreConfigurator WithReadingMode(StreamReadingMode mode)
         {
-            this.mode = mode;
+            config.ReadingMode = mode;
             return this;
         }
 
         public IStreamStoreConfigurator WithReadingPageSize(int pageSize)
         {
-            this.pageSize = pageSize;
+            config.ReadingPageSize = pageSize;
             return this;
         }
 
         public IStreamStoreConfigurator ConfigureSerialization(Action<ISerializationConfigurator> configure)
         {
             configure(serializationConfigurator);
+            serializationServices = serializationConfigurator.Configure();
             return this;
         }
 
-        public IStreamStoreConfigurator EnableSchemaProvisioning()
+        public IStreamStoreConfigurator EnableAutomaticProvisioning()
         {
-            schemaProvisioningEnabled = true;
+            config.ProvisioningEnabled = true;
             return this;
         }
 
-        public IStreamStoreConfigurator WithSingleStorage(Action<ISingleTenantConfigurator> configure)
+        public IStreamStoreConfigurator ConfigurePersistence(Action<IServiceCollection> configure)
         {
-            var configurator = new SingleTenantConfigurator();
-            configure(configurator);
-            storageConfigurator = configurator;
-            return this;
-        }
-
-        public IStreamStoreConfigurator WithMultitenancy(Action<IMultitenancyConfigurator> configure)
-        {
-            var configurator = new MultitenancyConfigurator();
-            configure(configurator);
-            storageConfigurator = configurator;
+            storageServices = new ServiceCollection();
+            configure(storageServices);
             return this;
         }
 
         public IServiceCollection Configure(IServiceCollection services)
         {
-            if (storageConfigurator == null)
-                throw new InvalidOperationException("Storage backend is not registered");
+            if (storageServices == null)
+                throw new InvalidOperationException("Persistence is not configured. Use ConfigurePersistence to register storage services.");
 
-            var configuration = CreateConfiguration();
+            if (config.ProvisioningEnabled)
+                RegisterSchemaProvisioning(services);
 
-            CopyServices(storageConfigurator.Configure(), services);
-            CopyServices(serializationConfigurator.Configure(), services);
-
-            RegisterSharedDependencies(services, configuration);
-            RegisterModeDependencies(services, (dynamic)storageConfigurator);
+            // Copy serialization and storage services
+            services
+                .CopyFrom(storeServices)
+                .CopyFrom(serializationServices)
+                .CopyFrom(storageServices);
 
             return services;
         }
 
-        static void CopyServices(IServiceCollection source, IServiceCollection destination)
+        IServiceCollection RegisterSchemaProvisioning(IServiceCollection services)
         {
-            foreach (var service in source)
+            return config.MultitenancyEnabled switch
             {
-                destination.Add(service);
-            }
-        }
-
-
-
-        StreamStoreConfiguration CreateConfiguration()
-        {
-            return new StreamStoreConfiguration
-            {
-                ReadingMode = mode,
-                ReadingPageSize = pageSize,
+                true => services.AddHostedService<TenantSchemaProvisioningService>(),
+                false => services.AddHostedService<SchemaProvisioningService>()
             };
         }
 
-        static void RegisterSharedDependencies(IServiceCollection services, StreamStoreConfiguration configuration)
+        public IStreamStoreConfigurator EnableMultitenancy<TProvider>() where TProvider : class, ITenantProvider
         {
-            services
-                .AddSingleton(configuration)
-                .AddSingleton<StreamEventEnumeratorFactory>()
-                .AddSingleton<IEventConverter, EventConverter>()
-                .AddSingleton<IStreamUnitOfWorkFactory, StreamUnitOfWorkFactory>()
-                .AddSingleton<IStreamStore, StreamStore>();
+            config.MultitenancyEnabled = true;
+            storeServices.AddSingleton<ITenantProvider, TProvider>();
+            storeServices.AddSingleton<ITenantStreamStoreFactory, TenantStreamStoreFactory>();
+            return this;
         }
 
-#pragma warning disable S1172 // Unused method parameters should be removed
-        void RegisterModeDependencies(IServiceCollection services, SingleTenantConfigurator configurator)
+        public IStreamStoreConfigurator EnableMultitenancy(params Id[] tenants)
         {
-            if (schemaProvisioningEnabled) services.AddHostedService<SchemaProvisioningService>();
+            if (tenants == null || tenants.Length == 0)
+                throw new ArgumentException("Tenants cannot be null or empty.", nameof(tenants));
+            
+            config.MultitenancyEnabled = true;
+
+            storeServices.AddSingleton<ITenantProvider>(new DefaultTenantProvider(tenants));
+            storeServices.AddSingleton<ITenantStreamStoreFactory, TenantStreamStoreFactory>();
+            return this;
         }
 
-        void RegisterModeDependencies(IServiceCollection services, MultitenancyConfigurator configurator)
-
+        void RegisterDefaultSerialization()
         {
-            services.AddSingleton<ITenantStreamStoreFactory, TenantStreamStoreFactory>();
-            if (schemaProvisioningEnabled) services.AddHostedService<TenantSchemaProvisioningService>();
+            serializationServices = serializationConfigurator.Configure();
         }
 
-#pragma warning restore S1172 // Unused method parameters should be removed
+
+        void RegisterStore()
+        {
+            storeServices.RegisterDomainValidation();
+
+            storeServices
+                    .AddSingleton(config)
+                    .AddSingleton<StreamEventEnumeratorFactory>()
+                    .AddSingleton<IEventConverter, EventConverter>()
+                    .AddSingleton<IStreamUnitOfWorkFactory, StreamUnitOfWorkFactory>()
+                    .AddSingleton<IStreamStore, StreamStore>();
+        }
+
     }
 }

@@ -10,11 +10,10 @@ namespace StreamStore.S3.B2
 {
     public sealed class B2StorageConfigurator: B2StreamStorageSettingsBuilder
     {
-        readonly IServiceCollection services;
+        readonly IServiceCollection services = new ServiceCollection();
 
-        public B2StorageConfigurator(IServiceCollection services)
+        public B2StorageConfigurator()
         {
-            this.services = services;
             services.AddSingleton<IS3LockFactory, B2S3Factory>();
             services.AddSingleton<IS3ClientFactory, B2S3Factory>();
             services.AddSingleton<IStorageClientFactory, BackblazeClientFactory>();

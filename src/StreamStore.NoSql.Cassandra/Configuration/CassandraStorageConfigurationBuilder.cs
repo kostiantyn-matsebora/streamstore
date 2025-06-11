@@ -1,11 +1,21 @@
 ﻿using Cassandra;
+using StreamStore.Extensions;
+using StreamStore.NoSql.Cassandra.Storage;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
 {
     public sealed class CassandraStorageConfigurationBuilder
     {
-        readonly CassandraStorageConfiguration config = new CassandraStorageConfiguration();
+        readonly CassandraStorageConfiguration config;
 
+        public CassandraStorageConfigurationBuilder(): this(new CassandraStorageConfiguration())
+        {
+        }
+
+        public CassandraStorageConfigurationBuilder(CassandraStorageConfiguration config)
+        {
+           this.config = config.ThrowIfNull(nameof(config));
+        }
         public CassandraStorageConfigurationBuilder WithKeyspaceName(string keyspace)
         {
             config.Keyspace = keyspace.ThrowIfNullOrEmpty(nameof(keyspace));
@@ -33,6 +43,11 @@ namespace StreamStore.NoSql.Cassandra.Configuration
         public CassandraStorageConfigurationBuilder WithSerialConsistencyLevel(ConsistencyLevel serialConsistencyLevel)
         {
             config.SerialConsistencyLevel = serialConsistencyLevel;
+            return this;
+        }
+        internal CassandraStorageConfigurationBuilder WithMode(CassandraMode mode) 
+        {
+            config.Mode = mode;
             return this;
         }
 

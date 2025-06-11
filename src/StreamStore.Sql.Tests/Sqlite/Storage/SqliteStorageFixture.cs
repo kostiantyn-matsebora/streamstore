@@ -1,4 +1,5 @@
-﻿using StreamStore.Sql.Sqlite;
+﻿using Microsoft.Extensions.DependencyInjection;
+using StreamStore.Sql.Sqlite;
 using StreamStore.Sql.Tests.Storage;
 using StreamStore.Testing;
 
@@ -7,15 +8,13 @@ namespace StreamStore.Sql.Tests.Sqlite.Storage
 {
     public sealed class SqliteStorageFixture : SqlStorageFixtureBase<SqliteTestStorage>
     {
-        public SqliteStorageFixture(): base(new SqliteTestStorage($"{Generated.Names.Storage}.sqlite"))
+        public SqliteStorageFixture() : base(new SqliteTestStorage($"{Generated.Names.Storage}.sqlite"))
         {
         }
 
-        public override void ConfigureStorage(ISingleTenantConfigurator configurator)
+        public override void ConfigurePersistence(IServiceCollection services)
         {
-               configurator.UseSqliteStorage(
-                    c => c.ConfigureStorage(
-                        x => x.WithConnectionString(testStorage.ConnectionString)));
+            services.UseSqlite(c => c.WithConnectionString(testStorage.ConnectionString));
         }
     }
 }

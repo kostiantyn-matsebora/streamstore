@@ -19,9 +19,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="StreamStorage\Multitenancy\**" />
-    <EmbeddedResource Remove="StreamStorage\Multitenancy\**" />
-    <None Remove="StreamStorage\Multitenancy\**" />
+    <Compile Remove="Storage\Multitenancy\**" />
+    <EmbeddedResource Remove="Storage\Multitenancy\**" />
+    <None Remove="Storage\Multitenancy\**" />
   </ItemGroup>
 
   <ItemGroup>

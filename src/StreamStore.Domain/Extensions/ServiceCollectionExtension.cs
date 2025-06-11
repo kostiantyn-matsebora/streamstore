@@ -12,5 +12,16 @@ namespace StreamStore.Extensions
             services.AddSingleton<IDuplicateRevisionValidator, DuplicateRevisionValidator>();
             return services;
         }
+
+        public static IServiceCollection CopyFrom(this IServiceCollection target, IServiceCollection source)
+        {
+            source.ThrowIfNull(nameof(source));
+            target.ThrowIfNull(nameof(target));
+            foreach (var service in source)
+            {
+                target.Add(service);
+            }
+            return target;
+        }
     }
 }

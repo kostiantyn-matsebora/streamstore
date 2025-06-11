@@ -13,25 +13,23 @@ namespace StreamStore.S3.AWS
 
         internal AWSS3StorageSettings() { }
 
-        public static AWSS3StorageSettingsBuilder New => new AWSS3StorageSettingsBuilder();
-
         public TimeSpan InMemoryLockTTL { get; internal set; }
     }
 
-    public class AWSS3StorageSettingsBuilder : IConfigurator
+    public class AWSS3StorageConfigurationBuilder : IConfigurator
     {
         string? bucketName;
 
         TimeSpan ttl = TimeSpan.FromSeconds(30);
 
-        public AWSS3StorageSettingsBuilder WithBucketName(string bucketName)
+        public AWSS3StorageConfigurationBuilder WithBucketName(string bucketName)
         {
             this.bucketName = bucketName;
             return this;
         }
 
 
-        public AWSS3StorageSettingsBuilder WithInMemoryLockTTL(TimeSpan ttl)
+        public AWSS3StorageConfigurationBuilder WithInMemoryLockTTL(TimeSpan ttl)
         {
             this.ttl = ttl;
             return this;

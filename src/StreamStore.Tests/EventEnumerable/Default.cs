@@ -2,7 +2,7 @@
 {
     public class Default: Enumerating_events
     {
-        public Default(): base(StreamReadingMode.Default)
+        public Default(): base(StreamReadingMode.Queue)
         {
         }
     }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>0.10.0</Version>
+    <Version>0.11.0</Version>
     <Company>kostiantyn-matsebora</Company>
     <Description>SQLite storage for StreamStore asynchronous event sourcing library.</Description>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>

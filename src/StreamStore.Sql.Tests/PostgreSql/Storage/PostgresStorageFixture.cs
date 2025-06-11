@@ -1,4 +1,4 @@
-﻿using Npgsql;
+﻿using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Sql.PostgreSql;
 using StreamStore.Sql.Tests.Storage;
 using StreamStore.Testing;
@@ -12,12 +12,10 @@ namespace StreamStore.Sql.Tests.PostgreSql.Storage
         public PostgresStorageFixture() : base(new PostgresTestStorage(Generated.Names.Storage))
         {
         }
-       
-        public override void ConfigureStorage(ISingleTenantConfigurator configurator)
+
+        public override void ConfigurePersistence(IServiceCollection services)
         {
-             configurator.UsePostgresStorage(
-                    c => c.ConfigureStorage(
-                        x => x.WithConnectionString(testStorage.ConnectionString)));
+            services.UsePostgreSql(c => c.WithConnectionString(testStorage.ConnectionString));
         }
     }
 }

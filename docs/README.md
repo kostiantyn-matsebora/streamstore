@@ -109,24 +109,31 @@ or from NuGet Package Manager Console:
 - Register store in DI container
   
 ```csharp
-    services.ConfigureStreamStore(x =>              // Register StreamStore
-      x.EnableSchemaProvisioning()                  // Optional. Enable schema provisioning, default: false.
-      
-      // Register single storage implementation, see details in documentation for particular storage
-      x.WithSingleStorage(c =>                 
-          c.UseSqliteStorage(x =>                  // For instance, SQLite storage backend
-              x.ConfigureStorage(c =>
-                c.WithConnectionString(connectionString)
-              )
-          )
+      // Register StreamStore
+    services.AddStreamStore(x =>
+      // Optional. Enable automatic provisioning of storage schema provisioning, default: false.
+      x.EnableAutomaticProvisioning()
+      // Optional. Enable multitenancy
+      // By explicitly passing tenant identifiers
+      .EnableMultitenancy("tenant-1", "tenant-2")
+      // Or providing your own ITenantProvider implementation    
+      .EnableMultitenancy<MyTenantProvider>()
+      // Optional. Define size of the batch for reading events, default: 1000.
+      .WithReadingPageSize(1000)
+      // Optional. Define algorith of event reading, default: Queue
+      .WithReadingMode(StreamReadingMode.Queue)
+      // Optional. Configure custom serialization/deserialization of events, default: Newtonsoft.Json
+      .ConfigureSerialization(...)
+      // Configure event persistence layer, you can use one of the provided storage implementations
+      x.ConfigurePersistence(c =>
+      // For instance, SQLite storage backend in single-tenant mode
+          c.UseSqlite(x =>
+                c.WithConnectionString(connectionString))
+      // Or SQLite in multi-tenant mode
+          .UseSqliteWithMultitenancy(x =>
+                c.WithConnectionString(connectionString))
       )
-      // Or enable multitenancy, see details in documentation for particular storage.
-      x.WithMultitenancy(c => 
-          c.UseInMemoryStorage()                   // For instance, InMemory storage backend
-           .UseTenantProvider<MyTenantProvider>()   // Optional. Register your  ITenantProvider implementation.
-                                                    // Required if you want schema to be provisioned for each tenant.
-      )
-    ); 
+    );
 ```
 
 - Use store in your application
@@ -170,7 +177,7 @@ or from NuGet Package Manager Console:
              .WithEvent(eventObject)  // Specify event object
              // Optional. Add custom property to event
              .WithCustomProperty("property-name", "property-value") 
-             // Or use WithCustomProperties method to add multiple custom properties              
+             // Or use WithCustomProperties method to add multiple custom properties
              .WithCustomProperties(new Dictionary<string, object> { { "property-name", "property-value" } }) 
          )
         ...
@@ -190,8 +197,10 @@ or from NuGet Package Manager Console:
 
     // Push result to the end of stream
     store
-        .BeginAppendAsync("stream-1", metadata.Revision) // Open stream with revision to handle concurrency
-           .AppendAsync(x =>                       // Append events one by one using fluent API
+        // Open stream with revision to handle concurrency
+        .BeginAppendAsync("stream-1", metadata.Revision) 
+        // Append events one by one using fluent API
+           .AppendAsync(x =>
             x.WithId( "event-4")
              .Dated(DateTime.Now)
              .WithEvent(yourEventObject)
@@ -206,7 +215,6 @@ More examples of reading and writing events you can find in test scenarios of [S
 ## Examples
 
 Examples of using StreamStore with different storage implementations you can find in separate [`streamstore-examples`] repository.
-
 
 ## Customization
 

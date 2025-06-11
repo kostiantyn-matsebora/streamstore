@@ -7,17 +7,17 @@ namespace StreamStore.Testing
     {
         public static class StreamEventRecords
         {
-            public static StreamEventRecord[] Many(int initialRevision, int count)
+            public static TestStreamEventRecord[] Many(int initialRevision, int count)
             {
                 return new Fixture().CreateStreamEventRecords(initialRevision, count).ToArray();
             }
 
-            public static StreamEventRecord[] Many(int count)
+            public static TestStreamEventRecord[] Many(int count)
             {
                 return new Fixture().CreateStreamEventRecords(count).ToArray();
             }
 
-            public static StreamEventRecord[] Single => new Fixture().CreateStreamEventRecords(1,1).ToArray();
+            public static TestStreamEventRecord[] Single => new Fixture().CreateStreamEventRecords(1,1).ToArray();
            
         }
     }

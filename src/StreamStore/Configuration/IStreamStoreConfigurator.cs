@@ -14,12 +14,14 @@ namespace StreamStore
 
         IStreamStoreConfigurator ConfigureSerialization(Action<ISerializationConfigurator> configure);
 
-        IStreamStoreConfigurator WithSingleStorage(Action<ISingleTenantConfigurator> configure);
+        IStreamStoreConfigurator EnableMultitenancy<TProvider>() where TProvider : class, ITenantProvider;
 
-        IStreamStoreConfigurator WithMultitenancy(Action<IMultitenancyConfigurator> configure);
+        IStreamStoreConfigurator EnableMultitenancy(params Id[] tenants);
 
-        IStreamStoreConfigurator EnableSchemaProvisioning();
+        IStreamStoreConfigurator EnableAutomaticProvisioning();
 
-        IServiceCollection Configure(IServiceCollection services);
+        IStreamStoreConfigurator ConfigurePersistence(Action<IServiceCollection> configure);
+
+        public IServiceCollection Configure(IServiceCollection services);
     }
 }

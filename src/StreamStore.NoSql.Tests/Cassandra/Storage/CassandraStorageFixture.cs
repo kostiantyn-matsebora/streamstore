@@ -2,6 +2,7 @@
 using StreamStore.Testing.Framework;
 using StreamStore.NoSql.Cassandra;
 using Cassandra;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Storage
 {
@@ -35,11 +36,11 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage
             };
         }
 
-        public override void ConfigureStorage(ISingleTenantConfigurator configurator)
+        public override void ConfigurePersistence(IServiceCollection services)
         {
-            configurator.UseCassandra(c =>
-                c.ConfigureCluster(x => ConfigureCluster(x))
-                        .ConfigureStorage(k => k.WithKeyspaceName(testStorage.Keyspace.Name)));
+            services.UseCassandra(c =>
+                         c.ConfigureCluster(x => ConfigureCluster(x))
+                          .ConfigureStorage(k => k.WithKeyspaceName(testStorage.Keyspace.Name)));
         }
 
         protected override MemoryStorage CreateContainer()

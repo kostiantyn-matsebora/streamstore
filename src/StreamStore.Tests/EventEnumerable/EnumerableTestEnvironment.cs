@@ -10,7 +10,7 @@ namespace StreamStore.Tests.Enumerator
     {
         readonly StreamReadingMode mode;
 
-        public EnumerableTestEnvironment(): this(StreamReadingMode.Default)
+        public EnumerableTestEnvironment(): this(StreamReadingMode.Queue)
         {
         }
 
@@ -27,7 +27,7 @@ namespace StreamStore.Tests.Enumerator
         protected override void ConfigureStreamStore(IStreamStoreConfigurator configurator)
         {
             configurator.WithReadingMode(mode);
-            configurator.WithSingleStorage(x => x.UseInMemoryStorage());
+            configurator.ConfigurePersistence(x => x.UseInMemoryStorage());
         }
     }
 }

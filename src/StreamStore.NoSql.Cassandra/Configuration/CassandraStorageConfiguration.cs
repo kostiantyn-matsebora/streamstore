@@ -1,5 +1,6 @@
 ﻿using System;
 using Cassandra;
+using StreamStore.NoSql.Cassandra.Storage;
 
 namespace StreamStore.NoSql.Cassandra.Configuration
 {
@@ -13,6 +14,8 @@ namespace StreamStore.NoSql.Cassandra.Configuration
 
         public ConsistencyLevel SerialConsistencyLevel { get; set; } = ConsistencyLevel.Serial;
 
+        internal CassandraMode Mode { get; set; } = CassandraMode.Cassandra;
+
         public object Clone()
         {
             return new CassandraStorageConfiguration
@@ -21,7 +24,8 @@ namespace StreamStore.NoSql.Cassandra.Configuration
                 EventsTableName = EventsTableName,
                 WriteConsistencyLevel = WriteConsistencyLevel,
                 ReadConsistencyLevel = ReadConsistencyLevel,
-                SerialConsistencyLevel = SerialConsistencyLevel
+                SerialConsistencyLevel = SerialConsistencyLevel,
+                Mode = Mode
             };
         }
     }
