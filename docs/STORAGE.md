@@ -2,27 +2,6 @@
 
 Storage is a persistence layer for the StreamStore library.
 
-
-## Requirements
-
-To implement your own storage in single tenant mode, you need implement and register in DI container the following interfaces:
-
-- [IStreamStorage] - provides methods for working with streams.
-
-- [ISchemaProvisioner](../src/StreamStore.Contracts/Provisioning/ISchemaProvisioner.cs) - provides methods for provisioning storage schema.
-
-To implement your own storage you do not need StreamStore package, you can either implement all necessary interfaces from `StreamStore.Storage.Contracts` or inherit base abstract implementation from `StreamStore.Storage` package:
-
-```dotnetcli
-  dotnet add package StreamStore.Storage
-```
-
-or from NuGet Package Manager Console:
-
-```powershell
-  Install-Package StreamStore.Storage
-```
-
 ## Create your own storage implementation
 
 ### Implement your own storage from scratch
