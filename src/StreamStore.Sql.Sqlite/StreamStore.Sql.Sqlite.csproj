@@ -30,8 +30,8 @@
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.Sql\StreamStore.Sql.csproj" PrivateAssets="All" />
     <ProjectReference Include="..\StreamStore.Storage\StreamStore.Storage.csproj" PrivateAssets="All"/>
-    <ProjectReference Include="..\StreamStore.Storage.Contracts\StreamStore.Storage.Contracts.csproj" PrivateAssets="All"/>
-    <ProjectReference Include="..\StreamStore.Domain\StreamStore.Domain.csproj" PrivateAssets="All"/>
+    <ProjectReference Include="..\StreamStore.Storage.Contracts\StreamStore.Storage.Contracts.csproj" />
+    <ProjectReference Include="..\StreamStore.Domain\StreamStore.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

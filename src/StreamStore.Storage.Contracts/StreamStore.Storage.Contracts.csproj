@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>0.9.0</Version>
+    <Version>0.10.0</Version>
     <Company>kostiantyn-matsebora</Company>
     <Description>Persistence layer interfaces of StreamStore library.</Description>
     <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StreamStore.Domain\StreamStore.Domain.csproj" PrivateAssets="All"/>
+    <ProjectReference Include="..\StreamStore.Domain\StreamStore.Domain.csproj" />
   </ItemGroup>
    <ItemGroup>
     <None Update="README.md">

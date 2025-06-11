@@ -1,12 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <RootNamespace>StreamStore</RootNamespace>
-    <IsPackable>False</IsPackable>
+    <Version>1.1.0</Version>
+    <Company>kostiantyn-matsebora</Company>
+    <Description>Stream store domain definition. Do not reference this package.</Description>
+    <Copyright>since 2024 © Kostiantyn Matsebora. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Title>Stream store domain definition. Do not reference this package.</Title>
   </PropertyGroup>
-
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.5" />
