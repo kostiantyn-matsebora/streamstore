@@ -8,6 +8,8 @@ using StreamStore.NoSql.Cassandra.Storage;
 using StreamStore.Storage;
 using StreamStore.Testing;
 using StreamStore.Testing.Storage.Configuration;
+using StreamStore.NoSql.Cassandra;
+using StreamStore.Multitenancy;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Configuration
 {
@@ -58,6 +60,28 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration
             builder.ApplicationName.Should().Be(applicationName);
 
         }
+
+        [Fact]
+        public void Configuring_by_extension()
+        {
+            // Arrange
+            var services = new ServiceCollection();
+            var tableName = Generated.Primitives.String;
+
+            // Act
+            services.AddCassandraWithMultitenancy(
+                b =>
+                    b.ConfigureStorage(c => c.WithEventsTableName(tableName))
+                    .ConfigureCluster(c => c.AddContactPoint("localhost")),
+                x =>  
+                    x.WithStorageConfigurationProvider<DummyStorageConfigurationProvider>()
+                    .WithKeyspaceProvider<DummyKeyspaceProvider>());
+
+            // Assert
+            var provider = services.BuildServiceProvider();
+            provider.GetService<ITenantStreamStorageProvider>().Should().NotBeNull();
+        }
+
 
         class DummyStorageConfigurationProvider : ICassandraTenantStorageConfigurationProvider
         {

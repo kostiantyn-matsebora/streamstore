@@ -1,5 +1,4 @@
-﻿using Cassandra;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra.Configuration;
@@ -7,6 +6,7 @@ using StreamStore.NoSql.Cassandra.Storage;
 using StreamStore.Storage;
 using StreamStore.Testing;
 using StreamStore.Testing.Storage.Configuration;
+using StreamStore.NoSql.Cassandra;
 
 namespace StreamStore.NoSql.Tests.Cassandra.Configuration
 {
@@ -81,6 +81,26 @@ namespace StreamStore.NoSql.Tests.Cassandra.Configuration
             var result = provider.GetService<CassandraStorageConfiguration>();
             result.Should().NotBeNull();
             result.Mode.Should().Be(CassandraMode.CosmosDbCassandra);
+        }
+
+        [Fact]
+        public void Configuring_by_extension()
+        {
+            // Arrange
+            var services = new ServiceCollection();
+            var tableName = Generated.Primitives.String;
+
+            // Act
+            services.AddCassandra(b => 
+            b.ConfigureStorage(c => c.WithEventsTableName(tableName))
+             .ConfigureCluster(c => c.AddContactPoint("localhost")));
+
+            // Assert
+            var provider = services.BuildServiceProvider();
+            provider.GetService<IStreamStorage>().Should().NotBeNull();
+            var configuration = provider.GetService<CassandraStorageConfiguration>();
+            configuration.Should().NotBeNull();
+            configuration.EventsTableName.Should().Be(tableName);
         }
     }
 }

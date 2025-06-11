@@ -1,9 +1,7 @@
 ﻿using System;
-using Cassandra;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
 using StreamStore.NoSql.Cassandra.Configuration;
-using StreamStore.NoSql.Cassandra.Multitenancy;
 using StreamStore.Storage;
 
 namespace StreamStore.NoSql.Cassandra
