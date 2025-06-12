@@ -223,7 +223,10 @@ namespace StreamStore.EventFlow.Tests
             var aggregate = await LoadAggregateAsync(id);
 
             // Act
-            await aggregate.CommitAsync(EventStore, SnapshotStore, SourceId.New, CancellationToken.None);
+           var act = async () => await aggregate.CommitAsync(EventStore, SnapshotStore, SourceId.New, CancellationToken.None);
+
+            // Assert 
+            await act.Should().NotThrowAsync();
         }
 
         [Test]
