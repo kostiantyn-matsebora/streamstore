@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using EventFlow.Core;
 using EventFlow.EventStores;
 using StreamStore.Extensions;
-
+using EventFlow.Exceptions;
 namespace StreamStore.EventFlow
 {
     internal class StreamStoragePersistence : IEventPersistence
@@ -27,8 +27,13 @@ namespace StreamStore.EventFlow
             {
                 throw new ArgumentException("Serialized events cannot be null or empty", nameof(serializedEvents));
             }
-
-            await storage.WriteAsync(id.Value, ToEventRecords(serializedEvents), cancellationToken);
+            try
+            {
+                await storage.WriteAsync(id.Value, ToEventRecords(serializedEvents), cancellationToken);
+            } catch (Exceptions.Appending.OptimisticConcurrencyException ex)
+            {
+                throw new OptimisticConcurrencyException($"Failed to commit events for stream {id.Value}. Revision already exists.", ex);
+            }
 
             return new List<ICommittedDomainEvent>(ToCommittedDomainEvents(serializedEvents));
         }
@@ -48,7 +53,7 @@ namespace StreamStore.EventFlow
             var metadata = await storage.GetMetadataAsync(id.Value, cancellationToken);
 
             if (metadata == null)
-                throw new  InvalidOperationException("No metadata found for the specified identity.");
+                return Array.Empty<ICommittedDomainEvent>();
 
             return await LoadCommittedEventsAsync(id, fromEventSequenceNumber, metadata.Revision.Value , cancellationToken);
         }
@@ -56,8 +61,9 @@ namespace StreamStore.EventFlow
         public async Task<IReadOnlyCollection<ICommittedDomainEvent>> LoadCommittedEventsAsync(IIdentity id, int fromEventSequenceNumber, int toEventSequenceNumber, CancellationToken cancellationToken)
         {
 
-            var events = await storage.ReadAsync(id.Value, fromEventSequenceNumber, toEventSequenceNumber - fromEventSequenceNumber, cancellationToken);
-            return ToCommittedDomainEvents(events.Where(e => e.Revision <= toEventSequenceNumber)).ToList();
+            var events = await storage.ReadAsync(id.Value, fromEventSequenceNumber, toEventSequenceNumber - fromEventSequenceNumber + 1, cancellationToken);
+            var result =  ToCommittedDomainEvents(id, events.Where(e => e.Revision <= toEventSequenceNumber)).ToList();
+            return result;
         }
 
         IEnumerable<IStreamEventRecord> ToEventRecords(IReadOnlyCollection<SerializedEvent> serializedEvents)
@@ -91,14 +97,14 @@ namespace StreamStore.EventFlow
             }
         }
 
-        IEnumerable<ICommittedDomainEvent> ToCommittedDomainEvents(IEnumerable<IStreamEventRecord> events)
+        IEnumerable<ICommittedDomainEvent> ToCommittedDomainEvents(IIdentity streamId, IEnumerable<IStreamEventRecord> events)
         {
             foreach (var @event in events)
             {
                 yield return
                     new CommittedDomainEvent
                     {
-                        AggregateId = @event.Id.Value,
+                        AggregateId = streamId.Value,
                         Data = Encoding.UTF8.GetString(@event.Data),
                         Metadata = serializer.Serialize(@event.CustomProperties?? new Dictionary<string,string>()),
                         AggregateSequenceNumber = @event.Revision

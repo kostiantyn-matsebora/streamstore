@@ -13,6 +13,7 @@ namespace StreamStore.EventFlow
         {
             if (eventFlowOptions == null) throw new ArgumentNullException(nameof(eventFlowOptions));
             if (configureStorage == null) throw new ArgumentNullException(nameof(configureStorage));
+            configureStorage(eventFlowOptions.ServiceCollection);
             return eventFlowOptions.UseEventPersistence<StreamStoragePersistence>();
         }
 
