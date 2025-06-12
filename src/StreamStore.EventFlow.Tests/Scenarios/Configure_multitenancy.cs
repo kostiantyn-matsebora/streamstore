@@ -31,18 +31,18 @@ namespace StreamStore.EventFlow.Tests
         public void Should_configure_event_persistence()
         {
             // Arrange 
-            var options = new Mock<IEventFlowOptions>();
-            var serviceCollection = new ServiceCollection().AddSingleton<IJsonSerializer>(new Mock<IJsonSerializer>().Object);            
             var tenantId = Generated.Id;
+            var options = new Mock<IEventFlowOptions>();
+            var serviceCollection = 
+               new ServiceCollection()
+                .AddSingleton<IJsonSerializer>(new Mock<IJsonSerializer>().Object)
+                .AddSingleton(new IdWrapper(tenantId));
 
             options.Setup(c => c.ServiceCollection).Returns(serviceCollection);
 
             // Act
-            EventFlowOptionsExtension.UseStreamStoreEventStore<PredefinedTenantIdResolver>(
-                options.Object, c => 
-                    c.AddSingleton(new IdWrapper(tenantId))
-                    .UseSqliteWithMultitenancy(c => c.WithConnectionString(tenantId, Generated.String)
-                    ));
+            options.Object.UseStreamStoreEventStore<PredefinedTenantIdResolver>(
+                     c =>c.UseSqliteWithMultitenancy(c => c.WithConnectionString(tenantId, Generated.String)));
 
             var provider = serviceCollection.BuildServiceProvider();
 
@@ -67,11 +67,12 @@ namespace StreamStore.EventFlow.Tests
         }
     }
 
-    class IdWrapper {
+    class IdWrapper
+    {
         public IdWrapper(Id id)
         {
             this.Value = id;
         }
-        public Id Value { get;  }
+        public Id Value { get; }
     }
 }
