@@ -74,6 +74,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{9E50
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{B22DBF30-ABED-4FB6-B566-310537D48555}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.EventFlow", "StreamStore.EventFlow\StreamStore.EventFlow.csproj", "{D59BD7B1-EE5E-4A39-8834-ED77DBC93F8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -164,6 +166,10 @@ Global
 		{7BEBA3A7-8C1D-4969-A538-5D6DF67DCDED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BEBA3A7-8C1D-4969-A538-5D6DF67DCDED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BEBA3A7-8C1D-4969-A538-5D6DF67DCDED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D59BD7B1-EE5E-4A39-8834-ED77DBC93F8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D59BD7B1-EE5E-4A39-8834-ED77DBC93F8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D59BD7B1-EE5E-4A39-8834-ED77DBC93F8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D59BD7B1-EE5E-4A39-8834-ED77DBC93F8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
