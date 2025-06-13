@@ -2,7 +2,8 @@
 using StreamStore.Sql.Sqlite;
 using StreamStore.Sql.Tests.Sqlite.Storage;
 
-namespace StreamStore.EventFlow.Tests
+
+namespace StreamStore.Storage.EventFlow.Tests
 {
     [TestFixture]
     public class Sqlite_storage_tests : TestSuiteForEventStore

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore.Sql.Sqlite;
 
-namespace StreamStore.EventFlow.Tests
+namespace StreamStore.Storage.EventFlow.Tests
 {
     [TestFixture]
     public class Configure_multitenancy
@@ -16,13 +16,13 @@ namespace StreamStore.EventFlow.Tests
         public void Should_throw_when_parameters_not_set()
         {
             // Act
-            var act = () => EventFlowOptionsExtension.UseStreamStoreEventStore<PredefinedTenantIdResolver>(null!, c => c.UseSqlite());
+            var act = () => EventFlowOptionsExtension.UseStreamStorageEventStore<PredefinedTenantIdResolver>(null!, c => c.UseSqlite());
 
             // Assert
             act.Should().Throw<ArgumentNullException>();
 
             // Arrange
-            act = () => EventFlowOptionsExtension.UseStreamStoreEventStore<PredefinedTenantIdResolver>(new Mock<IEventFlowOptions>().Object, null!);
+            act = () => new Mock<IEventFlowOptions>().Object.UseStreamStorageEventStore<PredefinedTenantIdResolver>(null!);
 
             act.Should().Throw<ArgumentNullException>();
         }
@@ -35,13 +35,13 @@ namespace StreamStore.EventFlow.Tests
             var options = new Mock<IEventFlowOptions>();
             var serviceCollection = 
                new ServiceCollection()
-                .AddSingleton<IJsonSerializer>(new Mock<IJsonSerializer>().Object)
+                .AddSingleton(new Mock<IJsonSerializer>().Object)
                 .AddSingleton(new IdWrapper(tenantId));
 
             options.Setup(c => c.ServiceCollection).Returns(serviceCollection);
 
             // Act
-            options.Object.UseStreamStoreEventStore<PredefinedTenantIdResolver>(
+            options.Object.UseStreamStorageEventStore<PredefinedTenantIdResolver>(
                      c =>c.UseSqliteWithMultitenancy(c => c.WithConnectionString(tenantId, Generated.String)));
 
             var provider = serviceCollection.BuildServiceProvider();
@@ -71,7 +71,7 @@ namespace StreamStore.EventFlow.Tests
     {
         public IdWrapper(Id id)
         {
-            this.Value = id;
+            Value = id;
         }
         public Id Value { get; }
     }

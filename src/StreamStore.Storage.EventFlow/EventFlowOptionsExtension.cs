@@ -5,11 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Multitenancy;
 
 
-namespace StreamStore.EventFlow
+namespace StreamStore.Storage.EventFlow
 {
     public static class EventFlowOptionsExtension
     {
-        public static IEventFlowOptions UseStreamStoreEventStore(this IEventFlowOptions eventFlowOptions, Action<IServiceCollection> configureStorage)
+        public static IEventFlowOptions UseStreamStorageEventStore(this IEventFlowOptions eventFlowOptions, Action<IServiceCollection> configureStorage)
         {
             if (eventFlowOptions == null) throw new ArgumentNullException(nameof(eventFlowOptions));
             if (configureStorage == null) throw new ArgumentNullException(nameof(configureStorage));
@@ -17,7 +17,7 @@ namespace StreamStore.EventFlow
             return eventFlowOptions.UseEventPersistence<StreamStoragePersistence>();
         }
 
-        public static IEventFlowOptions UseStreamStoreEventStore<TResolver>(this IEventFlowOptions eventFlowOptions, Action<IServiceCollection> configureStorage) where TResolver : class, ITenantIdResolver
+        public static IEventFlowOptions UseStreamStorageEventStore<TResolver>(this IEventFlowOptions eventFlowOptions, Action<IServiceCollection> configureStorage) where TResolver : class, ITenantIdResolver
         {
             if (eventFlowOptions == null) throw new ArgumentNullException(nameof(eventFlowOptions));
             if (configureStorage == null) throw new ArgumentNullException(nameof(configureStorage));
@@ -25,7 +25,7 @@ namespace StreamStore.EventFlow
             configureStorage(eventFlowOptions.ServiceCollection);
 
             eventFlowOptions.ServiceCollection.AddScoped<ITenantIdResolver, TResolver>();
-            eventFlowOptions.ServiceCollection.AddScoped<IStreamStorage>(serviceProvider =>
+            eventFlowOptions.ServiceCollection.AddScoped(serviceProvider =>
             {
                 var tenantIdResolver = serviceProvider.GetRequiredService<ITenantIdResolver>();
                 var storageProvider = serviceProvider.GetRequiredService<ITenantStreamStorageProvider>();

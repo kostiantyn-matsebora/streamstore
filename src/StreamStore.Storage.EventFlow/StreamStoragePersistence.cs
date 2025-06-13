@@ -8,7 +8,9 @@ using EventFlow.Core;
 using EventFlow.EventStores;
 using StreamStore.Extensions;
 using EventFlow.Exceptions;
-namespace StreamStore.EventFlow
+
+
+namespace StreamStore.Storage.EventFlow
 {
     internal class StreamStoragePersistence : IEventPersistence
     {

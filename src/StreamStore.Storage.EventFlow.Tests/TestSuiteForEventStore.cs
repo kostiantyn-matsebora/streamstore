@@ -15,8 +15,9 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore.Provisioning;
+using StreamStore.Storage.EventFlow;
 
-namespace StreamStore.EventFlow.Tests
+namespace StreamStore.Storage.EventFlow.Tests
 {
 
     public abstract class TestSuiteForEventStore: IntegrationTest
@@ -375,7 +376,7 @@ namespace StreamStore.EventFlow.Tests
 
             return base.Options(eventFlowOptions)
                 .RegisterServices(sr => sr.AddSingleton(_ => subscribeSynchronousToAllMock.Object))
-                .UseStreamStoreEventStore(services => ConfigureStreamStorage(services, storageName));
+                .UseStreamStorageEventStore(services => ConfigureStreamStorage(services, storageName));
         }
 
         protected override IServiceProvider Configure(IEventFlowOptions eventFlowOptions)

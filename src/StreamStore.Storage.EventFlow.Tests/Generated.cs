@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 
-namespace StreamStore.EventFlow.Tests
+namespace StreamStore.Storage.EventFlow.Tests
 {
     internal static class Generated
     {

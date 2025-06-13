@@ -1,6 +1,6 @@
 ﻿using EventFlow.EventStores;
 
-namespace StreamStore.EventFlow
+namespace StreamStore.Storage.EventFlow
 {
     internal class CommittedDomainEvent : ICommittedDomainEvent
     {

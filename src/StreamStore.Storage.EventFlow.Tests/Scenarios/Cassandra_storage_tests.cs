@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using StreamStore.NoSql.Cassandra;
 using StreamStore.NoSql.Tests.Cassandra.Storage;
-namespace StreamStore.EventFlow.Tests
+namespace StreamStore.Storage.EventFlow.Tests
 {
     [TestFixture]
     [Ignore("Requires Cassandra server running")]

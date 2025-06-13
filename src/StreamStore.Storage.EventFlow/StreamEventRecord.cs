@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace StreamStore.EventFlow
+namespace StreamStore.Storage.EventFlow
 {
     internal class StreamEventRecord : IStreamEventRecord
     {

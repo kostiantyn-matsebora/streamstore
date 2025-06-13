@@ -2,7 +2,7 @@
 using StreamStore.Sql.PostgreSql;
 using StreamStore.Sql.Tests.PostgreSql.Storage;
 
-namespace StreamStore.EventFlow.Tests
+namespace StreamStore.Storage.EventFlow.Tests
 {
     [TestFixture]
     [Ignore("Requires Postgres server running")]

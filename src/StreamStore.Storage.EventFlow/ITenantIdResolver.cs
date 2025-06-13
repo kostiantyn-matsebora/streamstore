@@ -1,5 +1,4 @@
-﻿
-namespace StreamStore
+﻿namespace StreamStore.Storage.EventFlow
 {
     public interface ITenantIdResolver
     {
