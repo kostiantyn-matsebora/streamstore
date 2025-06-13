@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/kostiantyn-matsebora/streamstore</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/kostiantyn-matsebora/streamstore</RepositoryUrl>
-    <PackageTags>event sourcing; streams; stream store; stream; async</PackageTags>
+    <PackageTags>event sourcing; streams; stream store; stream; async; eventflow; cassandra</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Title>>Adapter of StreamStore's storage backends to use as EventFlow event store.</Title>
   </PropertyGroup>
