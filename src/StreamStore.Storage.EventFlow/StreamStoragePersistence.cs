@@ -47,7 +47,7 @@ namespace StreamStore.Storage.EventFlow
 
         public Task<AllCommittedEventsPage> LoadAllCommittedEvents(GlobalPosition globalPosition, int pageSize, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException("Loading all commited events is not supported by StreamStore");
+            throw new NotSupportedException("Loading all commited events is not supported by StreamStore");
         }
 
         public async Task<IReadOnlyCollection<ICommittedDomainEvent>> LoadCommittedEventsAsync(IIdentity id, int fromEventSequenceNumber, CancellationToken cancellationToken)

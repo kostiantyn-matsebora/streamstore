@@ -15,11 +15,13 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using StreamStore.Provisioning;
-using StreamStore.Storage.EventFlow;
+
 
 namespace StreamStore.Storage.EventFlow.Tests
 {
 
+    // Originally taken from EventFlow repo https://github.com/eventflow/EventFlow/blob/develop-v1/Source/EventFlow.TestHelpers/Suites/TestSuiteForEventStore.cs
+    // Removed all not supported scenarios
     public abstract class TestSuiteForEventStore: IntegrationTest
     {
         readonly List<IDomainEvent> publishedDomainEvents = new List<IDomainEvent>();
