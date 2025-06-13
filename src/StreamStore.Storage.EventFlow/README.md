@@ -33,7 +33,7 @@ First, if you just decided to use [`EventFlow`], you must install EventFlow pack
 Then install adapter:
 
 ```dotnetcli
-  dotnet add package StreamStore.torage.EventFlow
+  dotnet add package StreamStore.Storage.EventFlow
 ```
 
 After that install particular [`StreamStore`] storage backend, for instance Cassandra:
