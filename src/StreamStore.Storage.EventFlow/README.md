@@ -131,5 +131,5 @@ foreach (var tenantId in tenants) {
 [IEventPersistence]: https://github.com/eventflow/EventFlow/blob/develop-v1/Source/EventFlow/EventStores/IEventPersistence.cs
 [IStreamStorage]: https://github.com/kostiantyn-matsebora/streamstore/blob/master/src/StreamStore.Storage.Contracts/Storage/IStreamStorage.cs
 [`Cassandra`]: https://cassandra.apache.org/_/index.html
-[ITenantIdResolver]: https://github.com/kostiantyn-matsebora/streamstore/blob/eventflow/src/StreamStore.EventFlow/ITenantIdResolver.cs
+[ITenantIdResolver]: https://github.com/kostiantyn-matsebora/streamstore/blob/master/src/StreamStore.Storage.EventFlow/ITenantIdResolver.cs
 
