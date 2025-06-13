@@ -1,4 +1,7 @@
-# StreamStore
+<p align="center">
+  <img src="icon.png?raw=true" alt="StreamStore"/>
+</p>
+
 
 [![Build](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/build.yml/badge.svg)](https://github.com/kostiantyn-matsebora/streamstore/actions/workflows/build.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kostiantyn-matsebora_streamstore&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kostiantyn-matsebora_streamstore)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kostiantyn-matsebora_streamstore&metric=coverage)](https://sonarcloud.io/summary/new_code?id=kostiantyn-matsebora_streamstore)
@@ -26,7 +29,7 @@ Despite the fact that component implements a logical layer for storing and query
 | [StreamStore.Storage] | Base abstract implementation of persistence layer of StreamStore component. | [![NuGet version (StreamStore.Storage)](https://img.shields.io/nuget/v/StreamStore.Storage.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage/) |
 | [StreamStore.Storage.Contracts] | Persistence layer interfaces of StreamStore component.| [![NuGet version (StreamStore.Storage.Contracts)](https://img.shields.io/nuget/v/StreamStore.Storage.Contracts.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage.Contracts/) |
 | [StreamStore.Serialization.Protobuf] | Protobuf event serializer/deserializer. | [![NuGet version (StreamStore.Testing)](https://img.shields.io/nuget/v/StreamStore.Serialization.Protobuf.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Serialization.Protobuf/) |
-
+| [StreamStore.Storage.EventFlow] | Adapter of StreamStore's storage backends to use as EventFlow event store. | [![NuGet version (StreamStore.Storage.EventFlow)](https://img.shields.io/nuget/v/StreamStore.Storage.EventFlow.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage.EventFlow/) |
 ### Storage packages
 
   | Name  | Description  | Concurrency Control  | Multitenancy | Event Duplication Detection |  Package  |
@@ -260,4 +263,4 @@ to contribute, feel free to [open an issue][issues] or
 [StreamStore.Storage]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Storage
 [StreamStore.Storage.Contracts]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Storage.Contracts
 [`streamstore-examples`]: https://github.com/kostiantyn-matsebora/streamstore-examples
-
+[StreamStore.Storage.EventFlow]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Storage.EventFlow
