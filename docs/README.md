@@ -24,12 +24,13 @@ Despite the fact that component implements a logical layer for storing and query
 ## Packages
 
 | Name | Description | Package |
-| ---- | ----------- | ------- |
+| ------ | ------------ | ------------ |
 | [StreamStore] | Asynchronous event streaming | [![NuGet version (StreamStore)](https://img.shields.io/nuget/v/StreamStore.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore/) |
 | [StreamStore.Storage] | Base abstract implementation of persistence layer of StreamStore component. | [![NuGet version (StreamStore.Storage)](https://img.shields.io/nuget/v/StreamStore.Storage.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage/) |
 | [StreamStore.Storage.Contracts] | Persistence layer interfaces of StreamStore component.| [![NuGet version (StreamStore.Storage.Contracts)](https://img.shields.io/nuget/v/StreamStore.Storage.Contracts.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage.Contracts/) |
 | [StreamStore.Serialization.Protobuf] | Protobuf event serializer/deserializer. | [![NuGet version (StreamStore.Testing)](https://img.shields.io/nuget/v/StreamStore.Serialization.Protobuf.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Serialization.Protobuf/) |
-| [StreamStore.Storage.EventFlow] | Adapter of StreamStore's storage backends to use as EventFlow event store. | [![NuGet version (StreamStore.Storage.EventFlow)](https://img.shields.io/nuget/v/StreamStore.Storage.EventFlow.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage.EventFlow/) |
+| [StreamStore.Storage.EventFlow] | Adapter of StreamStore's storage backends to use as event store in [`EventFlow`]. | [![NuGet version (StreamStore.Storage.EventFlow)](https://img.shields.io/nuget/v/StreamStore.Storage.EventFlow.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage.EventFlow/) |
+
 ### Storage packages
 
   | Name  | Description  | Concurrency Control  | Multitenancy | Event Duplication Detection |  Package  |
@@ -38,8 +39,8 @@ Despite the fact that component implements a logical layer for storing and query
   | [StreamStore.Sql.PostgreSql] | [`PostgreSQL`](https://www.postgresql.org/) storage | [`Optimistic`] | :white_check_mark: | :white_check_mark: |   [![NuGet version (StreamStore.Sql.PostgreSql)](https://img.shields.io/nuget/v/StreamStore.Sql.PostgreSql.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.PostgreSql/)
   | [StreamStore.Sql.Sqlite]     | [`SQLite`](https://www.sqlite.org/index.html) storage | [`Optimistic`] | :white_check_mark: |  :white_check_mark: |  [![NuGet version (StreamStore.Sql.Sqlite)](https://img.shields.io/nuget/v/StreamStore.Sql.Sqlite.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Sql.Sqlite/)
   | [StreamStore.InMemory]       | **In-memory** storage is provided **for testing and educational purposes only** | [`Optimistic`] | :white_check_mark: | :white_check_mark: |   [![NuGet version (StreamStore.InMemory)](https://img.shields.io/nuget/v/StreamStore.InMemory.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.InMemory/) |
-  | [StreamStore.S3.AWS]         | [`Amazon S3`] storage                                                         | [`Pessimistic`] |:x: | :x: | [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
-  | [StreamStore.S3.B2]          | [`Backblaze B2`] storage (not working at the moment!)                                                      |[`Pessimistic`] |:x: | :x: |  [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/) |
+  | [StreamStore.S3.AWS]         | [`Amazon S3`] storage                                                         | [`Pessimistic`] | :x: | :x: | [![NuGet version (StreamStore.S3.AWS)](https://img.shields.io/nuget/v/StreamStore.S3.AWS.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.AWS/)       |
+  | [StreamStore.S3.B2]          | [`Backblaze B2`] storage (not working at the moment!)                                                      | [`Pessimistic`] | :x: | :x: |  [![NuGet version (StreamStore.S3.B2)](https://img.shields.io/nuget/v/StreamStore.S3.B2.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.S3.B2/) |
 
 ## Concepts
 
@@ -264,3 +265,4 @@ to contribute, feel free to [open an issue][issues] or
 [StreamStore.Storage.Contracts]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Storage.Contracts
 [`streamstore-examples`]: https://github.com/kostiantyn-matsebora/streamstore-examples
 [StreamStore.Storage.EventFlow]: https://github.com/kostiantyn-matsebora/streamstore/tree/master/src/StreamStore.Storage.EventFlow
+[`EventFlow`]: https://geteventflow.net/
