@@ -24,7 +24,7 @@ Despite the fact that component implements a logical layer for storing and query
 ## Packages
 
 | Name | Description | Package |
-| ---- | ----------- | ------- |
+| ------ | ------------ | ------------ |
 | [StreamStore] | Asynchronous event streaming | [![NuGet version (StreamStore)](https://img.shields.io/nuget/v/StreamStore.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore/) |
 | [StreamStore.Storage] | Base abstract implementation of persistence layer of StreamStore component. | [![NuGet version (StreamStore.Storage)](https://img.shields.io/nuget/v/StreamStore.Storage.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage/) |
 | [StreamStore.Storage.Contracts] | Persistence layer interfaces of StreamStore component.| [![NuGet version (StreamStore.Storage.Contracts)](https://img.shields.io/nuget/v/StreamStore.Storage.Contracts.svg?style=flat-square)](https://www.nuget.org/packages/StreamStore.Storage.Contracts/) |
