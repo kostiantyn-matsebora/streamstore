@@ -20,6 +20,9 @@ So, **if you are using or decided to use [`EventFlow`] want to high available di
 > [!IMPORTANT]
 > Component does not implement adapter of [`StreamStore`] solution, only the storage backend part, so functionality like automatic schema provisioning, earlier detection of event duplication etc. is not available.
 
+> [!TIP]
+> Example of usage [`StreamStore`] storage backend (SQLite) as [`EventFlow`] event store you can find [here](https://github.com/kostiantyn-matsebora/streamstore-examples/tree/master/src/StreamStore.EventFlow.Example).
+
 ## How
 
 How to use it? It is pretty easy.
