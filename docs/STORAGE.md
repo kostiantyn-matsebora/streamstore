@@ -122,33 +122,51 @@ After that you can register your storage implementation in the DI container by c
 
 ```csharp
   public static class ServiceCollectionExtension
-  {
-      public static IServiceCollection ConfigurePersistenceMultitenancy(this IServiceCollection services, StorageConfiguratorBase configurator, MultitenancyConfiguratorBase multitenancyConfigurator)
-      {
-              configurator.ThrowIfNull(nameof(configurator));
-              multitenancyConfigurator.ThrowIfNull(nameof(multitenancyConfigurator));
-  
-              var storageServices = 
-                  new StorageDependencyBuilder()
-                      .WithStorageConfigurator(configurator)
-                      .WithMultitenancyConfigurator(multitenancyConfigurator)
-                      .Build();
-              services.CopyFrom(storageServices);
-              return services;
-          }
-          public static IServiceCollection ConfigurePersistence(this IServiceCollection services, StorageConfiguratorBase configurator)
-          {
-              configurator.ThrowIfNull(nameof(configurator));
-  
-              var storageServices =
-                  new StorageDependencyBuilder()
-                      .WithStorageConfigurator(configurator)
-                      .Build();
-              services.CopyFrom(storageServices);
-              return services;
-          }
+    {
+        public static IServiceCollection UseSqlite(this IServiceCollection services)
+        {
+            services.ConfigurePersistence(new StorageConfigurator(SqliteConfiguration.DefaultConfiguration));
+            return services;
+        }
 
-  }
+        public static IServiceCollection UseSqlite(this IServiceCollection services, IConfiguration configuration)
+        {
+            configuration.ThrowIfNull(nameof(configuration));
+            services.ConfigurePersistence(
+                new StorageConfigurator(
+                        SqlStorageConfigurationBuilder.ReadFromConfig(
+                            configuration,
+                            SqliteConfiguration.ConfigurationSection,
+                            SqliteConfiguration.DefaultConfiguration)));
+            return services;
+        }
+
+        public static IServiceCollection UseSqlite(this IServiceCollection services, Action<SqlStorageConfigurationBuilder> configure)
+        {
+            configure.ThrowIfNull(nameof(configure));
+            services.ConfigurePersistence(
+                new StorageConfigurator(
+                    new SqlStorageConfigurationBuilder(
+                        SqliteConfiguration.DefaultConfiguration, 
+                        configure).Build()));
+            return services;
+        }
+
+        public static IServiceCollection UseSqliteWithMultitenancy(this IServiceCollection services, SqlStorageConfiguration defaultConfig, Action<SqlMultitenancyConfigurator> configure)
+        {
+            configure.ThrowIfNull(nameof(defaultConfig));
+            configure.ThrowIfNull(nameof(configure));
+            services.ConfigurePersistenceMultitenancy(
+                new StorageConfigurator(defaultConfig), 
+                new MultitenancyConfigurator(configure));
+            return services;
+        }
+
+        public static IServiceCollection UseSqliteWithMultitenancy(this IServiceCollection services, Action<SqlMultitenancyConfigurator> configure)
+        {
+            return services.UseSqliteWithMultitenancy(SqliteConfiguration.DefaultConfiguration, configure);
+        }
+    }
 ```
 
 </details>
