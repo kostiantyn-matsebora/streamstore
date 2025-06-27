@@ -60,4 +60,13 @@ namespace StreamStore.Storage
         protected abstract Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default);
         protected abstract Task WriteAsyncInternal(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default);
     }
+
+
+    public abstract class StreamStorageBase : StreamStorageBase<IStreamEventRecord>
+    {
+        protected override void BuildRecord(IStreamEventRecordBuilder builder, IStreamEventRecord entity)
+        {
+            builder.WithRecord(entity);
+        }
+    }
 }
