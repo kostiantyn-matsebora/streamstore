@@ -370,3 +370,4 @@ FodyWeavers.xsd
 **/*.Debug.json
 **/*.Development.json
 /src/StreamStore/Models/EventEnvelope.cs
+/src/StreamStore.NoSql.Tests/.runsettings
