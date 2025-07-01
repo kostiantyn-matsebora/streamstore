@@ -5,6 +5,8 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using StreamStore.Storage;
+using StreamStore.Testing.Framework;
 using StreamStore.Testing.Models;
 
 namespace StreamStore.Testing
@@ -15,11 +17,17 @@ namespace StreamStore.Testing
         public int Capacity { get; set; } = 100;
 
         public int EventPerStream { get; set; } = 100;
+
+        public int CopyDegreeOfParallelism { get; set; } = 1;
+
+        public int WriteBatchSize { get; set; } = 100;
     }
-    public class MemoryStorage: IEnumerable<TestStreamRecord>
+
+    public class MemoryStorage : IEnumerable<TestStreamRecord>
     {
 
         readonly ConcurrentDictionary<Id, TestStreamRecord> store = new ConcurrentDictionary<Id, TestStreamRecord>();
+        readonly MemoryStorageOptions options;
 
         public MemoryStorage() : this(new MemoryStorageOptions())
         {
@@ -27,6 +35,7 @@ namespace StreamStore.Testing
 
         public MemoryStorage(MemoryStorageOptions options)
         {
+            this.options = options;
             Fill(GenerateIds(options.Capacity), options.EventPerStream);
         }
 
@@ -44,15 +53,18 @@ namespace StreamStore.Testing
             }
         }
 
-        public void CopyTo(IStreamStorage storage)
+        public async Task CopyToAsync(IStreamStorage storage)
         {
-            // Copying events from source
-            var tasks = store.Select(async pair =>
-            {
-                await storage.WriteAsync(pair.Key, pair.Value.Events, CancellationToken.None);
-            });
-
-            Task.WaitAll(tasks.ToArray());
+            await Parallel.ForEachAsync(
+                store,
+                new ParallelOptions { MaxDegreeOfParallelism = options.CopyDegreeOfParallelism },
+                async (stream, token) =>
+                {
+                    foreach (var batch in PagingEnumerable(stream.Value.Events))
+                    {
+                        await storage.WriteAsync(stream.Key, batch, CancellationToken.None);
+                    }
+                });
         }
 
         void Fill(IEnumerable<Id> ids, int eventPerStream)
@@ -73,6 +85,11 @@ namespace StreamStore.Testing
         int RandomStreamIndex()
         {
             return RandomNumberGenerator.GetInt32(0, store.Keys.Count - 1);
+        }
+
+        IEnumerable<IStreamEventRecord[]> PagingEnumerable(RevisionedItemCollection<IStreamEventRecord> events)
+        {
+            return new PagingEnumerable<IStreamEventRecord>(events.ToArray(), options.WriteBatchSize);
         }
 
         public IEnumerator<TestStreamRecord> GetEnumerator()

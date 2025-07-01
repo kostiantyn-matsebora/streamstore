@@ -14,7 +14,10 @@ namespace StreamStore.NoSql.DynamoDb
 
         public static IServiceCollection UseDynamoDb(this IServiceCollection services, Action<IDynamoDbConfigurator> configure)
         {
-            return services;
+            var configurator = new StorageConfigurator();
+            configure(configurator);
+
+            return services.ConfigurePersistence(configurator);
         }
     }
 }

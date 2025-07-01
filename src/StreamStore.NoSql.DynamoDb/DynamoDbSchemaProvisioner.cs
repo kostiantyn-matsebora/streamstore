@@ -12,6 +12,8 @@ namespace StreamStore.NoSql.DynamoDb
     {
         readonly IAmazonDynamoDB client;
         readonly DynamoDbConfiguration configuration;
+        const int delayBetweenAttempts = 1000;
+        const int attemptCount = 100;
 
         public DynamoDbSchemaProvisioner(IAmazonDynamoDB client, DynamoDbConfiguration configuration)
         {
@@ -21,10 +23,14 @@ namespace StreamStore.NoSql.DynamoDb
 
         public async Task ProvisionSchemaAsync(CancellationToken token)
         {
-            var response = await client.CreateTableAsync(new CreateTableRequest
+            try
             {
-                TableName = configuration.TableName,
-                AttributeDefinitions = new List<AttributeDefinition>()
+
+                var response = await client.CreateTableAsync(new CreateTableRequest
+                {
+                    TableName = configuration.TableName,
+                    BillingMode = configuration.BillingMode,
+                    AttributeDefinitions = new List<AttributeDefinition>()
                 {
                     new AttributeDefinition
                     {
@@ -37,7 +43,7 @@ namespace StreamStore.NoSql.DynamoDb
                         AttributeType = ScalarAttributeType.N,
                     }
                 },
-                KeySchema = new List<KeySchemaElement>()
+                    KeySchema = new List<KeySchemaElement>()
                 {
                     new KeySchemaElement
                     {
@@ -47,11 +53,46 @@ namespace StreamStore.NoSql.DynamoDb
                     new KeySchemaElement
                     {
                         AttributeName = AttributeNames.Revision,
-                        KeyType = KeyType.HASH,
+                        KeyType = KeyType.RANGE,
                     },
                 },
-                BillingMode = configuration.BillingMode,
-            });
+
+                });
+
+                await WaitForCreationAsync(response.TableDescription.TableStatus, token);
+            }
+            catch (ResourceInUseException ex)
+            {
+
+                if (
+                       ex.Message.Contains("Table already exists")
+                    || ex.Message.Contains("Table is being created")) return;
+                throw;
+            }
+        }
+
+        async Task WaitForCreationAsync(TableStatus tableStatus, CancellationToken token)
+        {
+            int count = attemptCount;
+            var status = tableStatus;
+
+            while (status != TableStatus.ACTIVE && count > 0)
+            {
+                token.ThrowIfCancellationRequested();
+                count--;
+
+                await Task.Delay(delayBetweenAttempts);
+                status = await GetTableStatusAsync(token);
+            }
+
+            if (status != TableStatus.ACTIVE) 
+                throw new TableNotFoundException(configuration.TableName);
+        }
+
+        async Task<TableStatus> GetTableStatusAsync(CancellationToken token)
+        {
+            var result = await client.DescribeTableAsync(configuration.TableName, token);
+            return result.Table.TableStatus;
         }
     }
 }

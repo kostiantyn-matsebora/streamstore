@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Testing.Framework;
 
 
@@ -19,9 +20,9 @@ namespace StreamStore.Testing.StreamStore
             services.AddStreamStore(ConfigureStreamStore);
         }
 
-        protected override void SetUpInternal()
+        protected override async Task SetUpAsync()
         {
-            storage.CopyTo(Storage);
+            await storage.CopyToAsync(Storage);
         }
 
         protected abstract void ConfigureStreamStore(IStreamStoreConfigurator configurator);

@@ -57,7 +57,8 @@ namespace StreamStore.NoSql.DynamoDb
             return new Put()
             {
                 TableName = tableName,
-                Item = attributes
+                Item = attributes,
+                ConditionExpression = "attribute_not_exists(Revision)"
             };
         }
 

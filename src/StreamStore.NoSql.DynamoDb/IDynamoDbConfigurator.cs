@@ -5,8 +5,10 @@ namespace StreamStore.NoSql.DynamoDb
 {
     public interface IDynamoDbConfigurator
     {
-        IDynamoDbConfigurator UseConfiguration(IConfiguration configuration, string configSection = "streamstore");
+        IDynamoDbConfigurator UseConfiguration(IConfiguration configuration, string configSection = "AWS");
         IDynamoDbConfigurator WithTableName(string tableName);
         IDynamoDbConfigurator WithBillingMode(BillingMode mode);
+        IDynamoDbConfigurator WithReadingBatchSize(int batchSize);
+        IDynamoDbConfigurator WithDeletingBatchSize(int batchSize);
     }
 }

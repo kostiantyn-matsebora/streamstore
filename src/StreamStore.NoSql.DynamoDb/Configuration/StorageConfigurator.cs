@@ -75,5 +75,17 @@ namespace StreamStore.NoSql.DynamoDb.Configuration
             this.clientFactory = clientFactory.ThrowIfNull(nameof(clientFactory));
             return this; 
         }
+
+        public IDynamoDbConfigurator WithReadingBatchSize(int batchSize)
+        {
+            this.configuration.ReadingBatchSize = batchSize;
+            return this;
+        }
+
+        public IDynamoDbConfigurator WithDeletingBatchSize(int batchSize)
+        {
+            this.configuration.DeletingBatchSize = batchSize;
+            return this;
+        }
     }
 }

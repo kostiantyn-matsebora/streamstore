@@ -14,8 +14,9 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage
         }
 
 
-        protected override void SetUpInternal()
+        protected override Task SetUpAsync()
         {
+            return Task.CompletedTask;
         }
     }
 }

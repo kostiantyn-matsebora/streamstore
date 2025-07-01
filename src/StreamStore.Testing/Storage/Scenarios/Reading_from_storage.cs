@@ -48,7 +48,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
             result.Should().HaveSameCount(stream.Events);
             result.Should().BeInAscendingOrder(e => e.Revision);
             result.First().Revision.Should().Be(Revision.One);
-            result.Last().Revision.Should().Be(stream.Events.MaxRevision);
+            result.Last().Revision.Should().Be(stream.Revision);
             result.First().Id.Should().Be(stream.Events.First().Id);
             result.Last().Id.Should().Be(stream.Events.Last().Id);
         }

@@ -19,9 +19,18 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StreamStore.NoSql.Cassandra\StreamStore.NoSql.Cassandra.csproj" />
+    <ProjectReference Include="..\StreamStore.NoSql.DynamoDb\StreamStore.NoSql.DynamoDb.csproj" />
     <ProjectReference Include="..\StreamStore.Testing\StreamStore.Testing.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

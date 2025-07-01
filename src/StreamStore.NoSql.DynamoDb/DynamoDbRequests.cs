@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Amazon.DynamoDBv2.Model;
 using StreamStore.Extensions;
 
@@ -21,11 +20,26 @@ namespace StreamStore.NoSql.DynamoDb
                 ScanIndexForward = false,
                 ConsistentRead = true,
                 Limit = 1,
-                AttributesToGet = new string[] { AttributeNames.Revision, AttributeNames.Timestamp }.ToList(),
                 KeyConditionExpression = $"{AttributeNames.StreamId} = :streamId",
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
                     { ":streamId", new AttributeValue { S = streamId.ToString() } },
+                }
+            };
+        }
+
+        public WriteRequest DeleteStreamRevision(Id streamId, int revision)
+        {
+            return new WriteRequest
+            {
+                DeleteRequest = new DeleteRequest
+                {
+
+                    Key = new Dictionary<string, AttributeValue>
+                    {
+                        { AttributeNames.StreamId, new AttributeValue { S =  streamId } },
+                        { AttributeNames.Revision, new AttributeValue { N =  revision.ToString() } }
+                    }
                 }
             };
         }

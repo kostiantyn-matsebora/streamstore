@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Configuration;
 using StreamStore.Extensions;
@@ -20,10 +21,11 @@ namespace StreamStore.Testing.Framework
 
         protected StorageFixtureBase(TStorage testStorage)
         {
-            Container = CreateContainer();
+            Container = CreateInMemoryContainer();
+
             this.testStorage = testStorage.ThrowIfNull(nameof(testStorage));
 
-            var exists = testStorage.EnsureExists();
+            var exists = testStorage.EnsureExistsAsync().GetAwaiter().GetResult();
        
             if (!exists) return;
 
@@ -31,12 +33,12 @@ namespace StreamStore.Testing.Framework
 
             ProvisionSchema(provider);
 
-            FillStorage(provider);
+            FillStorage(provider).GetAwaiter().GetResult();
 
             isStorageReady = true;
         }
 
-        protected virtual MemoryStorage CreateContainer()
+        protected virtual MemoryStorage CreateInMemoryContainer()
         {
             return new MemoryStorage();
         }
@@ -59,10 +61,10 @@ namespace StreamStore.Testing.Framework
             provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
         }
 
-        void FillStorage(IServiceProvider provider)
+        async Task FillStorage(IServiceProvider provider)
         {
             var storage = provider.GetRequiredService<IStreamStorage>();
-            Container.CopyTo(storage);
+            await Container.CopyToAsync(storage);
         }
 
         protected virtual void Dispose(bool disposing)

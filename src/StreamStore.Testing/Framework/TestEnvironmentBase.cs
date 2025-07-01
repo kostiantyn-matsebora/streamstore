@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
@@ -14,7 +15,7 @@ namespace StreamStore.Testing.Framework
 
         public bool IsReady => isReady;
 
-        public void SetUp()
+        public async Task SetUp()
         {
             isReady = CheckIfReady();
             if (!isReady) return;
@@ -23,7 +24,7 @@ namespace StreamStore.Testing.Framework
 
             RegisterServices(services);
             BuildProvider(services);
-            SetUpInternal();
+            await SetUpAsync();
         }
 
 
@@ -40,8 +41,9 @@ namespace StreamStore.Testing.Framework
         {
         }
 
-        protected virtual void SetUpInternal()
+        protected virtual Task SetUpAsync()
         {
+            return Task.CompletedTask;
         }
 
 

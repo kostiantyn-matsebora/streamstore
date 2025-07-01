@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
 using StreamStore.Testing.Framework;
 
@@ -20,8 +21,9 @@ namespace StreamStore.Testing.StreamStorage
            fixture.ConfigurePersistence(services);
         }
 
-        protected override void SetUpInternal()
+        protected override Task SetUpAsync()
         {
+            return Task.CompletedTask;
         }
 
         protected override bool CheckIfReady()

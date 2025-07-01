@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using StreamStore.Exceptions.Appending;
 using StreamStore.Extensions;
 using StreamStore.Storage;
 
@@ -25,21 +26,26 @@ namespace StreamStore.NoSql.DynamoDb
 
         protected override async Task DeleteAsyncInternal(Id streamId, CancellationToken token = default)
         {
-            var request = new DeleteItemRequest
+            var metadata = await GetMetadataInternal(streamId, token);
+            if (metadata == null) return;
+            foreach (var batch in new PagingEnumerable<int>(Enumerable.Range(1, metadata.Revision), config.DeletingBatchSize))
             {
-                TableName = config.TableName,
-                Key = new Dictionary<string, AttributeValue>
+                var request = new BatchWriteItemRequest
+                {
+                    RequestItems = new Dictionary<string, List<WriteRequest>>
                     {
-                        { AttributeNames.StreamId,  new AttributeValue { S = streamId.ToString() } },
+                        { config.TableName,  batch.Select(revision => requests.DeleteStreamRevision(streamId, revision)).ToList() }
                     }
-            };
+                };
 
-            var response = await client.DeleteItemAsync(request);
+                await client.BatchWriteItemAsync(request, token);
+            }
         }
 
         protected override async Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default)
         {
-            var response = await client.QueryAsync(requests.GetMetadata(streamId));
+            var request = requests.GetMetadata(streamId);
+            var response = await client.QueryAsync(request);
 
             if (response.Count == 0) return null;
 
@@ -51,32 +57,66 @@ namespace StreamStore.NoSql.DynamoDb
 
         protected override async Task<IStreamEventRecord[]> ReadAsyncInternal(Id streamId, Revision startFrom, int count, CancellationToken token = default)
         {
+            List<IStreamEventRecord> records = new List<IStreamEventRecord>();
 
-            var response = await client.QueryAsync(requests.GetStreamEvents(streamId, startFrom, count));
-            if (response.Count == 0) return Array.Empty<IStreamEventRecord>();
+            await foreach (var batch in CreateAsyncEnumerable(streamId, startFrom, count, token))
+            {
+                records.AddRange(batch);
+            }
 
-            return response.Items.Select(item =>
-                        new StreamEventRecordBuilder()
-                            .WithAttributes(item)
-                            .Build())
-                   .ToArray();
+            return records.ToArray();
         }
 
         protected override async Task WriteAsyncInternal(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)
         {
-            var items =
-                batch.Select(r =>
-                    new TransactWriteItem
-                    {
-                        Put = new PutItemBuilder()
-                                .WithTableName(config.TableName)
-                                .WithStreamId(streamId)
-                                .WithRecord(r)
-                                .Build()
-                    }
-                    ).ToList();
+            if (batch.Count() > DynamoDbConfiguration.WritingBatchSize)
+                throw new InvalidOperationException($"Writing batch exceeds  {DynamoDbConfiguration.WritingBatchSize} items limit.");
 
-            var result = await client.TransactWriteItemsAsync(new TransactWriteItemsRequest() { TransactItems = items });
+            try
+            {
+                var items =
+                    batch.Select(r =>
+                        new TransactWriteItem
+                        {
+                            Put = new PutItemBuilder()
+                                    .WithTableName(config.TableName)
+                                    .WithStreamId(streamId)
+                                    .WithRecord(r)
+                                    .Build()
+                        }
+                        ).ToList();
+
+                var result = await client.TransactWriteItemsAsync(new TransactWriteItemsRequest() { TransactItems = items });
+            }
+            catch (TransactionCanceledException ex)
+            {
+                if (ex.CancellationReasons.Any(r => r.Code == "ConditionalCheckFailed"))
+                    throw new RevisionAlreadyExistsException(streamId);
+            }
+        }
+
+        async Task<IStreamEventRecord[]> ReadStreamEventBatch(Id streamId, Revision startFrom, int count, CancellationToken token)
+        {
+            var response = await client.QueryAsync(requests.GetStreamEvents(streamId, startFrom, count));
+
+            return response.Items.Select(item =>
+                    new StreamEventRecordBuilder()
+                        .WithAttributes(item)
+                        .Build())
+                        .ToArray();
+        }
+
+        IAsyncEnumerable<IStreamEventRecord[]> CreateAsyncEnumerable(Id streamId, Revision startFrom, int count, CancellationToken token)
+        {
+            return new StreamEventMetadataBatchEnumerable<IStreamEventRecord>(
+                new StreamEventReadingParameters
+                {
+                    Count = count,
+                    StartFrom = startFrom,
+                    BatchSize = config.ReadingBatchSize
+                },
+                 (startFrom, count) => ReadStreamEventBatch(streamId, startFrom, count, token)
+                );
         }
     }
 }
