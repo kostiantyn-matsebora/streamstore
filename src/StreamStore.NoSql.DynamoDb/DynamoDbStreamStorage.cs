@@ -29,21 +29,14 @@ namespace StreamStore.NoSql.DynamoDb
             var metadata = await GetMetadataInternal(streamId, token);
             if (metadata == null) return;
 
-            foreach (var batch in CreateRevisionEnumerable(metadata))
+            foreach (var revisions in CreateRevisionBatchEnumerable(metadata))
             {
-                var request = new BatchWriteItemRequest
-                {
-                    RequestItems = new Dictionary<string, List<WriteRequest>>
-                    {
-                        { config.TableName,  batch.Select(revision => requests.DeleteStreamRevision(streamId, revision)).ToList() }
-                    }
-                };
-
+                var request = requests.DeleteStreamRevisions(streamId, revisions);
                 await client.BatchWriteItemAsync(request, token);
             }
         }
 
-        
+
         protected override async Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default)
         {
             var request = requests.GetMetadata(streamId);
@@ -61,7 +54,7 @@ namespace StreamStore.NoSql.DynamoDb
         {
             List<IStreamEventRecord> records = new List<IStreamEventRecord>();
 
-            await foreach (var batch in CreateAsyncEnumerable(streamId, startFrom, count, token))
+            await foreach (var batch in CreateStreamEventBatchAsyncEnumerable(streamId, startFrom, count, token))
             {
                 records.AddRange(batch);
             }
@@ -72,7 +65,7 @@ namespace StreamStore.NoSql.DynamoDb
         protected override async Task WriteAsyncInternal(Id streamId, IEnumerable<IStreamEventRecord> batch, CancellationToken token = default)
         {
             if (batch.Count() > DynamoDbConfiguration.WritingBatchSize)
-                throw new InvalidOperationException($"Writing batch exceeds  {DynamoDbConfiguration.WritingBatchSize} items limit.");
+                throw new InvalidOperationException($"Writing revisions size exceeds  {DynamoDbConfiguration.WritingBatchSize} items limit.");
 
             try
             {
@@ -108,22 +101,23 @@ namespace StreamStore.NoSql.DynamoDb
                         .ToArray();
         }
 
-        IAsyncEnumerable<IStreamEventRecord[]> CreateAsyncEnumerable(Id streamId, Revision startFrom, int count, CancellationToken token)
+        IAsyncEnumerable<IStreamEventRecord[]> CreateStreamEventBatchAsyncEnumerable(Id streamId, Revision startFrom, int count, CancellationToken token)
         {
             return new StreamEventMetadataBatchEnumerable<IStreamEventRecord>(
-                new StreamEventReadingParameters
-                {
-                    Count = count,
-                    StartFrom = startFrom,
-                    BatchSize = config.ReadingBatchSize
-                },
-                 (startFrom, count) => ReadStreamEventBatch(streamId, startFrom, count, token)
+                parameters: new StreamEventReadingParameters
+                            {
+                                Count = count,
+                                StartFrom = startFrom,
+                                BatchSize = config.ReadingBatchSize
+                            },
+                 reader: (startFrom, count) => ReadStreamEventBatch(streamId, startFrom, count, token)
                 );
         }
 
-        static PagingEnumerable<int> CreateRevisionEnumerable(IStreamMetadata metadata)
+        static PagingEnumerable<int> CreateRevisionBatchEnumerable(IStreamMetadata metadata)
         {
-            return new PagingEnumerable<int>(Enumerable.Range(1, metadata.Revision), DynamoDbConfiguration.DeletingBatchSize);
+            return new PagingEnumerable<int>(Enumerable.Range(Revision.One, metadata.Revision), DynamoDbConfiguration.DeletingBatchSize);
         }
+
     }
 }

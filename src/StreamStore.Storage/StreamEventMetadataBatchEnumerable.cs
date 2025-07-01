@@ -4,14 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Extensions;
-using StreamStore.Storage;
 
 
-namespace StreamStore.NoSql.DynamoDb
+namespace StreamStore.Storage
 {
     public delegate Task<T[]> ReadBatch<T>(Revision startFrom, int count) where T: IStreamEventMetadata;
 
-    internal class StreamEventMetadataBatchEnumerable<T> : IAsyncEnumerable<T[]> where T: IStreamEventMetadata
+    public sealed class StreamEventMetadataBatchEnumerable<T> : IAsyncEnumerable<T[]> where T: IStreamEventMetadata
     {
         readonly StreamEventReadingParameters parameters;
         readonly ReadBatch<T> reader;

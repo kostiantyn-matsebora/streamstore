@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Amazon.DynamoDBv2.Model;
 using StreamStore.Extensions;
 
@@ -28,22 +29,18 @@ namespace StreamStore.NoSql.DynamoDb
             };
         }
 
-        public WriteRequest DeleteStreamRevision(Id streamId, int revision)
+        public BatchWriteItemRequest DeleteStreamRevisions(Id streamId, int[] revisions)
         {
-            return new WriteRequest
+            return new BatchWriteItemRequest
             {
-                DeleteRequest = new DeleteRequest
+                RequestItems = new Dictionary<string, List<WriteRequest>>
                 {
-
-                    Key = new Dictionary<string, AttributeValue>
-                    {
-                        { AttributeNames.StreamId, new AttributeValue { S =  streamId } },
-                        { AttributeNames.Revision, new AttributeValue { N =  revision.ToString() } }
-                    }
+                    { config.TableName,  revisions.Select(revision => DeleteStreamRevision(streamId, revision)).ToList() }
                 }
             };
         }
 
+      
         public QueryRequest GetStreamEvents(Id streamId, int startFrom, int count)
         {
 
@@ -61,5 +58,22 @@ namespace StreamStore.NoSql.DynamoDb
                 }
             };
         }
+
+        WriteRequest DeleteStreamRevision(Id streamId, int revision)
+        {
+            return new WriteRequest
+            {
+                DeleteRequest = new DeleteRequest
+                {
+
+                    Key = new Dictionary<string, AttributeValue>
+                    {
+                        { AttributeNames.StreamId, new AttributeValue { S =  streamId } },
+                        { AttributeNames.Revision, new AttributeValue { N =  revision.ToString() } }
+                    }
+                }
+            };
+        }
+
     }
 }
