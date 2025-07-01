@@ -81,11 +81,5 @@ namespace StreamStore.NoSql.DynamoDb.Configuration
             this.configuration.ReadingBatchSize = batchSize;
             return this;
         }
-
-        public IDynamoDbConfigurator WithDeletingBatchSize(int batchSize)
-        {
-            this.configuration.DeletingBatchSize = batchSize;
-            return this;
-        }
     }
 }

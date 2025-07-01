@@ -11,7 +11,7 @@ namespace StreamStore.NoSql.Tests.DynamoDb.Storage
     {
         readonly DynamoDbConfiguration config;
         const int readingBatchSize = 5;
-        const int deletingBatchSize = 5;
+
 
         public DynamoDbTestStorage(DynamoDbConfiguration config)
         {
@@ -32,8 +32,7 @@ namespace StreamStore.NoSql.Tests.DynamoDb.Storage
                         .AddJsonFile("appsettings.Development.json", true)
                         .Build())
                       .WithTableName(config.TableName)
-                      .WithReadingBatchSize(readingBatchSize)
-                      .WithDeletingBatchSize(deletingBatchSize));
+                      .WithReadingBatchSize(readingBatchSize));
         }
 
         public async Task<bool> EnsureExistsAsync()

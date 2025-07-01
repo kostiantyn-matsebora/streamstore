@@ -9,6 +9,5 @@ namespace StreamStore.NoSql.DynamoDb
         IDynamoDbConfigurator WithTableName(string tableName);
         IDynamoDbConfigurator WithBillingMode(BillingMode mode);
         IDynamoDbConfigurator WithReadingBatchSize(int batchSize);
-        IDynamoDbConfigurator WithDeletingBatchSize(int batchSize);
     }
 }

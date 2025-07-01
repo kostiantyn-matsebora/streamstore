@@ -28,7 +28,8 @@ namespace StreamStore.NoSql.DynamoDb
         {
             var metadata = await GetMetadataInternal(streamId, token);
             if (metadata == null) return;
-            foreach (var batch in new PagingEnumerable<int>(Enumerable.Range(1, metadata.Revision), config.DeletingBatchSize))
+
+            foreach (var batch in CreateRevisionEnumerable(metadata))
             {
                 var request = new BatchWriteItemRequest
                 {
@@ -42,6 +43,7 @@ namespace StreamStore.NoSql.DynamoDb
             }
         }
 
+        
         protected override async Task<IStreamMetadata?> GetMetadataInternal(Id streamId, CancellationToken token = default)
         {
             var request = requests.GetMetadata(streamId);
@@ -117,6 +119,11 @@ namespace StreamStore.NoSql.DynamoDb
                 },
                  (startFrom, count) => ReadStreamEventBatch(streamId, startFrom, count, token)
                 );
+        }
+
+        static PagingEnumerable<int> CreateRevisionEnumerable(IStreamMetadata metadata)
+        {
+            return new PagingEnumerable<int>(Enumerable.Range(1, metadata.Revision), DynamoDbConfiguration.DeletingBatchSize);
         }
     }
 }
