@@ -14,9 +14,9 @@ namespace StreamStore.Storage.EventFlow.Tests
                 c.WithConnectionString($"Data Source = {storageName}; Version = 3;"));
         }
 
-        protected override void ProvisionStorage(string name)
+        protected override async Task ProvisionStorageAsync(string name)
         {
-           new SqliteTestStorage(name).EnsureExists();
+           await new SqliteTestStorage(name).EnsureExistsAsync();
         }
     }
 }

@@ -16,9 +16,10 @@ namespace StreamStore.Storage.EventFlow.Tests
                      .WithDefaultKeyspace(storageName)));
         }
 
-        protected override void ProvisionStorage(string name)
+        protected override async Task ProvisionStorageAsync(string name)
         {
-            new CassandraTestStorage(new KeyspaceConfiguration(name), c => c.AddContactPoint("localhost")).EnsureExists();
+            await new CassandraTestStorage(new KeyspaceConfiguration(name), c => c.AddContactPoint("localhost")).EnsureExistsAsync();
+           
         }
     }
 }

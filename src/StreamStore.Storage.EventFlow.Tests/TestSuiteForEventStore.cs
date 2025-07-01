@@ -374,7 +374,7 @@ namespace StreamStore.Storage.EventFlow.Tests
             Mock<ISubscribeSynchronousToAll> subscribeSynchronousToAllMock = CreateSynchronousSubscriber();
             
             var storageName = Generated.StorageName;
-            ProvisionStorage(storageName);
+            ProvisionStorageAsync(storageName).GetAwaiter().GetResult();
 
             return base.Options(eventFlowOptions)
                 .RegisterServices(sr => sr.AddSingleton(_ => subscribeSynchronousToAllMock.Object))
@@ -405,7 +405,7 @@ namespace StreamStore.Storage.EventFlow.Tests
             return subscribeSynchronousToAllMock;
         }
 
-        protected abstract void ProvisionStorage(string name);
+        protected abstract Task ProvisionStorageAsync(string name);
         protected abstract void ConfigureStreamStorage(IServiceCollection services, string storageName);
 
     }
