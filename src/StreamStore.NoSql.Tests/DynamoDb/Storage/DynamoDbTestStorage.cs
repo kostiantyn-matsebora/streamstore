@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Amazon.Runtime;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
 using StreamStore.NoSql.DynamoDb;
@@ -37,9 +38,16 @@ namespace StreamStore.NoSql.Tests.DynamoDb.Storage
 
         public async Task<bool> EnsureExistsAsync()
         {
-            var schemaProvisioner = ConfigurePersistence(new ServiceCollection()).BuildServiceProvider().GetRequiredService<ISchemaProvisioner>();
-            await schemaProvisioner.ProvisionSchemaAsync(CancellationToken.None);
-            return true;
+            try
+            {
+                var schemaProvisioner = ConfigurePersistence(new ServiceCollection()).BuildServiceProvider().GetRequiredService<ISchemaProvisioner>();
+                await schemaProvisioner.ProvisionSchemaAsync(CancellationToken.None);
+                return true;
+            }
+            catch (AmazonClientException)
+            {
+                return false;
+            }
         }
 
     }
