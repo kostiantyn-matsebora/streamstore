@@ -15,7 +15,7 @@ namespace StreamStore.Testing.Framework
 
         public bool IsReady => isReady;
 
-        public async Task SetUp()
+        public void SetUp()
         {
             isReady = CheckIfReady();
             if (!isReady) return;
@@ -24,7 +24,7 @@ namespace StreamStore.Testing.Framework
 
             RegisterServices(services);
             BuildProvider(services);
-            await SetUpAsync();
+            Initialize();
         }
 
 
@@ -41,9 +41,8 @@ namespace StreamStore.Testing.Framework
         {
         }
 
-        protected virtual Task SetUpAsync()
+        protected virtual void Initialize()
         {
-            return Task.CompletedTask;
         }
 
 

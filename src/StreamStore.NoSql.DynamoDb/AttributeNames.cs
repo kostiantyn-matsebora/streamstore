@@ -1,6 +1,9 @@
 ﻿
+using System.Diagnostics.CodeAnalysis;
+
 namespace StreamStore.NoSql.DynamoDb
 {
+    [ExcludeFromCodeCoverage]
     internal static class AttributeNames
     {
         public const string StreamId = "StreamId";

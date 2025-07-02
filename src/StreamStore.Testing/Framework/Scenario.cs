@@ -16,7 +16,7 @@ namespace StreamStore.Testing
             environment.ThrowIfNull(nameof(environment));
             Environment = environment;
 
-            Environment.SetUp().GetAwaiter().GetResult();
+            Environment.SetUp();
         }
 
         protected virtual void TrySkip()

@@ -13,9 +13,8 @@ namespace StreamStore.NoSql.Tests.DynamoDb.Storage
         }
 
 
-        protected override Task SetUpAsync()
+        protected override void Initialize()
         {
-            return Task.CompletedTask;
         }
     }
 }

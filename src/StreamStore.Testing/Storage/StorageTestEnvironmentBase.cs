@@ -26,9 +26,9 @@ namespace StreamStore.Testing.StreamStorage
 
         protected abstract void ConfigureStorage(IServiceCollection services);
 
-        protected override async Task SetUpAsync()
+        protected override void Initialize()
         {
-            await Container.CopyToAsync(StreamStorage);
+            Container.CopyToAsync(StreamStorage).GetAwaiter().GetResult();
         }
     }
 }

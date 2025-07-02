@@ -21,9 +21,8 @@ namespace StreamStore.Testing.StreamStorage
            fixture.ConfigurePersistence(services);
         }
 
-        protected override Task SetUpAsync()
+        protected override void Initialize()
         {
-            return Task.CompletedTask;
         }
 
         protected override bool CheckIfReady()
