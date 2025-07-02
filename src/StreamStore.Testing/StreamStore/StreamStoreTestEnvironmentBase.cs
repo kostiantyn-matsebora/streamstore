@@ -22,7 +22,7 @@ namespace StreamStore.Testing.StreamStore
 
         protected override void Initialize()
         {
-            storage.CopyToAsync(Storage).GetAwaiter().GetResult();
+            storage.CopyToAsync(Storage).RunSynchronously();
         }
 
         protected abstract void ConfigureStreamStore(IStreamStoreConfigurator configurator);

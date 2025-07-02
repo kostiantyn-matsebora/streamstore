@@ -28,7 +28,7 @@ namespace StreamStore.Testing.StreamStorage
 
         protected override void Initialize()
         {
-            Container.CopyToAsync(StreamStorage).GetAwaiter().GetResult();
+            Container.CopyToAsync(StreamStorage).RunSynchronously();
         }
     }
 }
