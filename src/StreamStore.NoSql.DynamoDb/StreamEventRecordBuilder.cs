@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Amazon.DynamoDBv2.Model;
 using StreamStore.Extensions;
@@ -22,7 +23,7 @@ namespace StreamStore.NoSql.DynamoDb
             {
                 Id = attributes![AttributeNames.Id].S,
                 Data = attributes![AttributeNames.Data].B.ToArray(),
-                Timestamp = DateTime.Parse(attributes![AttributeNames.Timestamp].S),
+                Timestamp = DateTime.Parse(attributes![AttributeNames.Timestamp].S, CultureInfo.InvariantCulture),
                 Revision = Convert.ToInt32(attributes![AttributeNames.Revision].N),
                 CustomProperties = ExtractCustomProperties()
             };

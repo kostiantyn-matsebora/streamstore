@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using StreamStore.Extensions;
@@ -9,6 +10,7 @@ namespace StreamStore.Storage
     {
         readonly int pageSize;
         readonly IEnumerable<T> source;
+
         public PagingEnumerable(IEnumerable<T> source, int pageSize)
         {
             this.pageSize = pageSize;
@@ -29,8 +31,9 @@ namespace StreamStore.Storage
     public class PagingEnumerator<T> : IEnumerator<T[]>
     {
         readonly int pageSize;
-        readonly IEnumerable<T> source;
+        IEnumerable<T> source;
         int currentPage = 0;
+        bool disposedValue;
 
         public PagingEnumerator(IEnumerable<T> source, int pageSize)
         {
@@ -44,6 +47,9 @@ namespace StreamStore.Storage
 
         public void Dispose()
         {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         public bool MoveNext()
@@ -58,10 +64,26 @@ namespace StreamStore.Storage
             currentPage = 0;
         }
 
+        void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    source = null!;
+                }
+                disposedValue = true;
+            }
+        }
+
         T[] GetCurrent()
         {
             var count = pageSize;
-            if (source.Count() < currentPage * pageSize)  count = source.Count() - (currentPage - 1) * pageSize;
+            
+            if (source.Count() < currentPage * pageSize)
+            {
+                count = source.Count() - (currentPage - 1) * pageSize;
+            }
 
             return source.Skip((currentPage - 1) * pageSize).Take(count).ToArray();
         }

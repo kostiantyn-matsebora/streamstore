@@ -46,7 +46,7 @@ namespace StreamStore.NoSql.DynamoDb
 
             return new StreamMetadataBuilder()
                     .WithStreamId(streamId)
-                    .WithAttributes(response.Items.First())
+                    .WithAttributes(response.Items[0])
                     .Build();
         }
 
@@ -81,7 +81,7 @@ namespace StreamStore.NoSql.DynamoDb
                         }
                         ).ToList();
 
-                var result = await client.TransactWriteItemsAsync(new TransactWriteItemsRequest() { TransactItems = items });
+                await client.TransactWriteItemsAsync(new TransactWriteItemsRequest() { TransactItems = items });
             }
             catch (TransactionCanceledException ex)
             {
@@ -92,7 +92,7 @@ namespace StreamStore.NoSql.DynamoDb
 
         async Task<IStreamEventRecord[]> ReadStreamEventBatch(Id streamId, Revision startFrom, int count, CancellationToken token)
         {
-            var response = await client.QueryAsync(requests.GetStreamEvents(streamId, startFrom, count));
+            var response = await client.QueryAsync(requests.GetStreamEvents(streamId, startFrom, count), token);
 
             return response.Items.Select(item =>
                     new StreamEventRecordBuilder()

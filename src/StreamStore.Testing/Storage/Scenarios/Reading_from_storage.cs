@@ -145,7 +145,7 @@ namespace StreamStore.Testing.StreamStorage.Scenarios
 
             // Act
             var events = await Storage.ReadAsync(stream.Id, startFrom, count);
-            output.WriteLine($"Actual number of events: {events?.Count()}");
+            output.WriteLine($"Actual number of events: {events?.Length}");
 
             // Assert
             events.Should().NotBeNull();

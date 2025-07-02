@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Amazon.DynamoDBv2.Model;
 using StreamStore.Extensions;
@@ -41,7 +42,7 @@ namespace StreamStore.NoSql.DynamoDb
                     { AttributeNames.StreamId, new AttributeValue() { S = streamId.ToString() } },
                     { AttributeNames.Revision, new  AttributeValue() { N = record!.Revision.ToString() } },
                     { AttributeNames.Id, new  AttributeValue() { S = record.Id.ToString() } },
-                    { AttributeNames.Timestamp, new AttributeValue { S = record.Timestamp.ToUniversalTime().ToString() } },
+                    { AttributeNames.Timestamp, new AttributeValue { S = record.Timestamp.ToUniversalTime().ToString(CultureInfo.InvariantCulture) } },
                     { AttributeNames.Data, new AttributeValue { B = new MemoryStream(record.Data) } },
                 };
 

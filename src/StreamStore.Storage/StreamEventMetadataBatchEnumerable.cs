@@ -61,7 +61,7 @@ namespace StreamStore.Storage
 
             count = count + Current.Length;
 
-            startFrom = ((Revision)Current.Last().Revision).Next();
+            startFrom = ((Revision)Current[Current.Length - 1].Revision).Next();
             return true;
         }
 

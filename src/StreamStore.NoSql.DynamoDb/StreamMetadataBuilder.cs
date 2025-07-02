@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Amazon.DynamoDBv2.Model;
 using StreamStore.Extensions;
 using StreamStore.Storage;
@@ -33,7 +34,7 @@ namespace StreamStore.NoSql.DynamoDb
             return new StreamMetadata(
                 id: streamId, 
                 revision: Convert.ToInt32(attributes![AttributeNames.Revision].N), 
-                lastModified: DateTime.Parse(attributes[AttributeNames.Timestamp].S)
+                lastModified: DateTime.Parse(attributes[AttributeNames.Timestamp].S, CultureInfo.InvariantCulture)
                 );
         }
     }

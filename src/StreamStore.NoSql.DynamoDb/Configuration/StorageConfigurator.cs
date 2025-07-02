@@ -48,7 +48,7 @@ namespace StreamStore.NoSql.DynamoDb.Configuration
            registrator.RegisterStorage<DynamoDbStreamStorage>();
         }
 
-        public IDynamoDbConfigurator UseConfiguration(IConfiguration configuration, string configSection = "streamstore")
+        public IDynamoDbConfigurator UseConfiguration(IConfiguration configuration, string configSection = "AWS")
         {
             configuration.ThrowIfNull(nameof(configuration));
             configSection.ThrowIfNull(nameof(configSection));

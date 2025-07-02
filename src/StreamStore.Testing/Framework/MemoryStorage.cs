@@ -87,7 +87,7 @@ namespace StreamStore.Testing
             return RandomNumberGenerator.GetInt32(0, store.Keys.Count - 1);
         }
 
-        IEnumerable<IStreamEventRecord[]> PagingEnumerable(RevisionedItemCollection<IStreamEventRecord> events)
+        PagingEnumerable<IStreamEventRecord> PagingEnumerable(RevisionedItemCollection<IStreamEventRecord> events)
         {
             return new PagingEnumerable<IStreamEventRecord>(events.ToArray(), options.WriteBatchSize);
         }
