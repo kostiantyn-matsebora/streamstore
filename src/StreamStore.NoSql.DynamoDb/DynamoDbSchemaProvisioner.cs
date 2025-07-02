@@ -66,6 +66,7 @@ namespace StreamStore.NoSql.DynamoDb
 
                 if (
                        ex.Message.Contains("Table already exists")
+                    || ex.Message.Contains("Cannot create preexisting table")
                     || ex.Message.Contains("Table is being created")) return;
                 throw;
             }

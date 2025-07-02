@@ -41,10 +41,10 @@ namespace StreamStore.NoSql.Tests.DynamoDb.Storage
             try
             {
                 var schemaProvisioner = ConfigurePersistence(new ServiceCollection()).BuildServiceProvider().GetRequiredService<ISchemaProvisioner>();
-                schemaProvisioner.ProvisionSchemaAsync(CancellationToken.None).RunSynchronously();
+                schemaProvisioner.ProvisionSchemaAsync(CancellationToken.None).GetAwaiter().GetResult();
                 return true;
             }
-            catch (AmazonClientException)
+            catch (AmazonClientException ex)
             {
                 return false;
             }
