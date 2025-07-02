@@ -33,7 +33,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Storage
                     using (var command = connection.CreateCommand())
                     {
                         command.CommandText = $"CREATE DATABASE {databaseName};";
-                        command.ExecuteNonQueryAsync().RunSynchronously();
+                        command.ExecuteNonQueryAsync().GetAwaiter().GetResult();
                         return true;
                     }
                 }

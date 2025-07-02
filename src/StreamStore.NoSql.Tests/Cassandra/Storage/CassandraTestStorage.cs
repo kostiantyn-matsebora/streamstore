@@ -29,11 +29,11 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage
                               WITH REPLICATION = {{ 
                                'class' : '{Keyspace.ReplicationClass}', 
                                'replication_factor' : {Keyspace.ReplicationFactor}
-                              }};")).RunSynchronously();
+                              }};")).GetAwaiter().GetResult();
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 // ignored
                 return false;
