@@ -13,9 +13,9 @@ namespace StreamStore.Storage.EventFlow.Tests
             services.UsePostgreSql(c => c.WithConnectionString($"Host=localhost;Port=5432;Username=streamstore;Password=streamstore;Database={storageName}"));
         }
 
-        protected override async Task ProvisionStorageAsync(string name)
+        protected override void ProvisionStorage(string name)
         {
-            await new PostgresTestStorage(name).EnsureExistsAsync();
+            new PostgresTestStorage(name).EnsureExists();
         }
     }
 }

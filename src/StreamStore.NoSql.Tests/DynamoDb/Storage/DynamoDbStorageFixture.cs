@@ -24,9 +24,9 @@ namespace StreamStore.NoSql.Tests.DynamoDb.Storage
           testStorage.ConfigurePersistence(services);
         }
 
-        protected override MemoryStorage CreateInMemoryContainer()
+        protected override InMemoryStreamContainer CreateInMemoryContainer()
         {
-            return new MemoryStorage(new MemoryStorageOptions { Capacity = 20, EventPerStream = 33 });
+            return new InMemoryStreamContainer(new InMemoryStreamContainerOptions { Capacity = 20, EventPerStream = 33 });
         }
     }
 }

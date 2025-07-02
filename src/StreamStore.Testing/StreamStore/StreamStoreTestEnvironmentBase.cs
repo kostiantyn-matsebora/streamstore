@@ -7,9 +7,9 @@ namespace StreamStore.Testing.StreamStore
 {
     public abstract class StreamStoreTestEnvironmentBase : TestEnvironmentBase
     {
-        readonly MemoryStorage storage = new MemoryStorage();
+        readonly InMemoryStreamContainer storage = new InMemoryStreamContainer();
 
-        public MemoryStorage Container => storage;
+        public InMemoryStreamContainer Container => storage;
 
         public IStreamStorage Storage => Services.GetRequiredService<IStreamStorage>();
 

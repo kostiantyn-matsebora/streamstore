@@ -18,18 +18,18 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage
             cluster = builder.Build();
         }
 
-        public async Task<bool> EnsureExistsAsync()
+        public bool EnsureExists()
         {
             try
             {
                 using (var session = cluster.Connect())
                 {
-                   await session.ExecuteAsync(new SimpleStatement(
+                   session.ExecuteAsync(new SimpleStatement(
                         @$"CREATE KEYSPACE {Keyspace.Name}
                               WITH REPLICATION = {{ 
                                'class' : '{Keyspace.ReplicationClass}', 
                                'replication_factor' : {Keyspace.ReplicationFactor}
-                              }};"));
+                              }};")).RunSynchronously();
                     return true;
                 }
             }

@@ -36,12 +36,12 @@ namespace StreamStore.NoSql.Tests.DynamoDb.Storage
                       .WithReadingBatchSize(readingBatchSize));
         }
 
-        public async Task<bool> EnsureExistsAsync()
+        public bool EnsureExists()
         {
             try
             {
                 var schemaProvisioner = ConfigurePersistence(new ServiceCollection()).BuildServiceProvider().GetRequiredService<ISchemaProvisioner>();
-                await schemaProvisioner.ProvisionSchemaAsync(CancellationToken.None);
+                schemaProvisioner.ProvisionSchemaAsync(CancellationToken.None).RunSynchronously();
                 return true;
             }
             catch (AmazonClientException)

@@ -6,13 +6,12 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using StreamStore.Storage;
-using StreamStore.Testing.Framework;
 using StreamStore.Testing.Models;
 
 namespace StreamStore.Testing
 {
 
-    public class MemoryStorageOptions
+    public class InMemoryStreamContainerOptions
     {
         public int Capacity { get; set; } = 100;
 
@@ -23,17 +22,17 @@ namespace StreamStore.Testing
         public int WriteBatchSize { get; set; } = 100;
     }
 
-    public class MemoryStorage : IEnumerable<TestStreamRecord>
+    public class InMemoryStreamContainer : IEnumerable<TestStreamRecord>
     {
 
         readonly ConcurrentDictionary<Id, TestStreamRecord> store = new ConcurrentDictionary<Id, TestStreamRecord>();
-        readonly MemoryStorageOptions options;
+        readonly InMemoryStreamContainerOptions options;
 
-        public MemoryStorage() : this(new MemoryStorageOptions())
+        public InMemoryStreamContainer() : this(new InMemoryStreamContainerOptions())
         {
         }
 
-        public MemoryStorage(MemoryStorageOptions options)
+        public InMemoryStreamContainer(InMemoryStreamContainerOptions options)
         {
             this.options = options;
             Fill(GenerateIds(options.Capacity), options.EventPerStream);

@@ -18,10 +18,10 @@ namespace StreamStore.Sql.Tests.Sqlite.Storage
             ConnectionString = $"Data Source = {storageName}; Version = 3;";
         }
 
-        public Task<bool> EnsureExistsAsync()
+        public bool EnsureExists()
         {
             SQLiteConnection.CreateFile(storageName);
-            return Task.FromResult(true);
+            return true;
         }
 
         private void Dispose(bool disposing)

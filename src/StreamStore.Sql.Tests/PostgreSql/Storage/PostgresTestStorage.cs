@@ -23,7 +23,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Storage
             ConnectionString =  connectionBuilder.ToString();
         }
 
-        public async Task<bool> EnsureExistsAsync()
+        public bool EnsureExists()
         {
             try
             {
@@ -33,7 +33,7 @@ namespace StreamStore.Sql.Tests.PostgreSql.Storage
                     using (var command = connection.CreateCommand())
                     {
                         command.CommandText = $"CREATE DATABASE {databaseName};";
-                        await command.ExecuteNonQueryAsync();
+                        command.ExecuteNonQueryAsync().RunSynchronously();
                         return true;
                     }
                 }

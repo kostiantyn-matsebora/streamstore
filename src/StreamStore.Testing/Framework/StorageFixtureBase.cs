@@ -15,32 +15,30 @@ namespace StreamStore.Testing.Framework
         protected readonly  TStorage testStorage;
         private bool disposedValue;
 
-        public MemoryStorage Container { get; }
+        public InMemoryStreamContainer Container { get; }
 
         public bool IsStorageReady => isStorageReady;
 
         protected StorageFixtureBase(TStorage testStorage)
         {
+            this.testStorage = testStorage.ThrowIfNull(nameof(testStorage));
+            
             Container = CreateInMemoryContainer();
 
-            this.testStorage = testStorage.ThrowIfNull(nameof(testStorage));
-
-            var exists = testStorage.EnsureExistsAsync().GetAwaiter().GetResult();
-       
-            if (!exists) return;
+            if (this.testStorage.EnsureExists()) return;
 
             var provider = BuildServiceProvider();
 
             ProvisionSchema(provider);
 
-            FillStorage(provider).GetAwaiter().GetResult();
+            FillStorage(provider);
 
             isStorageReady = true;
         }
 
-        protected virtual MemoryStorage CreateInMemoryContainer()
+        protected virtual InMemoryStreamContainer CreateInMemoryContainer()
         {
-            return new MemoryStorage();
+            return new InMemoryStreamContainer();
         }
 
         public abstract void ConfigurePersistence(IServiceCollection services);
@@ -58,13 +56,13 @@ namespace StreamStore.Testing.Framework
         static void ProvisionSchema(IServiceProvider provider)
         {
             var provisioner = provider.GetRequiredService<ISchemaProvisioner>();
-            provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
+            provisioner.ProvisionSchemaAsync(CancellationToken.None).RunSynchronously();
         }
 
-        async Task FillStorage(IServiceProvider provider)
+        void FillStorage(IServiceProvider provider)
         {
             var storage = provider.GetRequiredService<IStreamStorage>();
-            await Container.CopyToAsync(storage);
+            Container.CopyToAsync(storage).RunSynchronously();
         }
 
         protected virtual void Dispose(bool disposing)

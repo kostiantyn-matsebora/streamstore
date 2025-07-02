@@ -10,12 +10,12 @@ namespace StreamStore.Testing.StreamStorage
 {
     public abstract class StorageTestEnvironmentBase : TestEnvironmentBase
     {
-        readonly MemoryStorage container = new MemoryStorage();
+        readonly InMemoryStreamContainer container = new InMemoryStreamContainer();
 
         public IStreamStorage StreamStorage => Services.GetRequiredService<IStreamStorage>();
 
         
-        public virtual MemoryStorage Container => container;
+        public virtual InMemoryStreamContainer Container => container;
 
         protected override sealed void RegisterServices(IServiceCollection services)
         {

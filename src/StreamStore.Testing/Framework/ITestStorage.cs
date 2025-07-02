@@ -5,6 +5,6 @@ namespace StreamStore.Testing.Framework
 {
     public interface ITestStorage: IDisposable
     {
-        Task<bool> EnsureExistsAsync();
+        bool EnsureExists();
     }
 }

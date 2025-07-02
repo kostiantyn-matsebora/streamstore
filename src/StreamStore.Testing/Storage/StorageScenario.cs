@@ -4,7 +4,7 @@
     {
         protected IStreamStorage Storage => Environment.StreamStorage;
 
-        protected MemoryStorage Container => Environment.Container;
+        protected InMemoryStreamContainer Container => Environment.Container;
 
         protected StorageScenario(TEnvironment environment) : base(environment)
         {
