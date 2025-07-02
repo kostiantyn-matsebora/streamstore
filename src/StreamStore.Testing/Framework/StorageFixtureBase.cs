@@ -25,7 +25,7 @@ namespace StreamStore.Testing.Framework
             
             Container = CreateInMemoryContainer();
 
-            if (this.testStorage.EnsureExists()) return;
+            if (!this.testStorage.EnsureExists()) return;
 
             var provider = BuildServiceProvider();
 
@@ -56,13 +56,13 @@ namespace StreamStore.Testing.Framework
         static void ProvisionSchema(IServiceProvider provider)
         {
             var provisioner = provider.GetRequiredService<ISchemaProvisioner>();
-            provisioner.ProvisionSchemaAsync(CancellationToken.None).RunSynchronously();
+            provisioner.ProvisionSchemaAsync(CancellationToken.None).GetAwaiter().GetResult();
         }
 
         void FillStorage(IServiceProvider provider)
         {
             var storage = provider.GetRequiredService<IStreamStorage>();
-            Container.CopyToAsync(storage).RunSynchronously();
+            Container.CopyToAsync(storage).GetAwaiter().GetResult();
         }
 
         protected virtual void Dispose(bool disposing)
