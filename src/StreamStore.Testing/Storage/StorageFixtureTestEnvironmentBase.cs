@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Extensions;
 using StreamStore.Testing.Framework;
 
@@ -13,14 +14,14 @@ namespace StreamStore.Testing.StreamStorage
             this.fixture = fixture.ThrowIfNull(nameof(fixture));
         }
 
-        public override MemoryStorage Container => fixture.Container;
+        public override InMemoryStreamContainer Container => fixture.Container;
 
         protected override void ConfigureStorage(IServiceCollection services)
         {
            fixture.ConfigurePersistence(services);
         }
 
-        protected override void SetUpInternal()
+        protected override void Initialize()
         {
         }
 

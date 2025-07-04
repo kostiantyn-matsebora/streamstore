@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Testing.Framework;
 
 
@@ -6,9 +7,9 @@ namespace StreamStore.Testing.StreamStore
 {
     public abstract class StreamStoreTestEnvironmentBase : TestEnvironmentBase
     {
-        readonly MemoryStorage storage = new MemoryStorage();
+        readonly InMemoryStreamContainer storage = new InMemoryStreamContainer();
 
-        public MemoryStorage Container => storage;
+        public InMemoryStreamContainer Container => storage;
 
         public IStreamStorage Storage => Services.GetRequiredService<IStreamStorage>();
 
@@ -19,9 +20,9 @@ namespace StreamStore.Testing.StreamStore
             services.AddStreamStore(ConfigureStreamStore);
         }
 
-        protected override void SetUpInternal()
+        protected override void Initialize()
         {
-            storage.CopyTo(Storage);
+            storage.CopyToAsync(Storage).GetAwaiter().GetResult();
         }
 
         protected abstract void ConfigureStreamStore(IStreamStoreConfigurator configurator);

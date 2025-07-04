@@ -15,6 +15,7 @@ namespace StreamStore.Testing
         {
             environment.ThrowIfNull(nameof(environment));
             Environment = environment;
+
             Environment.SetUp();
         }
 

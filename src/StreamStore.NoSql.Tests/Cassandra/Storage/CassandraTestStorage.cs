@@ -6,34 +6,37 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage
 {
     public sealed class CassandraTestStorage : ITestStorage
     {
-        readonly Cluster cluster;
+        readonly Action<Builder> configureCluster;
         public readonly KeyspaceConfiguration Keyspace;
         bool disposedValue;
+        Cluster? cluster;
 
         public CassandraTestStorage(KeyspaceConfiguration keyspace, Action<Builder> configureCluster)
         {
             Keyspace = keyspace;
-            var builder = Cluster.Builder();
-            configureCluster(builder);
-            cluster = builder.Build();
+            this.configureCluster  = configureCluster;
         }
 
         public bool EnsureExists()
         {
             try
             {
+                var builder = Cluster.Builder();
+                configureCluster(builder);
+                cluster = builder.Build();
+
                 using (var session = cluster.Connect())
                 {
-                    session.Execute(
+                   session.ExecuteAsync(new SimpleStatement(
                         @$"CREATE KEYSPACE {Keyspace.Name}
                               WITH REPLICATION = {{ 
                                'class' : '{Keyspace.ReplicationClass}', 
                                'replication_factor' : {Keyspace.ReplicationFactor}
-                              }};");
+                              }};")).GetAwaiter().GetResult();
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 // ignored
                 return false;
@@ -44,7 +47,7 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage
         {
             if (!disposedValue)
             {
-                if (disposing)
+                if (disposing && cluster != null)
                 {
                     try
                     {

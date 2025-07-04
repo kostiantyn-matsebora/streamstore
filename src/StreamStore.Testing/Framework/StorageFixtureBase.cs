@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using StreamStore.Configuration;
 using StreamStore.Extensions;
@@ -14,18 +15,17 @@ namespace StreamStore.Testing.Framework
         protected readonly  TStorage testStorage;
         private bool disposedValue;
 
-        public MemoryStorage Container { get; }
+        public InMemoryStreamContainer Container { get; }
 
         public bool IsStorageReady => isStorageReady;
 
         protected StorageFixtureBase(TStorage testStorage)
         {
-            Container = CreateContainer();
             this.testStorage = testStorage.ThrowIfNull(nameof(testStorage));
+            
+            Container = CreateInMemoryContainer();
 
-            var exists = testStorage.EnsureExists();
-       
-            if (!exists) return;
+            if (!this.testStorage.EnsureExists()) return;
 
             var provider = BuildServiceProvider();
 
@@ -36,9 +36,9 @@ namespace StreamStore.Testing.Framework
             isStorageReady = true;
         }
 
-        protected virtual MemoryStorage CreateContainer()
+        protected virtual InMemoryStreamContainer CreateInMemoryContainer()
         {
-            return new MemoryStorage();
+            return new InMemoryStreamContainer();
         }
 
         public abstract void ConfigurePersistence(IServiceCollection services);
@@ -56,13 +56,13 @@ namespace StreamStore.Testing.Framework
         static void ProvisionSchema(IServiceProvider provider)
         {
             var provisioner = provider.GetRequiredService<ISchemaProvisioner>();
-            provisioner.ProvisionSchemaAsync(CancellationToken.None).Wait();
+            provisioner.ProvisionSchemaAsync(CancellationToken.None).GetAwaiter().GetResult();
         }
 
         void FillStorage(IServiceProvider provider)
         {
             var storage = provider.GetRequiredService<IStreamStorage>();
-            Container.CopyTo(storage);
+            Container.CopyToAsync(storage).GetAwaiter().GetResult();
         }
 
         protected virtual void Dispose(bool disposing)

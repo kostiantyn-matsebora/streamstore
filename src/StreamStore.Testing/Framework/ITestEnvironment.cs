@@ -1,6 +1,7 @@
 ﻿
 using System;
 
+
 namespace StreamStore.Testing
 {
     public interface ITestEnvironment

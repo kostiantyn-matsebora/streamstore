@@ -4,7 +4,7 @@ namespace StreamStore.Testing.Framework
 {
     public interface IStorageFixture
     {
-        MemoryStorage Container { get; }
+        InMemoryStreamContainer Container { get; }
         void ConfigurePersistence(IServiceCollection services);
 
         bool IsStorageReady { get; }

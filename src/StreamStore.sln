@@ -80,6 +80,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.Storage.EventFl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.Storage.EventFlow.Tests", "StreamStore.Storage.EventFlow.Tests\StreamStore.Storage.EventFlow.Tests.csproj", "{B8FCB7FB-5406-520C-78B0-74DE349A541F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamStore.NoSql.DynamoDb", "StreamStore.NoSql.DynamoDb\StreamStore.NoSql.DynamoDb.csproj", "{A34BB3F0-A305-469E-371D-69E3356AA084}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -178,6 +180,10 @@ Global
 		{B8FCB7FB-5406-520C-78B0-74DE349A541F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8FCB7FB-5406-520C-78B0-74DE349A541F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8FCB7FB-5406-520C-78B0-74DE349A541F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A34BB3F0-A305-469E-371D-69E3356AA084}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A34BB3F0-A305-469E-371D-69E3356AA084}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A34BB3F0-A305-469E-371D-69E3356AA084}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A34BB3F0-A305-469E-371D-69E3356AA084}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -202,6 +208,7 @@ Global
 		{33529098-CDB3-4FA3-8A3B-89450830726C} = {9E50A483-A909-4603-B626-1DA779935148}
 		{4CB43BD4-EAAA-349F-0BC9-82CBD6DCBE69} = {9CE1CB82-D77F-4FEF-9BE9-A7613A9EA2D2}
 		{B8FCB7FB-5406-520C-78B0-74DE349A541F} = {9CE1CB82-D77F-4FEF-9BE9-A7613A9EA2D2}
+		{A34BB3F0-A305-469E-371D-69E3356AA084} = {B088C377-25AC-4BA6-AF83-33DC2733BE97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B91B9475-41C6-4A0C-8FA4-2894665CE39D}

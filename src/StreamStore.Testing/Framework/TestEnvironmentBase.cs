@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
@@ -23,7 +24,7 @@ namespace StreamStore.Testing.Framework
 
             RegisterServices(services);
             BuildProvider(services);
-            SetUpInternal();
+            Initialize();
         }
 
 
@@ -40,7 +41,7 @@ namespace StreamStore.Testing.Framework
         {
         }
 
-        protected virtual void SetUpInternal()
+        protected virtual void Initialize()
         {
         }
 

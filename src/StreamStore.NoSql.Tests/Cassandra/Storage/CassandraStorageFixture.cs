@@ -43,9 +43,9 @@ namespace StreamStore.NoSql.Tests.Cassandra.Storage
                           .ConfigureStorage(k => k.WithKeyspaceName(testStorage.Keyspace.Name)));
         }
 
-        protected override MemoryStorage CreateContainer()
+        protected override InMemoryStreamContainer CreateInMemoryContainer()
         {
-            return new MemoryStorage(new MemoryStorageOptions { Capacity = 100, EventPerStream = 100 });
+            return new InMemoryStreamContainer(new InMemoryStreamContainerOptions { Capacity = 100, EventPerStream = 100 });
         }
     }
 }
