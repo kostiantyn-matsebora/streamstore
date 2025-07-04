@@ -44,7 +44,7 @@ namespace StreamStore.NoSql.Tests.DynamoDb.Storage
                 schemaProvisioner.ProvisionSchemaAsync(CancellationToken.None).GetAwaiter().GetResult();
                 return true;
             }
-            catch (AmazonClientException ex)
+            catch (AmazonClientException)
             {
                 return false;
             }
